@@ -1,0 +1,30 @@
+<div class="media">
+    <a class="pull-left" href="{{ tutorial.get_absolute_url }}">
+        <img src="{% if tutorial.icon %}{{ tutorial.icon.url }}{% else %}/static/img/blank_tutorial.png{% endif %}" 
+            alt="Icône" width="64" height="64" />
+    </a>
+    <div class="media-body">
+        <h4 class="media-heading">
+            <a href="{{ tutorial.get_absolute_url }}">
+                {{ tutorial.title }}
+            </a>
+        </h4>
+         <p>
+            <small>
+                {% if tutorial.is_mini %}
+                    Mini-tuto
+                {% else %}
+                    Big-tuto
+                {% endif %}
+                par 
+                {% with authors=tutorial.authors.all %}
+                    {# On est obligé de tout mettre sur une ligne pour ne pas avoir d'espace avant la virgule #}
+                    {% for author in authors %}{% ifnotequal author authors|first %},{% endifnotequal %} <a href="{{ author.get_absolute_url }}">{{ author.username }}</a>{% endfor %}{% endwith %}.
+            </small>
+        </p>
+
+        <p>
+            {{ tutorial.description }}
+        </p>
+    </div>
+</div>

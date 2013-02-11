@@ -1,0 +1,53 @@
+.navbar
+{
+    margin-bottom: 10px;
+}
+
+.spacer3
+{
+    height: 3em;
+}
+
+.spacer2
+{
+    height: 2em;
+}
+
+.footer
+{
+    background-color: #F5F5F5;
+    border-top: solid 1px #E5E5E5;
+    margin-top; 70px;
+    padding: 30px 0;
+    text-align: center;
+}
+
+thead th
+{
+    background-color: rgb(51, 51, 51);
+    color: #FFF;
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+}
+
+.post-head td
+{
+    background-color: rgb(245, 245, 245);
+}
+
+.post-message td
+{
+    border-top: 0px none;
+}
+
+.post-message td:first-child
+{
+    text-align: center;
+    width: 100px;
+}
+
+/* Classe à ajouter aux ancres pour éviter le décalage avec la barre */
+.anchor
+{
+    padding-top: 60px;
+    margin-top: -60px;
+}

@@ -1,0 +1,64 @@
+{# Morceau s'occupant d'afficher un chapitre (que ce soit pour ceux des big-tutos ou un mini-tutoriel #}
+{% load markup %}
+
+{% if user in chapter.part.tutorial.authors.all or user in chapter.tutorial.authors.all %}
+<p>
+    <a href="/tutoriels/nouveau/extrait?chapitre={{ chapter.pk }}" class="btn">
+        <i class="icon-plus"></i>
+        Ajouter un extrait
+    </a>
+
+    <a href="/tutoriels/editer/chapitre?chapitre={{ chapter.pk }}" class="btn">
+        <i class="icon-pencil"></i>
+        Éditer
+    </a>
+
+    {# On propose la suppression que pour les big-tutos #}
+    {% if chapter.part %}
+    <a href="/tutoriels/modifier/chapitre?chapitre={{ chapter.pk }}&amp;action=supprimer" class="btn">
+        <i class="icon-remove"></i>
+        Supprimer
+    </a>
+    {% endif %}
+</p>
+{% endif %}
+
+{{ chapter.introduction|markdown:"safe,codehilite,extra" }}
+
+<div>
+    Sommaire de ce chapitre :
+    <ol>
+    {% for extract in chapter.get_extracts %}
+        <li>
+            <a href="#{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
+                {{ extract.title }}
+            </a>
+        </li>
+    {% endfor %}
+    </ol>
+</div>
+
+<hr />
+
+{% for extract in chapter.get_extracts %}
+    <h2 id="{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">{{ extract.title }}</h2>
+
+    {% if user in chapter.part.tutorial.authors.all or user in chapter.tutorial.authors.all %}
+    <p>
+        <a href="#" class="btn">
+            <i class="icon-pencil"></i>
+            Éditer
+        </a>
+        <a href="#" class="btn">
+            <i class="icon-remove"></i>
+            Supprimer
+        </a>
+    </p>
+    {% endif %}
+
+    {{ extract.text|markdown:"safe,codehilite,extra" }}
+{% endfor %}
+
+<hr />
+
+{{ chapter.conclusion|markdown:"safe,codehilite,extra" }}

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load humane_date %}
+
+{% block title %}
+{{ forum.title }} &ndash; Forums
+{% endblock %}
+
+{% block headline %}
+{{ forum.title }} <br /><small>{{ forum.subtitle }}</small>
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li><a href="/forums/">Forums</a> <span class="divider">/</span></li>
+<li><a href="{{ forum.category.get_absolute_url }}">{{ forum.category.title }}</a> <span class="divider">/</span></li>
+<li class="active">{{ forum.title }}</li>
+{% endblock %}
+
+{% block content %}
+
+<div class="pull-right">
+{% if user.is_authenticated %}
+<a href="/forums/sujet/nouveau?forum={{ forum.pk }}" class="btn">
+    <i class="icon-plus"></i>
+    Nouveau
+</a>
+{% endif %}
+</div>
+
+<p>
+    <a href="../.." class="btn">Liste des forums</a>
+</p>
+
+<table class="table table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>Statut</th>
+            <th>Sujet</th>
+            <th>Auteur</th>
+            <th>Denière réponse</th>
+            <th>Nombre de réponses</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for topic in topics %}
+        <tr class="{% if topic.is_solved %}success{% endif %}">
+            <td style="text-align: center; vertical-align: middle;">
+                {% if topic.is_sticky %}
+                <i class="icon-bookmark" title="Ce sujet est épinglé"></i>
+                {% endif %}
+                {% if topic.is_locked %}
+                <i class="icon-lock" title="Ce sujet est verrouillé"></i>
+                {% endif %}
+                {% if topic.is_solved %}
+                <i class="icon-ok" title="Ce sujet est résolu"></i>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                    {% with topic.last_read_post as last_read_post %}
+                    {% ifnotequal last_read_post topic.get_last_anwser %}
+                        <i class="icon-exclamation-sign"></i>
+                    {% endifnotequal %}
+                    {% endwith %}
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ topic.get_absolute_url }}">{{ topic.title }}</a>
+                <br />{{ topic.subtitle }}
+            </td>
+            <td>
+                <a href="{{ topic.author.get_absolute_url }}">
+                    {{ topic.author.username }}</a>
+            </td>
+            <td>
+                {% if topic.get_last_anwser %}
+                    <a href="{{ topic.get_last_anwser.get_absolute_url }}">
+                        {{ topic.get_last_anwser.pubdate|humane_date }}
+                    </a>
+                    par
+                    <a href="{{ topic.get_last_anwser.author.get_absolute_url }}">
+                        {{ topic.get_last_anwser.author.username }}
+                    </a>
+                {% else %}
+                    Aucune
+                {% endif %}
+            </td>
+            <td>
+                {{ topic.get_post_count|add:"-1" }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

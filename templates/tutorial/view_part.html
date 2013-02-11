@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load markup %}
+
+{% block title %}
+{{ part.title }} &ndash; {{ part.tutorial.title }}
+{% endblock %}
+
+{% block headline %}
+Partie {{ part.position_in_tutorial }} : {{ part.title }}<br />
+<small>{{ part.tutorial.title }}</small>
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li><a href="/tutoriels/">Tutoriels</a> <span class="divider">/</span></li>
+<li><a href="{{ part.tutorial.get_absolute_url }}">{{ part.tutorial.title }}</a> <span class="divider">/</span></li>
+<li class="active">{{ part.title }}</li>
+{% endblock %}
+
+{% block content %}
+
+{% include "tutorial/view_part_common.html" %}
+
+{% endblock %}

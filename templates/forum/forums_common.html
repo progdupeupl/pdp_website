@@ -1,0 +1,47 @@
+{# Morceau qui affiche la liste des forums dans une catégorie #}
+{% load humane_date %}
+
+<table class="table table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>Statut</th>
+            <th>Titre</th>
+            <th>Dernier message</th>
+            <th>Nombre de sujets</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for forum in category.get_forums %}
+    <tr>
+        <td>
+        </td>
+        <td>
+            <a href="{{ forum.get_absolute_url }}">{{ forum.title }}</a><br />
+            {{ forum.subtitle }}
+        </td>
+        <td>
+            {% if forum.get_last_message %}
+            Posté
+            <a href="{{ forum.get_last_message.get_absolute_url }}">
+                {{ forum.get_last_message.pubdate|humane_date }}
+            </a>
+            par
+            <a href="{{ forum.get_last_message.author.get_absolute_url }}">
+                {{ forum.get_last_message.author.username }}
+            </a>
+            dans
+            <a href="{{ forum.get_last_message.topic.get_absolute_url }}">
+                {{ forum.get_last_message.topic.title }}
+            </a>
+            {% else %}
+            Aucun message
+            {% endif %}
+        </td>
+        <td>
+            {{ forum.get_topic_count }}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

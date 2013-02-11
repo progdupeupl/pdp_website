@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load markup %}
+{% load humane_date %}
+
+{% block title %}
+{{ article.title }} &ndash; Articles
+{% endblock %}
+
+{% block headline %}
+{{ article.title }}<br />
+<small>{{ article.description }}</small>
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li><a href="/articles/">Articles</a> <span class="divider">/</span></li>
+<li class="article">{{ article.title }}</li>
+{% endblock %}
+
+{% block content %}
+    
+<div class="pull-right well">
+    <div style="text-align: center;">
+        <img src="/static/img/blank_article.png" alt="Icône" width="64" height="64" />
+    </div>
+
+    <strong>Auteur :</strong>
+    <a href="{{ article.author.get_absolute_url }}">
+        {{ article.author.username }}
+    </a>
+    <br />
+    <strong>Publication :</strong>
+    {{ article.pubdate|humane_date }}
+
+    {% ifequal user article.author %} 
+    <br /><br />
+    <div style="text-align: center;">
+        <a href="/articles/editer?article={{ article.pk }}" class="btn">
+            <i class="icon-pencil"></i>
+            Éditer
+        </a>
+    </div>
+    {% endifequal %}
+</div>
+
+{{ article.text|markdown:"safe,codehilite,extra" }}
+
+{% endblock %}

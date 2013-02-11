@@ -1,0 +1,22 @@
+{% load humane_date %}
+
+<div class="media">
+    <a class="pull-left" href="{{ article.get_absolute_url }}">
+        <img class="media-object" src="/static/img/blank_article.png" />
+    </a>
+    <div class="media-body">
+        <h4 class="media-heading">
+            <a href="{{ article.get_absolute_url }}">
+                {{ article.title }}
+            </a>
+        </h4>
+        <p><small>
+            Par
+            <a href="{{ article.author.get_absolute_url }}">
+                {{ article.author.username }}
+            </a>
+            {{ article.pubdate|humane_date }}.
+        </small></p>
+        <p>{{ article.description }}</p>
+    </div>
+</div>

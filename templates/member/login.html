@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}
+Connexion &ndash; Membres
+{% endblock %}
+
+{% block headline %}
+Se connecter
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li><a href="/membres/">Membres</a> <span class="divider">/</span></li>
+<li class="active">Connexion</li>
+{% endblock %}
+
+{% block content %}
+{% if not user.is_authenticated %}
+
+    {% if error %}
+        {{ error }}
+    {% endif %}
+
+    <form method="post" action="{% url pdp.member.views.login_view %}">
+    {{ form.as_p }}
+
+    <div class="btn-group">
+        <button type="submit" class="btn btn-primary">
+            Se connecter
+        </button>
+        <a href="#" class="btn">Inscription</a>
+    </div>
+
+    {% csrf_token %}
+    </form>
+
+{% else %}
+
+Vous êtes déjà connecté
+
+{% endif %}
+
+{% endblock %}

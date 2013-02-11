@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load markup %}
+
+{% block title %}
+Nouvelle partie &ndash; Tutoriels
+{% endblock %}
+
+{% block headline %}
+Nouvelle partie
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li><a href="/tutoriels/">Tutoriels</a> <span class="divider">/</span></li>
+<li><a href="{{ tutorial.get_absolute_url }}">{{ tutorial.title }}</a> <span class="divider">/</span></li>
+<li class="active">Nouvelle partie</li>
+{% endblock %}
+
+{% block content %}
+
+{% include "tutorial/part_common.html" %}
+
+<form action="" method="POST" class="form-horizontal">
+
+    <fieldset>
+        <legend>Général</legend>
+
+        <div class="control-group">
+            <label class="control-label" for="id_title">Titre</label>
+            <div class="controls">
+                <input type="text" placeholder="Titre" name="title" id="id_title" />
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Texte</legend>
+
+        <div class="control-group">
+            <label class="control-label" for="id_introduction">Introduction</label>
+            <div class="controls">
+                <textarea name="introduction" id="id_introduction"
+                    class="input-block-level" rows="10"
+                    placeholder="Introduction"></textarea>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="id_conclusion">Conclusion</label>
+            <div class="controls">
+                <textarea name="conclusion" id="id_conclusion"
+                    class="input-block-level" rows="10"
+                    placeholder="Conclusion"></textarea>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-primary">
+                    <i class="icon-plus icon-white"></i>
+                    Ajouter partie
+                </button>
+
+                <a href="{{ tutorial.get_absolute_url }}" class="btn">
+                    Annuler
+                </a>
+            </div>
+        </div>
+    </fieldset>
+
+    {% csrf_token %}
+
+</form>
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}
+Articles
+{% endblock %}
+
+{% block headline %}
+Liste des articles
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li class="artive">Articles</li>
+{% endblock %}
+
+{% block content %}
+
+<p>
+    Voici la liste des articles publiés sur le site.
+</p>
+
+{% if user.is_authenticated %}
+<p>
+    <a href="/articles/nouveau" class="btn">
+        <i class="icon-plus"></i>
+        Nouveau
+    </a>
+</p>
+{% endif %}
+
+<div class="row">
+
+    <div class="span6">
+        <h3>Derniers articles</h3>
+        {% if articles %}
+            {% for article in articles %}
+                {% include "article/article_item_common.html" %}
+            {% endfor %}
+        {% else %}
+            <p>Aucun article disponible.</p>
+        {% endif %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <div class="span6">
+        <h3>Vos articles</h3>
+
+
+        {% if not user_articles %}
+            <p>Vous n'avez pas encore rédigé d'article.</P>
+        {% else %}
+            {% for article in user_articles %}
+                {% include "article/article_item_common.html" %}
+            {% endfor %}
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

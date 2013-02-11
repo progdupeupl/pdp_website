@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load markup %}
+
+{% block title %}
+Répondre au sujet &ndash; Forums
+{% endblock %}
+
+{% block headline %}
+Répondre au sujet
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li><a href="/forums/">Forums</a> <span class="divider">/</span></li>
+<li><a href="{{ topic.forum.category.get_absolute_url }}">{{ topic.forum.category.title }}</a> <span class="divider">/</span></li>
+<li><a href="{{ topic.forum.get_absolute_url }}">{{ topic.forum.title }}</a> <span class="divider">/</span></li>
+<li><a href="{{ topic.get_absolute_url }}">{{ topic.title }}</a> <span class="divider">/</span></li>
+<li class="active">Répondre au sujet</li>
+{% endblock %}
+
+{% block content %}
+<form action="/forums/message/nouveau?sujet={{ topic.pk }}" method="POST">
+
+    {% include "markdown-buttons.html" %}
+
+    <textarea class="input-block-level" name="text" rows="20" id="id_text"
+        placeholder="Contenu de votre message au format Markdown.">{{ text }}</textarea>
+
+    <div style="text-align: center;">
+        <button type="submit" class="btn btn-primary">
+            <i class="icon-ok icon-white"></i>
+            Répondre
+        </button>
+
+        <button type="submit" name="preview" class="btn">
+            <i class="icon-eye-open"></i>
+            Prévisualisation
+        </button>
+
+        <a href="{{ topic.get_absolute_url }}" class="btn">
+            <i class="icon-remove"></i>
+            Annuler
+        </a>
+    </div>
+
+    {% csrf_token %}
+</form>
+
+{% if text %}
+<div class="well">
+    <p style="text-align: center;">
+        <b>Prévisualisation de votre message</b>
+    </p>
+    {{ text|markdown:"safe,codehilite,extra" }}
+</div>
+{% endif %}
+
+{% endblock %}

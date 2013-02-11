@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ category.title }} &ndash; Forums
+{% endblock %}
+
+{% block headline %}
+{{ category.title }}
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li><a href="/forums/">Forums</a> <span class="divider">/</span></li>
+<li class="active">{{ category.title }}</li>
+{% endblock %}
+
+{% block content %}
+
+<p>
+<a href=".." class="btn">Liste des forums</a>
+</p>
+
+<p>
+Forums dans la catégorie sélectionnée :
+</p>
+
+{% include "forum/forums_common.html" %}
+
+{% endblock %}

@@ -1,0 +1,5 @@
+*.pyc
+*.db
+*~
+media
+pdp/settings_prod.py

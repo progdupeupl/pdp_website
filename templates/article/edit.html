@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}
+Éditer &ndash; Articles
+{% endblock %}
+
+{% block headline %}
+Éditer l'article
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li><a href="/articles/">Articles</a> <span class="divider">/</span></li>
+<li><a href="{{ article.get_absolute_url }}">{{ article.title }}</a> <span class="divider">/</span></li>
+<li class="active">Éditer l'article</li>
+{% endblock %}
+
+{% block content %}
+
+<form action="" method="POST" class="form-horizontal">
+
+    <fieldset>
+
+        <legend>Général</legend>
+
+        <div class="control-group">
+            <label class="control-label" for="id_title">Titre</label>
+            <div class="controls">
+                <input type="text" placeholder="Titre" value="{{ article.title }}"
+                    name="title" id="id_title" />
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="id_description">Description</label>
+            <div class="controls">
+                <input type="text" placeholder="Description" value="{{ article.description }}"
+                    name="description" id="id_description" />
+            </div>
+        </div>
+
+    </fieldset>
+    <fieldset>
+        <legend>Texte</legend>
+        <div class="control-group">
+            <label for="id_text" class="control-label">Contenu</label>
+            <div class="controls">
+                {% include "markdown-buttons.html" %}
+                <textarea id="id_text" name="text" class="input-block-level" rows="20"
+                    placeholder="Contenu au format Markdown.">{{ article.text }}</textarea>
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn btn-primary">
+                Sauvegarder les modifications
+            </button>
+
+            <a href="/tutoriels/" class="btn">
+                Annuler
+            </a>
+        </div>
+    </div>
+
+    {% csrf_token %}
+
+</form>
+
+{% endblock %}

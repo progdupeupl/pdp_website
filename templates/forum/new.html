@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load markup %}
+
+{% block title %}
+Nouveau sujet &ndash; Forums
+{% endblock %}
+
+{% block headline %}
+Nouveau sujet
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li><a href="/forums/">Forums</a> <span class="divider">/</span></li>
+<li><a href="{{ forum.category.get_absolute_url }}">{{ forum.category.title }}</a> <span class="divider">/</span></li>
+<li><a href="{{ forum.get_absolute_url }}">{{ forum.title }}</a> <span class="divider">/</span></li>
+<li class="active">Nouveau sujet</li>
+{% endblock %}
+
+{% block content %}
+<form action="" method="POST">
+
+    <input type="text" placeholder="Titre" name="title" value="{{ title }}" /><br />
+    <input type="text" placeholder="Sous-titre" name="subtitle" value="{{ subtitle }}" /><br />
+
+    {% include "markdown-buttons.html" %}
+    
+    <textarea class="input-block-level" rows="20" name="text" id="id_text"
+        placeholder="Contenu au format Markdown.">{{ text }}</textarea>
+
+    <div style="text-align: center;">
+        <button type="submit" class="btn btn-primary">
+            <i class="icon-plus icon-white"></i>
+            Nouveau sujet
+        </button>
+
+        <button type="submit" name="preview" class="btn">
+            <i class="icon-eye-open"></i>
+            Prévisualiation
+        </button>
+
+        <a href="{{ forum.get_absolute_url }}" class="btn">
+            Retour
+        </a>
+    </div>
+
+    {% csrf_token %}
+</form>
+
+{% if text %}
+<div class="well">
+    <p style="text-align: center;">
+        <b>Prévisualisation de votre message</b>
+    </p>
+    {{ text|markdown:"safe,codehilite,extra" }}
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{# Titres #}
+
+{% block title %}
+Accueil
+{% endblock %}
+
+{% block headline %}
+Bienvenue !
+{% endblock %}
+
+{% block breadcrumb %}
+<li class="active">Accueil</li>
+{% endblock %}
+
+{# Contenu #}
+
+{% block content %}
+<div class="hero-unit">
+    <p>
+Bienvenue sur <strong>progdupeupl</strong>, 
+une communauté de passionnés d'informatique et notamment de
+programmation. Ce site permet non seulement de se former à la programmation,
+mais également de discuter entre membres pour progresser, découvrir des
+astuces, partager, aider, en bref : échanger de façon utile sur le monde de
+l'informatique.
+</p>
+</div>
+
+<div class="row">
+    <div class="span4">
+        <h2>Articles <br /><small>Pour se tenir informé.</small></h2>
+        <p>
+            Les articles sont rédigés par la communauté et permettent de se
+            tenir informé des dernières innovations du moment.
+        </p>
+        {% if last_articles %}
+            <p>Derniers articles :</p>
+            {% for article in last_articles %}
+                {% include "article/article_item_common.html" %}
+            {% endfor %}
+        {% else %}
+            <p>Pas d'articles pour l'instant.</p>
+        {% endif %}
+        <div class="spacer2"></div>
+        <p>
+            <a href="/articles/" class="btn">Liste des articles</a>
+        </p>
+    </div>
+    <div class="span4">
+        <h2>Tutoriels <br /><small>Pour apprendre.</small></h2>
+        <p>
+            Les tutoriels vous permettent d'apprendre sur divers sujets axés
+            autour de la programmation et de l'informatique.
+        </p>
+        {% if last_tutorials %}
+            <p>Derniers tutoriels :</p>
+            {% for tutorial in last_tutorials %}
+                {% include "tutorial/tutorial_item_common.html" %}
+            {% endfor %}
+        {% else %}
+            <p>Aucun tutoriel actuellement.</p>
+        {% endif %}
+        <div class="spacer2"></div>
+        <p>
+            <a href="/tutoriels/" class="btn">Liste des tutoriels</a>
+        </p>
+    </div>
+    <div class="span4">
+        <h2>Forums <br /><small>Pour discuter et partager.</small></h2>
+        <p>
+            Les forums vous permettent de venir poser vos questions aux autres
+            membres mais aussi de s'entrainer ou tout simplement discuter sur
+            divers sujets.
+        </p>
+        <p>
+            <a href="/forums/" class="btn">Accèder aux forums</a>
+        </p>
+    </div>
+</div>
+
+{% endblock %}

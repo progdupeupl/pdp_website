@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load markup %}
+
+{% block title %}
+Éditer mon profil &ndash; Membres
+{% endblock %}
+
+{% block headline %}
+Éditer mon profil
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li><a href="/membres/">Membres</a> <span class="divider">/</span></li>
+<li><a href="{{ profile.user.get_absolute_url }}">{{ profile.user.username }}</a> <span class="divider">/</span></li>
+<li class="active">Éditer mon profil</li>
+{% endblock %}
+
+{% block content %}
+
+<form action="" method="POST" class="form-horizontal">
+
+    <fieldset>
+        <legend>Public</legend>
+
+        <div class="control-group">
+            <label for="id_biography" class="control-label">Biographie</label>
+            <div class="controls">
+                <textarea name="biography" class="input-block-level" rows="10" id="id_biography"
+                    placeholder="Votre biographie au format Markdown.">{{ profile.biography }}</textarea>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+                <label class="checkbox">
+                    <input type="checkbox" name="show_email"
+                    {% if profile.show_email %}checked{% endif %}>
+                    Afficher mon adresse mail publiquement
+                </label>
+            </div>
+        </div>
+
+    </fieldset>
+
+    <div style="text-align: center;">
+        <button type="submit" class="btn btn-primary">
+            <i class="icon-pencil icon-white"></i>
+            Éditer
+        </button>
+
+        <a href="{{ profile.user.get_absolute_url }}" class="btn">
+            Annuler
+        </a>
+    </div>
+
+    {% csrf_token %}
+
+</form>
+
+{% endblock %}

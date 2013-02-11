@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load markup %}
+
+{% block title %}
+Nouveau tutoriel &ndash; Tutoriels
+{% endblock %}
+
+{% block headline %}
+Nouveau tutoriel
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li><a href="/tutoriels/">Tutoriels</a> <span class="divider">/</span></li>
+<li class="active">Nouveau tutoriel</li>
+{% endblock %}
+
+{% block content %}
+
+<form action="" method="POST" enctype="multipart/form-data" class="form-horizontal">
+
+    <fieldset>
+        <legend>Général</legend>
+        <div class="control-group">
+            <label for="id_text" class="control-label">Titre</label>
+            <div class="controls">
+                <input type="text" id="id_text" placeholder="Titre" name="title" /><br />
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label for="id_description" class="control-label">Description</label>
+            <div class="controls">
+                <textarea name="description" id="id_description"
+                    class="input-block-level" placeholder="Brève description qui sera affichée sous le titre de votre tutoriel (200 caractères max)."></textarea>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+                <label class="checkbox">
+                    <input type="checkbox" name="is_mini" />Mini-tutoriel
+                </label>
+            </div>
+        </div>
+
+
+        <div class="control-group">
+            <label class="control-label">Icône</label>
+            <div class="controls">
+                <input type="file" name="icon" />
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn btn-primary">
+                <i class="icon-plus icon-white"></i>
+                Nouveau tutoriel
+            </button>
+
+            <a href="/tutoriels/" class="btn">
+                Annuler
+            </a>
+        </div>
+    </div>
+
+    {% csrf_token %}
+
+</form>
+
+{% endblock %}

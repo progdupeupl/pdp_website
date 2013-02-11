@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% load markup %}
+{% load humane_date %}
+
+{% block title %}
+{{ topic.title }} &ndash; Forums
+{% endblock %}
+
+{% block headline %}
+{{ topic.title }} <br /><small>{{ topic.subtitle }}</small>
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li><a href="/forums/">Forums</a> <span class="divider">/</span></li>
+<li><a href="{{ topic.forum.category.get_absolute_url }}">{{ topic.forum.category.title }}</a> <span class="divider">/</span></li>
+<li><a href="{{ topic.forum.get_absolute_url }}">{{ topic.forum.title }}</a> <span class="divider">/</span></li>
+<li class="active">{{ topic.title }}</li>
+{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+<div class="pull-right">
+
+    <a href="/forums/sujet/nouveau?forum={{ topic.forum.pk }}" class="btn">
+        <i class="icon-plus"></i>
+        Nouveau
+    </a>
+
+    {% if user.is_staff %}
+    {# Tâches de modération #}
+
+    {# Bouton pour déplacer le sujet #}
+    <div class="btn-group">
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+            Déplacer dans
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            {% for category in categories %}
+            <li class="disabled">
+                <a href="#">&mdash; {{ category.title }}</a>
+            </li>
+            {% for forum in category.get_forums %}
+            <li>
+            <a href="/forums/sujet/editer?action=deplacer&amp;sujet={{ topic.pk }}&amp;destination={{ forum.pk }}">
+                    {{ forum.title }}
+                </a>
+            </li>
+            {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="btn-group">
+
+        {# Bouton pour passer le sujet en post-it #}
+        <a href="/forums/sujet/editer?action=postit&amp;sujet={{ topic.pk }}"
+            class="btn {% if topic.is_sticky %}btn-info{% endif %}">
+            <i class="icon-bookmark {% if topic.is_sticky %}icon-white{% endif %}"></i>
+            Post-it
+        </a>
+
+        {# Bouton pour verrouiller le sujet #}
+        <a href="/forums/sujet/editer?action=verrouiller&amp;sujet={{ topic.pk }}"
+            class="btn {% if topic.is_locked %}btn-warning{% endif %}">
+            <i class="icon-lock {% if topic.is_locked %}icon-white{% endif %}"></i>
+            Verrouill{% if topic.is_locked %}é{% else %}er{% endif %}
+        </a>
+
+    </div>
+    {% endif %}
+
+    {% if topic.author.pk == user.pk %}
+
+        {# Bouton pour passer en résolu #}
+        <a href="/forums/sujet/editer?action=resolu&amp;sujet={{ topic.pk }}"
+            class="btn {% if topic.is_solved %}btn-success{% endif %}">
+            <i class="icon-flag {% if topic.is_solved %}icon-white{% endif %}"></i>
+                Résolu
+        </a>
+
+    {% else %}
+
+        {# Bouton pour suivre le sujet #}
+        <a href="#" class="btn {% if 1 == 1 %}btn-primary{% endif %}">
+            {% if 1 == 2 %}
+                <i class="icon-star"></i>
+                Suivre
+            {% else %}
+                <i class="icon-star icon-white"></i>
+                Suivi
+            {% endif %}
+        </a>
+
+    {% endif %}
+
+</div>
+{% endif %}
+
+<div class="btn-group">
+    <a href="/forums/" class="btn">
+        Forums
+    </a>
+
+    <a href="{{ topic.forum.get_absolute_url }}" class="btn">
+        « {{ topic.forum.title }} »
+    </a>
+</div>
+
+<div class="spacer3"></div>
+
+{% if topic.is_solved %}
+<div class="alert alert-success">
+    <strong>Ce sujet est résolu</strong>, l'auteur de ce sujet a trouvé une
+    solution satisfaisant son problème.
+</div>
+{% endif %}
+
+<table class="table table-bordered topic-table">
+    <thead>
+        <tr>
+            <th>Auteur</th>
+            <th>Message</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for post in posts %}
+        <tr>
+        <tr id="p{{ post.post.id }}" class="post-head anchor">
+            <td>
+                <a href="{{ post.post.author.get_absolute_url }}">
+                    {{ post.post.author.username }}
+                </a>
+            </td>
+            <td>
+
+                {% if user.is_authenticated %}
+                    {# Boutons présents sur les réponses #}
+                    <div class="pull-right btn-group">
+                        
+                        {% if topic.author == user and post.post.author != user %}
+                        <a href="/forums/message/utile?message={{ post.post.pk }}" class="btn btn-mini {% if post.post.is_useful %}btn-success{% endif %}">
+                            <i class="icon-ok {% if post.post.is_useful %}icon-white{% endif %}"></i>
+                            Cette réponse m'a aidé
+                        </a>
+                        {% endif %}
+                    
+                        {% if post.post.author == user %}
+                        <a href="/forums/message/editer?message={{ post.post.pk }}" class="btn btn-mini">
+                            <i class="icon-pencil"></i>
+                            Éditer
+                        </a>
+                        {% endif %}
+
+                        <a href="{% if topic.is_locked %}#{% else %}/forums/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.post.pk }}{% endif %}"
+                            class="btn btn-mini {% if topic.is_locked %}disabled{% endif %}">
+                            <i class="icon-comment"></i>
+                            Citer
+                        </a>
+                    </div>
+                {% endif %}
+
+                <a href="{{ post.post.get_absolute_url }}">#</a>
+                &ndash; {{ post.post.pubdate|humane_date }}
+                </a>
+            </td>
+        </tr>
+        <tr class="post-message {% if post.post.is_useful %}success{% endif %}">
+            <td>
+                <img alt="Avatar" src="{{ post.autprofil.get_gravatar_url }}" />
+            </td>
+            <td>
+                {% if forloop.first and nb > 1 %}<strong>Dernier message de la page précédente :</strong><br /><br />{% endif %}
+
+                {{ post.post.text|markdown:"safe,codehilite,extra" }}
+
+                {% if not post.post.update = None %}
+                <em>&mdash; Dernière édition {{ post.post.update|humane_date }}</em>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination">
+    <ul>
+
+        <li class="{% ifequal nb 1 %}disabled{% endifequal %}">
+            <a href="{% ifnotequal nb 1 %}{{ topic.get_absolute_url }}?page={{ nb|add:"-1" }}{% else %}#{% endifnotequal %}">«</a>
+        </li>
+
+    {% for page in pages %}
+        <li class="{% ifequal page nb %}active{% endifequal %}">
+            {% ifnotequal page nb %}
+                <a href="{{ topic.get_absolute_url }}?page={{ page }}">{{ page }}</a>
+            {% else %}
+                <a href="#">{{ page }}</a>
+            {% endifnotequal %}
+        </li>
+    {% endfor %}
+
+        <li class="{% ifequal nb pages|last %}disabled{% endifequal %}">
+            <a href="{% ifnotequal nb pages|last %}{{ topic.get_absolute_url }}?page={{ nb|add:"1" }}{% else %}#{% endifnotequal %}">»</a>
+        </li>
+
+    </ul>
+</div>
+
+{% if user.is_authenticated %}
+<div class="offset2 span8">
+<form action="/forums/message/nouveau?sujet={{ topic.pk }}" method="POST">
+    <p>
+    <textarea name="text" class="input-block-level" rows="4" {% if topic.is_locked %}disabled{% endif %}
+        placeholder=" {% if topic.is_locked %}Ce sujet est verrouillé{% else %}Votre message au format Markdown{% endif %}."></textarea>
+    </p>
+
+    <div style="text-align: center;">
+        <button class="btn btn-primary" type="submit" {% if topic.is_locked %}disabled{% endif %}>
+                Répondre
+            </button>
+            <button type="submit" formaction="/forums/message/nouveau?sujet={{ topic.pk }}&amp;plus"
+                class="btn" {% if topic.is_locked %}disabled{% endif %}>
+                Plus d'options
+            </button>
+    </div>
+
+    {% csrf_token %}
+</form>
+</div>
+{% endif %}
+    
+{% endblock %}

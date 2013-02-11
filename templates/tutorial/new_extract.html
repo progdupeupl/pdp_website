@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load markup %}
+
+{% block title %}
+Nouvel extrait &ndash; Tutoriels
+{% endblock %}
+
+{% block headline %}
+Nouvel extrait
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li><a href="/tutoriels/">Tutoriels</a> <span class="divider">/</span></li>
+{% if chapter.part %}
+    <li><a href="{{ chapter.part.tutorial.get_absolute_url }}">{{ chapter.part.tutorial.title }}</a> <span class="divider">/</span></li>
+    <li><a href="{{ chapter.part.get_absolute_url }}">{{ chapter.part.title }}</a> <span class="divider">/</span></li>
+    <li><a href="{{ chapter.get_absolute_url }}">{{ chapter.title }}</a> <span class="divider">/</span></li>
+{% else %}
+    <li><a href="{{ chapter.tutorial.get_absolute_url }}">{{ chapter.tutorial.title }}</a> <span class="divider">/</span></li>
+{% endif %}
+<li class="active">Ajouter un extrait</li>
+{% endblock %}
+
+{% block content %}
+
+{% include "tutorial/extract_common.html" %}
+
+<form action="" method="POST" class="form-horizontal">
+
+    <fieldset>
+        <legend>Général</legend>
+
+        <div class="control-group">
+            <label class="control-label" for="id_title">Titre</label>
+            <div class="controls">
+                <input type="text" placeholder="Titre" name="title" id="id_title" />
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Texte</legend>
+
+        <div class="control-group">
+            <label class="control-label" for="id_text">Contenu</label>
+            <div class="controls">
+                {% include "markdown-buttons.html" %}
+                <textarea name="text" id="id_text"
+                    class="input-block-level" rows="10"
+                    placeholder="Texte au format Markdown."></textarea>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-primary">
+                    <i class="icon-plus icon-white"></i>
+                    Ajouter extrait
+                </button>
+
+                <a href="{{ chapter.get_absolute_url }}" class="btn">
+                    Annuler
+                </a>
+            </div>
+        </div>
+    </fieldset>
+
+    {% csrf_token %}
+
+</form>
+
+{% endblock %}

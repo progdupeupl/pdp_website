@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}
+Forums
+{% endblock %}
+
+{% block headline %}
+Liste des forums
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li class="active">Forums</li>
+{% endblock %}
+
+{% block content %}
+
+<p>
+Voici la liste des forums mis à votre disposition pour échanger avec le reste
+de la communauté, rangés par thématiques.
+</p>
+
+{% for category in categories %}
+
+<h4 style="text-align:center;">
+    <a href="{{ category.get_absolute_url }}">
+        {{ category.title }}</a>
+</h4>
+
+{% include "forum/forums_common.html" %}
+
+{% endfor %}
+
+{% endblock %}

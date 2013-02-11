@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load markup %}
+{% load humane_date %}
+
+{% block title %}
+{{ usr.username }} &ndash; Membres
+{% endblock %}
+
+{% block headline %}
+Profil de {{ usr.username }}
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li><a href="/membres/">Membres</a> <span class="divider">/</span></li>
+<li class="active">{{ usr.username }}</li>
+{% endblock %}
+
+{% block content %}
+
+{% ifequal profile.user user %}
+<p>
+<a href="/membres/editer?profil={{ profile.pk }}" class="btn">
+    <i class="icon-pencil"></i>
+    Éditer mon profil
+</a>
+</p>
+{% endifequal %}
+
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#general" data-toggle="tab">Informations générales</a></li>
+    <li {% if not profile.biography %}class="disabled"{% endif %}><a {% if profile.biography %}href="#bio" data-toggle="tab"{% endif %}>Biographie</a></li>
+    <li><a href="#stats" data-toggle="tab">Statstiques</a></li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="general">
+
+        <p>
+            <img src="{{ profile.get_gravatar_url }}" alt="Avatar" /><br />
+        </p>
+
+        <p>
+        {% if profile.show_email %}
+            Adresse mail : {{ usr.email }}<br />
+        {% endif %}
+
+        Date d'inscription : {{ usr.date_joined|humane_date }}<br />
+        Dernière connexion : {{ usr.last_login|humane_date }}
+        </p>
+
+    </div>
+
+    {% if profile.biography %}
+
+    <div class="tab-pane" id="bio">
+        {{ profile.biography|markdown:"safe,codehilite,extra" }}
+    </div>
+
+    {% endif %}
+
+    <div class="tab-pane" id="stats">
+
+        Sur les forums :
+        <ul>
+            <li>Nombre de messages postés : {{ profile.get_post_count }}</li>
+            <li>Nombre de sujets créés : {{ profile.get_topic_count }}</li>
+        </ul>
+
+        Dans les tutoriels :
+        <ul>
+            <li>Nombre de tutoriels en ligne : </li>
+            <li>Nombre de tutoriels en cours de rédaction : </li>
+        </ul>
+
+        Dans les articles :
+        <ul>
+            <li>Nombre d'articles rédigés : </li>
+            <li>Nombre d'articles en cours de rédaction : </li>
+        </ul>
+
+    </div>
+</div>
+
+{% endblock %}

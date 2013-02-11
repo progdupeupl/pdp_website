@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}
+Tutoriels
+{% endblock %}
+
+{% block headline %}
+Liste des tutoriels
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li class="active">Tutoriels</li>
+{% endblock %}
+
+{% block content %}
+<p>
+    Ici sont regroupés les tutoriels présents sur <strong>progdupeupl</strong>.
+</p>
+
+{% if user.is_authenticated %}
+<p>
+    <a href="/tutoriels/nouveau/tutoriel" class="btn">
+        <i class="icon-plus"></i>
+        Nouveau
+    </a>
+</p>
+{% endif %}
+
+<div class="row-fluid">
+    <div class="span6">
+        <h3>Derniers tutoriels</h3>
+
+        {% if tutorials %}
+            {% for tutorial in tutorials %}
+                {% include "tutorial/tutorial_item_common.html" %}
+            {% endfor %}
+        {% else %}
+            <p>Aucun tutoriel disponible.</p>
+        {% endif %}
+    </div>
+    {% if user.is_authenticated %}
+    <div class="span6">
+        <h3>Vos tutoriels</h3>
+
+        {% if not user.tutorials %}
+            <p>Vous n'avez encore rédigé aucun tutoriel.</p>
+        {% else %}
+            {% for tutorial in user_tutorials %}
+                {% include "tutorial/tutorial_item_common.html" %}
+            {% endfor %}
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

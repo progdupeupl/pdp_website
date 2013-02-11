@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ tutorial.title }} &ndash; Tutoriels
+{% endblock %}
+
+{% block headline %}
+{{ tutorial.title }}<br />
+<small>{{ tutorial.description }}</small>
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li><a href="/tutoriels/">Tutoriels</a> <span class="divider">/</span></li>
+<li class="active">{{ tutorial.title }}</li>
+{% endblock %}
+
+{% block content %}
+
+<div class="pull-right well">
+    <p style="text-align: center;">
+        <img src="{% if tutorial.icon %}{{ tutorial.icon.url }}{% else %}/static/img/blank_tutorial.png{% endif %}" alt="Icône" width="64" height="64" />
+    </p>
+
+    <strong>Type :</strong>
+    {% if tutorial.is_mini %}mini{% else %}big{% endif %}-tutoriel
+    <br />
+
+    <strong>Auteur{{ tutorial.authors.count|pluralize }} :</strong> 
+    {% for author in tutorial.authors.all %}
+    <a href="{{ author.get_absolute_url }}">{{ author.username }}</a>
+    {% endfor %}
+</div>
+
+{% if tutorial.is_mini %}
+{# Mini-tutoriel #}
+
+    {% include "tutorial/view_chapter_common.html" %}
+
+{% else %}
+{# Big-tutoriel #}
+    <p>
+    Il y a {{ parts.count }} partie{{ parts.count|pluralize }} dans ce tutoriel.
+    </p>
+
+    {% if user.is_authenticated and user in tutorial.authors.all %}
+    <p>
+        <a href="/tutoriels/nouveau/partie?tutoriel={{ tutorial.pk }}" class="btn">
+            <i class="icon-plus"></i>
+            Ajouter une partie
+        </a>
+    </p>
+    {% endif %}
+
+    {% for part in parts %}
+        <h2>
+            <a href="{{ part.get_absolute_url }}">
+                Partie {{ part.position_in_tutorial }} : {{ part.title }}
+            </a>
+        </h2>
+        {% include "tutorial/view_part_common.html" %}
+    {% endfor %}
+{% endif %}
+
+{% endblock %}
