@@ -14,7 +14,7 @@ from django.core.context_processors import csrf
 
 from pdp.forum.models import Post
 from models import Profile
-from forms import LoginForm, ProfileForm
+from forms import LoginForm, ProfileForm, RegisterForm
 
 def index(request):
     '''Affiche la liste des profils des membres inscrits'''
@@ -101,3 +101,21 @@ def logout_view(request):
     logout(request)
     request.session.clear()
     return redirect('/')
+
+def register_view(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            data = form.data
+            user = User.objects.create_user(\
+                data['username'],\
+                data['email'],\
+                data['password'])
+
+            profile = Profile(user=user, show_email=data.has_key('show_email'))
+            profile.save()
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            login(request, user)
+            return render_template('member/register_success.html')
+            
+    return render_template('member/register.html')

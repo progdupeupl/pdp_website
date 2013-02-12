@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+Inscription réussie
+{% endblock %}
+
+{% block headline %}
+Inscription réussie
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li><a href="/membres/">Membres</a> <span class="divider">/</span></li>
+<li class="active">Inscription</li>
+{% endblock %}
+
+{% block content %}
+
+<p>
+Vous avez bien été inscrit au site. <a href="{% url pdp.member.views.details user.username %}">Voir votre profil</a>.
+</p>
+
+{% endblock %}
