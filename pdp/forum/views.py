@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 
 from pdp.utils import render_template, slugify
+from pdp.utils.tokens import token_protected
 
 from models import *
 from forms import TopicForm, PostForm
@@ -172,49 +173,46 @@ def new(request):
 
 @login_required
 def edit(request):
+    if not request.method == 'POST':
+        raise Http404
+
     try:
-        topic_pk = request.GET['sujet']
-        action = request.GET['action']
+        topic_pk = request.POST['topic']
     except KeyError:
         raise Http404
 
+    data = request.POST
+
     t = get_object_or_404(Topic, pk=topic_pk)
 
-    # On vérifie que l'utilisateur a le droit de faire ça
     if not request.user == t.author and not request.user.is_staff:
         return Http404
     
-    # Tâches utilisateur
-    if action == 'resolu':
+    if data.has_key('solved'):
         t.is_solved = not t.is_solved
-
-    # Tâches d'administration
     elif request.user.is_staff:
-        if action == 'verrouiller':
+        if data.has_key('lock'):
              t.is_locked = not t.is_locked
-
-        elif action == 'postit':
+        elif data.has_key('sticky'):
             t.is_sticky = not t.is_sticky
-
-        elif action == 'deplacer':
+        elif data.has_key('follow'):
+            raise NotImplementedError
+        elif data.has_key('move'):
             try:
-                forum_pk = request.GET['destination']
+                forum_pk = int(request.POST['move_target'])
             except KeyError:
                 raise Http404
 
             forum = get_object_or_404(Forum, pk=forum_pk)
             t.forum = forum
-
         else:
             # La tâche d'administration n'existe pas
             raise Http404
-    
     else:
         # La tâche utilisateur n'existe pas
         raise Http404
 
     t.save()
-
     return redirect(t.get_absolute_url())
 
 @login_required

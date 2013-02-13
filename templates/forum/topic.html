@@ -23,68 +23,63 @@
 {% if user.is_authenticated %}
 <div class="pull-right">
 
+    <form action="/forums/sujet/editer" method="POST">
+    <input type="hidden" name="topic" value="{{ topic.pk }}" />
+
     <a href="/forums/sujet/nouveau?forum={{ topic.forum.pk }}" class="btn">
         <i class="icon-plus"></i>
         Nouveau
     </a>
 
     {% if user.is_staff %}
-    {# Tâches de modération #}
 
     {# Bouton pour déplacer le sujet #}
+    <a href="#" class="btn" id="id_move" data-toggle="popover" data-original-title="Déplacer le sujet dans..." data-placement="bottom"
+        data-content="
+            <select class='input-block-level' name='move_target'>
+                {% for category_mv in categories %}
+                    <option disabled>&mdash; {{ category_mv.title }}</option>
+                    {% for forum_mv in category_mv.get_forums %}
+                        <option value='{{ forum_mv.pk }}'>{{ forum_mv.title }}</option>
+                    {% endfor %}
+                {% endfor %}
+            </select>
+            <button type='submit' name='move' class='btn input-block-level'>
+                Déplacer
+            </button>
+        "> 
+        Déplacer
+    </a>
     <div class="btn-group">
-        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-            Déplacer dans
-            <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-            {% for category in categories %}
-            <li class="disabled">
-                <a href="#">&mdash; {{ category.title }}</a>
-            </li>
-            {% for forum in category.get_forums %}
-            <li>
-            <a href="/forums/sujet/editer?action=deplacer&amp;sujet={{ topic.pk }}&amp;destination={{ forum.pk }}">
-                    {{ forum.title }}
-                </a>
-            </li>
-            {% endfor %}
-            {% endfor %}
-        </ul>
-    </div>
-
-    <div class="btn-group">
-
         {# Bouton pour passer le sujet en post-it #}
-        <a href="/forums/sujet/editer?action=postit&amp;sujet={{ topic.pk }}"
+        <button type="submit" name="sticky"
             class="btn {% if topic.is_sticky %}btn-info{% endif %}">
             <i class="icon-bookmark {% if topic.is_sticky %}icon-white{% endif %}"></i>
             Post-it
-        </a>
-
+        </button>
         {# Bouton pour verrouiller le sujet #}
-        <a href="/forums/sujet/editer?action=verrouiller&amp;sujet={{ topic.pk }}"
+        <button type="submit" name="lock"
             class="btn {% if topic.is_locked %}btn-warning{% endif %}">
             <i class="icon-lock {% if topic.is_locked %}icon-white{% endif %}"></i>
             Verrouill{% if topic.is_locked %}é{% else %}er{% endif %}
-        </a>
-
+        </button>
     </div>
-    {% endif %}
 
+    {% endif %}
     {% if topic.author.pk == user.pk %}
 
         {# Bouton pour passer en résolu #}
-        <a href="/forums/sujet/editer?action=resolu&amp;sujet={{ topic.pk }}"
+        <button type="submit" name="solved"
             class="btn {% if topic.is_solved %}btn-success{% endif %}">
             <i class="icon-flag {% if topic.is_solved %}icon-white{% endif %}"></i>
                 Résolu
-        </a>
+        </button>
 
     {% else %}
 
         {# Bouton pour suivre le sujet #}
-        <a href="#" class="btn {% if 1 == 1 %}btn-primary{% endif %}">
+        <button type="submit" name="follow"
+            class="btn {% if 1 == 1 %}btn-primary{% endif %}">
             {% if 1 == 2 %}
                 <i class="icon-star"></i>
                 Suivre
@@ -92,10 +87,11 @@
                 <i class="icon-star icon-white"></i>
                 Suivi
             {% endif %}
-        </a>
+        </button>
 
     {% endif %}
-
+    {% csrf_token %}
+    </form>
 </div>
 {% endif %}
 
@@ -232,4 +228,10 @@
 </div>
 {% endif %}
     
+{% endblock %}
+
+{% block js %}
+<script>
+    $('#id_move').popover({html: true});
+</script>
 {% endblock %}
