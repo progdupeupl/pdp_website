@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load markup %}
 {% load humane_date %}
+{% load profile %}
 
 {% block title %}
 {{ topic.title }} &ndash; Forums
@@ -124,10 +125,10 @@
     <tbody>
         {% for post in posts %}
         <tr>
-        <tr id="p{{ post.post.id }}" class="post-head anchor">
+        <tr id="p{{ post.id }}" class="post-head anchor">
             <td>
-                <a href="{{ post.post.author.get_absolute_url }}">
-                    {{ post.post.author.username }}
+                <a href="{{ post.author.get_absolute_url }}">
+                    {{ post.author.username }}
                 </a>
             </td>
             <td>
@@ -136,21 +137,21 @@
                     {# Boutons présents sur les réponses #}
                     <div class="pull-right btn-group">
                         
-                        {% if topic.author == user and post.post.author != user %}
-                        <a href="/forums/message/utile?message={{ post.post.pk }}" class="btn btn-mini {% if post.post.is_useful %}btn-success{% endif %}">
-                            <i class="icon-ok {% if post.post.is_useful %}icon-white{% endif %}"></i>
+                        {% if topic.author == user and post.author != user %}
+                        <a href="/forums/message/utile?message={{ post.pk }}" class="btn btn-mini {% if post.is_useful %}btn-success{% endif %}">
+                            <i class="icon-ok {% if post.is_useful %}icon-white{% endif %}"></i>
                             Cette réponse m'a aidé
                         </a>
                         {% endif %}
                     
-                        {% if post.post.author == user %}
-                        <a href="/forums/message/editer?message={{ post.post.pk }}" class="btn btn-mini">
+                        {% if post.author == user %}
+                        <a href="/forums/message/editer?message={{ post.pk }}" class="btn btn-mini">
                             <i class="icon-pencil"></i>
                             Éditer
                         </a>
                         {% endif %}
 
-                        <a href="{% if topic.is_locked %}#{% else %}/forums/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.post.pk }}{% endif %}"
+                        <a href="{% if topic.is_locked %}#{% else %}/forums/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.pk }}{% endif %}"
                             class="btn btn-mini {% if topic.is_locked %}disabled{% endif %}">
                             <i class="icon-comment"></i>
                             Citer
@@ -158,22 +159,24 @@
                     </div>
                 {% endif %}
 
-                <a href="{{ post.post.get_absolute_url }}">#</a>
-                &ndash; {{ post.post.pubdate|humane_date }}
+                <a href="{{ post.get_absolute_url }}">#</a>
+                &ndash; {{ post.pubdate|humane_date }}
                 </a>
             </td>
         </tr>
-        <tr class="post-message {% if post.post.is_useful %}success{% endif %}">
+        <tr class="post-message {% if post.is_useful %}success{% endif %}">
             <td>
-                <img alt="Avatar" src="{{ post.autprofil.get_gravatar_url }}" />
+                {% with profile=post.author|profile %}
+                <img alt="Avatar" src="{{ profile.get_gravatar_url }}" />
+                {% endwith %}
             </td>
             <td>
                 {% if forloop.first and nb > 1 %}<strong>Dernier message de la page précédente :</strong><br /><br />{% endif %}
 
-                {{ post.post.text|markdown:"safe,codehilite,extra" }}
+                {{ post.text|markdown:"safe,codehilite,extra" }}
 
-                {% if not post.post.update = None %}
-                <em>&mdash; Dernière édition {{ post.post.update|humane_date }}</em>
+                {% if not post.update = None %}
+                <em>&mdash; Dernière édition {{ post.update|humane_date }}</em>
                 {% endif %}
             </td>
         </tr>
