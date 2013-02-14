@@ -2,61 +2,56 @@
 {% load markup %}
 
 {% if user in part.tutorial.authors.all %}
-<p> 
-<div class="btn-group">
-    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-        Déplacer
-        <span class="caret"></span>
-    </a>
-    <ul class="dropdown-menu">
-        {% if part.position_in_tutorial > 1 %}
-        <li><a href="/tutoriels/modifier/partie?action=deplacer&amp;partie={{ part.pk }}&amp;position={{ part.position_in_tutorial|add:"-1" }}">
-            <i class="icon-arrow-up"></i>
-            Monter
-        </a></li>
-        {% endif %}
-        {% if part.position_in_tutorial < tutorial.get_parts.count %}
-        <li><a href="/tutoriels/modifier/partie?action=deplacer&amp;partie={{ part.pk }}&amp;position={{ part.position_in_tutorial|add:"1" }}">
-            <i class="icon-arrow-down"></i>
-            Descendre
-        </a></li>
-        {% endif %}
-        <li class="disabled"><a href="#">&mdash; Déplacer avant</a></li>
-        {% for part_mv in part.tutorial.get_parts %}
-        {% if part != part_mv and part_mv.position_in_tutorial|add:"-1" != part.position_in_tutorial %}
-        <li>
-            <a href="/tutoriels/modifier/partie?action=deplacer&amp;partie={{ part.pk }}&amp;position={{ part_mv.position_in_tutorial }}">
-                Partie {{ part_mv.position_in_tutorial }} : {{ part_mv.title }}
-            </a>
-        </li>
-        {% endif %}
-        {% endfor %}
-        <li class="disabled"><a href="#">&mdash; Déplacer après</a></li>
-        {% for part_mv in part.tutorial.get_parts %}
-        {% if part != part_mv and part_mv.position_in_tutorial|add:"1" != part.position_in_tutorial %}
-        <li>
-            <a href="/tutoriels/modifier/partie?action=deplacer&amp;partie={{ part.pk }}&amp;position={{ part_mv.position_in_tutorial }}">
-                Partie {{ part_mv.position_in_tutorial }} : {{ part_mv.title }}
-            </a>
-        </li>
-        {% endif %}
-        {% endfor %}
+<form action="{% url pdp.tutorial.views.modify_part %}" method="POST"> 
+    <input type="hidden" name="part" value="{{ part.pk }}" />
 
-    </ul>
-</div>
-<div class="btn-group">
-    <a href="/tutoriels/editer/partie?partie={{ part.pk }}"
-        class="btn">
-        <i class="icon-pencil"></i>
-        Éditer
+    <a href="javascript:void(0)" class="btn move-btn" data-toggle="popover" data-original-title="Déplacer la partie..." data-placement="bottom"
+        data-content="
+        <select class='input-block-level' name='move_target'>
+            {% if part.position_in_tutorial > 1 %}
+                <option value='{{ part.position_in_tutorial|add:"-1" }}'>Monter</option>
+            {% endif %}
+            {% if part.position_in_tutorial < tutorial.get_parts.count %}
+            <option value='{{ part.position_in_tutorial|add:"1" }}'>Descendre</option>
+            {% endif %}
+                <option disabled>&mdash; Déplacer avant</option>
+            {% for part_mv in part.tutorial.get_parts %}
+                {% if part != part_mv and part_mv.position_in_tutorial|add:"-1" != part.position_in_tutorial %}
+                <option value='{% if part_mv.position_in_tutorial < part.position_in_tutorial %}{{ part_mv.position_in_tutorial }}{% else %}{{ part_mv.position_in_tutorial|add:"-1" }}{% endif %}'>
+                        Partie {{ part_mv.position_in_tutorial }} : {{ part_mv.title }}
+                    </option>
+                {% endif %}
+            {% endfor %}
+            <option disabled>&mdash; Déplacer après</option>
+            {% for part_mv in part.tutorial.get_parts %}
+                {% if part != part_mv and part_mv.position_in_tutorial|add:"1" != part.position_in_tutorial %}
+                <option value='{% if part_mv.position_in_tutorial < part.position_in_tutorial %}{{ part_mv.position_in_tutorial|add:"1" }}{% else %}{{ part_mv.position_in_tutorial }}{% endif %}'>
+                        Partie {{ part_mv.position_in_tutorial }} : {{ part_mv.title }}
+                    </option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <button type='submit' name='move' class='btn input-block-level'>
+            Déplacer
+        </button>
+    ">
+        Déplacer
     </a>
-    <a href="/tutoriels/modifier/partie?action=supprimer&amp;partie={{ part.pk }}"
-        class="btn">
-        <i class="icon-remove"></i>
-        Supprimer
-    </a>
-</div>
-</p>
+        
+    <div class="btn-group">
+        <a href="/tutoriels/editer/partie?partie={{ part.pk }}"
+            class="btn">
+            <i class="icon-pencil"></i>
+            Éditer
+        </a>
+        <button type="submit" name="delete" class="btn">
+            <i class="icon-remove"></i>
+            Supprimer
+        </button>
+    </div>
+
+    {% csrf_token %}
+</form>
 
 {% endif %}
 

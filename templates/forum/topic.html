@@ -34,7 +34,7 @@
     {% if user.is_staff %}
 
     {# Bouton pour déplacer le sujet #}
-    <a href="javascript:void(0)" class="btn" id="id_move" data-toggle="popover" data-original-title="Déplacer le sujet dans..." data-placement="bottom"
+    <a href="javascript:void(0)" class="btn move-btn" data-toggle="popover" data-original-title="Déplacer le sujet dans..." data-placement="bottom"
         data-content="
             <select class='input-block-level' name='move_target'>
                 {% for category_mv in categories %}
@@ -228,10 +228,4 @@
 </div>
 {% endif %}
     
-{% endblock %}
-
-{% block js %}
-<script>
-    $('#id_move').popover({html: true});
-</script>
 {% endblock %}
