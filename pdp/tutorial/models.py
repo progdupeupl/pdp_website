@@ -41,6 +41,7 @@ class Tutorial(models.Model):
     # et en retrouvant les chapitres qui sont directement associés à un
     # tutoriel mais ce serait sans doute plus long qu'un simple champ
     is_mini = models.BooleanField('Est un mini-tutoriel')
+    is_visible = models.BooleanField('Est visible publiquement')
 
     def __unicode__(self):
         return self.title
@@ -55,7 +56,7 @@ class Tutorial(models.Model):
 
 def get_last_tutorials():
     # TODO: ranger par date de mise en ligne (ou mise à jour ?)
-    return Tutorial.objects.all().order_by('title')[:3]
+    return Tutorial.objects.all().filter(is_visible=True).order_by('title')[:3]
 
     def get_chapter(self):
         '''Retourne le chapitre associé au mini-tutoriel'''
@@ -152,6 +153,11 @@ class Chapter(models.Model):
 
     def get_extracts(self):
         return Extract.objects.all().filter(chapter__pk=self.pk)
+
+    def get_tutorial(self):
+        if self.part:
+            return self.part.tutorial
+        return self.tutorial
 
 class Extract(models.Model):
     '''Classe représentant un morceau de contenu dans un chapitre'''

@@ -9,11 +9,10 @@ from .models import Tutorial, Part, Chapter, Extract
 from .forms import *
 
 def index(request):
-    t = Tutorial.objects.all()
+    t = Tutorial.objects.all().filter(is_visible=True)
 
     if request.user.is_authenticated():
-        # TODO: cette requête ne fonctionne pas quand plusieurs auteurs
-        user_t = t.filter(authors__in=[request.user])
+        user_t = Tutorial.objects.filter(authors=request.user)
     else:
         user_t = None
 
@@ -25,6 +24,9 @@ def index(request):
 def view_tutorial(request, tutorial_pk, tutorial_slug):
 
     t = get_object_or_404(Tutorial, pk=tutorial_pk)
+
+    if not t.is_visible and request.user not in t.authors.all():
+        raise Http404
 
     # On vérifie que l'URL est correcte
     if not tutorial_slug == slugify(t.title):
@@ -89,6 +91,9 @@ def view_chapter(request, tutorial_pk, tutorial_slug, part_pos, part_slug, chapt
 
     c = Chapter.objects.get(position_in_part = chapter_pos, part__position_in_tutorial=part_pos, part__tutorial__pk=tutorial_pk)
 
+    if not c.get_tutorial().is_visible and not request.user in c.get_tutorial().authors.all():
+        raise Http404
+
     # On vérifie que l'URL est correcte
     if not tutorial_slug == slugify(c.part.tutorial.title)\
     or not part_slug == slugify(c.part.title)\
@@ -102,6 +107,9 @@ def view_chapter(request, tutorial_pk, tutorial_slug, part_pos, part_slug, chapt
 def view_part(request, tutorial_pk, tutorial_slug, part_pos, part_slug):
 
     p = Part.objects.get(position_in_tutorial = part_pos, tutorial__pk=tutorial_pk)
+
+    if not p.tutorial.is_visible and not request.user in p.tutorial.authors.all():
+        raise Http404
 
     # On vérifie que l'URL est correcte
     if not tutorial_slug == slugify(p.tutorial.title)\
