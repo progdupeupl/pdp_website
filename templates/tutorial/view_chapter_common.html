@@ -51,7 +51,7 @@
 
     {% if user in chapter.part.tutorial.authors.all or user in chapter.tutorial.authors.all %}
     <p>
-        <a href="#" class="btn">
+        <a href="{% url pdp.tutorial.views.edit_extract %}?extrait={{ extract.pk }}" class="btn">
             <i class="icon-pencil"></i>
             Éditer
         </a>

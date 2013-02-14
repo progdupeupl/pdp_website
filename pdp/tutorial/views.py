@@ -401,3 +401,32 @@ def add_extract(request):
         return render_template('tutorial/new_extract.html', {
             'chapter': c
         })
+
+def edit_extract(request):
+    try:
+        extract_pk = request.GET['extrait']
+    except KeyError:
+        raise Http404
+
+    e = get_object_or_404(Extract, pk=extract_pk)
+
+    big = e.chapter.part
+    if big and (not request.user in e.chapter.part.tutorial.authors.all())\
+    or not big and (not request.user in e.chapter.tutorial.authors.all()):
+        raise Http404
+
+
+    if request.method == 'POST':
+        form = ExtractForm(request.POST)
+        if form.is_valid():
+            data = form.data
+
+            e.title = data['title']
+            e.text = data['text']
+            e.save()
+
+            return redirect(e.get_absolute_url())
+    else:
+        return render_template('tutorial/edit_extract.html', {
+            'extract': e
+        })

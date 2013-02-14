@@ -25,6 +25,8 @@ urlpatterns = patterns('',
     url(r'modifier/chapitre$', views.modify_chapter),
     url(r'editer/chapitre$', views.edit_chapter),
 
+    url(r'editer/extrait$', views.edit_extract),
+
     # Ajout
 
     url(r'nouveau/tutoriel$', views.add_tutorial),
