@@ -4,3 +4,4 @@ pygments
 south
 pytz
 pil
+django-dynamic-fixture

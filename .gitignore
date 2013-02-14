@@ -3,3 +3,6 @@
 *~
 media
 pdp/settings_prod.py
+*.pyproj
+*.sln
+*.suo
