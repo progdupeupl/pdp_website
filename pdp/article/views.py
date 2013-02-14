@@ -11,10 +11,10 @@ from .models import Article
 from .forms import ArticleForm
 
 def index(request):
-    a = Article.objects.all()
+    a = Article.objects.all().filter(is_visible=True)
 
     if request.user.is_authenticated():
-        user_a = a.filter(author=request.user)
+        user_a = Article.objects.filter(author=request.user)
     else:
         user_a = None
 
@@ -27,9 +27,11 @@ def view(request, article_pk, article_slug):
 
     a = get_object_or_404(Article, pk=article_pk)
 
+    if not a.is_visible and not request.user == a.author:
+        raise Http404
+
     if article_slug != slugify(a.title):
         return redirect(a.get_absolute_url())
-
 
     return render_template('article/view.html', {
         'article': a

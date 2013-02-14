@@ -18,6 +18,8 @@ class Article(models.Model):
     author = models.ForeignKey(User, verbose_name='Auteur')
     pubdate = models.DateTimeField('Date de création', auto_now_add=True)
 
+    is_visible = models.BooleanField('Est visible publiquement')
+
     def __unicode__(self):
         return self.title
 
