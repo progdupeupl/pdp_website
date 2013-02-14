@@ -154,21 +154,19 @@ def add_part(request):
         })
 
 def modify_part(request):
-
-    try:
-        part_pk = request.GET['partie']
-        action = request.GET['action']
-    except KeyError:
+    if not request.method == 'POST':
         raise Http404
 
+    part_pk = request.POST['part']
     p = get_object_or_404(Part, pk=part_pk)
 
     # On vérifie que l'utilisateur a le doit de faire ça
     if not request.user in p.tutorial.authors.all():
         raise Http404
 
-    if action == 'deplacer':
-        new_pos = int(request.GET['position'])
+    btn = lambda x: request.POST.has_key(x)
+    if btn('move'):
+        new_pos = int(request.POST['move_target'])
         old_pos = p.position_in_tutorial
 
         # On vérifie que la position n'est pas incorrecte
@@ -193,8 +191,7 @@ def modify_part(request):
         p.position_in_tutorial = new_pos
         p.save()
 
-    elif action == 'supprimer':
-
+    elif btn('delete'):
         # On supprime tous les chapitres associés à la partie
         Chapter.objects.all().filter(part=p).delete()
 
@@ -278,10 +275,13 @@ def add_chapter(request):
         })
 
 def modify_chapter(request):
+    if not request.method == 'POST':
+        raise Http404
+
+    data = request.POST
 
     try:
-        chapter_pk = request.GET['chapitre']
-        action = request.GET['action']
+        chapter_pk = request.POST['chapter']
     except KeyError:
         raise Http404
 
@@ -291,7 +291,7 @@ def modify_chapter(request):
     #if not request.user in c.part.tutorial.authors.all():
     #   raise Http404
 
-    if action == 'deplacer':
+    if data.has_key('move'):
         new_pos = int(request.GET['position'])
         old_pos = c.position_in_part
 
@@ -317,7 +317,7 @@ def modify_chapter(request):
         c.position_in_part = new_pos
         c.save()
 
-    elif action == 'supprimer':
+    elif data.has_key('delete'):
 
         # On réagence les autres parties du tutoriel
         old_pos = c.position_in_part

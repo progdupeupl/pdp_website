@@ -27,6 +27,7 @@
 
 <div>
     Sommaire de ce chapitre :
+    {% if chapter.get_extracts %}
     <ol>
     {% for extract in chapter.get_extracts %}
         <li>
@@ -36,6 +37,11 @@
         </li>
     {% endfor %}
     </ol>
+    {% else %}
+    <p>
+        Aucun extrait.
+    </p>
+    {% endif %}
 </div>
 
 <hr />

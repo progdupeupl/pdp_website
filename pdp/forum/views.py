@@ -91,17 +91,13 @@ def topic(request, topic_pk, topic_slug):
         return redirect(t.get_absolute_url())
 
     res = []
-    
     if nb != 1:
         # Pour afficher le dernier post de la précédente page.
         last_page = paginator.page(nb-1).object_list
         last_post = (last_page)[len(last_page)-1] 
-        last_post_author = get_object_or_404(Profile, user__pk=last_post.author.pk)
-        res.append({'post': last_post, 'autprofil': last_post_author})
-        
-    for post in p:
-        profil = get_object_or_404(Profile, user__pk=post.author.pk)
-        res.append({'post': post, 'autprofil': profil})
+        res.append(last_post)
+
+    [res.append(post) for post in p]
 
     return render_template('forum/topic.html', {
         'topic': t, 'posts': res, 'categories': categories,
