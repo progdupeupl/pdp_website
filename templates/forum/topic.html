@@ -34,7 +34,7 @@
     {% if user.is_staff %}
 
     {# Bouton pour déplacer le sujet #}
-    <a href="#" class="btn" id="id_move" data-toggle="popover" data-original-title="Déplacer le sujet dans..." data-placement="bottom"
+    <a href="javascript:void(0)" class="btn" id="id_move" data-toggle="popover" data-original-title="Déplacer le sujet dans..." data-placement="bottom"
         data-content="
             <select class='input-block-level' name='move_target'>
                 {% for category_mv in categories %}
