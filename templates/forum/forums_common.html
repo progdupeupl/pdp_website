@@ -6,8 +6,8 @@
         <tr>
             <th>Statut</th>
             <th>Titre</th>
-            <th>Dernier message</th>
             <th>Nombre de sujets</th>
+            <th>Dernier message</th>
         </tr>
     </thead>
 
@@ -19,6 +19,9 @@
         <td>
             <a href="{{ forum.get_absolute_url }}">{{ forum.title }}</a><br />
             {{ forum.subtitle }}
+        </td>
+        <td>
+            {{ forum.get_topic_count }}
         </td>
         <td>
             {% if forum.get_last_message %}
@@ -37,9 +40,6 @@
             {% else %}
             Aucun message
             {% endif %}
-        </td>
-        <td>
-            {{ forum.get_topic_count }}
         </td>
     </tr>
     {% endfor %}

@@ -37,8 +37,8 @@
             <th>Statut</th>
             <th>Sujet</th>
             <th>Auteur</th>
-            <th>Denière réponse</th>
             <th>Nombre de réponses</th>
+            <th>Dernière réponse</th>
         </tr>
     </thead>
     <tbody>
@@ -72,6 +72,9 @@
                     {{ topic.author.username }}</a>
             </td>
             <td>
+                {{ topic.get_post_count|add:"-1" }}
+            </td>
+            <td>
                 {% if topic.get_last_anwser %}
                     <a href="{{ topic.get_last_anwser.get_absolute_url }}">
                         {{ topic.get_last_anwser.pubdate|humane_date }}
@@ -83,9 +86,6 @@
                 {% else %}
                     Aucune
                 {% endif %}
-            </td>
-            <td>
-                {{ topic.get_post_count|add:"-1" }}
             </td>
         </tr>
         {% endfor %}
