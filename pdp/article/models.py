@@ -27,4 +27,4 @@ class Article(models.Model):
         return '/articles/voir/%s-%s' % (self.pk, slugify(self.title))
 
 def get_last_articles():
-    return Article.objects.all().order_by('-pubdate')[:3]
+    return Article.objects.all().filter(is_visible=True).order_by('-pubdate')[:3]
