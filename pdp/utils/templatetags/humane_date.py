@@ -9,6 +9,7 @@ from django import template
 from pytz import timezone, UnknownTimeZoneError
 import pdp.settings
 
+
 def humane_date(date, conf={}):
     """Exprime la date d'un événement d'une façon agréable à lire pour un humain.
 
@@ -59,12 +60,12 @@ def humane_date(date, conf={}):
     disable = conf.get('disable', False)
     full_after_week = conf.get('full_after_week', True)
     tz = date.tzinfo
-    use_tz = (tz != None)
+    use_tz = (tz is not None)
 
     today = datetime.now(tz)
     diff = date - today
 
-    def fulldate(date,today):
+    def fulldate(date, today):
         if (date.year == today.year):
             return date.strftime("le %a %d %B à %H:%M:%S")
         else:
@@ -76,7 +77,7 @@ def humane_date(date, conf={}):
     def week(date):
         """Numéro de la semaine"""
         year, week, weekday = date.isocalendar()
-        return year,week
+        return year, week
 
     secondes = ('seconde', abs(diff).seconds % 60)
     minutes = ('minute', abs(diff).seconds // 60 % 60)
@@ -97,7 +98,7 @@ def humane_date(date, conf={}):
         """Exprime l'unite demandée, avec un 's' au pluriel"""
         return "%d %s%s" % (n, str, 's' if n > 1 and str[-1] != 's' else '')
 
-    def presente(unite1, unite2, prefixe = prefixe + ' '):
+    def presente(unite1, unite2, prefixe=prefixe + ' '):
         """Exprime les deux unités fournies, en tenant compte de la précision souhaitée"""
         result = debug_msg + prefixe
         if (not precise and unite1[1] > precise_limit) or unite2[1] == 0:
@@ -119,14 +120,14 @@ def humane_date(date, conf={}):
     elif use_tz and (abs(daydiff) <= 2 or week(date) == week(today)):
         if abs(daydiff) <= 2:
             assert (date.day != today.day)
-            jour = {-1:'hier', -2:'avant-hier', 1:'demain', \
-                    2:'après-demain'}[daydiff]
+            jour = {-1: 'hier', -2: 'avant-hier', 1: 'demain',
+                    2: 'après-demain'}[daydiff]
         elif week(date) == week(today):
-            jour = {1:'lundi', 2:'mardi', 3:'mercredi', 4:'jeudi', \
-                    5:'vendredi', 6:'samedi', 7:'dimanche'}[date.isoweekday()]
+            jour = {1: 'lundi', 2: 'mardi', 3: 'mercredi', 4: 'jeudi',
+                    5: 'vendredi', 6: 'samedi', 7: 'dimanche'}[date.isoweekday()]
         heure = ('heure', date.hour)
         if not precise:
-            heure_str = {0:'minuit', 12:'midi'}.get(heure[1], compte(heure))
+            heure_str = {0: 'minuit', 12: 'midi'}.get(heure[1], compte(heure))
         else:
             heure_str = presente(heure, ('minute', date.minute), prefixe='')
         return "%s%s à %s" % (debug_msg, jour, heure_str)
@@ -136,7 +137,9 @@ def humane_date(date, conf={}):
         return presente(jours, heures)
     elif abs(diff) < timedelta(days=365):
         return presente(mois, jours)
-    else: return presente(annees, mois)
+    else:
+        return presente(annees, mois)
+
 
 def test(tz=None):
     """Tests pour la fonction humane_date"""
@@ -144,6 +147,7 @@ def test(tz=None):
         pass
         #print "%s  : %s" % (date, humane_date(date, conf))
     #secondes
+
     def now(tz=None):
         return datetime.now(tz)
 
@@ -158,9 +162,11 @@ def test(tz=None):
 
     #heures et limite du jour
     def subtest(tz):
-        test_date(now(tz) - timedelta(hours=1, minutes = 2, seconds = 5))
-        test_date(now(tz) - timedelta(hours=3, minutes = 12), {'precise':True})
-        test_date(now(tz) - timedelta(hours=14, minutes = 12), {'precise':True})
+        test_date(now(tz) - timedelta(hours=1, minutes=2, seconds=5))
+        test_date(
+            now(tz) - timedelta(hours=3, minutes=12), {'precise': True})
+        test_date(
+            now(tz) - timedelta(hours=14, minutes=12), {'precise': True})
         test_date(now(tz) - timedelta(hours=23))
         test_date((now(tz) - timedelta(days=1)).replace(hour=0))
         test_date((now(tz) - timedelta(days=1)).replace(hour=12))
@@ -171,22 +177,23 @@ def test(tz=None):
     # jours, mois, années
     test_date(now() - timedelta(days=45))
     test_date(now() - timedelta(days=130))
-    test_date(now() - timedelta(days=365+20))
-    test_date(now() - timedelta(days=365+92))
-    test_date(now() - timedelta(days=5*365+25))
+    test_date(now() - timedelta(days=365 + 20))
+    test_date(now() - timedelta(days=365 + 92))
+    test_date(now() - timedelta(days=5 * 365 + 25))
 
     #disable
-    test_date(now(tz), {'disable':True})
-    test_date(now(tz) - timedelta(days=1000), {'disable':True})
+    test_date(now(tz), {'disable': True})
+    test_date(now(tz) - timedelta(days=1000), {'disable': True})
 
     #debug
     delta = timedelta(seconds=3, minutes=4, hours=5, days=6)
-    test_date(now(tz) - delta, {'debug':True})
+    test_date(now(tz) - delta, {'debug': True})
+
 
 def do_humane_date(parser, token):
     content = token.split_contents()
 
-    if not len(content) in (2,3):
+    if not len(content) in (2, 3):
         raise template.SyntaxError, "Usage : {% humane_date variable (optional user timezone) %}"
 
     tz = "user_timezone"
@@ -194,6 +201,7 @@ def do_humane_date(parser, token):
         tz = content[2]
 
     return HumaneDateNode(content[1], tz)
+
 
 class HumaneDateNode(template.Node):
     def __init__(self, date_variable, tz_variable):
@@ -211,6 +219,7 @@ class HumaneDateNode(template.Node):
         date_tz = date_nn.astimezone(tz)
         return humane_date(date_tz)
 
+
 def set_timezone(request):
     tz = timezone(pdp.settings.TIME_ZONE)
     if request.user.is_authenticated():
@@ -226,7 +235,6 @@ if __name__ == '__main__':
     test(None)
     # On dépend de la bibliothèque 'pytz' pour fournir
     # un fuseau horaire
-    from pytz import timezone
     test(timezone('Europe/Paris'))
 else:
     # Enregistrement de 'humane_date' comme un filtre Django

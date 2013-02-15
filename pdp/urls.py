@@ -1,6 +1,5 @@
 from django.conf.urls import patterns, include, url
 
-# Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
@@ -10,7 +9,7 @@ import settings
 urlpatterns = patterns('',
 
     url(r'articles/', include('pdp.article.urls')),
-    url(r'^tutoriels/', include('pdp.tutorial.urls')), 
+    url(r'^tutoriels/', include('pdp.tutorial.urls')),
     url(r'^forums/', include('pdp.forum.urls')),
     url(r'^membres/', include('pdp.member.urls')),
     url(r'^admin/', include(admin.site.urls)),

@@ -10,6 +10,7 @@ from pdp.utils import render_template, slugify
 from .models import Article
 from .forms import ArticleForm
 
+
 def index(request):
     a = Article.objects.all().filter(is_visible=True)
 
@@ -22,6 +23,7 @@ def index(request):
         'articles': a,
         'user_articles': user_a
     })
+
 
 def view(request, article_pk, article_slug):
 
@@ -37,10 +39,9 @@ def view(request, article_pk, article_slug):
         'article': a
     })
 
-def new(request):
 
-    if not request.user.is_authenticated:
-        raise Http404
+@login_required
+def new(request):
 
     if request.method == 'POST':
         form = ArticleForm(request.POST)
@@ -62,6 +63,7 @@ def new(request):
 
     else:
         return render_template('article/new.html')
+
 
 @login_required
 def edit(request):

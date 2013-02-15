@@ -1,29 +1,27 @@
 # coding: utf-8
 
-from django.shortcuts import redirect, get_object_or_404
-from django.http import Http404
-
-from django.contrib.auth.decorators import login_required
-
 from datetime import datetime
 
-from pdp.utils import render_template, slugify
-from pdp.utils.tokens import token_protected
+from django.shortcuts import redirect, get_object_or_404
+from django.http import Http404
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
-from models import *
+from pdp.utils import render_template, slugify
+
+from models import Category, Forum, Topic, Post, POSTS_PER_PAGE
+from models import never_read, mark_read
 from forms import TopicForm, PostForm
 
-from pdp.member.models import Profile
-
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 def index(request):
     '''Affiche la liste des forums'''
     c = Category.objects.all()
 
     return render_template('forum/index.html', {
-        'categories': c 
+        'categories': c
     })
+
 
 def details(request, cat_slug, forum_pk, forum_slug):
     '''Affiche la liste des sujets d'un forum'''
@@ -35,12 +33,13 @@ def details(request, cat_slug, forum_pk, forum_slug):
 
     # Vérification du lien
     if not cat_slug == slugify('%s-%s' % (f.category.pk, f.category.title))\
-    or not forum_slug == slugify(f.title):
+            or not forum_slug == slugify(f.title):
         return redirect(f.get_absolute_url())
 
     return render_template('forum/details.html', {
         'forum': f, 'topics': t
     })
+
 
 def cat_details(request, cat_pk, cat_slug):
     '''Affiche la liste des forums reliés à une catégorie précise'''
@@ -55,6 +54,7 @@ def cat_details(request, cat_pk, cat_slug):
         'category': c, 'forums': f
     })
 
+
 def topic(request, topic_pk, topic_slug):
     '''Visualisation d'un sujet et de ses réponses'''
 
@@ -66,7 +66,7 @@ def topic(request, topic_pk, topic_slug):
             mark_read(t)
 
     posts = Post.objects.all().filter(topic__pk=t.pk)
-    
+
     # Pour gérer la pagination
     paginator = Paginator(posts, POSTS_PER_PAGE)
 
@@ -78,7 +78,7 @@ def topic(request, topic_pk, topic_slug):
         nb = int(request.GET['page'])
     except KeyError:
         nb = 1
-    
+
     try:
         p = paginator.page(nb)
     except PageNotAnInteger:
@@ -93,16 +93,17 @@ def topic(request, topic_pk, topic_slug):
     res = []
     if nb != 1:
         # Pour afficher le dernier post de la précédente page.
-        last_page = paginator.page(nb-1).object_list
-        last_post = (last_page)[len(last_page)-1] 
+        last_page = paginator.page(nb - 1).object_list
+        last_post = (last_page)[len(last_page) - 1]
         res.append(last_post)
 
     [res.append(post) for post in p]
 
     return render_template('forum/topic.html', {
         'topic': t, 'posts': res, 'categories': categories,
-        'pages': [i for i in range(1, paginator.num_pages+1)], 'nb': nb,
+        'pages': [i for i in range(1, paginator.num_pages + 1)], 'nb': nb,
     })
+
 
 @login_required
 def new(request):
@@ -117,7 +118,7 @@ def new(request):
     if request.method == 'POST':
 
         # Si on utilise le bouton de prévisualisation
-        if request.POST.has_key('preview'):
+        if 'preview' in request.POST:
             return render_template('forum/new.html', {
                 'forum': forum,
                 'title': request.POST['title'],
@@ -132,7 +133,7 @@ def new(request):
             except Forum.DoesNotExists:
                 raise Http404
             data = form.data
-            
+
             # Création du topic
             t = Topic()
             t.forum = f
@@ -150,10 +151,10 @@ def new(request):
             p.pubdate = datetime.now()
             p.position_in_topic = 1
             p.save()
-            
+
             t.last_message = p
             t.save()
-            
+
             return redirect(t.get_absolute_url())
 
         else:
@@ -166,6 +167,7 @@ def new(request):
         return render_template('forum/new.html', {
             'form': form, 'forum': forum
         })
+
 
 @login_required
 def edit(request):
@@ -183,17 +185,17 @@ def edit(request):
 
     if not request.user == t.author and not request.user.is_staff:
         return Http404
-    
-    if data.has_key('solved'):
+
+    if 'solved' in data:
         t.is_solved = not t.is_solved
     elif request.user.is_staff:
-        if data.has_key('lock'):
-             t.is_locked = not t.is_locked
-        elif data.has_key('sticky'):
+        if 'lock' in data:
+            t.is_locked = not t.is_locked
+        elif 'sticky' in data:
             t.is_sticky = not t.is_sticky
-        elif data.has_key('follow'):
+        elif 'follow' in data:
             raise NotImplementedError
-        elif data.has_key('move'):
+        elif 'move' in data:
             try:
                 forum_pk = int(request.POST['move_target'])
             except KeyError:
@@ -211,6 +213,7 @@ def edit(request):
     t.save()
     return redirect(t.get_absolute_url())
 
+
 @login_required
 def anwser(request):
     'Ajoute une réponse à une discussion'
@@ -227,55 +230,61 @@ def anwser(request):
 
     # Si on viens d'envoyer des données
     if request.method == 'POST':
-        
+
         # Utilisation du bouton de prévisualisation ou du bouton d'options
-        if request.POST.has_key('preview') or request.GET.has_key('plus'):
+        if 'preview' in request.POST or 'plus' in request.GET:
             text = request.POST['text']
             return render_template('forum/anwser.html', {
                 'text': text, 'topic': t
             })
 
-        
         # Sauvegarde du message
         else:
-            data = request.POST
+            form = PostForm(request.POST)
+            if form.is_valid():
+                data = form.data
 
-            p = Post()
-            p.topic = t
-            p.author = request.user
-            p.text = data['text']
-            p.pubdate = datetime.now()
-            p.position_in_topic = t.get_post_count() + 1
-            p.save()
+                p = Post()
+                p.topic = t
+                p.author = request.user
+                p.text = data['text']
+                p.pubdate = datetime.now()
+                p.position_in_topic = t.get_post_count() + 1
+                p.save()
 
-            t.last_message = p
-            t.save()
+                t.last_message = p
+                t.save()
 
-            return redirect(p.get_absolute_url())
+                return redirect(p.get_absolute_url())
+            else:
+                raise Http404
 
     else:
         text = ''
 
         # Utilisation du bouton de citation
-        if request.GET.has_key('cite'):
+        if 'cite' in request.GET:
             post_cite_pk = request.GET['cite']
             post_cite = Post.objects.get(pk=post_cite_pk)
 
             for line in post_cite.text.splitlines():
                 text = text + '> ' + line + '\n'
 
-            text = u'**%s a écrit :**\n%s\n' % (post_cite.author.username, text)
+            text = u'**%s a écrit :**\n%s\n' % (
+                post_cite.author.username, text)
 
         return render_template('forum/anwser.html', {
             'topic': t, 'text': text
         })
-        
+
+
+@login_required
 def edit_post(request):
     try:
         post_pk = request.GET['message']
     except KeyError:
         raise Http404
-    
+
     post = get_object_or_404(Post, pk=post_pk)
 
     # On vérifie bien que l'utilisateur en question peut modifier le post
@@ -285,7 +294,7 @@ def edit_post(request):
     if request.method == 'POST':
 
         # Utilisation du bouton de prévisualisation
-        if request.POST.has_key('preview'):
+        if 'preview' in request.POST:
             return render_template('forum/edit_post.html', {
                 'post': post, 'text': request.POST['text'],
             })
@@ -302,6 +311,8 @@ def edit_post(request):
             'post': post, 'text': post.text
         })
 
+
+@login_required
 def useful_post(request):
     '''Marque un message comme ayant été utile pour l'OP'''
     try:

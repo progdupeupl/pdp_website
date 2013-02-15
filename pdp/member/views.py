@@ -1,20 +1,20 @@
 # coding: utf-8
 
 from django.shortcuts import redirect, get_object_or_404
-from django.http import HttpResponse, Http404
+from django.http import Http404
 
 from django.contrib.auth.models import User, SiteProfileNotAvailable
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
+from django.core.context_processors import csrf
+
 from pdp.utils.tokens import generate_token
 from pdp.utils import render_template
 
-from django.core.context_processors import csrf
-
-from pdp.forum.models import Post
 from models import Profile
 from forms import LoginForm, ProfileForm, RegisterForm
+
 
 def index(request):
     '''Affiche la liste des profils des membres inscrits'''
@@ -23,6 +23,7 @@ def index(request):
     return render_template('member/index.html', {
         'profiles': p
     })
+
 
 def details(request, user_name):
     '''Affiche les détails concernant un profil particulier'''
@@ -36,6 +37,7 @@ def details(request, user_name):
     return render_template('member/profile.html', {
         'usr': u, 'profile': p
     })
+
 
 @login_required
 def edit_profile(request):
@@ -55,8 +57,8 @@ def edit_profile(request):
         if form.is_valid():
             data = form.data
 
-            p.biography = data['biography'] 
-            p.show_email = data.has_key('show_email') and data['show_email']
+            p.biography = data['biography']
+            p.show_email = 'show_email' in data
             p.save()
 
             return redirect(p.get_absolute_url())
@@ -68,6 +70,7 @@ def edit_profile(request):
         return render_template('member/edit_profile.html', {
             'profile': p
         })
+
 
 def login_view(request):
     c = {}
@@ -96,26 +99,28 @@ def login_view(request):
 
     return render_template('member/login.html', c)
 
+
 @login_required
 def logout_view(request):
     logout(request)
     request.session.clear()
     return redirect('/')
 
+
 def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
             data = form.data
-            user = User.objects.create_user(\
-                data['username'],\
-                data['email'],\
+            user = User.objects.create_user(
+                data['username'],
+                data['email'],
                 data['password'])
 
-            profile = Profile(user=user, show_email=data.has_key('show_email'))
+            profile = Profile(user=user, show_email='show_email' in data)
             profile.save()
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, user)
             return render_template('member/register_success.html')
-            
+
     return render_template('member/register.html')

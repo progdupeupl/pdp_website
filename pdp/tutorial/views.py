@@ -6,7 +6,8 @@ from django.http import Http404
 from pdp.utils import render_template, slugify
 
 from .models import Tutorial, Part, Chapter, Extract
-from .forms import *
+from .forms import TutorialForm, PartForm, ChapterForm, ExtractForm
+
 
 def index(request):
     t = Tutorial.objects.all().filter(is_visible=True)
@@ -20,6 +21,7 @@ def index(request):
         'tutorials': t,
         'user_tutorials': user_t
     })
+
 
 def view_tutorial(request, tutorial_pk, tutorial_slug):
 
@@ -41,14 +43,16 @@ def view_tutorial(request, tutorial_pk, tutorial_slug):
     if t.is_mini:
         c = Chapter.objects.get(tutorial=t)
     else:
-        p = Part.objects.all().filter(tutorial=t).order_by('position_in_tutorial')
+        p = Part.objects.all(
+        ).filter(tutorial=t).order_by('position_in_tutorial')
 
     return render_template('tutorial/view_tutorial.html', {
         'tutorial': t, 'chapter': c, 'parts': p
     })
 
+
 def add_tutorial(request):
-    
+
     if request.method == 'POST':
         form = TutorialForm(request.POST, request.FILES)
 
@@ -59,7 +63,7 @@ def add_tutorial(request):
             t = Tutorial()
             t.title = data['title']
             t.description = data['description']
-            t.is_mini = data.has_key('is_mini') and data['is_mini']
+            t.is_mini = 'is_mini' in data
             t.save()
 
             # On doit sauvegarder obligatoirement le tutoriel avant d'être
@@ -67,7 +71,7 @@ def add_tutorial(request):
             t.authors.add(request.user)
 
             # On sauvegarde l'icone
-            if request.FILES.has_key('icon'):
+            if 'icon' in request.FILES:
                 t.icon = request.FILES['icon']
 
             t.save()
@@ -77,7 +81,7 @@ def add_tutorial(request):
                 c = Chapter()
                 c.tutorial = t
                 c.save()
-            
+
             return redirect(t.get_absolute_url())
 
         else:
@@ -87,38 +91,42 @@ def add_tutorial(request):
     else:
         return render_template('tutorial/new_tutorial.html')
 
+
 def view_chapter(request, tutorial_pk, tutorial_slug, part_pos, part_slug, chapter_pos, chapter_slug):
 
-    c = Chapter.objects.get(position_in_part = chapter_pos, part__position_in_tutorial=part_pos, part__tutorial__pk=tutorial_pk)
+    c = Chapter.objects.get(position_in_part=chapter_pos, part__position_in_tutorial=part_pos, part__tutorial__pk=tutorial_pk)
 
     if not c.get_tutorial().is_visible and not request.user in c.get_tutorial().authors.all():
         raise Http404
 
     # On vérifie que l'URL est correcte
     if not tutorial_slug == slugify(c.part.tutorial.title)\
-    or not part_slug == slugify(c.part.title)\
-    or not chapter_slug == slugify(c.title):
+        or not part_slug == slugify(c.part.title)\
+            or not chapter_slug == slugify(c.title):
         return redirect(c.get_absolute_url())
 
     return render_template('tutorial/view_chapter.html', {
         'chapter': c
     })
 
+
 def view_part(request, tutorial_pk, tutorial_slug, part_pos, part_slug):
 
-    p = Part.objects.get(position_in_tutorial = part_pos, tutorial__pk=tutorial_pk)
+    p = Part.objects.get(
+        position_in_tutorial=part_pos, tutorial__pk=tutorial_pk)
 
     if not p.tutorial.is_visible and not request.user in p.tutorial.authors.all():
         raise Http404
 
     # On vérifie que l'URL est correcte
     if not tutorial_slug == slugify(p.tutorial.title)\
-    or not part_slug == slugify(p.title):
+            or not part_slug == slugify(p.title):
         return redirect(p.get_absolute_url())
 
     return render_template('tutorial/view_part.html', {
         'part': p
     })
+
 
 def add_part(request):
 
@@ -141,7 +149,7 @@ def add_part(request):
         form = PartForm(request.POST)
         if form.is_valid():
             data = form.data
-            
+
             p = Part()
             p.tutorial = t
             p.title = data['title']
@@ -161,6 +169,7 @@ def add_part(request):
             'tutorial': t
         })
 
+
 def modify_part(request):
     if not request.method == 'POST':
         raise Http404
@@ -172,8 +181,7 @@ def modify_part(request):
     if not request.user in p.tutorial.authors.all():
         raise Http404
 
-    btn = lambda x: request.POST.has_key(x)
-    if btn('move'):
+    if 'move' in request.POST:
         new_pos = int(request.POST['move_target'])
         old_pos = p.position_in_tutorial
 
@@ -187,11 +195,11 @@ def modify_part(request):
         pos_increased = new_pos - old_pos > 0
         for tut_p in p.tutorial.get_parts():
             if pos_increased \
-            and old_pos <= tut_p.position_in_tutorial <= new_pos:
+                    and old_pos <= tut_p.position_in_tutorial <= new_pos:
                 tut_p.position_in_tutorial = tut_p.position_in_tutorial - 1
                 tut_p.save()
             elif not pos_increased \
-            and new_pos <= tut_p.position_in_tutorial <= old_pos:
+                    and new_pos <= tut_p.position_in_tutorial <= old_pos:
                 tut_p.position_in_tutorial = tut_p.position_in_tutorial + 1
                 tut_p.save()
 
@@ -199,7 +207,7 @@ def modify_part(request):
         p.position_in_tutorial = new_pos
         p.save()
 
-    elif btn('delete'):
+    elif 'delete' in request.POST:
         # On supprime tous les chapitres associés à la partie
         Chapter.objects.all().filter(part=p).delete()
 
@@ -215,6 +223,7 @@ def modify_part(request):
 
     return redirect(p.tutorial.get_absolute_url())
 
+
 def edit_part(request):
     try:
         part_pk = int(request.GET['partie'])
@@ -222,14 +231,14 @@ def edit_part(request):
         raise Http404
 
     p = get_object_or_404(Part, pk=part_pk)
-    
+
     # On vérifie que l'utilisateur a bien le droit de faire ça
     if not request.user in p.tutorial.authors.all():
         raise Http404
 
     if request.method == 'POST':
-       form = PartForm(request.POST)
-       if form.is_valid():
+        form = PartForm(request.POST)
+        if form.is_valid():
             data = form.data
 
             p.title = data['title']
@@ -239,13 +248,14 @@ def edit_part(request):
             p.save()
 
             return redirect(p.get_absolute_url())
-       else:
-           raise Http404
+        else:
+            raise Http404
 
     else:
         return render_template('tutorial/edit_part.html', {
             'part': p
         })
+
 
 def add_chapter(request):
     try:
@@ -282,6 +292,7 @@ def add_chapter(request):
             'part': p
         })
 
+
 def modify_chapter(request):
     if not request.method == 'POST':
         raise Http404
@@ -299,7 +310,7 @@ def modify_chapter(request):
     #if not request.user in c.part.tutorial.authors.all():
     #   raise Http404
 
-    if data.has_key('move'):
+    if 'move' in data:
         new_pos = int(request.GET['position'])
         old_pos = c.position_in_part
 
@@ -313,11 +324,11 @@ def modify_chapter(request):
         pos_increased = new_pos - old_pos > 0
         for tut_c in c.part.get_chapters():
             if pos_increased \
-            and old_pos <= tut_c.position_in_part <= new_pos:
+                    and old_pos <= tut_c.position_in_part <= new_pos:
                 tut_c.position_in_part = tut_c.position_in_part - 1
                 tut_c.save()
             elif not pos_increased \
-            and new_pos <= tut_c.position_in_part <= old_pos:
+                    and new_pos <= tut_c.position_in_part <= old_pos:
                 tut_c.position_in_part = tut_c.position_in_part + 1
                 tut_c.save()
 
@@ -325,7 +336,7 @@ def modify_chapter(request):
         c.position_in_part = new_pos
         c.save()
 
-    elif data.has_key('delete'):
+    elif 'delete' in data:
 
         # On réagence les autres parties du tutoriel
         old_pos = c.position_in_part
@@ -339,6 +350,7 @@ def modify_chapter(request):
 
     return redirect(c.part.tutorial.get_absolute_url())
 
+
 def edit_chapter(request):
     try:
         chapter_pk = int(request.GET['chapitre'])
@@ -348,10 +360,10 @@ def edit_chapter(request):
     c = get_object_or_404(Chapter, pk=chapter_pk)
     big = c.part
     small = c.tutorial
-    
+
     # On vérifie que l'utilisateur a bien le droit de faire ça
     if big and (not request.user in c.part.tutorial.authors.all())\
-    or small and (not request.user in c.tutorial.authors.all()):
+            or small and (not request.user in c.tutorial.authors.all()):
         raise Http404
 
     if request.method == 'POST':
@@ -359,7 +371,7 @@ def edit_chapter(request):
 
         if form.is_valid():
             data = form.data
-        
+
             if c.part:
                 c.title = data['title']
             else:
@@ -380,6 +392,7 @@ def edit_chapter(request):
         return render_template('tutorial/edit_chapter.html', {
             'chapter': c
         })
+
 
 def add_extract(request):
     try:
@@ -410,6 +423,7 @@ def add_extract(request):
             'chapter': c
         })
 
+
 def edit_extract(request):
     try:
         extract_pk = request.GET['extrait']
@@ -420,9 +434,8 @@ def edit_extract(request):
 
     big = e.chapter.part
     if big and (not request.user in e.chapter.part.tutorial.authors.all())\
-    or not big and (not request.user in e.chapter.tutorial.authors.all()):
+            or not big and (not request.user in e.chapter.tutorial.authors.all()):
         raise Http404
-
 
     if request.method == 'POST':
         form = ExtractForm(request.POST)
