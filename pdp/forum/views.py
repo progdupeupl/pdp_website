@@ -65,7 +65,7 @@ def topic(request, topic_pk, topic_slug):
         if never_read(t):
             mark_read(t)
 
-    posts = Post.objects.all().filter(topic__pk=t.pk)
+    posts = Post.objects.all().filter(topic__pk=t.pk).order_by('position_in_topic')
 
     # Pour gérer la pagination
     paginator = Paginator(posts, POSTS_PER_PAGE)
