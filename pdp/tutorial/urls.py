@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, url
 
 import views
 
@@ -24,6 +24,8 @@ urlpatterns = patterns('',
 
     url(r'modifier/chapitre$', views.modify_chapter),
     url(r'editer/chapitre$', views.edit_chapter),
+
+    url(r'editer/extrait$', views.edit_extract),
 
     # Ajout
 

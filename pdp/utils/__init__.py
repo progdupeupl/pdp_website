@@ -10,19 +10,24 @@ except ImportError:
 
 _thread_locals = local()
 
+
 def get_current_user():
     return getattr(_thread_locals, 'user', None)
 
+
 def get_current_request():
     return getattr(_thread_locals, 'request', None)
+
 
 class ThreadLocals(object):
     def process_request(self, request):
         _thread_locals.user = getattr(request, 'user', None)
         _thread_locals.request = request
 
-def render_template(tmpl, dct = None):
+
+def render_template(tmpl, dct=None):
     return render_to_response(tmpl, dct, context_instance=RequestContext(get_current_request()))
+
 
 def slugify(text):
     return defaultfilters.slugify(text)

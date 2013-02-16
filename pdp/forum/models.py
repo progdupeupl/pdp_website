@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from math import ceil, floor
+from math import ceil
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -10,6 +10,7 @@ from django.template.defaultfilters import slugify
 from pdp.utils import get_current_user
 
 POSTS_PER_PAGE = 10
+
 
 class Category(models.Model):
     '''Classe représentant une catégorie de forums'''
@@ -28,6 +29,7 @@ class Category(models.Model):
 
     def get_forums(self):
         return Forum.objects.all().filter(category=self)
+
 
 class Forum(models.Model):
     '''Classe représentant un forum'''
@@ -62,6 +64,7 @@ class Forum(models.Model):
             return Post.objects.all().filter(topic__forum__pk=self.pk).order_by('-pubdate')[0]
         except IndexError:
             return None
+
 
 class Topic(models.Model):
     '''Classe représentant une discussion'''
@@ -105,11 +108,12 @@ class Topic(models.Model):
     def last_read_post(self):
         try:
             return TopicRead.objects\
-            .select_related()\
-            .filter(topic=self, user=get_current_user())\
-            .latest('post__pubdate').post
+                .select_related()\
+                .filter(topic=self, user=get_current_user())\
+                .latest('post__pubdate').post
         except Post.DoesNotExist:
             return self.first_post()
+
 
 class Post(models.Model):
     '''Classe représentant une réponse dans la discussion'''
@@ -133,17 +137,21 @@ class Post(models.Model):
 
         return '%s?page=%s#p%s' % (self.topic.get_absolute_url(), page, self.pk)
 
+
 class TopicRead(models.Model):
     topic = models.ForeignKey(Topic)
     post = models.ForeignKey(Post)
     user = models.ForeignKey(User)
+
 
 def never_read(topic):
     return TopicRead.objects\
         .filter(post=topic.last_message, topic=topic, user=get_current_user())\
         .count() == 0
 
+
 def mark_read(topic):
     TopicRead.objects.filter(topic=topic, user=get_current_user()).delete()
-    t = TopicRead(post=topic.last_message, topic=topic, user=get_current_user())
+    t = TopicRead(
+        post=topic.last_message, topic=topic, user=get_current_user())
     t.save()

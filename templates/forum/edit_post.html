@@ -19,16 +19,37 @@
 {% endblock %}
 
 {% block content %}
-<form action="" method="POST">
-
-    {% include "markdown-buttons.html" %}
-
-    <div class="control-group">
-        <div class="controls">
-            <textarea id="id_text" name="text"
-                class="input-block-level" rows="20">{{ text }}</textarea>
+<form action="" method="POST" class="form-horizontal">
+    {% if topic %}
+    <fieldset>
+        <legend>Sujet</legend>
+        <div class="control-group">
+            <label class="control-label" for="id_title">Titre</label>
+            <div class="controls">
+                <input type="text" name="title" id="id_title"
+                    value="{{ topic.title }}" />
+            </div>
         </div>
-    </div>
+        <div class="control-group">
+            <label class="control-label" for="id_subtitle">Sous titre</label>
+            <div class="controls">
+                <input type="text" name="subtitle" id="id_subtitle"
+                    value="{{ topic.subtitle }}" />
+            </div>
+        </div>
+    </fieldset>
+    {% endif %}
+    <fieldset>
+        <legend>Message</legend>
+        <div class="control-group">
+            <label class="control-label" for="id_text">Texte</label>
+            <div class="controls">
+                {% include "markdown-buttons.html" %}
+                <textarea id="id_text" name="text"
+                    class="input-block-level" rows="20">{{ text }}</textarea>
+            </div>
+        </div>
+    </fieldset>
 
     <div style="text-align: center;">
         <button type="submit" class="btn btn-primary">

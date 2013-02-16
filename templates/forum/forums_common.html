@@ -4,10 +4,10 @@
 <table class="table table-hover table-bordered">
     <thead>
         <tr>
-            <th>Statut</th>
-            <th>Titre</th>
-            <th>Dernier message</th>
-            <th>Nombre de sujets</th>
+            <th class="span1">Statut</th>
+            <th class="span5">Titre</th>
+            <th class="span1">Sujets</th>
+            <th class="span5">Dernier message</th>
         </tr>
     </thead>
 
@@ -19,6 +19,9 @@
         <td>
             <a href="{{ forum.get_absolute_url }}">{{ forum.title }}</a><br />
             {{ forum.subtitle }}
+        </td>
+        <td>
+            {{ forum.get_topic_count }}
         </td>
         <td>
             {% if forum.get_last_message %}
@@ -37,9 +40,6 @@
             {% else %}
             Aucun message
             {% endif %}
-        </td>
-        <td>
-            {{ forum.get_topic_count }}
         </td>
     </tr>
     {% endfor %}

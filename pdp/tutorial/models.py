@@ -12,17 +12,21 @@ from pdp.utils import slugify
 # - Pour les big-tutos : Tutorial < Parts < Chapters
 # - Pour les mini-tutos : Tutorial < Chapter
 
+
 def tutorial_icon_path(instance, filename):
     return 'tutoriels/tutoriels/%s%s' % \
-            (instance.pk, path.splitext(filename)[1])
+        (instance.pk, path.splitext(filename)[1])
+
 
 def part_icon_path(instance, filename):
     return 'tutoriels/parties/%s%s' % \
-            (instance.pk, path.splitext(filename)[1])
+        (instance.pk, path.splitext(filename)[1])
+
 
 def chapter_icon_path(instance, filename):
     return 'tutoriels/chapitres/%s%s' % \
-            (instance.pk, path.splitext(filename)[1])
+        (instance.pk, path.splitext(filename)[1])
+
 
 class Tutorial(models.Model):
     '''Classe représentant un tutoriel'''
@@ -34,13 +38,14 @@ class Tutorial(models.Model):
     description = models.CharField('Description', max_length=200)
     authors = models.ManyToManyField(User, verbose_name='Auteurs')
 
-    icon = models.ImageField(upload_to=tutorial_icon_path, \
-        null=True, blank=True)
+    icon = models.ImageField(upload_to=tutorial_icon_path,
+                             null=True, blank=True)
 
     # On pourrait distinguer les mini des big tutos en parcourant la base
     # et en retrouvant les chapitres qui sont directement associés à un
     # tutoriel mais ce serait sans doute plus long qu'un simple champ
     is_mini = models.BooleanField('Est un mini-tutoriel')
+    is_visible = models.BooleanField('Est visible publiquement')
 
     def __unicode__(self):
         return self.title
@@ -53,15 +58,17 @@ class Tutorial(models.Model):
             .filter(tutorial__pk=self.pk)\
             .order_by('position_in_tutorial')
 
+
 def get_last_tutorials():
     # TODO: ranger par date de mise en ligne (ou mise à jour ?)
-    return Tutorial.objects.all().order_by('title')[:3]
+    return Tutorial.objects.all().filter(is_visible=True).order_by('title')[:3]
 
     def get_chapter(self):
         '''Retourne le chapitre associé au mini-tutoriel'''
         # On peut utiliser get car on est sûr qu'un seul chapitre sera
         # directement associé à ce mini-tutoriel
         return Chapter.objects.get(tutorial__pk=self.pk)
+
 
 class Part(models.Model):
     '''Classe représentant un groupement de chapitres'''
@@ -87,7 +94,7 @@ class Part(models.Model):
             (self.tutorial.title, self.position_in_tutorial)
 
     def get_absolute_url(self):
-        return self.tutorial.get_absolute_url() + '%s-%s/' % (\
+        return self.tutorial.get_absolute_url() + '%s-%s/' % (
             self.position_in_tutorial,
             slugify(self.title)
         )
@@ -95,6 +102,7 @@ class Part(models.Model):
     def get_chapters(self):
         return Chapter.objects.all()\
             .filter(part=self).order_by('position_in_part')
+
 
 class Chapter(models.Model):
     '''Classe représentant un chapitre de tutoriel dans lequel se situe l'info
@@ -105,18 +113,18 @@ class Chapter(models.Model):
 
     # Une partie possède accessoirement un chapitre parent, c'est la que se
     # fait la différenciation entre les big et mini-tutoriels
-    part = models.ForeignKey(Part, null=True, blank=True,\
-        verbose_name='Partie parente')
+    part = models.ForeignKey(Part, null=True, blank=True,
+                             verbose_name='Partie parente')
 
-    position_in_part = models.IntegerField('Position dans la partie',\
-        null=True, blank=True)
-    
+    position_in_part = models.IntegerField('Position dans la partie',
+                                           null=True, blank=True)
+
     # Si le chapitre n'est pas relié à une partie particulière, c'est alors
     # que c'est un mini-tutoriel ; il faut donc le relier à des informations
     # concernant ce même tutoriel directement
-    tutorial = models.ForeignKey(Tutorial, null=True, blank=True,\
-        verbose_name='Tutoriel parent')
-    
+    tutorial = models.ForeignKey(Tutorial, null=True, blank=True,
+                                 verbose_name='Tutoriel parent')
+
     title = models.CharField('Titre', max_length=80, blank=True)
 
     introduction = models.TextField('Introduction')
@@ -132,26 +140,29 @@ class Chapter(models.Model):
             return u'<orphelin>'
 
     def get_absolute_url(self):
-        # Si le chapitre est un mini-tuto
         if self.tutorial:
             return self.tutorial.get_absolute_url()
 
-        # Si le chapitre fait parti d'un big-tuto
         elif self.part:
             return self.part.get_absolute_url() + '%s-%s' % (
                 self.position_in_part,
                 slugify(self.title)
             )
 
-        # Sinon, le chapitre n'a pas lieu d'être
         else:
-            return redirect('/tutoriels/')
+            return '/tutoriels/'
 
     def get_extract_count(self):
         return Extract.objects.all().filter(chapter__pk=self.pk).count()
 
     def get_extracts(self):
         return Extract.objects.all().filter(chapter__pk=self.pk)
+
+    def get_tutorial(self):
+        if self.part:
+            return self.part.tutorial
+        return self.tutorial
+
 
 class Extract(models.Model):
     '''Classe représentant un morceau de contenu dans un chapitre'''
@@ -165,7 +176,7 @@ class Extract(models.Model):
     text = models.TextField('Texte')
 
     def get_absolute_url(self):
-        return '%s#%s-%s' % (\
+        return '%s#%s-%s' % (
             self.chapter.get_absolute_url(),
             self.position_in_chapter,
             slugify(self.title)

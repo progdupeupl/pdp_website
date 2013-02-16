@@ -34,11 +34,11 @@
 <table class="table table-hover table-bordered">
     <thead>
         <tr>
-            <th>Statut</th>
-            <th>Sujet</th>
-            <th>Auteur</th>
-            <th>Denière réponse</th>
-            <th>Nombre de réponses</th>
+            <th class="span1">Statut</th>
+            <th class="span5">Sujet</th>
+            <th class="span1">Auteur</th>
+            <th class="span1">Réponses</th>
+            <th class="span4">Dernière réponse</th>
         </tr>
     </thead>
     <tbody>
@@ -72,6 +72,9 @@
                     {{ topic.author.username }}</a>
             </td>
             <td>
+                {{ topic.get_post_count|add:"-1" }}
+            </td>
+            <td>
                 {% if topic.get_last_anwser %}
                     <a href="{{ topic.get_last_anwser.get_absolute_url }}">
                         {{ topic.get_last_anwser.pubdate|humane_date }}
@@ -83,9 +86,6 @@
                 {% else %}
                     Aucune
                 {% endif %}
-            </td>
-            <td>
-                {{ topic.get_post_count|add:"-1" }}
             </td>
         </tr>
         {% endfor %}

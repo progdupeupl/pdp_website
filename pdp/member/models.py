@@ -1,11 +1,12 @@
 # coding: utf-8
 
+from hashlib import md5
+
 from django.db import models
 from django.contrib.auth.models import User
 
-from hashlib import md5
+from pdp.forum.models import Post, Topic
 
-from pdp.forum.models import Post, Topic       
 
 class Profile(models.Model):
     '''Classe représentant un profil d'utilisateur'''
@@ -16,8 +17,8 @@ class Profile(models.Model):
     user = models.ForeignKey(User, unique=True, verbose_name='Utilisateur')
 
     site = models.CharField('Site internet', max_length=128, blank=True)
-    show_email = models.BooleanField('Afficher adresse mail publiquement', \
-                 default=True)
+    show_email = models.BooleanField('Afficher adresse mail publiquement',
+                                     default=True)
 
     biography = models.TextField('Biographie', blank=True)
 

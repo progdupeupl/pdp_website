@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 from pdp.utils import slugify
 
+
 class Article(models.Model):
     class Meta:
         verbose_name = 'Article'
@@ -18,11 +19,14 @@ class Article(models.Model):
     author = models.ForeignKey(User, verbose_name='Auteur')
     pubdate = models.DateTimeField('Date de création', auto_now_add=True)
 
+    is_visible = models.BooleanField('Est visible publiquement')
+
     def __unicode__(self):
         return self.title
 
     def get_absolute_url(self):
         return '/articles/voir/%s-%s' % (self.pk, slugify(self.title))
 
+
 def get_last_articles():
-    return Article.objects.all().order_by('-pubdate')[:3]
+    return Article.objects.all().filter(is_visible=True).order_by('-pubdate')[:3]

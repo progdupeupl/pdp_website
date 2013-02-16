@@ -10,11 +10,12 @@ from pdp.utils import render_template, slugify
 from .models import Article
 from .forms import ArticleForm
 
+
 def index(request):
-    a = Article.objects.all()
+    a = Article.objects.all().filter(is_visible=True)
 
     if request.user.is_authenticated():
-        user_a = a.filter(author=request.user)
+        user_a = Article.objects.filter(author=request.user)
     else:
         user_a = None
 
@@ -23,22 +24,24 @@ def index(request):
         'user_articles': user_a
     })
 
+
 def view(request, article_pk, article_slug):
 
     a = get_object_or_404(Article, pk=article_pk)
 
+    if not a.is_visible and not request.user == a.author:
+        raise Http404
+
     if article_slug != slugify(a.title):
         return redirect(a.get_absolute_url())
-
 
     return render_template('article/view.html', {
         'article': a
     })
 
-def new(request):
 
-    if not request.user.is_authenticated:
-        raise Http404
+@login_required
+def new(request):
 
     if request.method == 'POST':
         form = ArticleForm(request.POST)
@@ -60,6 +63,7 @@ def new(request):
 
     else:
         return render_template('article/new.html')
+
 
 @login_required
 def edit(request):

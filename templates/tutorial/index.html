@@ -43,7 +43,7 @@ Liste des tutoriels
     <div class="span6">
         <h3>Vos tutoriels</h3>
 
-        {% if not user.tutorials %}
+        {% if not user_tutorials %}
             <p>Vous n'avez encore rédigé aucun tutoriel.</p>
         {% else %}
             {% for tutorial in user_tutorials %}
