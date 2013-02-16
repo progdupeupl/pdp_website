@@ -41,12 +41,20 @@ Profil de {{ usr.username }}
         </p>
 
         <p>
-        {% if profile.show_email %}
-            Adresse mail : {{ usr.email }}<br />
-        {% endif %}
+            {% if profile.show_email %}
+            <b>Adresse mail :</b> {{ usr.email }}<br />
+            {% endif %}
 
-        Date d'inscription : {{ usr.date_joined|humane_date }}<br />
-        Dernière connexion : {{ usr.last_login|humane_date }}
+            <b>Site internet :</b>
+                {% if profile.site %}
+                <a href="{{ profile.site }}">{{ profile.site }}</a>
+                {% else %}
+                aucun
+                {% endif %}
+                <br />
+
+            <b>Date d'inscription :</b> {{ usr.date_joined|humane_date }}<br />
+            <b>Dernière connexion :</b> {{ usr.last_login|humane_date }}
         </p>
 
     </div>

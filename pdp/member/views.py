@@ -58,6 +58,7 @@ def edit_profile(request):
             data = form.data
 
             p.biography = data['biography']
+            p.site = data['site']
             p.show_email = 'show_email' in data
             p.save()
 

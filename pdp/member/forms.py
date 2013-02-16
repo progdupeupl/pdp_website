@@ -17,4 +17,5 @@ class RegisterForm(forms.Form):
 
 class ProfileForm(forms.Form):
     biography = forms.CharField(required=False, widget=forms.Textarea)
+    site = forms.CharField(required=False, max_length=128)
     show_email = forms.BooleanField(required=False)
