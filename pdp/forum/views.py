@@ -287,6 +287,10 @@ def edit_post(request):
 
     post = get_object_or_404(Post, pk=post_pk)
 
+    topic = None
+    if post.position_in_topic == 1:
+        topic = get_object_or_404(Topic, pk=post.topic.pk)
+
     # On vérifie bien que l'utilisateur en question peut modifier le post
     if post.author != request.user and not request.user.is_staff:
         raise Http404
@@ -295,8 +299,9 @@ def edit_post(request):
 
         # Utilisation du bouton de prévisualisation
         if 'preview' in request.POST:
+            topic = Topic(title=request.POST['title'], subtitle=request.POST['subtitle'])
             return render_template('forum/edit_post.html', {
-                'post': post, 'text': request.POST['text'],
+                'post': post, 'topic': topic, 'text': request.POST['text'],
             })
 
         # L'utilisateur viens d'envoyer les données, on les traite
@@ -304,11 +309,17 @@ def edit_post(request):
         post.update = datetime.now()
         post.save()
 
+        # Topic edition
+        if topic:
+            topic.title = request.POST['title']
+            topic.subtitle = request.POST['subtitle']
+            topic.save()
+
         return redirect(post.get_absolute_url())
 
     else:
         return render_template('forum/edit_post.html', {
-            'post': post, 'text': post.text
+            'post': post, 'topic': topic, 'text': post.text
         })
 
 
