@@ -126,6 +126,7 @@ INSTALLED_APPS = (
     'django.contrib.markup',
 
     'south',
+    'crispy_forms',
 
     'pdp.member',
     'pdp.forum',

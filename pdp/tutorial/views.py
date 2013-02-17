@@ -162,11 +162,12 @@ def add_part(request):
             return redirect(p.get_absolute_url())
 
         else:
-            # TODO: retourner le formulaire avec les erreurs
-            raise Http404
+            return render_template('tutorial/new_part.html', {
+                'tutorial': t, 'form': form
+            })
     else:
         return render_template('tutorial/new_part.html', {
-            'tutorial': t
+            'tutorial': t, 'form': PartForm()
         })
 
 
@@ -249,11 +250,18 @@ def edit_part(request):
 
             return redirect(p.get_absolute_url())
         else:
-            raise Http404
+            return render_template('tutorial/edit_part.html', {
+                'part': p, 'form': form
+            })
 
     else:
+        form = PartForm({
+            'title': p.title,
+            'introduction': p.introduction,
+            'conclusion': p.conclusion
+        })
         return render_template('tutorial/edit_part.html', {
-            'part': p
+            'part': p, 'form': form
         })
 
 
