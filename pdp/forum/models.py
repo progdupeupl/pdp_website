@@ -4,13 +4,11 @@ from math import ceil
 
 from django.db import models
 from django.contrib.auth.models import User
-
 from django.template.defaultfilters import slugify
 
 from pdp.utils import get_current_user
 
 POSTS_PER_PAGE = 10
-
 
 class Category(models.Model):
     '''Classe représentant une catégorie de forums'''
@@ -95,7 +93,7 @@ class Topic(models.Model):
         '''Retourne le nombre de messages postés dans la discussion'''
         return Post.objects.all().filter(topic__pk=self.pk).count()
 
-    def get_last_anwser(self):
+    def get_last_answer(self):
         '''Retourne le denier message posté dans le sujet'''
         try:
             return Post.objects.all().filter(topic__pk=self.pk).order_by('-pubdate')[0]

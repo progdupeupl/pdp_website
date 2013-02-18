@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 
 from pdp.forum.models import Post, Topic
 
-
 class Profile(models.Model):
     '''Classe représentant un profil d'utilisateur'''
     class Meta:
