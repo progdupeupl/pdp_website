@@ -6,6 +6,8 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from pdp.forum.models import Post, Topic
+from pdp.tutorial.models import Tutorial
+from pdp.article.models import Article
 
 
 class Profile(models.Model):
@@ -41,3 +43,25 @@ class Profile(models.Model):
     def get_topic_count(self):
         '''Nombre de sujets créés sur le forum'''
         return Topic.objects.all().filter(author__pk=self.user.pk).count()
+
+    # Tutorial
+
+    def get_tutorials(self):
+        return Tutorial.objects.filter(authors=self.user.pk)
+
+    def get_visible_tutorials(self):
+        return self.get_tutorials().filter(is_visible=True)
+
+    def get_hidden_tutorials(self):
+        return self.get_tutorials().filter(is_visible=False)
+
+    # Article
+
+    def get_articles(self):
+        return Article.objects.all().filter(author=self.user)
+
+    def get_visible_articles(self):
+        return self.get_articles().filter(is_visible=True)
+
+    def get_hidden_articles(self):
+        return self.get_articles().filter(is_visible=False)
