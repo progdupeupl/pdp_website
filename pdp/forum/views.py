@@ -299,7 +299,8 @@ def edit_post(request):
 
         # Utilisation du bouton de prévisualisation
         if 'preview' in request.POST:
-            topic = Topic(title=request.POST['title'], subtitle=request.POST['subtitle'])
+            if topic:
+                topic = Topic(title=request.POST['title'], subtitle=request.POST['subtitle'])
             return render_template('forum/edit_post.html', {
                 'post': post, 'topic': topic, 'text': request.POST['text'],
             })
