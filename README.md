@@ -1,15 +1,15 @@
 # README
 
-Progdupeupl is a French programers community.
+Progdupeupl is a community of French programmers.
 
-## Naming convention
+## Naming conventions
 
 Everything in the code should be in english (vars, funcs, methods, docstrings,
-comments) though some part may be - of course - in French.
+comments) though some parts may - of course - be in French.
 
 ## Dependencies
 
-To install all dependencies, just run `pip install -r requirements.txt`.
+To install all dependencies, simply run `pip install -r requirements.txt`.
 
 ## Copyright
 

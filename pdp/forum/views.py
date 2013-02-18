@@ -215,7 +215,7 @@ def edit(request):
 
 
 @login_required
-def anwser(request):
+def answer(request):
     'Ajoute une réponse à une discussion'
     try:
         topic_pk = request.GET['sujet']
@@ -234,7 +234,7 @@ def anwser(request):
         # Utilisation du bouton de prévisualisation ou du bouton d'options
         if 'preview' in request.POST or 'plus' in request.GET:
             text = request.POST['text']
-            return render_template('forum/anwser.html', {
+            return render_template('forum/answer.html', {
                 'text': text, 'topic': t
             })
 
@@ -273,7 +273,7 @@ def anwser(request):
             text = u'**%s a écrit :**\n%s\n' % (
                 post_cite.author.username, text)
 
-        return render_template('forum/anwser.html', {
+        return render_template('forum/answer.html', {
             'topic': t, 'text': text
         })
 

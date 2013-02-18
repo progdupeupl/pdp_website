@@ -42,7 +42,7 @@ class Profile(models.Model):
 
     def get_topic_count(self):
         '''Nombre de sujets créés sur le forum'''
-        return Topic.objects.all().filter(author__pk=self.user.pk).count()
+        return Topic.objects.all().filter(author=self.user).count()
 
     # Tutorial
 

@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 
 from pdp.utils import slugify
 
-
 class Article(models.Model):
     class Meta:
         verbose_name = 'Article'
