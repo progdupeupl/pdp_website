@@ -8,7 +8,6 @@ from pdp.utils import render_template, slugify
 from .models import Tutorial, Part, Chapter, Extract
 from .forms import TutorialForm, PartForm, ChapterForm, ExtractForm
 
-
 def index(request):
     t = Tutorial.objects.all().filter(is_visible=True)
 

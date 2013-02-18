@@ -10,7 +10,6 @@ from pdp.utils import render_template, slugify
 from .models import Article
 from .forms import ArticleForm
 
-
 def index(request):
     a = Article.objects.all().filter(is_visible=True)
 

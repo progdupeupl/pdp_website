@@ -2,7 +2,6 @@
 
 from django import forms
 
-
 class TopicForm(forms.Form):
     title = forms.CharField(max_length=80)
     subtitle = forms.CharField(max_length=255, required=False)
