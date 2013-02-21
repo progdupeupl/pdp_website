@@ -30,33 +30,39 @@ Profil de {{ usr.username }}
 <ul class="nav nav-tabs">
     <li class="active"><a href="#general" data-toggle="tab">Informations générales</a></li>
     <li {% if not profile.biography %}class="disabled"{% endif %}><a {% if profile.biography %}href="#bio" data-toggle="tab"{% endif %}>Biographie</a></li>
-    <li><a href="#stats" data-toggle="tab">Statstiques</a></li>
+    <li><a href="#stats" data-toggle="tab">Statistiques</a></li>
 </ul>
 
 <div class="tab-content">
-    <div class="tab-pane active" id="general">
+    <div class="tab-pane row active" id="general">
+        <div class="span2">
+            <img src="{{ profile.get_gravatar_url }}&amp;s=140" alt="Avatar" class="img-polaroid"/><br />
+        </div>
 
-        <p>
-            <img src="{{ profile.get_gravatar_url }}" alt="Avatar" /><br />
-        </p>
-
-        <p>
-            {% if profile.show_email %}
-            <b>Adresse mail :</b> {{ usr.email }}<br />
-            {% endif %}
-
-            <b>Site internet :</b>
-                {% if profile.site %}
-                <a href="{{ profile.site }}">{{ profile.site }}</a>
-                {% else %}
-                aucun
+        <div class="span10">
+            <div class="spacer2"></div>
+            <p>
+                <span style="font-size: 300%;">
+                    {{ usr.username }}
+                </span>
+            </p>
+            <p>
+                {% if profile.show_email %}
+                <span class="muted">Adresse mail | </span> {{ usr.email }}<br />
                 {% endif %}
-                <br />
 
-            <b>Date d'inscription :</b> {{ usr.date_joined|humane_date }}<br />
-            <b>Dernière connexion :</b> {{ usr.last_login|humane_date }}
-        </p>
+                <span class="muted">Site internet | </span>
+                    {% if profile.site %}
+                    <a href="{{ profile.site }}">{{ profile.site }}</a>
+                    {% else %}
+                    aucun
+                    {% endif %}
+                    <br />
 
+                <span class="muted">Date d'inscription |</span> {{ usr.date_joined|humane_date }}<br />
+                <span class="muted">Dernière connexion |</span> {{ usr.last_login|humane_date }}
+            </p>
+        </div>
     </div>
 
     {% if profile.biography %}
@@ -69,23 +75,27 @@ Profil de {{ usr.username }}
 
     <div class="tab-pane" id="stats">
 
-        Sur les forums :
-        <ul>
-            <li>Nombre de messages postés : {{ profile.get_post_count }}</li>
-            <li>Nombre de sujets créés : {{ profile.get_topic_count }}</li>
-        </ul>
+        <div class="row-fluid">
+            <div class="span4">
+                <h3>Sur les forums</h3>
+                <span class="pull-right">{{ profile.get_post_count }}</span>Messages postés<br />
+                <span class="pull-right">{{ profile.get_topic_count }}</span>Sujets créés
+            </div>
 
-        Dans les tutoriels :
-        <ul>
-            <li>Nombre de tutoriels en ligne : </li>
-            <li>Nombre de tutoriels en cours de rédaction : </li>
-        </ul>
+            <div class="span4">
+                <h3>Dans les tutoriels</h3>
+                <span class="pull-right">{{ profile.get_visible_tutorials.count }}</span>Tutoriels en ligne<br />
+                <span class="pull-right">{{ profile.get_hidden_tutorials.count }}</span>Tutoriels en cours de rédaction<br />
+                <span class="pull-right">{{ profile.get_tutorials.count }}</span>Total
+            </div>
 
-        Dans les articles :
-        <ul>
-            <li>Nombre d'articles rédigés : </li>
-            <li>Nombre d'articles en cours de rédaction : </li>
-        </ul>
+            <div class="span4">
+                <h3>Et les articles</h3>
+                <span class="pull-right">{{ profile.get_visible_articles.count }}</span>Articles en ligne<br />
+                <span class="pull-right">{{ profile.get_hidden_articles.count }}</span>Articles en cours de rédaction <br />
+                <span class="pull-right">{{ profile.get_articles.count }}</span>Total
+            </div>
+        </div>
 
     </div>
 </div>
