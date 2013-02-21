@@ -48,7 +48,7 @@ def edit_profile(request):
 
     p = get_object_or_404(Profile, pk=profile_pk)
 
-    # On vérifie que l'utilisateur a bien le droit de faire ça
+    # Making sure the user is allowed to do that
     if not request.user == p.user:
         raise Http404
 

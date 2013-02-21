@@ -1,4 +1,4 @@
-{# Morceau s'occupant d'afficher un chapitre (que ce soit pour ceux des big-tutos ou un mini-tutoriel #}
+{# Block displaying a chapter (for large and small tutorials) #}
 {% load markup %}
 
 {% if user in chapter.part.tutorial.authors.all or user in chapter.tutorial.authors.all %}
@@ -13,7 +13,7 @@
         Éditer
     </a>
 
-    {# On propose la suppression que pour les big-tutos #}
+    {# Part deletion is only available for large tutorials #}
     {% if chapter.part %}
     <a href="/tutoriels/modifier/chapitre?chapitre={{ chapter.pk }}&amp;action=supprimer" class="btn">
         <i class="icon-remove"></i>

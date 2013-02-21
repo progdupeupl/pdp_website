@@ -7,10 +7,9 @@ from django.contrib.auth.models import User
 
 from pdp.utils import slugify
 
-# Les classes sont organisées de façon à avoir la structure suivante :
-#
-# - Pour les big-tutos : Tutorial < Parts < Chapters
-# - Pour les mini-tutos : Tutorial < Chapter
+# The class hierarchy is as follows :
+# - "large" tutorials: Tutorial < Parts < Chapters
+# - "small" tutorials : Tutorial < Chapter
 
 
 def tutorial_icon_path(instance, filename):
@@ -41,9 +40,8 @@ class Tutorial(models.Model):
     icon = models.ImageField(upload_to=tutorial_icon_path,
                              null=True, blank=True)
 
-    # On pourrait distinguer les mini des big tutos en parcourant la base
-    # et en retrouvant les chapitres qui sont directement associés à un
-    # tutoriel mais ce serait sans doute plus long qu'un simple champ
+    # We could distinguish large/small tutorials by looking at what chapters
+    # are contained directly in a tutorial, but that'd be more complicated than a field
     is_mini = models.BooleanField('Est un mini-tutoriel')
     is_visible = models.BooleanField('Est visible publiquement')
 
@@ -60,13 +58,12 @@ class Tutorial(models.Model):
 
 
 def get_last_tutorials():
-    # TODO: ranger par date de mise en ligne (ou mise à jour ?)
+    # TODO: Sort by publish date (or update?)
     return Tutorial.objects.all().filter(is_visible=True).order_by('title')[:3]
 
     def get_chapter(self):
         '''Retourne le chapitre associé au mini-tutoriel'''
-        # On peut utiliser get car on est sûr qu'un seul chapitre sera
-        # directement associé à ce mini-tutoriel
+        # We can use get since we know there'll only be one chapter
         return Chapter.objects.get(tutorial__pk=self.pk)
 
 
@@ -76,8 +73,8 @@ class Part(models.Model):
         verbose_name = 'Partie'
         verbose_name_plural = 'Parties'
 
-    # Une partie possède nécessairement un tutoriel parent, étant donné que
-    # seul les tutoriels avec parties sont des big-tutos
+    # A part has to belong to a tutorial, since only tutorials with parts
+    # are large tutorials
     tutorial = models.ForeignKey(Tutorial, verbose_name='Tutoriel parent')
     position_in_tutorial = models.IntegerField('Position dans le tutoriel')
 
@@ -86,8 +83,7 @@ class Part(models.Model):
     introduction = models.TextField('Introduction')
     conclusion = models.TextField('Conclusion')
 
-    # Entre l'introduction et la conclusion des parties se trouveront la liste
-    # des chapitres associés
+    # The list of chapters is shown between introduction and conclusion
 
     def __unicode__(self):
         return '<Partie pour %s, %s>' % \
@@ -111,17 +107,16 @@ class Chapter(models.Model):
         verbose_name = 'Chapitre'
         verbose_name_plural = 'Chapitres'
 
-    # Une partie possède accessoirement un chapitre parent, c'est la que se
-    # fait la différenciation entre les big et mini-tutoriels
+    # A chapter may belong to a part, that's where the difference between large
+    # and small tutorials is.
     part = models.ForeignKey(Part, null=True, blank=True,
                              verbose_name='Partie parente')
 
     position_in_part = models.IntegerField('Position dans la partie',
                                            null=True, blank=True)
 
-    # Si le chapitre n'est pas relié à une partie particulière, c'est alors
-    # que c'est un mini-tutoriel ; il faut donc le relier à des informations
-    # concernant ce même tutoriel directement
+    # If the chapter doesn't belong to a part, it's a small tutorial; we need
+    # to bind informations about said tutorial directly
     tutorial = models.ForeignKey(Tutorial, null=True, blank=True,
                                  verbose_name='Tutoriel parent')
 

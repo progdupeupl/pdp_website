@@ -1,8 +1,8 @@
 # coding: utf-8
 
-# Ce fichier provient en intégralité de Progmod ; quelques parties ont
-# étées modifiées cependant pour que ça puisse fonctionner sur pdp
-# Merci à eux !
+# This file comes from Progmod; it was slightly modified to work properly
+# on PDP
+# Thanks a lot!
 
 from datetime import *
 from django import template
@@ -146,7 +146,7 @@ def test(tz=None):
     def test_date(date, conf={}):
         pass
         #print "%s  : %s" % (date, humane_date(date, conf))
-    #secondes
+    #seconds
 
     def now(tz=None):
         return datetime.now(tz)
@@ -155,12 +155,12 @@ def test(tz=None):
     test_date(now() - timedelta(seconds=2))
     test_date(now().replace(second=2))
 
-    #minutes et secondes
+    #minutes and seconds
     test_date(now() - timedelta(minutes=3))
     test_date(now() - timedelta(minutes=3, seconds=2))
     test_date(now().replace(minute=3, second=2))
 
-    #heures et limite du jour
+    #hours and day limits
     def subtest(tz):
         test_date(now(tz) - timedelta(hours=1, minutes=2, seconds=5))
         test_date(
@@ -174,7 +174,7 @@ def test(tz=None):
 
     subtest(tz)
 
-    # jours, mois, années
+    # day, month, year
     test_date(now() - timedelta(days=45))
     test_date(now() - timedelta(days=130))
     test_date(now() - timedelta(days=365 + 20))
@@ -212,9 +212,9 @@ class HumaneDateNode(template.Node):
         date = self.date_variable.resolve(context)
         tz = self.tz_variable.resolve(context)
 
-        # On veut faire quoi maintenant ? convertir la date depuis la timezone
-        # native vers la timezone de l'user, puis la donner à humane_date
-        # régler le tzinfo ici depuis la config. bug si on utilise pas localize
+        # What do we want? Convert the date from the native timezone to the user's
+        # then give it to humane_date - there's a bug if localize isn't used
+        # When do we want it? Now!
         date_nn = timezone(pdp.settings.TIME_ZONE).localize(date)
         date_tz = date_nn.astimezone(tz)
         return humane_date(date_tz)
@@ -231,13 +231,12 @@ def set_timezone(request):
     return {'user_timezone': tz}
 
 if __name__ == '__main__':
-    # Test de la fonction 'humane_date'
+    # 'humane_date' test
     test(None)
-    # On dépend de la bibliothèque 'pytz' pour fournir
-    # un fuseau horaire
+    # The 'pytz' library is needed for timezones
     test(timezone('Europe/Paris'))
 else:
-    # Enregistrement de 'humane_date' comme un filtre Django
+    # Registering 'humane_date' as a Django filter
     from django import template
     register = template.Library()
     register.filter('humane_date', humane_date)

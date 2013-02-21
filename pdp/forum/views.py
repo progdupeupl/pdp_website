@@ -31,7 +31,7 @@ def details(request, cat_slug, forum_pk, forum_slug):
         .filter(forum__pk=f.pk)\
         .order_by('-is_sticky', '-last_message__pubdate')
 
-    # Vérification du lien
+    # Check link
     if not cat_slug == slugify('%s-%s' % (f.category.pk, f.category.title))\
             or not forum_slug == slugify(f.title):
         return redirect(f.get_absolute_url())
@@ -46,7 +46,7 @@ def cat_details(request, cat_pk, cat_slug):
     c = get_object_or_404(Category, pk=cat_pk)
     f = Forum.objects.all().filter(category__pk=c.pk)
 
-    # Vérification du lien
+    # Check link
     if not cat_slug == slugify(c.title):
         return redirect(c.get_absolute_url())
 
@@ -58,7 +58,7 @@ def cat_details(request, cat_pk, cat_slug):
 def topic(request, topic_pk, topic_slug):
     '''Visualisation d'un sujet et de ses réponses'''
 
-    # TODO: Faire la même chose plus proprement
+    # TODO: Clean that up
     t = get_object_or_404(Topic, pk=topic_pk)
 
     if request.user.is_authenticated():
@@ -67,11 +67,10 @@ def topic(request, topic_pk, topic_slug):
 
     posts = Post.objects.all().filter(topic__pk=t.pk).order_by('position_in_topic')
 
-    # Pour gérer la pagination
+    # Handle pagination
     paginator = Paginator(posts, POSTS_PER_PAGE)
 
-    # On a besoin de la liste des categories pour pouvoir gérer le déplacement des
-    # sujets
+    # The category list is needed to move threads
     categories = Category.objects.all()
 
     try:
@@ -86,13 +85,13 @@ def topic(request, topic_pk, topic_slug):
     except EmptyPage:
         raise Http404
 
-    # Vérification du lien
+    # Check link
     if not topic_slug == slugify(t.title):
         return redirect(t.get_absolute_url())
 
     res = []
     if nb != 1:
-        # Pour afficher le dernier post de la précédente page.
+        # Show the last post of the previous page
         last_page = paginator.page(nb - 1).object_list
         last_post = (last_page)[len(last_page) - 1]
         res.append(last_post)
@@ -117,7 +116,7 @@ def new(request):
 
     if request.method == 'POST':
 
-        # Si on utilise le bouton de prévisualisation
+        # If the client is using the "preview" button
         if 'preview' in request.POST:
             return render_template('forum/new.html', {
                 'forum': forum,
@@ -134,7 +133,7 @@ def new(request):
                 raise Http404
             data = form.data
 
-            # Création du topic
+            # Creating the thread
             t = Topic()
             t.forum = f
             t.title = data['title']
@@ -143,7 +142,7 @@ def new(request):
             t.author = request.user
             t.save()
 
-            # Ajout du premier message
+            # Adding the first message
             p = Post()
             p.topic = t
             p.author = request.user
@@ -158,7 +157,7 @@ def new(request):
             return redirect(t.get_absolute_url())
 
         else:
-            # TODO: retourner la form avec les erreur
+            # TODO: add errors to the form and return it
             raise Http404
 
     else:
@@ -204,10 +203,10 @@ def edit(request):
             forum = get_object_or_404(Forum, pk=forum_pk)
             t.forum = forum
         else:
-            # La tâche d'administration n'existe pas
+            # The admin task doesn't exist
             raise Http404
     else:
-        # La tâche utilisateur n'existe pas
+        # The user task doesn't exist
         raise Http404
 
     t.save()
@@ -224,21 +223,21 @@ def answer(request):
 
     t = get_object_or_404(Topic, pk=topic_pk)
 
-    # On vérifie qu'on a bien le droit de poster dans le sujet
+    # Making sure posting is allowed
     if t.is_locked:
         raise Http404
 
-    # Si on viens d'envoyer des données
+    # If we just sent data
     if request.method == 'POST':
 
-        # Utilisation du bouton de prévisualisation ou du bouton d'options
+        # Using the "preview" button or the "more options" button
         if 'preview' in request.POST or 'plus' in request.GET:
             text = request.POST['text']
             return render_template('forum/answer.html', {
                 'text': text, 'topic': t
             })
 
-        # Sauvegarde du message
+        # Saving the message
         else:
             form = PostForm(request.POST)
             if form.is_valid():
@@ -262,7 +261,7 @@ def answer(request):
     else:
         text = ''
 
-        # Utilisation du bouton de citation
+        # Using the quote button
         if 'cite' in request.GET:
             post_cite_pk = request.GET['cite']
             post_cite = Post.objects.get(pk=post_cite_pk)
@@ -291,13 +290,13 @@ def edit_post(request):
     if post.position_in_topic == 1:
         topic = get_object_or_404(Topic, pk=post.topic.pk)
 
-    # On vérifie bien que l'utilisateur en question peut modifier le post
+    # Making sure the user is allowed to do that
     if post.author != request.user and not request.user.is_staff:
         raise Http404
 
     if request.method == 'POST':
 
-        # Utilisation du bouton de prévisualisation
+        # Using the preview button
         if 'preview' in request.POST:
             if topic:
                 topic = Topic(title=request.POST['title'], subtitle=request.POST['subtitle'])
@@ -305,12 +304,12 @@ def edit_post(request):
                 'post': post, 'topic': topic, 'text': request.POST['text'],
             })
 
-        # L'utilisateur viens d'envoyer les données, on les traite
+        # The user just sent data, handle them
         post.text = request.POST['text']
         post.update = datetime.now()
         post.save()
 
-        # Topic edition
+        # Modifying the thread info
         if topic:
             topic.title = request.POST['title']
             topic.subtitle = request.POST['subtitle']
@@ -334,7 +333,7 @@ def useful_post(request):
 
     post = get_object_or_404(Post, pk=post_pk)
 
-    # On vérifie que l'utilisateur a le droit de faire ça
+    # Making sure the user is allowed to do that
     if post.author == request.user or request.user != post.topic.author:
         raise Http404
 

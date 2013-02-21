@@ -45,7 +45,7 @@ thead th
     width: 100px;
 }
 
-/* Classe à ajouter aux ancres pour éviter le décalage avec la barre */
+/* Add this to anchors to position them correctly in the navbar */
 .anchor
 {
     padding-top: 60px;

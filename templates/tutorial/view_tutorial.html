@@ -33,12 +33,12 @@
 </div>
 
 {% if tutorial.is_mini %}
-{# Mini-tutoriel #}
+{# Small tutorial #}
 
     {% include "tutorial/view_chapter_common.html" %}
 
 {% else %}
-{# Big-tutoriel #}
+{# Large tutorial #}
     <p>
     Il y a {{ parts.count }} partie{{ parts.count|pluralize }} dans ce tutoriel.
     </p>

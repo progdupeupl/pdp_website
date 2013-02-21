@@ -174,8 +174,7 @@ ABSOLUTE_URL_OVERRIDES = {
     'auth.user': lambda u: '/membres/voir/%s' % u.username
 }
 
-# Chargement de la configuration de production qui écrasera les paramètres
-# nécessaires si présente
+# Load the production settings, overwrite the existing ones if needed
 try:
     from settings_prod import *
 except ImportError:

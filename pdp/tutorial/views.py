@@ -29,16 +29,15 @@ def view_tutorial(request, tutorial_pk, tutorial_slug):
     if not t.is_visible and request.user not in t.authors.all():
         raise Http404
 
-    # On vérifie que l'URL est correcte
+    # Make sure the URL is well-formed
     if not tutorial_slug == slugify(t.title):
         return redirect(t.get_absolute_url())
 
-    # On prévoit deux variables pour gérer les deux cas de figure
+    # Two variables to handle two distinct cases (large/small tutorial)
     c = None
     p = None
 
-    # Si le tuto est un mini-tuto, alors on va chercher le chapitre
-    # correspondant
+    # If it's a small tutorial, fetch its chapter
     if t.is_mini:
         c = Chapter.objects.get(tutorial=t)
     else:
@@ -58,24 +57,24 @@ def add_tutorial(request):
         if form.is_valid():
             data = form.data
 
-            # Création du tutoriel
+            # Creating a tutorial
             t = Tutorial()
             t.title = data['title']
             t.description = data['description']
             t.is_mini = 'is_mini' in data
             t.save()
 
-            # On doit sauvegarder obligatoirement le tutoriel avant d'être
-            # autorisé à modifier la liste des auteurs (many-to-many)
+            # We need to save the tutorial before changing its author list
+            # since it's a many-to-many relationship
             t.authors.add(request.user)
 
-            # On sauvegarde l'icone
+            # Save the icon
             if 'icon' in request.FILES:
                 t.icon = request.FILES['icon']
 
             t.save()
 
-            # S'il s'agit d'un mini-tuto, on lui attribue un chapitre d'office
+            # If it's a small tutorial, create its corresponding chapter
             if t.is_mini:
                 c = Chapter()
                 c.tutorial = t
@@ -84,7 +83,7 @@ def add_tutorial(request):
             return redirect(t.get_absolute_url())
 
         else:
-            # TODO: retourner la form avec les erreurs
+            # TODO: add errors to the form and return it
             raise Http404
 
     else:
@@ -98,7 +97,7 @@ def view_chapter(request, tutorial_pk, tutorial_slug, part_pos, part_slug, chapt
     if not c.get_tutorial().is_visible and not request.user in c.get_tutorial().authors.all():
         raise Http404
 
-    # On vérifie que l'URL est correcte
+    # Make sure the URL is well-formed
     if not tutorial_slug == slugify(c.part.tutorial.title)\
         or not part_slug == slugify(c.part.title)\
             or not chapter_slug == slugify(c.title):
@@ -117,7 +116,7 @@ def view_part(request, tutorial_pk, tutorial_slug, part_pos, part_slug):
     if not p.tutorial.is_visible and not request.user in p.tutorial.authors.all():
         raise Http404
 
-    # On vérifie que l'URL est correcte
+    # Make sure the URL is well-formed
     if not tutorial_slug == slugify(p.tutorial.title)\
             or not part_slug == slugify(p.title):
         return redirect(p.get_absolute_url())
@@ -136,11 +135,11 @@ def add_part(request):
 
     t = get_object_or_404(Tutorial, pk=tutorial_pk)
 
-    # On s'assure qu'il s'agit bien d'un big-tuto
+    # Make sure it's a big tutorial, just in case
     if t.is_mini:
         raise Http404
 
-    # On vérifie que l'utilisateur fait partie des auteurs
+    # Make sure the user belongs to the author list
     if not request.user in t.authors.all():
         raise Http404
 
@@ -161,7 +160,7 @@ def add_part(request):
             return redirect(p.get_absolute_url())
 
         else:
-            # TODO: retourner le formulaire avec les erreurs
+            # TODO: add errors to the form and return it
             raise Http404
     else:
         return render_template('tutorial/new_part.html', {
@@ -176,7 +175,7 @@ def modify_part(request):
     part_pk = request.POST['part']
     p = get_object_or_404(Part, pk=part_pk)
 
-    # On vérifie que l'utilisateur a le doit de faire ça
+    # Make sure the user is allowed to do that
     if not request.user in p.tutorial.authors.all():
         raise Http404
 
@@ -184,13 +183,13 @@ def modify_part(request):
         new_pos = int(request.POST['move_target'])
         old_pos = p.position_in_tutorial
 
-        # On vérifie que la position n'est pas incorrecte
+        # Make sure the requested position is correct
         if new_pos < 1 or new_pos > p.tutorial.get_parts().count():
             raise ValueError('La nouvelle position demandée est incorrecte')
 
-        # On met à jour les autres parties en changeant également leur position
-        # Faire un schéma sur papier pour comprendre l'algo pourrait vous aider
-        # si vous êtes curieux de savoir comment ça fonctionne
+        # Update other parts by changing their position
+        # Draw a schema on a piece of paper if you want to understand how this works
+        # TODO: if the above comment is needed, there's probably a better algorithm
         pos_increased = new_pos - old_pos > 0
         for tut_p in p.tutorial.get_parts():
             if pos_increased \
@@ -202,22 +201,22 @@ def modify_part(request):
                 tut_p.position_in_tutorial = tut_p.position_in_tutorial + 1
                 tut_p.save()
 
-        # On sauvegarde la nouvelle position une fois que le reste a été rangé
+        # Save the new position after the other parts have been sorted
         p.position_in_tutorial = new_pos
         p.save()
 
     elif 'delete' in request.POST:
-        # On supprime tous les chapitres associés à la partie
+        # Delete all chapters belonging to the part
         Chapter.objects.all().filter(part=p).delete()
 
-        # On réagence les autres parties du tutoriel
+        # Move other parts
         old_pos = p.position_in_tutorial
         for tut_p in p.tutorial.get_parts():
             if old_pos <= tut_p.position_in_tutorial:
                 tut_p.position_in_tutorial = tut_p.position_in_tutorial - 1
                 tut_p.save()
 
-        # Enfin, on supprime à proprement parler la partie
+        # Actually delete the part
         p.delete()
 
     return redirect(p.tutorial.get_absolute_url())
@@ -231,7 +230,7 @@ def edit_part(request):
 
     p = get_object_or_404(Part, pk=part_pk)
 
-    # On vérifie que l'utilisateur a bien le droit de faire ça
+    # Make sure the user is allowed to do that
     if not request.user in p.tutorial.authors.all():
         raise Http404
 
@@ -264,7 +263,7 @@ def add_chapter(request):
 
     p = get_object_or_404(Part, pk=part_pk)
 
-    # On vérifie que l'utilisateur a le droit de faire ça
+    # Make sure the user is allowed to do that
     if not request.user in p.tutorial.authors.all():
         raise Http404
 
@@ -305,7 +304,7 @@ def modify_chapter(request):
 
     c = get_object_or_404(Chapter, pk=chapter_pk)
 
-    # On vérifie que l'utilisateur a le doit de faire ça
+    # Make sure the user is allowed to do that
     #if not request.user in c.part.tutorial.authors.all():
     #   raise Http404
 
@@ -313,13 +312,13 @@ def modify_chapter(request):
         new_pos = int(request.GET['position'])
         old_pos = c.position_in_part
 
-        # On vérifie que la position n'est pas incorrecte
+        # Make sure the requested position is valid
         if new_pos < 1 or new_pos > c.part.get_chapters().count():
             raise ValueError('La nouvelle position demandée est incorrecte')
 
-        # On met à jour les autres parties en changeant également leur position
-        # Faire un schéma sur papier pour comprendre l'algo pourrait vous aider
-        # si vous êtes curieux de savoir comment ça fonctionne
+        # Update other chapters by changing their position
+        # Draw a schema on a piece of paper if you want to understand how this works
+        # TODO: if the above comment is needed, there's probably a better algorithm
         pos_increased = new_pos - old_pos > 0
         for tut_c in c.part.get_chapters():
             if pos_increased \
@@ -331,20 +330,19 @@ def modify_chapter(request):
                 tut_c.position_in_part = tut_c.position_in_part + 1
                 tut_c.save()
 
-        # On sauvegarde la nouvelle position une fois que le reste a été rangé
+        # Save the new position once other chapters have been sorted
         c.position_in_part = new_pos
         c.save()
 
     elif 'delete' in data:
-
-        # On réagence les autres parties du tutoriel
+        # Move other chapters first
         old_pos = c.position_in_part
         for tut_c in c.part.get_chapters():
             if old_pos <= tut_c.position_in_part:
                 tut_c.position_in_part = tut_c.position_in_part - 1
                 tut_c.save()
 
-        # Enfin, on supprime à proprement parler la partie
+        # Then delete the chapter
         c.delete()
 
     return redirect(c.part.tutorial.get_absolute_url())
@@ -360,7 +358,7 @@ def edit_chapter(request):
     big = c.part
     small = c.tutorial
 
-    # On vérifie que l'utilisateur a bien le droit de faire ça
+    # Make sure the user is allowed to do that
     if big and (not request.user in c.part.tutorial.authors.all())\
             or small and (not request.user in c.tutorial.authors.all()):
         raise Http404
