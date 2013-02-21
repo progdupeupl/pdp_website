@@ -28,7 +28,7 @@ def chapter_icon_path(instance, filename):
 
 
 class Tutorial(models.Model):
-    '''Classe représentant un tutoriel'''
+    '''A tutorial, large or small'''
     class Meta:
         verbose_name = 'Tutoriel'
         verbose_name_plural = 'Tutoriels'
@@ -62,13 +62,13 @@ def get_last_tutorials():
     return Tutorial.objects.all().filter(is_visible=True).order_by('title')[:3]
 
     def get_chapter(self):
-        '''Retourne le chapitre associé au mini-tutoriel'''
+        '''Gets the chapter associated with the tutorial if it's small'''
         # We can use get since we know there'll only be one chapter
         return Chapter.objects.get(tutorial__pk=self.pk)
 
 
 class Part(models.Model):
-    '''Classe représentant un groupement de chapitres'''
+    '''A part, containing chapters'''
     class Meta:
         verbose_name = 'Partie'
         verbose_name_plural = 'Parties'
@@ -101,8 +101,7 @@ class Part(models.Model):
 
 
 class Chapter(models.Model):
-    '''Classe représentant un chapitre de tutoriel dans lequel se situe l'info
-    rmation'''
+    '''A chapter, containing text'''
     class Meta:
         verbose_name = 'Chapitre'
         verbose_name_plural = 'Chapitres'
@@ -160,7 +159,7 @@ class Chapter(models.Model):
 
 
 class Extract(models.Model):
-    '''Classe représentant un morceau de contenu dans un chapitre'''
+    '''A content extract from a chapter'''
     class Meta:
         verbose_name = 'Extrait'
         verbose_name_plural = 'Extraits'

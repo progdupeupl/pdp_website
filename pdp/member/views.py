@@ -17,7 +17,7 @@ from forms import LoginForm, ProfileForm, RegisterForm
 
 
 def index(request):
-    '''Affiche la liste des profils des membres inscrits'''
+    '''Displays the list of registered users'''
     p = Profile.objects.all()
 
     return render_template('member/index.html', {
@@ -26,7 +26,7 @@ def index(request):
 
 
 def details(request, user_name):
-    '''Affiche les détails concernant un profil particulier'''
+    '''Displays details about a profile'''
     u = get_object_or_404(User, username=user_name)
 
     try:

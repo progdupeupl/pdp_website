@@ -1,8 +1,8 @@
 # coding: utf-8
 
 # This file comes from Progmod; it was slightly modified to work properly
-# on PDP
-# Thanks a lot!
+# on PDP and translated for the sake of language consistency.
+# Hats off to them!
 
 from datetime import *
 from django import template
@@ -11,49 +11,45 @@ import pdp.settings
 
 
 def humane_date(date, conf={}):
-    """Exprime la date d'un événement d'une façon agréable à lire pour un humain.
+    """Transforms a date into a human-readable format.
 
-    Compare la date à afficher au moment actuel :
-    - il y a 3 minutes et 25 secondes
-    - il y a 2 heures
-    - hier à 18 heures
-    - il y a trois mois
+    Compares the current date to the given one:
+    - 3 minutes and 25 seconds ago
+    - 2 hours ago
+    - yesterday at 18:00
+    - three months ago
 
     Arguments:
-    - date : un 'datetime', avec éventuellement une information de
-      fuseau horaire (timezone)
+    - date: a datetime instance, with or without a timezone
 
-    - conf : un dictionnaire contenant les éventuels paramètres
-      optionnels de la fonction. On utilise un dictionnaire plutôt que
-      plusieurs arguments car la fonction est destinée à être utilisée
-      comme filtre Django, qui n'acceptent qu'un seul paramètre
-      supplémentaire. Les valeurs actuellement supportées sont les
-      suivantes :
-      - 'debug':False : si True, ajoute des informations de debug
-      - 'precise':False : si True, affiche toujours la date sans limite de précision
-      - 'precision_limit':3 : limite de précision par défaut
-      - 'disable':False : si True, affiche la date de façon habituelle
-      - 'full_after_week':True : si True, affiche la date complète au delà d'une semaine
+    - conf: a dictionary containing the parameters, if needed.
+            It's a dictionary because this method is meant to be
+            used as a Django filter and filters can only have one argument.
+            Currently supported keys (and their respective default values) are
+            as follows:
 
-    Implémentation : on repère les deux unités significatives
-    ((minutes, secondes) ou (mois, jours)) par exemple. Par défaut, on
-    n'affiche la seconde que si la première est inférieure
-    à 'precision_limit'. Si 'precise' est vraie, on affiche toujours
-    la seconde.
+            - 'debug' (False): if True, adds debug info
+            - 'precise' (False): if True, removes the precision limit (see below)
+            - 'precision_limit' (3): precision limit (see below)
+            - 'disable' (False): if True, displays the date in the usual format
+            - 'full_after_week' (True): if True, displays the full date if
+                                        it's more than a week old
 
-    Il y a un cas particulier dans le cas où la date fournie contient
-    un fuseau horaire : si les unités significatives sont (jours,
-    heures) et que l'événement est distant d'au plus deux jours, ou
-    bien se passe dans la même semaine, on renvoie une date absolue de
-    la forme (H ∈ [0..23]) :
-    - "hier à H heures" (distant de moins de deux jours : hier,
-      avant-hier, demain, après-demain)
-    - "mardi à H heures" (même semaine)
-    Pour H = 0 et H = 12, on affiche plutôt 'minuit' et 'midi'
+    Implementation: Look at the two most important units (e.g. min/sec or day/month)
+                    By default, show the second one only if the first is less than
+                    the 'precision_limit' parameter. If the 'precise' parameter is True,
+                    there is no precision limit.
 
+                    One edge case is when the given date has a timezone info; if the
+                    two most important units are day/hour and the date is less than two
+                    days old or in the current week, display a relative date like this:
+                    - yesterday at 10
+                    - tomorrow at noon
+                    - Tuesday at 9
+                    0 and 12 are displayed as "midnight" and "noon" respectively
 
     """
-
+    
     precise_limit = conf.get('precision_limit', 3)
     precise = conf.get('precise', False)
     debug = conf.get('debug', False)
@@ -75,7 +71,7 @@ def humane_date(date, conf={}):
         return fulldate(date, today)
 
     def week(date):
-        """Numéro de la semaine"""
+        """Week number"""
         year, week, weekday = date.isocalendar()
         return year, week
 
@@ -95,11 +91,11 @@ def humane_date(date, conf={}):
     prefixe = "il y a" if date < today else "dans"
 
     def compte((str, n)):
-        """Exprime l'unite demandée, avec un 's' au pluriel"""
+        """Returns the requested unit, using plural if necessary"""
         return "%d %s%s" % (n, str, 's' if n > 1 and str[-1] != 's' else '')
 
     def presente(unite1, unite2, prefixe=prefixe + ' '):
-        """Exprime les deux unités fournies, en tenant compte de la précision souhaitée"""
+        """Returns one or two of the given units, depending on precision"""
         result = debug_msg + prefixe
         if (not precise and unite1[1] > precise_limit) or unite2[1] == 0:
             result += compte(unite1)
@@ -142,7 +138,7 @@ def humane_date(date, conf={}):
 
 
 def test(tz=None):
-    """Tests pour la fonction humane_date"""
+    """humane_date tests"""
     def test_date(date, conf={}):
         pass
         #print "%s  : %s" % (date, humane_date(date, conf))

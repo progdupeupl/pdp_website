@@ -15,7 +15,7 @@ from forms import TopicForm, PostForm
 
 
 def index(request):
-    '''Affiche la liste des forums'''
+    '''Display the category list'''
     c = Category.objects.all()
 
     return render_template('forum/index.html', {
@@ -24,7 +24,7 @@ def index(request):
 
 
 def details(request, cat_slug, forum_pk, forum_slug):
-    '''Affiche la liste des sujets d'un forum'''
+    '''Display the given forum's thread list'''
     f = get_object_or_404(Forum, pk=forum_pk)
 
     t = Topic.objects.all()\
@@ -42,7 +42,7 @@ def details(request, cat_slug, forum_pk, forum_slug):
 
 
 def cat_details(request, cat_pk, cat_slug):
-    '''Affiche la liste des forums reliés à une catégorie précise'''
+    '''Display the forums belonging to the given category'''
     c = get_object_or_404(Category, pk=cat_pk)
     f = Forum.objects.all().filter(category__pk=c.pk)
 
@@ -56,7 +56,7 @@ def cat_details(request, cat_pk, cat_slug):
 
 
 def topic(request, topic_pk, topic_slug):
-    '''Visualisation d'un sujet et de ses réponses'''
+    '''Display a thread and its posts'''
 
     # TODO: Clean that up
     t = get_object_or_404(Topic, pk=topic_pk)
@@ -215,7 +215,7 @@ def edit(request):
 
 @login_required
 def answer(request):
-    'Ajoute une réponse à une discussion'
+    '''Adds an answer to a thread'''
     try:
         topic_pk = request.GET['sujet']
     except KeyError:
@@ -325,7 +325,7 @@ def edit_post(request):
 
 @login_required
 def useful_post(request):
-    '''Marque un message comme ayant été utile pour l'OP'''
+    '''Marks a message as useful (for the OP)'''
     try:
         post_pk = request.GET['message']
     except KeyError:

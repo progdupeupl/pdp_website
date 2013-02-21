@@ -11,7 +11,7 @@ from pdp.utils import get_current_user
 POSTS_PER_PAGE = 10
 
 class Category(models.Model):
-    '''Classe représentant une catégorie de forums'''
+    '''A category, containing forums'''
     class Meta:
         verbose_name = 'Catégorie'
         verbose_name_plural = 'Catégories'
@@ -19,7 +19,7 @@ class Category(models.Model):
     title = models.CharField('Titre', max_length=80)
 
     def __unicode__(self):
-        '''Représentation textuelle d'une catégorie'''
+        '''Textual form of a category'''
         return self.title
 
     def get_absolute_url(self):
@@ -30,7 +30,7 @@ class Category(models.Model):
 
 
 class Forum(models.Model):
-    '''Classe représentant un forum'''
+    '''A forum, containing threads'''
     class Meta:
         verbose_name = 'Forum'
         verbose_name_plural = 'Forums'
@@ -41,7 +41,7 @@ class Forum(models.Model):
     category = models.ForeignKey(Category, verbose_name='Catégorie')
 
     def __unicode__(self):
-        '''Représentation textuelle d'un forum'''
+        '''Textual form of a forum'''
         return self.title
 
     def get_absolute_url(self):
@@ -53,11 +53,11 @@ class Forum(models.Model):
         )
 
     def get_topic_count(self):
-        '''Retourne le nombre de sujets postés dans le forum'''
+        '''Gets the number of threads in the forum'''
         return Topic.objects.all().filter(forum__pk=self.pk).count()
 
     def get_last_message(self):
-        '''Retourne le dernier message posté dans le forum'''
+        '''Gets the last message on the forum, if there are any'''
         try:
             return Post.objects.all().filter(topic__forum__pk=self.pk).order_by('-pubdate')[0]
         except IndexError:
@@ -65,7 +65,7 @@ class Forum(models.Model):
 
 
 class Topic(models.Model):
-    '''Classe représentant une discussion'''
+    '''A thread, containing posts'''
     class Meta:
         verbose_name = 'Sujet'
         verbose_name_plural = 'Sujets'
@@ -83,18 +83,18 @@ class Topic(models.Model):
     is_sticky = models.BooleanField('Est en post-it')
 
     def __unicode__(self):
-        '''Représentation textuelle d'un topic'''
+        '''Textual form of a thread'''
         return self.title
 
     def get_absolute_url(self):
         return '/forums/sujet/%s-%s' % (self.pk, slugify(self.title))
 
     def get_post_count(self):
-        '''Retourne le nombre de messages postés dans la discussion'''
+        '''Gets the number of posts in the thread'''
         return Post.objects.all().filter(topic__pk=self.pk).count()
 
     def get_last_answer(self):
-        '''Retourne le denier message posté dans le sujet'''
+        '''Gets the last answer in the thread, if there are any'''
         try:
             return Post.objects.all().filter(topic__pk=self.pk).order_by('-pubdate')[0]
         except IndexError:
@@ -114,7 +114,7 @@ class Topic(models.Model):
 
 
 class Post(models.Model):
-    '''Classe représentant une réponse dans la discussion'''
+    '''A forum post'''
     topic = models.ForeignKey(Topic, verbose_name='Sujet')
     author = models.ForeignKey(User, verbose_name='Auteur')
     text = models.TextField('Texte')
@@ -127,7 +127,7 @@ class Post(models.Model):
     is_useful = models.BooleanField('Est utile', default=False)
 
     def __unicode__(self):
-        '''Représentation textuelle d'une réponse'''
+        '''Textual form of a post'''
         return u'<Post pour %s, %s>' % (self.topic, self.pk)
 
     def get_absolute_url(self):
