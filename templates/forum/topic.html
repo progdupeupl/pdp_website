@@ -34,7 +34,7 @@
 
     {% if user.is_staff %}
 
-    {# Bouton pour déplacer le sujet #}
+    {# Button to move the thread #}
     <a href="javascript:void(0)" class="btn move-btn" data-toggle="popover" data-original-title="Déplacer le sujet dans..." data-placement="bottom"
         data-content="
             <select class='input-block-level' name='move_target'>
@@ -52,13 +52,13 @@
         Déplacer
     </a>
     <div class="btn-group">
-        {# Bouton pour passer le sujet en post-it #}
+        {# Button to make the thread a post-it #}
         <button type="submit" name="sticky"
             class="btn {% if topic.is_sticky %}btn-info{% endif %}">
             <i class="icon-bookmark {% if topic.is_sticky %}icon-white{% endif %}"></i>
             Post-it
         </button>
-        {# Bouton pour verrouiller le sujet #}
+        {# Button to lock the thread #}
         <button type="submit" name="lock"
             class="btn {% if topic.is_locked %}btn-warning{% endif %}">
             <i class="icon-lock {% if topic.is_locked %}icon-white{% endif %}"></i>
@@ -69,7 +69,7 @@
     {% endif %}
     {% if topic.author.pk == user.pk %}
 
-        {# Bouton pour passer en résolu #}
+        {# Button to indicate the problem in the thread was solved #}
         <button type="submit" name="solved"
             class="btn {% if topic.is_solved %}btn-success{% endif %}">
             <i class="icon-flag {% if topic.is_solved %}icon-white{% endif %}"></i>
@@ -78,7 +78,7 @@
 
     {% else %}
 
-        {# Bouton pour suivre le sujet #}
+        {# Button to follow the thread #}
         <button type="submit" name="follow"
             class="btn {% if 1 == 1 %}btn-primary{% endif %}">
             {% if 1 == 2 %}
@@ -134,7 +134,7 @@
             <td>
 
                 {% if user.is_authenticated %}
-                    {# Boutons présents sur les réponses #}
+                    {# Buttons on the answers #}
                     <div class="pull-right btn-group">
                         
                         {% if topic.author == user and post.author != user %}

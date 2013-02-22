@@ -5,7 +5,7 @@ from django.conf.urls import patterns, url
 import views
 
 urlpatterns = patterns('',
-    # Visualisation d'un sujet
+    # Viewing a thread
     url(r'sujet/nouveau$', views.new),
     url(r'sujet/editer$', views.edit),
     url(r'sujet/(?P<topic_pk>\d+)-(?P<topic_slug>.+)$', views.topic),
@@ -14,12 +14,12 @@ urlpatterns = patterns('',
     url(r'message/nouveau$', views.answer),
     url(r'message/utile$', views.useful_post),
 
-    # Détails d'un forum
+    # Forum details
     url(r'(?P<cat_slug>.+)/(?P<forum_pk>\d+)-(?P<forum_slug>.+)/$', views.details),
 
-    # Liste des forums d'une seule catégorie
+    # Forums belonging to one category
     url(r'(?P<cat_pk>\d+)-(?P<cat_slug>.+)/$', views.cat_details),
 
-   # Index
+   # Home
    url(r'$', views.index),
 )

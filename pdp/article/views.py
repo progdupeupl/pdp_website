@@ -73,7 +73,7 @@ def edit(request):
 
     a = get_object_or_404(Article, pk=article_pk)
 
-    # On vérifie que l'utilisateur a le droit de faire ça
+    # Make sure the user is allowed to do it
     if not request.user == a.author:
         raise Http404
 
