@@ -1,3 +1,5 @@
+# coding: utf-8
+
 from django.test import TestCase
 from django_dynamic_fixture import G
 
@@ -22,7 +24,7 @@ class ArticleTests(TestCase):
         for n in range(2000, 1900, -1):
             a = G(Article, pubdate=datetime(n,1,1,tzinfo=utc))
             articles.append(a)
-        
+
         last = get_last_articles()
 
         for n, val in enumerate(last):
