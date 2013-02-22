@@ -1,6 +1,9 @@
 # coding: utf-8
 
 import os
+import locale
+
+locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
