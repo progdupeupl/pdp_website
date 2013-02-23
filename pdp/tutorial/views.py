@@ -9,37 +9,38 @@ from .models import Tutorial, Part, Chapter, Extract
 from .forms import TutorialForm, PartForm, ChapterForm, ExtractForm
 
 def index(request):
-    t = Tutorial.objects.all().filter(is_visible=True)
+    '''Display tutorials list'''
+    tutorials = Tutorial.objects.all().filter(is_visible=True)
 
     if request.user.is_authenticated():
-        user_t = Tutorial.objects.filter(authors=request.user)
+        user_tutorials = Tutorial.objects.filter(authors=request.user)
     else:
-        user_t = None
+        user_tutorials = None
 
     return render_template('tutorial/index.html', {
-        'tutorials': t,
-        'user_tutorials': user_t
+        'tutorials': tutorials,
+        'user_tutorials': user_tutorials
     })
 
 
 def view_tutorial(request, tutorial_pk, tutorial_slug):
+    '''Display a tutorial'''
+    tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
 
-    t = get_object_or_404(Tutorial, pk=tutorial_pk)
-
-    if not t.is_visible and request.user not in t.authors.all():
+    if not tutorial.is_visible and request.user not in tutorial.authors.all():
         raise Http404
 
     # Make sure the URL is well-formed
-    if not tutorial_slug == slugify(t.title):
-        return redirect(t.get_absolute_url())
+    if not tutorial_slug == slugify(tutorial.title):
+        return redirect(tutorial.get_absolute_url())
 
     # Two variables to handle two distinct cases (large/small tutorial)
     c = None
     p = None
 
     # If it's a small tutorial, fetch its chapter
-    if t.is_mini:
-        c = Chapter.objects.get(tutorial=t)
+    if tutorial.is_mini:
+        c = Chapter.objects.get(tutorial=tutorial)
     else:
         p = Part.objects.all(
         ).filter(tutorial=t).order_by('position_in_tutorial')
