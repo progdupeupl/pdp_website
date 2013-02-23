@@ -18,26 +18,22 @@ from forms import LoginForm, ProfileForm, RegisterForm
 
 def index(request):
     '''Displays the list of registered users'''
-    p = Profile.objects.all()
-
+    profiles = Profile.objects.all().order_by('user__date_joined')
     return render_template('member/index.html', {
-        'profiles': p
+        'profiles': profiles
     })
 
 
 def details(request, user_name):
     '''Displays details about a profile'''
-    u = get_object_or_404(User, username=user_name)
-
+    usr = get_object_or_404(User, username=user_name)
     try:
-        p = u.get_profile()
+        profile = usr.get_profile()
     except SiteProfileNotAvailable:
         raise Http404
-
     return render_template('member/profile.html', {
-        'usr': u, 'profile': p
+        'usr': usr, 'profile': profile
     })
-
 
 @login_required
 def edit_profile(request):
@@ -45,37 +41,29 @@ def edit_profile(request):
         profile_pk = int(request.GET['profil'])
     except KeyError:
         raise Http404
-
-    p = get_object_or_404(Profile, pk=profile_pk)
-
+    profile = get_object_or_404(Profile, pk=profile_pk)
     # Making sure the user is allowed to do that
-    if not request.user == p.user:
+    if not request.user == profile.user:
         raise Http404
-
     if request.method == 'POST':
         form = ProfileForm(request.POST)
         if form.is_valid():
             data = form.data
-
-            p.biography = data['biography']
-            p.site = data['site']
-            p.show_email = 'show_email' in data
-            p.save()
-
-            return redirect(p.get_absolute_url())
-
+            profile.biography = data['biography']
+            profile.site = data['site']
+            profile.show_email = 'show_email' in data
+            profile.save()
+            return redirect(profile.get_absolute_url())
         else:
             raise Http404
-
     else:
         return render_template('member/edit_profile.html', {
-            'profile': p
+            'profile': profile
         })
 
-
 def login_view(request):
-    c = {}
-    c.update(csrf(request))
+    csrf_tk = {}
+    csrf_tk.update(csrf(request))
 
     error = False
     if request.method == 'POST':
@@ -94,19 +82,15 @@ def login_view(request):
             error = 'Le couple pseudo/mot de passe est erroné'
     else:
         form = LoginForm()
-
-    c['error'] = error
-    c['form'] = form
-
-    return render_template('member/login.html', c)
-
+    csrf_tk['error'] = error
+    csrf_tk['form'] = form
+    return render_template('member/login.html', csrf_tk)
 
 @login_required
 def logout_view(request):
     logout(request)
     request.session.clear()
     return redirect('/')
-
 
 def register_view(request):
     if request.method == 'POST':
@@ -117,7 +101,6 @@ def register_view(request):
                 data['username'],
                 data['email'],
                 data['password'])
-
             profile = Profile(user=user, show_email='show_email' in data)
             profile.save()
             user.backend = 'django.contrib.auth.backends.ModelBackend'
