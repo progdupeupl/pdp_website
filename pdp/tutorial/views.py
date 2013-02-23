@@ -35,18 +35,18 @@ def view_tutorial(request, tutorial_pk, tutorial_slug):
         return redirect(tutorial.get_absolute_url())
 
     # Two variables to handle two distinct cases (large/small tutorial)
-    chapter = None
-    parts = None
+    c = None
+    p = None
 
     # If it's a small tutorial, fetch its chapter
     if tutorial.is_mini:
-        chapter = Chapter.objects.get(tutorial=tutorial)
+        c = Chapter.objects.get(tutorial=tutorial)
     else:
-        parts = Part.objects.all(
-        ).filter(tutorial=tutorial).order_by('position_in_tutorial')
+        p = Part.objects.all(
+        ).filter(tutorial=t).order_by('position_in_tutorial')
 
     return render_template('tutorial/view_tutorial.html', {
-        'tutorial': tutorial, 'chapter': chapter, 'parts': parts
+        'tutorial': t, 'chapter': c, 'parts': p
     })
 
 
