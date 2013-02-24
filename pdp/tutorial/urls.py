@@ -19,6 +19,8 @@ urlpatterns = patterns('',
 
     # Edition
 
+    url(r'editer/tutoriel$', views.edit_tutorial),
+
     url(r'modifier/partie$', views.modify_part),
     url(r'editer/partie$', views.edit_part),
 

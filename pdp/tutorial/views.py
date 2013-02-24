@@ -6,7 +6,7 @@ from django.http import Http404
 from pdp.utils import render_template, slugify
 
 from .models import Tutorial, Part, Chapter, Extract
-from .forms import TutorialForm, PartForm, ChapterForm, ExtractForm
+from .forms import *
 
 
 def index(request):
@@ -22,6 +22,8 @@ def index(request):
         'user_tutorials': user_t
     })
 
+
+# Tutorial
 
 def view_tutorial(request, tutorial_pk, tutorial_slug):
 
@@ -83,31 +85,47 @@ def add_tutorial(request):
                 c.save()
 
             return redirect(t.get_absolute_url())
-
-        else:
-            # TODO: retourner la form avec les erreurs
-            raise Http404
-
     else:
-        return render_template('tutorial/new_tutorial.html')
+        form = TutorialForm()
+
+    return render_template('tutorial/new_tutorial.html', {
+        'form': form
+    })
 
 
-def view_chapter(request, tutorial_pk, tutorial_slug, part_pos, part_slug, chapter_pos, chapter_slug):
-
-    c = Chapter.objects.get(position_in_part=chapter_pos, part__position_in_tutorial=part_pos, part__tutorial__pk=tutorial_pk)
-
-    if not c.get_tutorial().is_visible and not request.user in c.get_tutorial().authors.all():
+def edit_tutorial(request):
+    try:
+        tutorial_pk = request.GET['tutoriel']
+    except KeyError:
         raise Http404
 
-    # On vérifie que l'URL est correcte
-    if not tutorial_slug == slugify(c.part.tutorial.title)\
-        or not part_slug == slugify(c.part.title)\
-            or not chapter_slug == slugify(c.title):
-        return redirect(c.get_absolute_url())
+    t = get_object_or_404(Tutorial, pk=tutorial_pk)
 
-    return render_template('tutorial/view_chapter.html', {
-        'chapter': c
+    if not request.user in t.authors.all():
+        raise Http404
+
+    if request.method == 'POST':
+        form = EditTutorialForm(request.POST)
+        if form.is_valid():
+            data = form.data
+
+            t.title = data['title']
+            t.description = data['description']
+
+            t.save()
+
+            return redirect(t.get_absolute_url())
+    else:
+        form = EditTutorialForm({
+            'title': t.title,
+            'description': t.description
+        })
+
+    return render_template('tutorial/edit_tutorial.html', {
+        'tutorial': t, 'form': form
     })
+
+# Part
 
 
 def view_part(request, tutorial_pk, tutorial_slug, part_pos, part_slug):
@@ -249,20 +267,36 @@ def edit_part(request):
             p.save()
 
             return redirect(p.get_absolute_url())
-        else:
-            return render_template('tutorial/edit_part.html', {
-                'part': p, 'form': form
-            })
-
     else:
         form = PartForm({
             'title': p.title,
             'introduction': p.introduction,
             'conclusion': p.conclusion
         })
-        return render_template('tutorial/edit_part.html', {
-            'part': p, 'form': form
-        })
+
+    return render_template('tutorial/edit_part.html', {
+        'part': p, 'form': form
+    })
+
+
+# Chapter
+
+def view_chapter(request, tutorial_pk, tutorial_slug, part_pos, part_slug, chapter_pos, chapter_slug):
+
+    c = Chapter.objects.get(position_in_part=chapter_pos, part__position_in_tutorial=part_pos, part__tutorial__pk=tutorial_pk)
+
+    if not c.get_tutorial().is_visible and not request.user in c.get_tutorial().authors.all():
+        raise Http404
+
+    # On vérifie que l'URL est correcte
+    if not tutorial_slug == slugify(c.part.tutorial.title)\
+        or not part_slug == slugify(c.part.title)\
+            or not chapter_slug == slugify(c.title):
+        return redirect(c.get_absolute_url())
+
+    return render_template('tutorial/view_chapter.html', {
+        'chapter': c
+    })
 
 
 def add_chapter(request):
@@ -291,14 +325,12 @@ def add_chapter(request):
             c.save()
 
             return redirect(c.get_absolute_url())
-
-        else:
-            raise Http404
-
     else:
-        return render_template('tutorial/new_chapter.html', {
-            'part': p
-        })
+        form = ChapterForm()
+
+    return render_template('tutorial/new_chapter.html', {
+        'part': p, 'form': form
+    })
 
 
 def modify_chapter(request):
@@ -375,18 +407,16 @@ def edit_chapter(request):
         raise Http404
 
     if request.method == 'POST':
-        form = ChapterForm(request.POST)
+        if c.part:
+            form = ChapterForm(request.POST)
+        else:
+            form = EmbdedChapterForm(request.POST)
 
         if form.is_valid():
             data = form.data
 
             if c.part:
                 c.title = data['title']
-            else:
-                t = c.tutorial
-                t.title = data['title']
-                t.description = data['description']
-                t.save()
 
             c.introduction = data['introduction']
             c.conclusion = data['conclusion']
@@ -394,13 +424,25 @@ def edit_chapter(request):
             c.save()
 
             return redirect(c.get_absolute_url())
-        else:
-            raise Http404
     else:
-        return render_template('tutorial/edit_chapter.html', {
-            'chapter': c
-        })
+        if c.part:
+            form = ChapterForm({
+                'title': c.title,
+                'introduction': c.introduction,
+                'conclusion': c.conclusion
+            })
+        else:
+            form = EmbdedChapterForm({
+                'introduction': c.introduction,
+                'conclusion': c.conclusion
+            })
 
+    return render_template('tutorial/edit_chapter.html', {
+        'chapter': c, 'form': form
+    })
+
+
+# Extract
 
 def add_extract(request):
     try:

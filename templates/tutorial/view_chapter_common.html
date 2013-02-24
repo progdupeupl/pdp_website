@@ -10,20 +10,24 @@
 
     <a href="/tutoriels/editer/chapitre?chapitre={{ chapter.pk }}" class="btn">
         <i class="icon-pencil"></i>
-        Éditer
+        Éditer le chapitre
     </a>
 
     {# On propose la suppression que pour les big-tutos #}
     {% if chapter.part %}
     <a href="/tutoriels/modifier/chapitre?chapitre={{ chapter.pk }}&amp;action=supprimer" class="btn">
         <i class="icon-remove"></i>
-        Supprimer
+        Supprimer le chapitre
     </a>
     {% endif %}
 </p>
 {% endif %}
 
+{% if chapter.introduction %}
 {{ chapter.introduction|markdown:"safe,codehilite,extra" }}
+{% else %}
+<p>Aucune introduction.</p>
+{% endif %}
 
 <div>
     Sommaire de ce chapitre :
@@ -67,4 +71,8 @@
 
 <hr />
 
+{% if chapter.conclusion %}
 {{ chapter.conclusion|markdown:"safe,codehilite,extra" }}
+{% else %}
+<p>Aucune conclusion.</p>
+{% endif %}
