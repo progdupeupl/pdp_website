@@ -244,7 +244,7 @@ def answer(request):
                 post.author = request.user
                 post.text = data['text']
                 post.pubdate = datetime.now()
-                post.position_in_topic = topic.get_post_count() + 1
+                post.position_in_topic = g_topic.get_post_count() + 1
                 post.save()
 
                 g_topic.last_message = post
