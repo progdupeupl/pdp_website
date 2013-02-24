@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block title %}
     Éditer l'extrait
@@ -25,50 +26,7 @@
 
 {% block content %}
 
-<form action="" method="POST" class="form-horizontal">
-
-    <fieldset>
-        <legend>Général</legend>
-
-        <div class="control-group">
-            <label class="control-label" for="id_title">
-                Titre de l'extrait
-            </label>
-            <div class="controls">
-                <input type="text" placeholder="Titre" name="title" id="id_title"
-                    value="{{ extract.title }}" />
-            </div>
-        </div>
-
-    </fieldset>
-    <fieldset>
-        <legend>Texte</legend>
-
-        <div class="control-group">
-            <label class="control-label" for="id_introduction">
-                Contenu
-            </label>
-            <div class="controls">
-                <textarea name="text" id="id_text" class="input-block-level" rows="15"
-                    placeholder="Contenu au format Markdown.">{{ extract.text }}</textarea>
-            </div>
-        </div>
-    </fieldset>
-   
-    <div class="control-group">
-        <div class="controls">
-            <button type="submit" class="btn btn-primary">
-                Sauvegarder les modifications
-            </button>
-
-            <a href="{{ extract.get_absolute_url }}" class="btn">
-                Annuler
-            </a>
-        </div>
-    </div>
-
-    {% csrf_token %}
-
-</form>
+{% include "tutorial/extract_common.html" %}
+{% crispy form %}
 
 {% endblock %}

@@ -10,20 +10,24 @@
 
     <a href="/tutoriels/editer/chapitre?chapitre={{ chapter.pk }}" class="btn">
         <i class="icon-pencil"></i>
-        Éditer
+        Éditer le chapitre
     </a>
 
     {# Part deletion is only available for large tutorials #}
     {% if chapter.part %}
     <a href="/tutoriels/modifier/chapitre?chapitre={{ chapter.pk }}&amp;action=supprimer" class="btn">
         <i class="icon-remove"></i>
-        Supprimer
+        Supprimer le chapitre
     </a>
     {% endif %}
 </p>
 {% endif %}
 
+{% if chapter.introduction %}
 {{ chapter.introduction|markdown:"safe,codehilite,extra" }}
+{% else %}
+<p>Aucune introduction.</p>
+{% endif %}
 
 <div>
     Sommaire de ce chapitre :
@@ -53,18 +57,28 @@
     <p>
         <a href="{% url pdp.tutorial.views.edit_extract %}?extrait={{ extract.pk }}" class="btn">
             <i class="icon-pencil"></i>
-            Éditer
+            Éditer l'extrait
         </a>
         <a href="#" class="btn">
             <i class="icon-remove"></i>
-            Supprimer
+            Supprimer l'extrait
         </a>
     </p>
     {% endif %}
 
-    {{ extract.text|markdown:"safe,codehilite,extra" }}
+    {% if extract.text %}
+        {{ extract.text|markdown:"safe,codehilite,extra" }}
+    {% else %}
+    <p>
+        Cet extrait est vide.
+    </p>
+    {% endif %}
 {% endfor %}
 
 <hr />
 
+{% if chapter.conclusion %}
 {{ chapter.conclusion|markdown:"safe,codehilite,extra" }}
+{% else %}
+<p>Aucune conclusion.</p>
+{% endif %}

@@ -5,3 +5,4 @@ south
 pytz
 pil
 django-dynamic-fixture
+django-crispy-forms
