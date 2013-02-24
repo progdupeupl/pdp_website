@@ -8,6 +8,11 @@ Erreur 404
 Erreur 404
 {% endblock %}
 
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li class="active">Erreur 404</li>
+{% endblock %}
+
 {% block content %}
 Vous n'avez rien à faire ici, circulez.
 {% endblock %}
