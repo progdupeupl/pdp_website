@@ -66,10 +66,10 @@ def topic(request, topic_pk, topic_slug):
         return redirect(g_topic.get_absolute_url())
 
     if request.user.is_authenticated():
-        if never_read(topic):
-            mark_read(topic)
+        if never_read(g_topic):
+            mark_read(g_topic)
 
-    posts = Post.objects.all().filter(topic__pk=topic.pk).order_by('position_in_topic')
+    posts = Post.objects.all().filter(topic__pk=g_topic.pk).order_by('position_in_topic')
 
     # Handle pagination
     paginator = Paginator(posts, POSTS_PER_PAGE)
