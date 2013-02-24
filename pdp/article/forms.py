@@ -2,8 +2,44 @@
 
 from django import forms
 
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Fieldset, Submit, Field
+from crispy_forms.bootstrap import FormActions
+
 
 class ArticleForm(forms.Form):
-    title = forms.CharField(max_length=80)
-    description = forms.CharField(max_length=200)
-    text = forms.CharField(widget=forms.Textarea)
+    title = forms.CharField(
+        label='Titre',
+        max_length=80
+    )
+
+    description = forms.CharField(
+        max_length=200
+    )
+
+    text = forms.CharField(
+        label='Texte',
+        required=False,
+        widget=forms.Textarea
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.form_method = 'post'
+
+        self.helper.layout = Layout(
+            Fieldset(
+                u'Général',
+                Field('title', css_class='input-xxlarge'),
+                Field('description', css_class='input-block-level')
+            ),
+            Fieldset(
+                u'Contenu',
+                Field('text', css_class='input-block-level')
+            ),
+            FormActions(
+                Submit('submit', 'Valider')
+            )
+        )
+        super(ArticleForm, self).__init__(*args, **kwargs)

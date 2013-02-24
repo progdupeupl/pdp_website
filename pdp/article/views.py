@@ -45,7 +45,6 @@ def new(request):
 
     if request.method == 'POST':
         form = ArticleForm(request.POST)
-
         if form.is_valid():
             data = form.data
 
@@ -57,12 +56,12 @@ def new(request):
             a.save()
 
             return redirect(a.get_absolute_url())
-
-        else:
-            raise Http404
-
     else:
-        return render_template('article/new.html')
+        form = ArticleForm()
+
+    return render_template('article/new.html', {
+        'form': form
+    })
 
 
 @login_required
@@ -90,10 +89,14 @@ def edit(request):
             a.save()
 
             return redirect(a.get_absolute_url())
-        else:
-            raise Http404
 
     else:
-        return render_template('article/edit.html', {
-            'article': a
+        form = ArticleForm({
+            'title': a.title,
+            'description': a.description,
+            'text': a.text
         })
+
+    return render_template('article/edit.html', {
+        'article': a, 'form': form
+    })
