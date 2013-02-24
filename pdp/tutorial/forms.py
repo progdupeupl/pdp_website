@@ -179,5 +179,33 @@ class EmbdedChapterForm(forms.Form):
 
 
 class ExtractForm(forms.Form):
-    title = forms.CharField(max_length=80)
-    text = forms.CharField(widget=forms.Textarea)
+    title = forms.CharField(
+        label='Titre',
+        max_length=80
+    )
+
+    text = forms.CharField(
+        label='Texte',
+        required=False,
+        widget=forms.Textarea
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.form_method = 'post'
+
+        self.helper.layout = Layout(
+            Fieldset(
+                u'Général',
+                Field('title', css_class='input-xxlarge')
+            ),
+            Fieldset(
+                u'Contenu',
+                Field('text', css_class='input-block-level')
+            ),
+            FormActions(
+                Submit('submit', 'Valider')
+            )
+        )
+        super(ExtractForm, self).__init__(*args, **kwargs)

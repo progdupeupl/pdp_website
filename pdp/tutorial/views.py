@@ -466,12 +466,12 @@ def add_extract(request):
             e.save()
 
             return redirect(e.get_absolute_url())
-        else:
-            raise Http404
     else:
-        return render_template('tutorial/new_extract.html', {
-            'chapter': c
-        })
+        form = ExtractForm()
+
+    return render_template('tutorial/new_extract.html', {
+        'chapter': c, 'form': form
+    })
 
 
 def edit_extract(request):
@@ -497,7 +497,13 @@ def edit_extract(request):
             e.save()
 
             return redirect(e.get_absolute_url())
+
     else:
-        return render_template('tutorial/edit_extract.html', {
-            'extract': e
+        form = ExtractForm({
+            'title': e.title,
+            'text': e.text
         })
+
+    return render_template('tutorial/edit_extract.html', {
+        'extract': e, 'form': form
+    })

@@ -57,16 +57,22 @@
     <p>
         <a href="{% url pdp.tutorial.views.edit_extract %}?extrait={{ extract.pk }}" class="btn">
             <i class="icon-pencil"></i>
-            Éditer
+            Éditer l'extrait
         </a>
         <a href="#" class="btn">
             <i class="icon-remove"></i>
-            Supprimer
+            Supprimer l'extrait
         </a>
     </p>
     {% endif %}
 
-    {{ extract.text|markdown:"safe,codehilite,extra" }}
+    {% if extract.text %}
+        {{ extract.text|markdown:"safe,codehilite,extra" }}
+    {% else %}
+    <p>
+        Cet extrait est vide.
+    </p>
+    {% endif %}
 {% endfor %}
 
 <hr />
