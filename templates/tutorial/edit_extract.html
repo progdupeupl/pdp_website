@@ -13,7 +13,7 @@
 {% block breadcrumb %}
 <li><a href="/">Accueil</a> <span class="divider">/</span></li>
 <li><a href="/tutoriels/">Tutoriels</a> <span class="divider">/</span></li>
-{% if chapter.tutorial %}
+{% if extract.chapter.tutorial %}
     <li><a href="{{ extract.chapter.tutorial.get_absolute_url }}">{{ extract.chapter.tutorial.title }}</a> <span class="divider">/</span></li>
 {% else %}
     <li><a href="{{ extract.chapter.part.tutorial.get_absolute_url }}">{{ extract.chapter.part.tutorial.title }}</a> <span class="divider">/</span></li>
