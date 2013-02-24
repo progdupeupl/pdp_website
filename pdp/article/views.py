@@ -11,88 +11,77 @@ from .models import Article
 from .forms import ArticleForm
 
 def index(request):
-    a = Article.objects.all().filter(is_visible=True)
+    '''Displayy articles list'''
+    article = Article.objects.all().filter(is_visible=True)
 
     if request.user.is_authenticated():
-        user_a = Article.objects.filter(author=request.user)
+        user_article = Article.objects.filter(author=request.user)
     else:
-        user_a = None
+        user_article = None
 
     return render_template('article/index.html', {
-        'articles': a,
-        'user_articles': user_a
+        'articles': article,
+        'user_articles': user_article
     })
 
 
 def view(request, article_pk, article_slug):
+    '''Show the given article if exists and is visible'''
+    article = get_object_or_404(Article, pk=article_pk)
 
-    a = get_object_or_404(Article, pk=article_pk)
-
-    if not a.is_visible and not request.user == a.author:
+    if not article.is_visible and not request.user == article.author:
         raise Http404
 
-    if article_slug != slugify(a.title):
-        return redirect(a.get_absolute_url())
+    if article_slug != slugify(article.title):
+        return redirect(article.get_absolute_url())
 
     return render_template('article/view.html', {
-        'article': a
+        'article': article
     })
-
 
 @login_required
 def new(request):
-
+    '''Create a new article'''
     if request.method == 'POST':
         form = ArticleForm(request.POST)
-
         if form.is_valid():
             data = form.data
-
-            a = Article()
-            a.title = data['title']
-            a.description = data['description']
-            a.text = data['text']
-            a.author = request.user
-            a.save()
-
-            return redirect(a.get_absolute_url())
-
+            article = Article()
+            article.title = data['title']
+            article.description = data['description']
+            article.text = data['text']
+            article.author = request.user
+            article.save()
+            return redirect(article.get_absolute_url())
         else:
             raise Http404
-
     else:
         return render_template('article/new.html')
 
-
 @login_required
 def edit(request):
+    '''Edit article identified by given GET paramter'''
+
     try:
         article_pk = request.GET['article']
     except KeyError:
         raise Http404
-
-    a = get_object_or_404(Article, pk=article_pk)
-
+    article = get_object_or_404(Article, pk=article_pk)
     # Make sure the user is allowed to do it
-    if not request.user == a.author:
+    if not request.user == article.author:
         raise Http404
-
     if request.method == 'POST':
         form = ArticleForm(request.POST)
-
         if form.is_valid():
             data = form.data
-
-            a.title = data['title']
-            a.description = data['description']
-            a.text = data['text']
-            a.save()
-
-            return redirect(a.get_absolute_url())
+            article.title = data['title']
+            article.description = data['description']
+            article.text = data['text']
+            article.save()
+            return redirect(article.get_absolute_url())
         else:
             raise Http404
-
     else:
         return render_template('article/edit.html', {
-            'article': a
+            'article': article
         })
