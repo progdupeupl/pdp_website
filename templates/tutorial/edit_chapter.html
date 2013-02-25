@@ -1,20 +1,12 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block title %}
-    {% if chapter.tutorial %}
-    Éditer le tutoriel
-    {% else %}
-    Éditer le chapitre
-    {% endif %}
-    &ndash; Tutoriels
+Éditer le chapitre &ndash; Tutoriels
 {% endblock %}
 
 {% block headline %}
-    {% if chapter.tutorial %}
-    Éditer le tutoriel
-    {% else %}
-    Éditer le chapitre
-    {% endif %}
+Éditer le chapitre
 {% endblock %}
 
 {% block breadcrumb %}
@@ -22,13 +14,12 @@
 <li><a href="/tutoriels/">Tutoriels</a> <span class="divider">/</span></li>
 {% if chapter.tutorial %}
     <li><a href="{{ chapter.tutorial.get_absolute_url }}">{{ chapter.tutorial.title }}</a> <span class="divider">/</span></li>
-    <li class="active">Éditer le tutoriel</li>
 {% else %}
     <li><a href="{{ chapter.part.tutorial.get_absolute_url }}">{{ chapter.part.tutorial.title }}</a> <span class="divider">/</span></li>
     <li><a href="{{ chapter.part.get_absolute_url }}">{{ chapter.part.title }}</a> <span class="divider">/</span></li>
     <li><a href="{{ chapter.get_absolute_url }}">{{ chapter.title }}</a> <span class="divider">/</span></li>
-    <li class="active">Éditer le chapitre</li>
 {% endif %}
+<li class="active">Éditer le chapitre</li>
 {% endblock %}
 
 {% block content %}
@@ -37,70 +28,6 @@
     {% include "tutorial/chapter_common.html" %}
 {% endif %}
 
-<form action="" method="POST" class="form-horizontal">
-
-    <fieldset>
-        <legend>Général</legend>
-
-        <div class="control-group">
-            <label class="control-label" for="id_title">
-                Titre du {% if chapter.part %}chapitre{% else %}tutoriel{% endif %}
-            </label>
-            <div class="controls">
-                <input type="text" placeholder="Titre" name="title" id="id_title"
-                    value="{% if chapter.part %}{{ chapter.title }}{% else %}{{ chapter.tutorial.title }}{% endif %}" />
-            </div>
-        </div>
-
-        {% if chapter.tutorial %}
-        <div class="control-group">
-            <label class="control-label" for="id_description">Description</label>
-            <div class="controls">
-                <input type="text" placeholder="Brève description." name="description" id="id_description"
-                    value="{{ chapter.tutorial.description }}" />
-            </div>
-        </div>
-        {% endif %}
-    </fieldset>
-    <fieldset>
-        <legend>Texte</legend>
-
-        <div class="control-group">
-            <label class="control-label" for="id_introduction">
-                Introduction
-            </label>
-            <div class="controls">
-                <textarea name="introduction" id="id_introduction" class="input-block-level" rows="10"
-                    placeholder="Introduction">{{ chapter.introduction }}</textarea>
-            </div>
-        </div>
-       
-        <div class="control-group">
-            <label class="control-label" for="id_conclusion">
-                Conclusion
-            </label>
-            <div class="controls">
-                <textarea name="conclusion" id="id_conclusion" class="input-block-level" rows="10"
-                    placeholder="Conclusion">{{ chapter.conclusion }}</textarea>
-            </div>
-        </div>
-
-    </fieldset>
-   
-    <div class="control-group">
-        <div class="controls">
-            <button type="submit" class="btn btn-primary">
-                Sauvegarder les modifications
-            </button>
-
-            <a href="{{ chapter.get_absolute_url }}" class="btn">
-                Annuler
-            </a>
-        </div>
-    </div>
-
-    {% csrf_token %}
-
-</form>
+{% crispy form %}
 
 {% endblock %}

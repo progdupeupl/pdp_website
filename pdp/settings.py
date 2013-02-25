@@ -9,8 +9,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-    ('MicroJoe', 'microjoe@mailoo.org'),
+    ('user', 'mail'),
 )
 
 MANAGERS = ADMINS
@@ -129,6 +128,7 @@ INSTALLED_APPS = (
     'django.contrib.markup',
 
     'south',
+    'crispy_forms',
 
     'pdp.member',
     'pdp.forum',

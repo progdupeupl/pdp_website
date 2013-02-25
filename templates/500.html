@@ -1,22 +1,20 @@
 {% extends "base.html" %}
-{% load crispy_forms_tags %}
 
 {% block title %}
-Nouveau &ndash; Articles
+Erreur 500
 {% endblock %}
 
 {% block headline %}
-Nouvel article
+Erreur 500
 {% endblock %}
 
 {% block breadcrumb %}
 <li><a href="/">Accueil</a> <span class="divider">/</span></li>
-<li><a href="/articles/">Articles</a> <span class="divider">/</span></li>
-<li class="active">Nouvel article</li>
+<li class="active">Erreur 500</li>
 {% endblock %}
 
 {% block content %}
-
-{% crispy form %}
-
+Si vous voyez cette page, c'est que vous avez trouvé un bug. Merci de reporter
+cette erreur en expliquant comment vous avez procédé pour tomber sur cette
+page.
 {% endblock %}

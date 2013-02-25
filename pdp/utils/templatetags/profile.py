@@ -9,5 +9,8 @@ register = template.Library()
 
 @register.filter('profile')
 def profile(user):
-    profile = Profile.objects.get(user=user)
+    try:
+        profile = Profile.objects.get(user=user)
+    except Profile.DoesNotExist:
+        profile = None
     return profile

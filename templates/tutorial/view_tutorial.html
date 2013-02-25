@@ -32,6 +32,13 @@
     {% endfor %}
 </div>
 
+<p>
+    <a href="{% url pdp.tutorial.views.edit_tutorial %}?tutoriel={{ tutorial.pk }}" class="btn">
+        <i class="icon-pencil"></i>
+        Éditer le tutoriel
+    </a>
+</p>
+
 {% if tutorial.is_mini %}
 {# Small tutorial #}
 

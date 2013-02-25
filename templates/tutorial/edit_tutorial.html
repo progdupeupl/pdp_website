@@ -3,17 +3,18 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-Nouveau tutoriel &ndash; Tutoriels
+Éditer le tutoriel &ndash; Tutoriels
 {% endblock %}
 
 {% block headline %}
-Nouveau tutoriel
+Éditer le tutoriel
 {% endblock %}
 
 {% block breadcrumb %}
 <li><a href="/">Accueil</a> <span class="divider">/</span></li>
 <li><a href="/tutoriels/">Tutoriels</a> <span class="divider">/</span></li>
-<li class="active">Nouveau tutoriel</li>
+<li><a href="{{ tutorial.get_absolute_url }}">{{ tutorial.title }}</a> <span class="divider">/</span></li>
+<li class="active">Éditer le tutoriel</li>
 {% endblock %}
 
 {% block content %}
