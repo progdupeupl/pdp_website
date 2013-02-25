@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load markup %}
+{% load crispy_forms_tags %}
 
 {% block title %}
 Nouvel extrait &ndash; Tutoriels
@@ -26,47 +26,6 @@ Nouvel extrait
 
 {% include "tutorial/extract_common.html" %}
 
-<form action="" method="POST" class="form-horizontal">
-
-    <fieldset>
-        <legend>Général</legend>
-
-        <div class="control-group">
-            <label class="control-label" for="id_title">Titre</label>
-            <div class="controls">
-                <input type="text" placeholder="Titre" name="title" id="id_title" />
-            </div>
-        </div>
-    </fieldset>
-    <fieldset>
-        <legend>Texte</legend>
-
-        <div class="control-group">
-            <label class="control-label" for="id_text">Contenu</label>
-            <div class="controls">
-                {% include "markdown-buttons.html" %}
-                <textarea name="text" id="id_text"
-                    class="input-block-level" rows="10"
-                    placeholder="Texte au format Markdown."></textarea>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <div class="controls">
-                <button type="submit" class="btn btn-primary">
-                    <i class="icon-plus icon-white"></i>
-                    Ajouter extrait
-                </button>
-
-                <a href="{{ chapter.get_absolute_url }}" class="btn">
-                    Annuler
-                </a>
-            </div>
-        </div>
-    </fieldset>
-
-    {% csrf_token %}
-
-</form>
+{% crispy form %}
 
 {% endblock %}

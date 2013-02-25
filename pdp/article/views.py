@@ -10,6 +10,7 @@ from pdp.utils import render_template, slugify
 from .models import Article
 from .forms import ArticleForm
 
+
 def index(request):
     '''Displayy articles list'''
     article = Article.objects.all().filter(is_visible=True)
@@ -39,6 +40,7 @@ def view(request, article_pk, article_slug):
         'article': article
     })
 
+
 @login_required
 def new(request):
     '''Create a new article'''
@@ -46,6 +48,7 @@ def new(request):
         form = ArticleForm(request.POST)
         if form.is_valid():
             data = form.data
+
             article = Article()
             article.title = data['title']
             article.description = data['description']
@@ -53,35 +56,45 @@ def new(request):
             article.author = request.user
             article.save()
             return redirect(article.get_absolute_url())
-        else:
-            raise Http404
     else:
-        return render_template('article/new.html')
+        form = ArticleForm()
+
+    return render_template('article/new.html', {
+        'form': form
+    })
+
 
 @login_required
 def edit(request):
     '''Edit article identified by given GET paramter'''
-
     try:
         article_pk = request.GET['article']
     except KeyError:
         raise Http404
+
     article = get_object_or_404(Article, pk=article_pk)
+
     # Make sure the user is allowed to do it
     if not request.user == article.author:
         raise Http404
+
     if request.method == 'POST':
         form = ArticleForm(request.POST)
         if form.is_valid():
             data = form.data
+
             article.title = data['title']
             article.description = data['description']
             article.text = data['text']
             article.save()
             return redirect(article.get_absolute_url())
-        else:
-            raise Http404
     else:
-        return render_template('article/edit.html', {
-            'article': article
+        form = ArticleForm({
+            'title': article.title,
+            'description': article.description,
+            'text': article.text
         })
+
+    return render_template('article/edit.html', {
+        'article': article, 'form': form
+    })

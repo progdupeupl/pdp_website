@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block title %}
 Éditer la partie &ndash; Tutoriels
@@ -20,55 +21,6 @@
 
 {% include "tutorial/part_common.html" %}
 
-<form action="" method="POST" class="form-horizontal">
-
-    <fieldset>
-        <legend>Général</legend>
-
-        <div class="control-group">
-            <label class="control-label" for="id_title">Titre</label>
-            <div class="controls">
-                <input type="text" name="title" id="id_title"
-                    placeholder="Titre" value="{{ part.title }}" />
-            </div>
-        </div>
-    </fieldset>
-    <fieldset>
-        <legend>Texte</legend>
-
-        <div class="control-group">
-            <label class="control-label" for="id_introduction">Introduction</label>
-            <div class="controls">
-                <textarea name="introduction" id="id_introduction" class="input-block-level"
-                    rows="10" placeholder="Introduction">{{ part.introduction }}</textarea>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label class="control-label" for="id_conclusion">Conclusion</label>
-            <div class="controls">
-                <textarea name="conclusion" id="id_conclusion" class="input-block-level"
-                    rows="10" placeholder="Conclusion">{{ part.conclusion }}</textarea>
-            </div>
-        </div>
-
-
-    </fieldset>
-
-    <div class="control-group">
-        <div class="controls">
-            <button type="submit" class="btn btn-primary">
-                Sauvegarder les modifications
-            </button>
-
-            <a href="{{ part.get_absolute_url }}" class="btn">
-                Annuler
-            </a>
-        </div>
-    </div>
-
-    {% csrf_token %}
-
-</form>
+{% crispy form %}
 
 {% endblock %}
