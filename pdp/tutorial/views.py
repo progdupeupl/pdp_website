@@ -1,12 +1,14 @@
 # coding: utf-8
 
 from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from django.http import Http404
 
 from pdp.utils import render_template, slugify
 
 from .models import Tutorial, Part, Chapter, Extract
-from .forms import *
+from .forms import TutorialForm, EditTutorialForm, PartForm, ChapterForm, \
+    EmbdedChapterForm, ExtractForm
 
 
 def index(request):
@@ -53,6 +55,7 @@ def view_tutorial(request, tutorial_pk, tutorial_slug):
     })
 
 
+@login_required
 def add_tutorial(request):
     ''''Adds a tutorial'''
     if request.method == 'POST':
@@ -89,6 +92,7 @@ def add_tutorial(request):
     })
 
 
+@login_required
 def edit_tutorial(request):
     try:
         tutorial_pk = request.GET['tutoriel']
@@ -107,7 +111,7 @@ def edit_tutorial(request):
             tutorial.title = data['title']
             tutorial.description = data['description']
             tutorial.save()
-            return redirect(t.get_absolute_url())
+            return redirect(tutorial.get_absolute_url())
     else:
         form = EditTutorialForm({
             'title': tutorial.title,
@@ -140,6 +144,7 @@ def view_part(request, tutorial_pk, tutorial_slug, part_pos, part_slug):
     })
 
 
+@login_required
 def add_part(request):
     '''Add a new part'''
     try:
@@ -168,10 +173,11 @@ def add_part(request):
     else:
         form = PartForm()
     return render_template('tutorial/new_part.html', {
-        'tutorial': t, 'form': form
+        'tutorial': tutorial, 'form': form
     })
 
 
+@login_required
 def modify_part(request):
     '''Modifiy the given part'''
     if not request.method == 'POST':
@@ -229,6 +235,7 @@ def modify_part(request):
     return redirect(part.tutorial.get_absolute_url())
 
 
+@login_required
 def edit_part(request):
     '''Edit the given part'''
     try:
@@ -285,6 +292,7 @@ def view_chapter(request, tutorial_pk, tutorial_slug, part_pos, part_slug,
     })
 
 
+@login_required
 def add_chapter(request):
     '''Add a new chapter to given part'''
     try:
@@ -315,6 +323,7 @@ def add_chapter(request):
     })
 
 
+@login_required
 def modify_chapter(request):
     '''Modify the given chapter'''
     if not request.method == 'POST':
@@ -367,6 +376,7 @@ def modify_chapter(request):
     return redirect(chapter.part.tutorial.get_absolute_url())
 
 
+@login_required
 def edit_chapter(request):
     '''Edit the given chapter'''
 
@@ -419,6 +429,7 @@ def edit_chapter(request):
 
 # Extract
 
+@login_required
 def add_extract(request):
     '''Add extract'''
 
@@ -447,6 +458,7 @@ def add_extract(request):
     })
 
 
+@login_required
 def edit_extract(request):
     '''Edit extract'''
     try:
