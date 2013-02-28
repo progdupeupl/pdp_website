@@ -138,6 +138,7 @@ INSTALLED_APPS = (
     'pdp.member',
     'pdp.forum',
     'pdp.utils',
+    'pdp.pages',
     'pdp.tutorial',
     'pdp.article',
     # Uncomment the next line to enable the admin:

@@ -6,8 +6,8 @@ from pdp.article.models import get_last_articles
 from pdp.tutorial.models import get_last_tutorials
 
 
-def accueil(request):
-    return render_template('accueil.html', {
+def home(request):
+    return render_template('home.html', {
         'last_articles': get_last_articles(),
         'last_tutorials': get_last_tutorials(),
     })

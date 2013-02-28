@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     url(r'^membres/', include('pdp.member.urls')),
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^$', pages.views.accueil),
+    url(r'^$', pages.views.home),
 )
 
 if settings.DEBUG:
