@@ -11,3 +11,10 @@ def home(request):
         'last_articles': get_last_articles(),
         'last_tutorials': get_last_tutorials(),
     })
+
+
+def help_markdown(request):
+    return render_template('help_markdown.html')
+
+def help_markdown_ajax(request):
+    return render_template('help_markdown_part.html')
