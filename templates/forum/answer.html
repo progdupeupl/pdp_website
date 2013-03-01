@@ -20,9 +20,6 @@ Répondre au sujet
 
 {% block content %}
 <form action="/forums/message/nouveau?sujet={{ topic.pk }}" method="POST">
-
-    {% include "markdown-buttons.html" %}
-
     <textarea class="input-block-level" name="text" rows="20" id="id_text"
         placeholder="Contenu de votre message au format Markdown.">{{ text }}</textarea>
 
