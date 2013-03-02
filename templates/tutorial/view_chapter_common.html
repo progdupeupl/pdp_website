@@ -3,6 +3,7 @@
 
 {% if user in chapter.part.tutorial.authors.all or user in chapter.tutorial.authors.all %}
 <p>
+    <form action="{% url pdp.tutorial.views.modify_chapter %}" method="POST">
     <a href="/tutoriels/nouveau/extrait?chapitre={{ chapter.pk }}" class="btn">
         <i class="icon-plus"></i>
         Ajouter un extrait
@@ -15,11 +16,15 @@
 
     {# Part deletion is only available for large tutorials #}
     {% if chapter.part %}
-    <a href="/tutoriels/modifier/chapitre?chapitre={{ chapter.pk }}&amp;action=supprimer" class="btn">
+    <button type="submit" name="delete" class="btn">
         <i class="icon-remove"></i>
         Supprimer le chapitre
-    </a>
+    </button>
     {% endif %}
+
+    <input type="hidden" name="chapter" value="{{ chapter.pk }}" />
+    {% csrf_token %}
+    </form>
 </p>
 {% endif %}
 

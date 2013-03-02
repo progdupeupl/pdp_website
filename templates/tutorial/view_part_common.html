@@ -79,6 +79,7 @@
     <li>
     <a href="{{ chapter.get_absolute_url }}">{{ chapter.title }}</a><br />
         {% if user in tutorial.authors.all %}
+        <form action="{% url pdp.tutorial.views.modify_chapter %}" method="POST">
         <div class="btn-group">
             <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
                 Déplacer
@@ -108,11 +109,15 @@
                 <i class="icon-pencil"></i>
                 Éditer
             </a>
-            <a href="/tutoriels/modifier/chapitre?chapitre={{ chapter.pk }}&amp;action=supprimer" class="btn btn-mini">
+            <button type="submit" name="delete" class="btn btn-mini">
                 <i class="icon-remove"></i>
                 Supprimer
-            </a>
+            </button>
         </div>
+
+        <input type="hidden" name="chapter" value="{{ chapter.pk }}" />
+        {% csrf_token %}
+        </form>
         {% endif %}
     </li>
     {% endfor %}
