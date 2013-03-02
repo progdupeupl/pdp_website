@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.test.client import Client
 from django_dynamic_fixture import G
 
-from pdp.tutorial.models import Tutorial, get_last_tutorials
+from pdp.tutorial.models import Tutorial, Part, get_last_tutorials
 
 
 class TutorialTests(TestCase):
@@ -50,15 +50,32 @@ class TutorialTests(TestCase):
                          client.get('/tutoriels/nouveau/tutoriel').status_code)
 
     def test_url_view_tutorial_invisible(self):
-        '''Testing viewing an invisible article as anonymous'''
+        '''Testing viewing an invisible tutorial as anonymous'''
         client = Client()
-        article = G(Tutorial, is_visible=False)
+        tutorial = G(Tutorial, is_visible=False)
         self.assertEqual(404,
-                         client.get(article.get_absolute_url()).status_code)
+                         client.get(tutorial.get_absolute_url()).status_code)
 
     def test_url_view_tutorial_visible(self):
-        '''Testing viewing a visible article as anonymous'''
+        '''Testing viewing a visible tutorial as anonymous'''
         client = Client()
-        article = G(Tutorial, is_visible=True)
+        tutorial = G(Tutorial, is_visible=True)
         self.assertEqual(200,
-                         client.get(article.get_absolute_url()).status_code)
+                         client.get(tutorial.get_absolute_url()).status_code)
+
+    def test_url_view_part_invisible(self):
+        '''Testing viewing a part from invisible tutorial as anonymous'''
+        client = Client()
+        tutorial = G(Tutorial, is_visible=False, is_mini=False)
+        part = G(Part, tutorial=tutorial)
+        self.assertEqual(404,
+                         client.get(part.get_absolute_url()).status_code)
+
+    def test_url_view_part_visible(self):
+        '''Testing viewing a part from visible tutorial as anonymous'''
+        client = Client()
+        tutorial = G(Tutorial, is_visible=True, is_mini=False)
+        part = G(Part, tutorial=tutorial)
+        self.assertEqual(200,
+                         client.get(part.get_absolute_url()).status_code)
+
