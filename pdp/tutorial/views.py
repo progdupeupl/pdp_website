@@ -373,7 +373,7 @@ def modify_chapter(request):
         # Then delete the chapter
         chapter.delete()
 
-    return redirect(chapter.part.tutorial.get_absolute_url())
+    return redirect(chapter.part.get_absolute_url())
 
 
 @login_required
@@ -491,3 +491,27 @@ def edit_extract(request):
     return render_template('tutorial/edit_extract.html', {
         'extract': extract, 'form': form
     })
+
+
+def modify_extract(request):
+    if not request.method == 'POST':
+        raise Http404
+    data = request.POST
+    try:
+        extract_pk = request.POST['extract']
+    except KeyError:
+        raise Http404
+
+    extract = get_object_or_404(Extract, pk=extract_pk)
+    chapter = extract.chapter
+
+    if 'delete' in data:
+        old_pos = extract.position_in_chapter
+        for extract_c in extract.chapter.get_extracts():
+            if old_pos <= extract_c.position_in_chapter:
+                extract_c.position_in_chapter = extract_c.position_in_chapter - \
+                    1
+                extract_c.save()
+        extract.delete()
+
+    return redirect(chapter.get_absolute_url())
