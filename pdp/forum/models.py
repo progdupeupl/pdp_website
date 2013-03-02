@@ -63,6 +63,9 @@ class Forum(models.Model):
         except IndexError:
             return None
 
+    def is_read(self):
+        return not never_read(self.get_last_message().topic)
+
 
 class Topic(models.Model):
     '''A thread, containing posts'''
