@@ -1,4 +1,5 @@
 {% load url from future %}
+{% load profile %}
 <!doctype html>
 <html>
 <head>
@@ -28,8 +29,11 @@
                         <ul class="nav pull-right">
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    {% with profile=user|profile %}
+                                    <img src="{{ profile.get_gravatar_url }}&amp;s=16" alt="Avatar" style="vertical-align: bottom;" />
                                     {{ user.username }}
                                     <b class="caret"></b>
+                                    {% endwith %}
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li>
