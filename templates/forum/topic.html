@@ -115,6 +115,8 @@
 </div>
 {% endif %}
 
+{% include "forum/topic_pagination.html" %}
+
 <table class="table table-bordered topic-table">
     <thead>
         <tr>
@@ -184,29 +186,7 @@
     </tbody>
 </table>
 
-<div class="pagination">
-    <ul>
-
-        <li class="{% ifequal nb 1 %}disabled{% endifequal %}">
-            <a href="{% ifnotequal nb 1 %}{{ topic.get_absolute_url }}?page={{ nb|add:"-1" }}{% else %}#{% endifnotequal %}">«</a>
-        </li>
-
-    {% for page in pages %}
-        <li class="{% ifequal page nb %}active{% endifequal %}">
-            {% ifnotequal page nb %}
-                <a href="{{ topic.get_absolute_url }}?page={{ page }}">{{ page }}</a>
-            {% else %}
-                <a href="#">{{ page }}</a>
-            {% endifnotequal %}
-        </li>
-    {% endfor %}
-
-        <li class="{% ifequal nb pages|last %}disabled{% endifequal %}">
-            <a href="{% ifnotequal nb pages|last %}{{ topic.get_absolute_url }}?page={{ nb|add:"1" }}{% else %}#{% endifnotequal %}">»</a>
-        </li>
-
-    </ul>
-</div>
+{% include "forum/topic_pagination.html" %}
 
 {% if user.is_authenticated %}
 <div class="offset2 span8">
