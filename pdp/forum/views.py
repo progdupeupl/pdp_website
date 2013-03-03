@@ -32,7 +32,8 @@ def details(request, cat_slug, forum_pk, forum_slug):
         .order_by('-is_sticky', '-last_message__pubdate')
 
     # Check link
-    if not cat_slug == slugify('%s-%s' % (forum.category.pk, forum.category.title))\
+    if not cat_slug == slugify('%s-%s' % (forum.category.pk,
+                                          forum.category.title))\
             or not forum_slug == slugify(forum.title):
         return redirect(forum.get_absolute_url())
 
@@ -69,7 +70,8 @@ def topic(request, topic_pk, topic_slug):
         if never_read(g_topic):
             mark_read(g_topic)
 
-    posts = Post.objects.all().filter(topic__pk=g_topic.pk).order_by('position_in_topic')
+    posts = Post.objects.all().filter(topic__pk=g_topic.pk)\
+                              .order_by('position_in_topic')
 
     # Handle pagination
     paginator = Paginator(posts, POSTS_PER_PAGE)
@@ -295,7 +297,8 @@ def edit_post(request):
         # Using the preview button
         if 'preview' in request.POST:
             if g_topic:
-                g_topic = Topic(title=request.POST['title'], subtitle=request.POST['subtitle'])
+                g_topic = Topic(title=request.POST['title'],
+                                subtitle=request.POST['subtitle'])
             return render_template('forum/edit_post.html', {
                 'post': post, 'topic': g_topic, 'text': request.POST['text'],
             })
