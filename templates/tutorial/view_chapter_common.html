@@ -9,18 +9,20 @@
         Ajouter un extrait
     </a>
 
-    <a href="/tutoriels/editer/chapitre?chapitre={{ chapter.pk }}" class="btn">
-        <i class="icon-pencil"></i>
-        Éditer le chapitre
-    </a>
+    <div class="btn-group">
+        <a href="/tutoriels/editer/chapitre?chapitre={{ chapter.pk }}" class="btn">
+            <i class="icon-pencil"></i>
+            Éditer le chapitre
+        </a>
 
-    {# Part deletion is only available for large tutorials #}
-    {% if chapter.part %}
-    <button type="submit" name="delete" class="btn">
-        <i class="icon-remove"></i>
-        Supprimer le chapitre
-    </button>
-    {% endif %}
+        {# Part deletion is only available for large tutorials #}
+        {% if chapter.part %}
+        <button type="submit" name="delete" class="btn">
+            <i class="icon-remove"></i>
+            Supprimer le chapitre
+        </button>
+        {% endif %}
+    </div>
 
     <input type="hidden" name="chapter" value="{{ chapter.pk }}" />
     {% csrf_token %}
@@ -35,9 +37,8 @@
 {% endif %}
 
 <div>
-    Sommaire de ce chapitre :
     {% if chapter.get_extracts %}
-    <ol>
+    <ul>
     {% for extract in chapter.get_extracts %}
         <li>
             <a href="#{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
@@ -45,7 +46,7 @@
             </a>
         </li>
     {% endfor %}
-    </ol>
+    </ul>
     {% else %}
     <p>
         Aucun extrait.
@@ -61,14 +62,17 @@
     {% if user in chapter.part.tutorial.authors.all or user in chapter.tutorial.authors.all %}
     <p>
         <form action="{% url pdp.tutorial.views.modify_extract %}" method="POST">
-        <a href="{% url pdp.tutorial.views.edit_extract %}?extrait={{ extract.pk }}" class="btn">
-            <i class="icon-pencil"></i>
-            Éditer l'extrait
-        </a>
-        <button type="submit" name="delete" class="btn">
-            <i class="icon-remove"></i>
-            Supprimer l'extrait
-        </button>
+
+        <div class="btn-group">
+            <a href="{% url pdp.tutorial.views.edit_extract %}?extrait={{ extract.pk }}" class="btn">
+                <i class="icon-pencil"></i>
+                Éditer l'extrait
+            </a>
+            <button type="submit" name="delete" class="btn">
+                <i class="icon-remove"></i>
+                Supprimer l'extrait
+            </button>
+        </div>
 
         <input type="hidden" name="extract" value="{{ extract.pk }}" />
         {% csrf_token %}

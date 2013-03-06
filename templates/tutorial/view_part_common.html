@@ -5,6 +5,11 @@
 <form action="{% url pdp.tutorial.views.modify_part %}" method="POST"> 
     <input type="hidden" name="part" value="{{ part.pk }}" />
 
+    <a href="/tutoriels/nouveau/chapitre?partie={{ part.pk }}" class="btn">
+        <i class="icon-plus"></i>
+        Ajouter un chapitre
+    </a>
+
     <a href="javascript:void(0)" class="btn move-btn" data-toggle="popover" data-original-title="Déplacer la partie..." data-placement="bottom"
         data-content="
         <select class='input-block-level' name='move_target'>
@@ -35,18 +40,19 @@
             Déplacer
         </button>
     ">
-        Déplacer
+        <i class="icon-move"></i>
+        Déplacer la partie
     </a>
         
     <div class="btn-group">
         <a href="/tutoriels/editer/partie?partie={{ part.pk }}"
             class="btn">
             <i class="icon-pencil"></i>
-            Éditer
+            Éditer la partie
         </a>
         <button type="submit" name="delete" class="btn">
             <i class="icon-remove"></i>
-            Supprimer
+            Supprimer la partie
         </button>
     </div>
 
@@ -55,72 +61,34 @@
 
 {% endif %}
 
-{{ part.introduction|markdown:"safe,codehilite,extra" }}
+{% if part.introduction %}
+    {{ part.introduction|markdown:"safe,codehilite,extra" }}
+{% else %}
+    <p>Pas d'introduction.</p>
+{% endif %}
 
 <p>
-    {% if part.get_chapters.count > 0 %}
-    Il y a {{ part.get_chapters.count }} chapitre{{ part.get_chapters.count|pluralize }} dans cette partie.
-    {% else %}
+    {% if part.get_chapters.count = 0 %}
     Il n'y a aucun chapitre dans cette partie.
     {% endif %}
 </p>
 
-{% if user in part.tutorial.authors.all %}
-<p>
-    <a href="/tutoriels/nouveau/chapitre?partie={{ part.pk }}" class="btn">
-        <i class="icon-plus"></i>
-        Ajouter un chapitre
-    </a>
-</p>
-{% endif %}
-
-<ol>
+<ul>
     {% for chapter in part.get_chapters %}
     <li>
-    <a href="{{ chapter.get_absolute_url }}">{{ chapter.title }}</a><br />
-        {% if user in tutorial.authors.all %}
-        <form action="{% url pdp.tutorial.views.modify_chapter %}" method="POST">
-        <div class="btn-group">
-            <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
-                Déplacer
-                <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu">
-            <li><a 
-                {% if chapter.position_in_part > 1 %}
-                    href="/tutoriels/modifier/chapitre?action=deplacer&amp;chapitre={{ chapter.pk }}&amp;position={{ chapter.position_in_part|add:"-1" }}"                 {% else %}
-                    href="#" class="disabled"
-                {% endif %}>
-                <i class="icon-arrow-up"></i>
-                Monter
-            </a></li>
-            <li><a 
-                {% if chapter.position_in_part < part.get_chapters.count %}
-                href="/tutoriels/modifier/chapitre?action=deplacer&amp;chapitre={{ chapter.pk }}&amp;position={{ chapter.position_in_part|add:"1" }}"                {% else %}
-                href="#" class="disabled"
-                {% endif %}>
-                <i class="icon-arrow-down"></i>
-                Descendre
-            </a></li>  
-            </ul>
-        </div>
-        <div class="btn-group">
-            <a href="/tutoriels/editer/chapitre?chapitre={{ chapter.pk }}" class="btn btn-mini">
-                <i class="icon-pencil"></i>
-                Éditer
-            </a>
-            <button type="submit" name="delete" class="btn btn-mini">
-                <i class="icon-remove"></i>
-                Supprimer
-            </button>
-        </div>
-
-        <input type="hidden" name="chapter" value="{{ chapter.pk }}" />
-        {% csrf_token %}
-        </form>
-        {% endif %}
+        Chapitre {{ chapter.part.position_in_tutorial }}.{{ chapter.position_in_part }} | <a href="{{ chapter.get_absolute_url }}">{{ chapter.title }}</a>
+        <ul>
+            {% for extract in chapter.get_extracts %}
+            <li><a href="{{ extract.get_absolute_url }}">{{ extract.title }}</a></li>
+            {% endfor %}
+        </ul>
+        <br />
     </li>
     {% endfor %}
-</ol>
+</ul>
 
-{{ part.conclusion|markdown:"safe,codehilite,extra" }}
+{% if part.conclusion %}
+    {{ part.conclusion|markdown:"safe,codehilite,extra" }}
+{% else %}
+    <p>Pas de conclusion.</p>
+{% endif %}

@@ -122,6 +122,21 @@ def edit_tutorial(request):
         'tutorial': tutorial, 'form': form
     })
 
+
+def modify_tutorial(request):
+    if not request.method == 'POST':
+        raise Http404
+
+    tutorial_pk = request.POST['tutorial']
+    tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
+
+    if not request.user in tutorial.authors.all():
+        raise Http404
+
+    if 'delete' in request.POST:
+        tutorial.delete()
+        return redirect('/tutoriels/')
+
 # Part
 
 
