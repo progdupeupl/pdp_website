@@ -1,5 +1,6 @@
 {% load url from future %}
 {% load profile %}
+{% load forum_unread_count %}
 <!doctype html>
 <html>
 <head>
@@ -56,7 +57,16 @@
                         <li><a href="/">Accueil</a></li>
                         <li><a href="/articles/">Articles</a></li>
                         <li><a href="/tutoriels/">Tutoriels</a></li>
-                        <li><a href="/forums/">Forums</a></li>
+                        <li><a href="/forums/">
+                            Forums
+                            {% if user.is_authenticated %}
+                                {% with unread_topic_count=user|forum_unread_count %}
+                                    {% if unread_topic_count > 0 %}
+                                        <span class="label label-important">{{ unread_topic_count }}</span>
+                                    {% endif %}
+                                {% endwith %}
+                            {% endif %}
+                        </a></li>
                     </ul>
                 </div>
             </div>
