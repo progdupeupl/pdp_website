@@ -69,8 +69,10 @@
             {% endblock %}
         </ul>
 
+        <div class="page-header">
+            <h1>{% block headline %}{% endblock %}</h1>
+        </div>
 
-        <h1>{% block headline %}{% endblock %}</h1>
         {% block content %}{% endblock %}
 
         <div class="spacer3"></div>
