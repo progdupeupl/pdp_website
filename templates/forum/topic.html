@@ -34,24 +34,25 @@
 
     {% if user.is_staff %}
 
-    {# Button to move the thread #}
-    <a href="javascript:void(0)" class="btn move-btn" data-toggle="popover" data-original-title="Déplacer le sujet dans..." data-placement="bottom"
-        data-content="
-            <select class='input-block-level' name='move_target'>
-                {% for category_mv in categories %}
-                    <option disabled>&mdash; {{ category_mv.title }}</option>
-                    {% for forum_mv in category_mv.get_forums %}
-                        <option value='{{ forum_mv.pk }}'>{{ forum_mv.title }}</option>
-                    {% endfor %}
-                {% endfor %}
-            </select>
-            <button type='submit' name='move' class='btn input-block-level'>
-                Déplacer
-            </button>
-        "> 
-        Déplacer
-    </a>
     <div class="btn-group">
+        {# Button to move the thread #}
+        <a href="javascript:void(0)" class="btn move-btn" data-toggle="popover" data-original-title="Déplacer le sujet dans..." data-placement="bottom"
+            data-content="
+                <select class='input-block-level' name='move_target'>
+                    {% for category_mv in categories %}
+                        <option disabled>&mdash; {{ category_mv.title }}</option>
+                        {% for forum_mv in category_mv.get_forums %}
+                            <option value='{{ forum_mv.pk }}'>{{ forum_mv.title }}</option>
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+                <button type='submit' name='move' class='btn input-block-level'>
+                    Déplacer
+                </button>
+            "> 
+            <i class="icon-move"></i>
+            Déplacer
+        </a>
         {# Button to make the thread a post-it #}
         <button type="submit" name="sticky"
             class="btn {% if topic.is_sticky %}btn-info{% endif %}">
@@ -74,20 +75,6 @@
             class="btn {% if topic.is_solved %}btn-success{% endif %}">
             <i class="icon-flag {% if topic.is_solved %}icon-white{% endif %}"></i>
                 Résolu
-        </button>
-
-    {% else %}
-
-        {# Button to follow the thread #}
-        <button type="submit" name="follow"
-            class="btn {% if 1 == 1 %}btn-primary{% endif %}">
-            {% if 1 == 2 %}
-                <i class="icon-star"></i>
-                Suivre
-            {% else %}
-                <i class="icon-star icon-white"></i>
-                Suivi
-            {% endif %}
         </button>
 
     {% endif %}
