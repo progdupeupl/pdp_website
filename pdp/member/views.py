@@ -35,6 +35,7 @@ def details(request, user_name):
         'usr': usr, 'profile': profile
     })
 
+
 @login_required
 def edit_profile(request):
     try:
@@ -61,6 +62,7 @@ def edit_profile(request):
             'profile': profile
         })
 
+
 def login_view(request):
     csrf_tk = {}
     csrf_tk.update(csrf(request))
@@ -86,11 +88,13 @@ def login_view(request):
     csrf_tk['form'] = form
     return render_template('member/login.html', csrf_tk)
 
+
 @login_required
 def logout_view(request):
     logout(request)
     request.session.clear()
     return redirect('/')
+
 
 def register_view(request):
     if request.method == 'POST':
