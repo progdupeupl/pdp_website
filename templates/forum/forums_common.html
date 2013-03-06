@@ -15,7 +15,7 @@
     {% for forum in category.get_forums %}
     <tr>
         <td style="text-align: center; vertical-align: middle;">
-            {% if not forum.is_read %}
+            {% if user.is_authenticated and not forum.is_read %}
             <i class="icon-exclamation-sign"></i>
             {% endif %}
         </td>
