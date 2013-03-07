@@ -3,15 +3,9 @@
     margin-bottom: 10px;
 }
 
-.spacer3
-{
-    height: 3em;
-}
-
-.spacer2
-{
-    height: 2em;
-}
+.spacer1 { height: 1em; }
+.spacer2 { height: 2em; }
+.spacer3 { height: 3em; }
 
 .footer
 {
