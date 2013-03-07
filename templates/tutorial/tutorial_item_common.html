@@ -1,8 +1,4 @@
-<div class="media">
-    <a class="pull-left" href="{{ tutorial.get_absolute_url }}">
-        <img src="{% if tutorial.icon %}{{ tutorial.icon.url }}{% else %}/static/img/blank_tutorial.png{% endif %}" 
-            alt="Icône" width="64" height="64" />
-    </a>
+<div class="media media-tutorial">
     <div class="media-body">
         <h4 class="media-heading">
             <a href="{{ tutorial.get_absolute_url }}">
@@ -18,9 +14,10 @@
                 {% endif %}
                 par 
                 {% with authors=tutorial.authors.all %}
-                    {# Everything needs to be on one line to avoid a space before the comma #}
-                    {# TODO: couldn't that be done with a join filter? #}
-                    {% for author in authors %}{% ifnotequal author authors|first %},{% endifnotequal %} <a href="{{ author.get_absolute_url }}">{{ author.username }}</a>{% endfor %}{% endwith %}.
+                    {% for author in authors %}
+                        <a href="{{ author.get_absolute_url }}">{{ author.username }}</a>
+                    {% endfor %}
+                {% endwith %}
             </small>
         </p>
 

@@ -51,3 +51,26 @@ thead th
     padding-top: 60px;
     margin-top: -60px;
 }
+
+.media
+{
+    background: #fefefe;
+    padding: 10px;
+}
+
+.media:hover
+{
+    background: #f5f5f5;
+}
+
+.media-article h4:before
+{
+    content: "$";
+}
+
+.media-tutorial h4:before
+{
+    content: "§";
+}
+
+
