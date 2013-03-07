@@ -7,14 +7,15 @@ from pdp.tutorial.models import get_last_tutorials
 
 
 def home(request):
-    return render_template('home.html', {
+    return render_template('pages/home.html', {
         'last_articles': get_last_articles(),
         'last_tutorials': get_last_tutorials(),
     })
 
 
 def help_markdown(request):
-    return render_template('help_markdown.html')
+    return render_template('pages/help_markdown.html')
+
 
 def help_markdown_ajax(request):
-    return render_template('help_markdown_part.html')
+    return render_template('pages/help_markdown_part.html')
