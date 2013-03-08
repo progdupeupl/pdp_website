@@ -17,10 +17,12 @@ urlpatterns = patterns('',
 
 # Editing
     url(r'editer/tutoriel$', views.edit_tutorial),
+    url(r'modifier/tutoriel$', views.modify_tutorial),
     url(r'modifier/partie$', views.modify_part),
     url(r'editer/partie$', views.edit_part),
     url(r'modifier/chapitre$', views.modify_chapter),
     url(r'editer/chapitre$', views.edit_chapter),
+    url(r'modifier/extrait$', views.modify_extract),
     url(r'editer/extrait$', views.edit_extract),
 
 # Adding

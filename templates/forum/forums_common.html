@@ -14,7 +14,10 @@
     <tbody>
     {% for forum in category.get_forums %}
     <tr>
-        <td>
+        <td style="text-align: center; vertical-align: middle;">
+            {% if user.is_authenticated and not forum.is_read %}
+            <i class="icon-exclamation-sign"></i>
+            {% endif %}
         </td>
         <td>
             <a href="{{ forum.get_absolute_url }}">{{ forum.title }}</a><br />

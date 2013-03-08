@@ -1,17 +1,81 @@
 # coding: utf-8
 
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
-"""
-
 from django.test import TestCase
+from django.test.client import Client
+from django_dynamic_fixture import G
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+from pdp.tutorial.models import Tutorial, Part, get_last_tutorials
+
+
+class TutorialTests(TestCase):
+    def test_last_tutorials_zero(self):
+        '''
+        Tests that the last articles work if there are no visible articles.
+        '''
+        self.assertEqual(0, len(get_last_tutorials()))
+
+        tutorial = G(Tutorial, is_visible=False)
+        tutorial  # to avoid unsused variable warning
+        self.assertEqual(0, len(get_last_tutorials()))
+
+    def test_last_tutorials_one(self):
+        '''Tests that the last articles work if there is only one.'''
+        article = G(Tutorial, is_visible=True)
+        self.assertEqual(1, len(get_last_tutorials()))
+        self.assertEqual(article, get_last_tutorials()[0])
+
+    def test_last_articles_many(self):
+        '''Tests that the last articles work correctly'''
+        articles = []
+        for n in range(2000, 1900, -1):
+            a = G(Tutorial)
+            articles.append(a)
+
+        last = get_last_tutorials()
+
+        for n, val in enumerate(last):
+            self.assertEqual(val, articles[n])
+
+    # Urls
+
+    def test_url_index(self):
+        '''Tests viewing the index page of tutorials'''
+        client = Client()
+        self.assertEqual(200, client.get('/tutoriels/').status_code)
+
+    def test_url_new_tutorial(self):
+        '''Tests adding a new tutorial as anonymous'''
+        client = Client()
+        self.assertEqual(302,
+                         client.get('/tutoriels/nouveau/tutoriel').status_code)
+
+    def test_url_view_tutorial_invisible(self):
+        '''Testing viewing an invisible tutorial as anonymous'''
+        client = Client()
+        tutorial = G(Tutorial, is_visible=False)
+        self.assertEqual(404,
+                         client.get(tutorial.get_absolute_url()).status_code)
+
+    def test_url_view_tutorial_visible(self):
+        '''Testing viewing a visible tutorial as anonymous'''
+        client = Client()
+        tutorial = G(Tutorial, is_visible=True)
+        self.assertEqual(200,
+                         client.get(tutorial.get_absolute_url()).status_code)
+
+    def test_url_view_part_invisible(self):
+        '''Testing viewing a part from invisible tutorial as anonymous'''
+        client = Client()
+        tutorial = G(Tutorial, is_visible=False, is_mini=False)
+        part = G(Part, tutorial=tutorial)
+        self.assertEqual(404,
+                         client.get(part.get_absolute_url()).status_code)
+
+    def test_url_view_part_visible(self):
+        '''Testing viewing a part from visible tutorial as anonymous'''
+        client = Client()
+        tutorial = G(Tutorial, is_visible=True, is_mini=False)
+        part = G(Part, tutorial=tutorial)
+        self.assertEqual(200,
+                         client.get(part.get_absolute_url()).status_code)
+

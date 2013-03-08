@@ -1,4 +1,6 @@
 {% load url from future %}
+{% load profile %}
+{% load forum_unread_count %}
 <!doctype html>
 <html>
 <head>
@@ -28,8 +30,11 @@
                         <ul class="nav pull-right">
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    {% with profile=user|profile %}
+                                    <img src="{{ profile.get_gravatar_url }}&amp;s=16" alt="Avatar" style="vertical-align: bottom;" />
                                     {{ user.username }}
                                     <b class="caret"></b>
+                                    {% endwith %}
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li>
@@ -52,7 +57,16 @@
                         <li><a href="/">Accueil</a></li>
                         <li><a href="/articles/">Articles</a></li>
                         <li><a href="/tutoriels/">Tutoriels</a></li>
-                        <li><a href="/forums/">Forums</a></li>
+                        <li><a href="/forums/">
+                            Forums
+                            {% if user.is_authenticated %}
+                                {% with unread_topic_count=user|forum_unread_count %}
+                                    {% if unread_topic_count > 0 %}
+                                        <span class="label label-important">{{ unread_topic_count }}</span>
+                                    {% endif %}
+                                {% endwith %}
+                            {% endif %}
+                        </a></li>
                     </ul>
                 </div>
             </div>
@@ -65,8 +79,10 @@
             {% endblock %}
         </ul>
 
+        <div class="page-header">
+            <h1>{% block headline %}{% endblock %}</h1>
+        </div>
 
-        <h1>{% block headline %}{% endblock %}</h1>
         {% block content %}{% endblock %}
 
         <div class="spacer3"></div>
@@ -75,7 +91,7 @@
     <div class="footer">
         <div class="container">
             <p>&copy; progdupeu.pl 2013</p>
-            <a href="#">Contact</a> &#183;
+            <a href="https://twitter.com/Progdupeupl">Contact</a> &#183;
             <a href="https://bitbucket.org/MicroJoe/progdupeupl">Code source</a>
         </div>
     </div>
@@ -83,6 +99,8 @@
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/pdp.js"></script>
+
+    {# Additionnal JS files can be loaded in this block #}
     {% block js %}
     {% endblock %}
 </body>

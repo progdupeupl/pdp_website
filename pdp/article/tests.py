@@ -44,27 +44,29 @@ class ArticleTests(TestCase):
     # Urls
 
     def test_url_index(self):
+        '''Tests viewing the index page of articles'''
         client = Client()
         self.assertEqual(200, client.get('/articles/').status_code)
 
     def test_url_new(self):
+        '''Tests adding a new article as anonymous'''
         client = Client()
-
-        # Check redirection if user not authenticated
         self.assertEqual(302, client.get('/articles/nouveau').status_code)
 
         # Check if user authenticated
         # TODO: log in with test user
         # self.assertEqual(200, client.get('/articles/nouveau').status_code)
 
-    def test_url_view(self):
+    def test_url_view_invisible(self):
+        '''Testing viewing an invisible article as anonymous'''
         client = Client()
-        # Test for invisible article
         article = G(Article, is_visible=False)
         self.assertEqual(404,
                          client.get(article.get_absolute_url()).status_code)
 
-        # Test for visible article
+    def test_url_view_visible(self):
+        '''Testing viewing a visible article as anonymous'''
+        client = Client()
         article = G(Article, is_visible=True)
         self.assertEqual(200,
                          client.get(article.get_absolute_url()).status_code)

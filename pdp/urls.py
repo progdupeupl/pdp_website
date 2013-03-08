@@ -14,8 +14,9 @@ urlpatterns = patterns('',
     url(r'^forums/', include('pdp.forum.urls')),
     url(r'^membres/', include('pdp.member.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^pages/', include('pdp.pages.urls')),
 
-    url(r'^$', pages.views.accueil),
+    url(r'^$', pages.views.home),
 )
 
 if settings.DEBUG:

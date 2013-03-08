@@ -36,16 +36,18 @@ l'informatique.
             tenir informé des dernières innovations du moment.
         </p>
         {% if last_articles %}
-            <p>Derniers articles :</p>
             {% for article in last_articles %}
                 {% include "article/article_item_common.html" %}
             {% endfor %}
+            <div class="spacer1"></div>
         {% else %}
             <p>Pas d'articles pour l'instant.</p>
         {% endif %}
-        <div class="spacer2"></div>
         <p>
-            <a href="/articles/" class="btn">Liste des articles</a>
+            <a href="/articles/" class="btn">
+                <i class="icon-list"></i>
+                Liste des articles
+            </a>
         </p>
     </div>
     <div class="span4">
@@ -55,16 +57,18 @@ l'informatique.
             autour de la programmation et de l'informatique.
         </p>
         {% if last_tutorials %}
-            <p>Derniers tutoriels :</p>
             {% for tutorial in last_tutorials %}
                 {% include "tutorial/tutorial_item_common.html" %}
             {% endfor %}
+            <div class="spacer1"></div>
         {% else %}
             <p>Aucun tutoriel actuellement.</p>
         {% endif %}
-        <div class="spacer2"></div>
         <p>
-            <a href="/tutoriels/" class="btn">Liste des tutoriels</a>
+            <a href="/tutoriels/" class="btn">
+                <i class="icon-list"></i>
+                Liste des tutoriels
+            </a>
         </p>
     </div>
     <div class="span4">
@@ -75,7 +79,10 @@ l'informatique.
             divers sujets.
         </p>
         <p>
-            <a href="/forums/" class="btn">Accèder aux forums</a>
+            <a href="/forums/" class="btn">
+                <i class="icon-comment"></i>
+                Accèder aux forums
+            </a>
         </p>
     </div>
 </div>

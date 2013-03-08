@@ -34,24 +34,25 @@
 
     {% if user.is_staff %}
 
-    {# Button to move the thread #}
-    <a href="javascript:void(0)" class="btn move-btn" data-toggle="popover" data-original-title="Déplacer le sujet dans..." data-placement="bottom"
-        data-content="
-            <select class='input-block-level' name='move_target'>
-                {% for category_mv in categories %}
-                    <option disabled>&mdash; {{ category_mv.title }}</option>
-                    {% for forum_mv in category_mv.get_forums %}
-                        <option value='{{ forum_mv.pk }}'>{{ forum_mv.title }}</option>
-                    {% endfor %}
-                {% endfor %}
-            </select>
-            <button type='submit' name='move' class='btn input-block-level'>
-                Déplacer
-            </button>
-        "> 
-        Déplacer
-    </a>
     <div class="btn-group">
+        {# Button to move the thread #}
+        <a href="javascript:void(0)" class="btn move-btn" data-toggle="popover" data-original-title="Déplacer le sujet dans..." data-placement="bottom"
+            data-content="
+                <select class='input-block-level' name='move_target'>
+                    {% for category_mv in categories %}
+                        <option disabled>&mdash; {{ category_mv.title }}</option>
+                        {% for forum_mv in category_mv.get_forums %}
+                            <option value='{{ forum_mv.pk }}'>{{ forum_mv.title }}</option>
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+                <button type='submit' name='move' class='btn input-block-level'>
+                    Déplacer
+                </button>
+            "> 
+            <i class="icon-move"></i>
+            Déplacer
+        </a>
         {# Button to make the thread a post-it #}
         <button type="submit" name="sticky"
             class="btn {% if topic.is_sticky %}btn-info{% endif %}">
@@ -74,20 +75,6 @@
             class="btn {% if topic.is_solved %}btn-success{% endif %}">
             <i class="icon-flag {% if topic.is_solved %}icon-white{% endif %}"></i>
                 Résolu
-        </button>
-
-    {% else %}
-
-        {# Button to follow the thread #}
-        <button type="submit" name="follow"
-            class="btn {% if 1 == 1 %}btn-primary{% endif %}">
-            {% if 1 == 2 %}
-                <i class="icon-star"></i>
-                Suivre
-            {% else %}
-                <i class="icon-star icon-white"></i>
-                Suivi
-            {% endif %}
         </button>
 
     {% endif %}
@@ -114,6 +101,8 @@
     solution satisfaisant son problème.
 </div>
 {% endif %}
+
+{% include "forum/topic_pagination.html" %}
 
 <table class="table table-bordered topic-table">
     <thead>
@@ -184,29 +173,7 @@
     </tbody>
 </table>
 
-<div class="pagination">
-    <ul>
-
-        <li class="{% ifequal nb 1 %}disabled{% endifequal %}">
-            <a href="{% ifnotequal nb 1 %}{{ topic.get_absolute_url }}?page={{ nb|add:"-1" }}{% else %}#{% endifnotequal %}">«</a>
-        </li>
-
-    {% for page in pages %}
-        <li class="{% ifequal page nb %}active{% endifequal %}">
-            {% ifnotequal page nb %}
-                <a href="{{ topic.get_absolute_url }}?page={{ page }}">{{ page }}</a>
-            {% else %}
-                <a href="#">{{ page }}</a>
-            {% endifnotequal %}
-        </li>
-    {% endfor %}
-
-        <li class="{% ifequal nb pages|last %}disabled{% endifequal %}">
-            <a href="{% ifnotequal nb pages|last %}{{ topic.get_absolute_url }}?page={{ nb|add:"1" }}{% else %}#{% endifnotequal %}">»</a>
-        </li>
-
-    </ul>
-</div>
+{% include "forum/topic_pagination.html" %}
 
 {% if user.is_authenticated %}
 <div class="offset2 span8">

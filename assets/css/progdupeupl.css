@@ -3,15 +3,9 @@
     margin-bottom: 10px;
 }
 
-.spacer3
-{
-    height: 3em;
-}
-
-.spacer2
-{
-    height: 2em;
-}
+.spacer1 { height: 1em; }
+.spacer2 { height: 2em; }
+.spacer3 { height: 3em; }
 
 .footer
 {
@@ -51,3 +45,26 @@ thead th
     padding-top: 60px;
     margin-top: -60px;
 }
+
+.media
+{
+    background: #fefefe;
+    padding: 10px;
+}
+
+.media:hover
+{
+    background: #f5f5f5;
+}
+
+.media-article h4:before
+{
+    content: "$";
+}
+
+.media-tutorial h4:before
+{
+    content: "§";
+}
+
+

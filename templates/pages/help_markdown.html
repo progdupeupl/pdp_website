@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}
+Aide-mémoire Markdown
+{% endblock %}
+
+{% block headline %}
+Aide-mémoire Markdown
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="/">Accueil</a> <span class="divider">/</span></li>
+<li class="active">Aide-mémoire Markdown</li>
+{% endblock %}
+
+{% block content %}
+
+<p>
+    Voici un petit aide-mémoire permettant de vous souvenir des différents
+    éléments disponibles à l'aide de la syntaxe Markdown utilisée (massivement)
+    sur ce site.
+</p>
+<div class="spacer3"></div>
+{% include "pages/help_markdown_part.html" %}
+
+{% endblock %}

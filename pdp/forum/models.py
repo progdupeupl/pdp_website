@@ -10,6 +10,7 @@ from pdp.utils import get_current_user
 
 POSTS_PER_PAGE = 10
 
+
 class Category(models.Model):
     '''A category, containing forums'''
     class Meta:
@@ -62,6 +63,9 @@ class Forum(models.Model):
             return Post.objects.all().filter(topic__forum__pk=self.pk).order_by('-pubdate')[0]
         except IndexError:
             return None
+
+    def is_read(self):
+        return not never_read(self.get_last_message().topic)
 
 
 class Topic(models.Model):
@@ -142,9 +146,12 @@ class TopicRead(models.Model):
     user = models.ForeignKey(User)
 
 
-def never_read(topic):
+def never_read(topic, user=None):
+    if user is None:
+        user = get_current_user()
+
     return TopicRead.objects\
-        .filter(post=topic.last_message, topic=topic, user=get_current_user())\
+        .filter(post=topic.last_message, topic=topic, user=user)\
         .count() == 0
 
 

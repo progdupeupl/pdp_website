@@ -32,12 +32,32 @@
     {% endfor %}
 </div>
 
+{% if user.is_authenticated and user in tutorial.authors.all %}
 <p>
-    <a href="{% url pdp.tutorial.views.edit_tutorial %}?tutoriel={{ tutorial.pk }}" class="btn">
-        <i class="icon-pencil"></i>
-        Éditer le tutoriel
+    <form action="{% url pdp.tutorial.views.modify_tutorial %}" method="POST">
+    {% if not tutorial.is_mini %}
+    <a href="/tutoriels/nouveau/partie?tutoriel={{ tutorial.pk }}" class="btn">
+        <i class="icon-plus"></i>
+        Ajouter une partie
     </a>
+    {% endif %}
+
+    <div class="btn-group">
+        <a href="{% url pdp.tutorial.views.edit_tutorial %}?tutoriel={{ tutorial.pk }}" class="btn">
+            <i class="icon-pencil"></i>
+            Éditer le tutoriel
+        </a>
+        <button type="submit" name="delete" class="btn">
+            <i class="icon-remove"></i>
+            Supprimer le tutoriel
+        </button>
+    </div>
+
+    <input type="hidden" name="tutorial" value="{{ tutorial.pk }}" />
+    {% csrf_token %}
+    </form>
 </p>
+{% endif %}
 
 {% if tutorial.is_mini %}
 {# Small tutorial #}
@@ -46,18 +66,6 @@
 
 {% else %}
 {# Large tutorial #}
-    <p>
-    Il y a {{ parts.count }} partie{{ parts.count|pluralize }} dans ce tutoriel.
-    </p>
-
-    {% if user.is_authenticated and user in tutorial.authors.all %}
-    <p>
-        <a href="/tutoriels/nouveau/partie?tutoriel={{ tutorial.pk }}" class="btn">
-            <i class="icon-plus"></i>
-            Ajouter une partie
-        </a>
-    </p>
-    {% endif %}
 
     {% for part in parts %}
         <h2>
