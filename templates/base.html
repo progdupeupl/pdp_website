@@ -56,19 +56,19 @@
                         </ul>
                     {% endif %}
                     <ul class="nav">
-                        <li><a href="/">
+                        <li {% block menu_home %}{% endblock %}><a href="/">
                             <i class="icon-white icon-home"></i>
                             Accueil
                         </a></li>
-                        <li><a href="/articles/">
+                        <li {% block menu_article %}{% endblock %}><a href="/articles/">
                             <i class="icon-white icon-file"></i>
                             Articles
                         </a></li>
-                        <li><a href="/tutoriels/">
+                        <li {% block menu_tutorial %}{% endblock %}><a href="/tutoriels/">
                             <i class="icon-white icon-book"></i>
                             Tutoriels
                         </a></li>
-                        <li><a href="/forums/">
+                        <li {% block menu_forum %}{% endblock %}><a href="/forums/">
                             <i class="icon-white icon-comment"></i>
                             Forums
                             {% if user.is_authenticated %}
