@@ -37,13 +37,15 @@
                                     {% endwith %}
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="{{ user.get_absolute_url }}">Profil</a>
-                                    </li>
+                                    <li><a href="{{ user.get_absolute_url }}">
+                                        <i class="icon-user"></i>
+                                        Profil
+                                    </a></li>
                                     <li class="divider"></li>
-                                    <li>
-                                        <a href="/membres/deconnexion/{{ get_token }}">Se déconnecter</a>
-                                    </li>
+                                    <li><a href="/membres/deconnexion/{{ get_token }}">
+                                        <i class="icon-off"></i>
+                                        Se déconnecter
+                                    </a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -54,10 +56,20 @@
                         </ul>
                     {% endif %}
                     <ul class="nav">
-                        <li><a href="/">Accueil</a></li>
-                        <li><a href="/articles/">Articles</a></li>
-                        <li><a href="/tutoriels/">Tutoriels</a></li>
-                        <li><a href="/forums/">
+                        <li {% block menu_home %}{% endblock %}><a href="/">
+                            <i class="icon-white icon-home"></i>
+                            Accueil
+                        </a></li>
+                        <li {% block menu_article %}{% endblock %}><a href="/articles/">
+                            <i class="icon-white icon-file"></i>
+                            Articles
+                        </a></li>
+                        <li {% block menu_tutorial %}{% endblock %}><a href="/tutoriels/">
+                            <i class="icon-white icon-book"></i>
+                            Tutoriels
+                        </a></li>
+                        <li {% block menu_forum %}{% endblock %}><a href="/forums/">
+                            <i class="icon-white icon-comment"></i>
                             Forums
                             {% if user.is_authenticated %}
                                 {% with unread_topic_count=user|forum_unread_count %}
@@ -92,6 +104,7 @@
         <div class="container">
             <p>&copy; progdupeu.pl 2013</p>
             <a href="https://twitter.com/Progdupeupl">Contact</a> &#183;
+            <a href="http://paste.awesom.eu/">Pastebin</a> &#183;
             <a href="https://bitbucket.org/MicroJoe/progdupeupl">Code source</a>
         </div>
     </div>
