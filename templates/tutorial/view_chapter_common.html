@@ -63,6 +63,42 @@
     <p>
         <form action="{% url pdp.tutorial.views.modify_extract %}" method="POST">
 
+        <a href="javascript:void(0)" class="btn move-btn" daata-toggle="popover" data-original-title="Déplacer l'extrait..." data-placement="bottom"
+            data-content="
+                <select class='input-block-level' name='move_target'>
+                    {% if extract.position_in_chapter > 1 %}
+                        <option value='{{ extract.position_in_chapter|add:"-1" }}'>Monter</option>
+                    {% endif %}
+                    {% if extract.position_in_chapter < extract.chapter.get_extracts.count %}
+                        <option value='{{ extract.position_in_chapter|add:"1" }}'>Descendre</option>
+                    {% endif %}
+                    <option disabled>&mdash; Déplacer avant</option>
+                    {% for extract_mv in extract.chapter.get_extracts %}
+                        {% if extract != extract_mv and extract_mv.position_in_chapter|add:"-1" != extract.position_in_chapter %}
+                        <option value='{% if extract_mv.position_in_chapter < extract.position_in_chapter %}{{ extract_mv.position_in_chapter }}{% else %}{{ extract_mv.position_in_chapter|add:"-1" }}{% endif %}'>
+                                Extrait {{ extract_mv.position_in_chapter }} : {{ extract_mv.title }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+                    <option disabled>&mdash; Déplacer après</option>
+                    {% for extract_mv in extract.chapter.get_extracts %}
+                        {% if extract != extract_mv and extract_mv.position_in_chapter|add:"1" != extract.position_in_chapter %}
+                        <option value='{% if extract_mv.position_in_chapter < extract.position_in_chapter %}{{ extract_mv.position_in_chapter|add:"1" }}{% else %}{{ extract_mv.position_in_chapter }}{% endif %}'>
+                                Extrait {{ extract_mv.position_in_chapter }} : {{ extract_mv.title }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+
+                </select>   
+                <button type='submit' name='move' class='btn input-block-level'>
+                    <i class='icon-arrow-right'></i>
+                    Déplacer
+                </button>
+            ">
+            <i class="icon-move"></i>
+            Déplacer l'extrait
+        </a>
+
         <div class="btn-group">
             <a href="{% url pdp.tutorial.views.edit_extract %}?extrait={{ extract.pk }}" class="btn">
                 <i class="icon-pencil"></i>

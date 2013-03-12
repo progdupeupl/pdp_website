@@ -529,4 +529,33 @@ def modify_extract(request):
                 extract_c.save()
         extract.delete()
 
-    return redirect(chapter.get_absolute_url())
+        return redirect(chapter.get_absolute_url())
+
+    elif 'move' in data:
+        new_pos = int(request.POST['move_target'])
+        old_pos = extract.position_in_chapter
+
+        # Make sure the requested position is valid
+        if new_pos < 1 or new_pos > chapter.get_extracts().count():
+            raise ValueError(
+                'Cannot move chapter to given position : %s' % new_pos)
+
+        pos_increased = new_pos - old_pos > 0
+        for extract_mv in chapter.get_extracts():
+            if pos_increased \
+                    and old_pos <= extract_mv.position_in_chapter <= new_pos:
+                extract_mv.position_in_chapter = extract_mv.position_in_chapter - 1
+                extract_mv.save()
+            elif not pos_increased \
+                    and new_pos <= extract_mv.position_in_chapter <= old_pos:
+                extract_mv.position_in_chapter = extract_mv.position_in_chapter + \
+                    1
+                extract_mv.save()
+
+        # Save the new position once other extracts have been sorted
+        extract.position_in_chapter = new_pos
+        extract.save()
+
+        return redirect(extract.get_absolute_url())
+
+    raise Http404
