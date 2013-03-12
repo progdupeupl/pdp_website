@@ -18,10 +18,6 @@
 {% block content %}
 
 <div class="pull-right well">
-    <p style="text-align: center;">
-        <img src="{% if tutorial.icon %}{{ tutorial.icon.url }}{% else %}/static/img/blank_tutorial.png{% endif %}" alt="Icône" width="64" height="64" />
-    </p>
-
     <strong>Type :</strong>
     {% if tutorial.is_mini %}mini{% else %}big{% endif %}-tutoriel
     <br />
