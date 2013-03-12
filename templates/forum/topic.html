@@ -83,16 +83,6 @@
 </div>
 {% endif %}
 
-<div class="btn-group">
-    <a href="/forums/" class="btn">
-        Forums
-    </a>
-
-    <a href="{{ topic.forum.get_absolute_url }}" class="btn">
-        « {{ topic.forum.title }} »
-    </a>
-</div>
-
 <div class="spacer3"></div>
 
 {% if topic.is_solved %}
