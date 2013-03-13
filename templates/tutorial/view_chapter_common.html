@@ -31,7 +31,7 @@
 {% endif %}
 
 {% if chapter.introduction %}
-{{ chapter.introduction|markdown:"safe,codehilite,extra" }}
+{{ chapter.introduction|markdown:"safe,codehilite(force_linenos=True),extra" }}
 {% else %}
 <p>Aucune introduction.</p>
 {% endif %}
@@ -117,7 +117,7 @@
     {% endif %}
 
     {% if extract.text %}
-        {{ extract.text|markdown:"safe,codehilite,extra" }}
+        {{ extract.text|markdown:"safe,codehilite(force_linenos=True),extra" }}
     {% else %}
     <p>
         Cet extrait est vide.
@@ -128,7 +128,7 @@
 <hr />
 
 {% if chapter.conclusion %}
-{{ chapter.conclusion|markdown:"safe,codehilite,extra" }}
+{{ chapter.conclusion|markdown:"safe,codehilite(force_linenos=True),extra" }}
 {% else %}
 <p>Aucune conclusion.</p>
 {% endif %}

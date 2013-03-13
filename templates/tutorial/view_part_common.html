@@ -63,7 +63,7 @@
 {% endif %}
 
 {% if part.introduction %}
-    {{ part.introduction|markdown:"safe,codehilite,extra" }}
+    {{ part.introduction|markdown:"safe,codehilite(force_linenos=True),extra" }}
 {% else %}
     <p>Pas d'introduction.</p>
 {% endif %}
@@ -89,7 +89,7 @@
 </ul>
 
 {% if part.conclusion %}
-    {{ part.conclusion|markdown:"safe,codehilite,extra" }}
+    {{ part.conclusion|markdown:"safe,codehilite(force_linenos=True),extra" }}
 {% else %}
     <p>Pas de conclusion.</p>
 {% endif %}

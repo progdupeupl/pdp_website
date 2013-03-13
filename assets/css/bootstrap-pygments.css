@@ -1,0 +1,33 @@
+table .codehilitetable {
+    width: 100%;
+}
+
+table .codehilitetable td {
+    padding: 0;
+}
+
+td .linenos {
+    border: none;
+}
+
+td .code {
+    border: none;
+    width: 100%;
+}
+
+.linenodiv pre {
+    border-right: solid 1px #ececf0;
+
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+
+    background: #fbfbfc;
+    color: #bebec5;
+}
+
+.codehilite pre {
+    border-left: none;
+
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}

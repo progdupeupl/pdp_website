@@ -97,7 +97,7 @@
 <table class="table table-bordered topic-table">
     <thead>
         <tr>
-            <th>Auteur</th>
+            <th style="width: 100px;">Auteur</th>
             <th>Message</th>
         </tr>
     </thead>
@@ -144,7 +144,7 @@
             </td>
         </tr>
         <tr class="post-message {% if post.is_useful %}success{% endif %}">
-            <td>
+            <td class="post-author">
                 {% with profile=post.author|profile %}
                 <img alt="Avatar" src="{{ profile.get_gravatar_url }}" />
                 {% endwith %}
@@ -152,7 +152,7 @@
             <td>
                 {% if forloop.first and nb > 1 %}<strong>Dernier message de la page précédente :</strong><br /><br />{% endif %}
 
-                {{ post.text|markdown:"safe,codehilite,extra" }}
+                {{ post.text|markdown:"safe,codehilite(force_linenos=True),extra" }}
 
                 {% if not post.update = None %}
                 <em>&mdash; Dernière édition {{ post.update|humane_date }}</em>

@@ -71,7 +71,7 @@
     <p style="text-align: center;">
         <b>Prévisualisation de votre message</b>
     </p>
-    {{ text|markdown:"safe,codehilite,extra" }}
+    {{ text|markdown:"safe,codehilite(force_linenos=True),extra" }}
 </div>
 
 {% endblock %}

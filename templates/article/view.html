@@ -39,6 +39,6 @@
     {% endifequal %}
 </div>
 
-{{ article.text|markdown:"safe,codehilite,extra" }}
+{{ article.text|markdown:"safe,codehilite(force_linenos=True),extra" }}
 
 {% endblock %}
