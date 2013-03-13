@@ -1,13 +1,16 @@
-table .codehilitetable {
+.codehilitetable {
     width: 100%;
 }
 
-table .codehilitetable td {
+.codehilitetable td {
     padding: 0;
+    border: none;
 }
 
-td .linenos {
+.codehilitetable .linenos {
     border: none;
+    width: auto;
+
 }
 
 td .code {
@@ -23,6 +26,8 @@ td .code {
 
     background: #fbfbfc;
     color: #bebec5;
+
+    word-break: normal;
 }
 
 .codehilite pre {
