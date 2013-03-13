@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 
 from pdp.utils import render_template, slugify
+from pdp.utils.tutorials import move
 
 from .models import Tutorial, Part, Chapter, Extract
 from .forms import TutorialForm, EditTutorialForm, PartForm, ChapterForm, \
@@ -207,31 +208,7 @@ def modify_part(request):
 
     if 'move' in request.POST:
         new_pos = int(request.POST['move_target'])
-        old_pos = part.position_in_tutorial
-
-        # Make sure the requested position is correct
-        if new_pos < 1 or new_pos > part.tutorial.get_parts().count():
-            raise ValueError('La nouvelle position demandée est incorrecte')
-
-        # Update other parts by changing their position
-        # Draw a schema on a piece of paper
-        #     if you want to understand how this works
-        # TODO: if the above comment is needed,
-        #     there's probably a better algorithm
-        pos_increased = new_pos - old_pos > 0
-        for tut_p in part.tutorial.get_parts():
-            if pos_increased \
-                    and old_pos <= tut_p.position_in_tutorial <= new_pos:
-                tut_p.position_in_tutorial = tut_p.position_in_tutorial - 1
-                tut_p.save()
-            elif not pos_increased \
-                    and new_pos <= tut_p.position_in_tutorial <= old_pos:
-                tut_p.position_in_tutorial = tut_p.position_in_tutorial + 1
-                tut_p.save()
-
-        # Save the new position after the other parts have been sorted
-        part.position_in_tutorial = new_pos
-        part.save()
+        move(part, new_pos, 'position_in_tutorial', 'tutorial', 'get_parts')
 
     elif 'delete' in request.POST:
         # Delete all chapters belonging to the part
@@ -355,29 +332,8 @@ def modify_chapter(request):
 
     if 'move' in data:
         new_pos = int(request.GET['position'])
-        old_pos = chapter.position_in_part
+        move(chapter, new_pos, 'position_in_part', 'part', 'get_chapters')
 
-        # Make sure the requested position is valid
-        if new_pos < 1 or new_pos > chapter.part.get_chapters().count():
-            raise ValueError('La nouvelle position demandée est incorrecte')
-
-        # Update other chapters by changing their position
-        # Draw a schema on a piece of paper if you want to understand how this works
-        # TODO: if the above comment is needed,
-        #       there's probably a better algorithm
-        pos_increased = new_pos - old_pos > 0
-        for tut_c in chapter.part.get_chapters():
-            if pos_increased \
-                    and old_pos <= tut_c.position_in_part <= new_pos:
-                tut_c.position_in_part = tut_c.position_in_part - 1
-                tut_c.save()
-            elif not pos_increased \
-                    and new_pos <= tut_c.position_in_part <= old_pos:
-                tut_c.position_in_part = tut_c.position_in_part + 1
-                tut_c.save()
-        # Save the new position once other chapters have been sorted
-        chapter.position_in_part = new_pos
-        chapter.save()
     elif 'delete' in data:
         # Move other chapters first
         old_pos = chapter.position_in_part
@@ -533,28 +489,8 @@ def modify_extract(request):
 
     elif 'move' in data:
         new_pos = int(request.POST['move_target'])
-        old_pos = extract.position_in_chapter
-
-        # Make sure the requested position is valid
-        if new_pos < 1 or new_pos > chapter.get_extracts().count():
-            raise ValueError(
-                'Cannot move chapter to given position : %s' % new_pos)
-
-        pos_increased = new_pos - old_pos > 0
-        for extract_mv in chapter.get_extracts():
-            if pos_increased \
-                    and old_pos <= extract_mv.position_in_chapter <= new_pos:
-                extract_mv.position_in_chapter = extract_mv.position_in_chapter - 1
-                extract_mv.save()
-            elif not pos_increased \
-                    and new_pos <= extract_mv.position_in_chapter <= old_pos:
-                extract_mv.position_in_chapter = extract_mv.position_in_chapter + \
-                    1
-                extract_mv.save()
-
-        # Save the new position once other extracts have been sorted
-        extract.position_in_chapter = new_pos
-        extract.save()
+        move(extract, new_pos, 'position_in_chapter', 'chapter',
+             'get_extracts')
 
         return redirect(extract.get_absolute_url())
 
