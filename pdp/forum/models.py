@@ -8,7 +8,7 @@ from django.template.defaultfilters import slugify
 
 from pdp.utils import get_current_user
 
-POSTS_PER_PAGE = 10
+POSTS_PER_PAGE = 21
 
 
 class Category(models.Model):
