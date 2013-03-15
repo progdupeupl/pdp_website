@@ -140,7 +140,10 @@
 
                 <a href="{{ post.get_absolute_url }}">#</a>
                 &ndash; {{ post.pubdate|humane_date }}
-                </a>
+
+                {% if not post.update = None %}
+                    (dernière édition {{ post.update|humane_date }})
+                {% endif %}
             </td>
         </tr>
         <tr class="post-message {% if post.is_useful %}success{% endif %}">
@@ -154,9 +157,6 @@
 
                 {{ post.text|markdown:"safe,codehilite(force_linenos=True),extra" }}
 
-                {% if not post.update = None %}
-                <em>&mdash; Dernière édition {{ post.update|humane_date }}</em>
-                {% endif %}
             </td>
         </tr>
         {% endfor %}
