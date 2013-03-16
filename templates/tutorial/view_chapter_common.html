@@ -21,16 +21,16 @@
             <option value='{{ chapter.position_in_part|add:"1" }}'>Descendre</option>
             {% endif %}
                 <option disabled>&mdash; Déplacer avant</option>
-            {% for chapter_mv in part.tutorial.get_parts %}
-                {% if part != chapter_mv and chapter_mv.position_in_part|add:"-1" != chapter.position_in_part %}
+            {% for chapter_mv in chapter.part.get_chapters %}
+                {% if chapter != chapter_mv and chapter_mv.position_in_part|add:"-1" != chapter.position_in_part %}
                 <option value='{% if chapter_mv.position_in_part < chapter.position_in_part %}{{ chapter_mv.position_in_part }}{% else %}{{ chapter_mv.position_in_part|add:"-1" }}{% endif %}'>
                         Chapitre {{ chapter_mv.position_in_part }} : {{ chapter_mv.title }}
                     </option>
                 {% endif %}
             {% endfor %}
             <option disabled>&mdash; Déplacer après</option>
-            {% for chapter_mv in part.tutorial.get_parts %}
-                {% if part != chapter_mv and chapter_mv.position_in_part|add:"1" != chapter.position_in_part %}
+            {% for chapter_mv in chapter.part.get_chapters %}
+                {% if chapter != chapter_mv and chapter_mv.position_in_part|add:"1" != chapter.position_in_part %}
                 <option value='{% if chapter_mv.position_in_part < chapter.position_in_part %}{{ chapter_mv.position_in_part|add:"1" }}{% else %}{{ chapter_mv.position_in_part }}{% endif %}'>
                         Chapitre {{ chapter_mv.position_in_part }} : {{ chapter_mv.title }}
                     </option>
