@@ -331,7 +331,7 @@ def modify_chapter(request):
     #   raise Http404
 
     if 'move' in data:
-        new_pos = int(request.GET['position'])
+        new_pos = int(request.POST['move_target'])
         move(chapter, new_pos, 'position_in_part', 'part', 'get_chapters')
 
     elif 'delete' in data:
