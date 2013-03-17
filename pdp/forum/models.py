@@ -163,3 +163,7 @@ def mark_read(topic):
     t = TopicRead(
         post=topic.last_message, topic=topic, user=get_current_user())
     t.save()
+
+
+def get_last_topics():
+    return Topic.objects.all().order_by('-pubdate')[:3]

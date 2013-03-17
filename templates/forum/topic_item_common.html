@@ -1,0 +1,18 @@
+{% load humane_date %}
+
+<div class="media media-topic">
+    <div class="media-body">
+        <h4 class="media-heading">
+            <a href="{{ topic.get_absolute_url }}">
+                {{ topic.title }}
+            </a><br />
+            {{ topic.subtitle }}
+        </h4>
+        <p><small>
+            Par <a href="{{ topic.author.get_absolute_url }}">
+                {{ topic.author }}
+            </a>
+            {{ topic.pubdate|humane_date }}.
+        </small></p>
+    </div>
+</div>

@@ -67,3 +67,8 @@ thead th
 }
 
 
+.media-topic h4:before
+{
+    content: "`";
+}
+
