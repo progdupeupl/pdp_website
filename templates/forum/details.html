@@ -20,10 +20,20 @@
 
 {% if user.is_authenticated %}
 <p>
-    <a href="/forums/sujet/nouveau?forum={{ forum.pk }}" class="btn">
-        <i class="icon-plus"></i>
-        Nouveau sujet
-    </a>
+    <form action="{% url pdp.forum.views.clear %}" method="POST">
+        <a href="/forums/sujet/nouveau?forum={{ forum.pk }}" class="btn">
+            <i class="icon-plus"></i>
+            Nouveau sujet
+        </a>
+
+        <button type="submit" class="btn">
+            <i class="icon-eye-close"></i>
+            Tout marquer comme lu
+        </button>
+
+        <input type="hidden" name="clear_target" value="{{ forum.pk }}" />
+        {% csrf_token %}
+    </form>
 </p>
 {% endif %}
 

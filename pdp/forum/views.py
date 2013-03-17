@@ -340,3 +340,34 @@ def useful_post(request):
     post.save()
 
     return redirect(post.get_absolute_url())
+
+
+@login_required
+def clear(request):
+    '''Clear forums by marking all topics as read'''
+
+    def clear_forum(forum):
+        '''Clear a forum by marking his topics as read'''
+        for topic in Topic.objects.filter(forum=forum):
+            if never_read(topic):
+                mark_read(topic)
+
+    if not request.method == 'POST':
+        raise Http404
+
+    try:
+        target = request.POST['clear_target']
+    except KeyError:
+        raise Http404
+
+    if target == 'all':
+        # Clear all forums
+        for forum in Forum.objects.all():
+            clear_forum(forum)
+        return redirect('/forums/')
+    else:
+        # Clear only the forum passed via POST field
+        forum_pk = int(target)
+        forum = get_object_or_404(Forum, pk=forum_pk)
+        clear_forum(forum)
+        return redirect(forum.get_absolute_url())

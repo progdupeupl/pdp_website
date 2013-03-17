@@ -19,6 +19,17 @@ Voici la liste des forums mis à votre disposition pour échanger avec le reste
 de la communauté, rangés par thématiques.
 </p>
 
+<form action="{% url pdp.forum.views.clear %}" method="POST">
+    <button type="submit" class="btn">
+        <i class="icon-eye-close"></i>
+        Tout marquer comme lu
+    </button>
+
+    <input type="hidden" name="clear_target" value="all" />
+
+    {% csrf_token %}
+</form>
+
 {% for category in categories %}
 
 <h2>

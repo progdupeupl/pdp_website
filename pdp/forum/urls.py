@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     url(r'message/editer$', views.edit_post),
     url(r'message/nouveau$', views.answer),
     url(r'message/utile$', views.useful_post),
+    url(r'forum/nettoyer$', views.clear),
 
     # Forum details
     url(r'(?P<cat_slug>.+)/(?P<forum_pk>\d+)-(?P<forum_slug>.+)/$',
@@ -21,6 +22,6 @@ urlpatterns = patterns('',
     # Forums belonging to one category
     url(r'(?P<cat_pk>\d+)-(?P<cat_slug>.+)/$', views.cat_details),
 
-   # Home
-   url(r'$', views.index),
+    # Home
+    url(r'$', views.index),
 )
