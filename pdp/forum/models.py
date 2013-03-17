@@ -65,7 +65,10 @@ class Forum(models.Model):
             return None
 
     def is_read(self):
-        return not never_read(self.get_last_message().topic)
+        for t in Topic.objects.all().filter(forum=self):
+            if never_read(t):
+                return False
+        return True
 
 
 class Topic(models.Model):
