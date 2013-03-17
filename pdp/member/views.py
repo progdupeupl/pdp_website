@@ -11,6 +11,7 @@ from django.core.context_processors import csrf
 
 from pdp.utils.tokens import generate_token
 from pdp.utils import render_template
+from pdp.forum.models import clear_forums
 
 from models import Profile
 from forms import LoginForm, ProfileForm, RegisterForm
@@ -109,6 +110,7 @@ def register_view(request):
             profile.save()
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, user)
+            clear_forums()
             return render_template('member/register_success.html')
 
     return render_template('member/register.html')

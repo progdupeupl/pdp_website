@@ -165,5 +165,18 @@ def mark_read(topic):
     t.save()
 
 
+def clear_forum(forum):
+    '''Clear a forum by marking his topics as read'''
+    for topic in Topic.objects.filter(forum=forum):
+        if never_read(topic):
+            mark_read(topic)
+
+
+def clear_forums():
+    '''Call clear_forum on all forums'''
+    for forum in Forum.objects.all():
+        clear_forum(forum)
+
+
 def get_last_topics():
     return Topic.objects.all().order_by('-pubdate')[:3]
