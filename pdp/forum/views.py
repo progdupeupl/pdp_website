@@ -11,6 +11,7 @@ from pdp.utils import render_template, slugify
 
 from models import Category, Forum, Topic, Post, POSTS_PER_PAGE
 from models import never_read, mark_read, clear_forum, clear_forums
+from models import follow
 from forms import TopicForm, PostForm
 
 
@@ -151,6 +152,9 @@ def new(request):
             n_topic.last_message = post
             n_topic.save()
 
+            # Follow the topic
+            follow(n_topic)
+
             return redirect(n_topic.get_absolute_url())
 
         else:
@@ -180,18 +184,20 @@ def edit(request):
 
     g_topic = get_object_or_404(Topic, pk=topic_pk)
 
-    if not request.user == g_topic.author and not request.user.is_staff:
-        return Http404
-
-    if 'solved' in data:
-        g_topic.is_solved = not g_topic.is_solved
+    if request.user.is_authenticated():
+        # User actions
+        if 'follow' in data:
+            follow(g_topic)
+    elif request.user == g_topic.author:
+        # Author actions
+        if 'solved' in data:
+            g_topic.is_solved = not g_topic.is_solved
     elif request.user.is_staff:
+        # Staff actions
         if 'lock' in data:
             g_topic.is_locked = not g_topic.is_locked
         elif 'sticky' in data:
             g_topic.is_sticky = not g_topic.is_sticky
-        elif 'follow' in data:
-            raise NotImplementedError
         elif 'move' in data:
             try:
                 forum_pk = int(request.POST['move_target'])
@@ -251,6 +257,10 @@ def answer(request):
 
                 g_topic.last_message = post
                 g_topic.save()
+
+                # Follow topic on answering
+                if not g_topic.is_followed():
+                    follow(g_topic)
 
                 return redirect(post.get_absolute_url())
             else:
