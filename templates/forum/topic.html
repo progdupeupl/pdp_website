@@ -27,6 +27,14 @@
     <form action="/forums/sujet/editer" method="POST">
     <input type="hidden" name="topic" value="{{ topic.pk }}" />
 
+    <button class="btn {% if topic.is_followed %}btn-info{% endif %}" type="submit" name="follow">
+        <i class="{% if topic.is_followed %}icon-white{% endif %} icon-star"></i>
+        {% if topic.is_followed %}
+            Suivi
+        {% else %}
+            Suivre
+        {% endif %}
+    </button>
     <a href="/forums/sujet/nouveau?forum={{ topic.forum.pk }}" class="btn">
         <i class="icon-plus"></i>
         Nouveau

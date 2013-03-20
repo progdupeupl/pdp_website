@@ -119,6 +119,16 @@ class Topic(models.Model):
         except Post.DoesNotExist:
             return self.first_post()
 
+    def is_followed(self, user=None):
+        if user is None:
+            user = get_current_user()
+
+        try:
+            TopicFollowed.objects.get(topic=self, user=user)
+        except TopicFollowed.DoesNotExist:
+            return False
+        return True
+
 
 class Post(models.Model):
     '''A forum post'''
@@ -149,6 +159,11 @@ class TopicRead(models.Model):
     user = models.ForeignKey(User)
 
 
+class TopicFollowed(models.Model):
+    topic = models.ForeignKey(Topic)
+    user = models.ForeignKey(User)
+
+
 def never_read(topic, user=None):
     if user is None:
         user = get_current_user()
@@ -176,6 +191,24 @@ def clear_forums():
     '''Call clear_forum on all forums'''
     for forum in Forum.objects.all():
         clear_forum(forum)
+
+
+def follow(topic):
+    try:
+        existing = TopicFollowed.objects.get(topic=topic, user=get_current_user())
+    except TopicFollowed.DoesNotExist:
+        existing = None
+
+    if not existing:
+        # Make the user follow the topic
+        t = TopicFollowed(
+            topic=topic,
+            user=get_current_user()
+        )
+        t.save()
+    else:
+        # If user is already following the topic, we make him don't anymore
+        existing.delete()
 
 
 def get_last_topics():
