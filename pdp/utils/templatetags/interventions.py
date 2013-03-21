@@ -19,7 +19,8 @@ def interventions_topics_count(user):
 
 @register.filter('interventions_topics')
 def interventions_topics(user):
-    topicsfollowed = TopicFollowed.objects.filter(user=user)
+    topicsfollowed = TopicFollowed.objects.filter(user=user)\
+        .order_by('-topic__last_message__pubdate')
     topics_unread = []
     topics_read = []
 
@@ -29,4 +30,5 @@ def interventions_topics(user):
         else:
             topics_read.append(topicfollowed.topic)
 
-    return {'unread': topics_unread, 'read': topics_read}
+    return {'unread': topics_unread,
+            'read': topics_read[:5 - len(topics_unread)]}
