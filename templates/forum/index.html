@@ -14,12 +14,7 @@ Liste des forums
 
 {% block content %}
 
-<p>
-Voici la liste des forums mis à votre disposition pour échanger avec le reste
-de la communauté, rangés par thématiques.
-</p>
-
-<form action="{% url pdp.forum.views.clear %}" method="POST">
+<form action="{% url pdp.forum.views.clear %}" class="pull-right" method="POST">
     <button type="submit" class="btn">
         <i class="icon-eye-close"></i>
         Tout marquer comme lu
@@ -30,11 +25,15 @@ de la communauté, rangés par thématiques.
     {% csrf_token %}
 </form>
 
+<p>
+Voici la liste des forums mis à votre disposition pour échanger avec le reste
+de la communauté, rangés par thématiques.
+</p>
+
 {% for category in categories %}
 
 <h2>
-    <a href="{{ category.get_absolute_url }}">
-        {{ category.title }}</a>
+    {{ category.title }}
 </h2>
 
 {% include "forum/forums_common.html" %}

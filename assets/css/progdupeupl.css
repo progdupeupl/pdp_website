@@ -72,3 +72,20 @@ thead th
     content: "`";
 }
 
+.forum-icon
+{
+    height: 64px;
+    background: url("/static/img/forum.png") no-repeat 100% 50%;
+    opacity: .3;
+}
+
+.forum-icon-unread
+{
+    opacity: 1;
+}
+
+.forum-topic-count
+{
+    font-size: 20px;
+    margin-top: 10px;
+}

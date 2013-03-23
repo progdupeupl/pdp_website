@@ -57,6 +57,9 @@ class Forum(models.Model):
         '''Gets the number of threads in the forum'''
         return Topic.objects.all().filter(forum__pk=self.pk).count()
 
+    def get_post_count(self):
+        return Post.objects.all().filter(topic__forum=self).count()
+
     def get_last_message(self):
         '''Gets the last message on the forum, if there are any'''
         try:

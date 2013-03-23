@@ -1,34 +1,29 @@
 {# Block displaying the list of forums belonging to a category #}
 {% load humane_date %}
 
-<table class="table table-hover table-bordered">
-    <thead>
-        <tr>
-            <th class="span1">Statut</th>
-            <th class="span5">Titre</th>
-            <th class="span1">Sujets</th>
-            <th class="span5">Dernier message</th>
-        </tr>
-    </thead>
+{% for forum in category.get_forums %}
 
-    <tbody>
-    {% for forum in category.get_forums %}
-    <tr>
-        <td style="text-align: center; vertical-align: middle;">
-            {% if user.is_authenticated and not forum.is_read %}
-            <i class="icon-eye-open"></i>
-            {% endif %}
-        </td>
-        <td>
+<div class="row">
+    <div class="span1 forum-icon {% if user.is_authenticated and not forum.is_read %}forum-icon-unread{% endif %}">
+    </div>
+    
+    <div class="span6">
+        <h4>
             <a href="{{ forum.get_absolute_url }}">{{ forum.title }}</a><br />
-            {{ forum.subtitle }}
-        </td>
-        <td>
-            {{ forum.get_topic_count }}
-        </td>
-        <td>
+        </h4>
+
+        <p>{{ forum.subtitle }}</p>
+    </div>
+
+    <div class="span5">
+        <p class="forum-topic-count">
+            {{ forum.get_topic_count }} sujets,
+            {{ forum.get_post_count }} messages
+        </p>
+
+        <p>
             {% if forum.get_last_message %}
-            Posté
+            Dernier message posté
             <a href="{{ forum.get_last_message.get_absolute_url }}">
                 {{ forum.get_last_message.pubdate|humane_date }}
             </a>
@@ -38,13 +33,12 @@
             </a>
             dans
             <a href="{{ forum.get_last_message.topic.get_absolute_url }}">
-                {{ forum.get_last_message.topic.title }}
-            </a>
+                {{ forum.get_last_message.topic.title }}</a>.
             {% else %}
-            Aucun message
+                Aucun message
             {% endif %}
-        </td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+        </p>
+    </div>
+</div>
+
+{% endfor %}
