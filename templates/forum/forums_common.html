@@ -3,24 +3,29 @@
 
 {% for forum in category.get_forums %}
 
-<div class="row">
+<div class="row-fluid">
     <div class="span1 forum-icon {% if user.is_authenticated and not forum.is_read %}forum-icon-unread{% endif %}">
     </div>
     
     <div class="span6">
         <h4>
             <a href="{{ forum.get_absolute_url }}">{{ forum.title }}</a><br />
+            <small>{{ forum.subtitle }}</small>
         </h4>
-
-        <p>{{ forum.subtitle }}</p>
     </div>
 
-    <div class="span5">
-        <p class="forum-topic-count">
-            {{ forum.get_topic_count }} sujets,
-            {{ forum.get_post_count }} messages
+    <div class="span1 forum-stats visible-desktop">
+        <p>
+            <span class="label label-inverse" title="Sujets">
+                {{ forum.get_topic_count }}
+            </span>
+            <span class="label" title="Messages">
+                {{ forum.get_post_count }}
+            </span>
         </p>
+    </div>
 
+    <div class="span4 forum-last-message">
         <p>
             {% if forum.get_last_message %}
             Dernier message posté

@@ -72,6 +72,8 @@ thead th
     content: "`";
 }
 
+/* Forums */
+
 .forum-icon
 {
     height: 64px;
@@ -84,8 +86,18 @@ thead th
     opacity: 1;
 }
 
-.forum-topic-count
+.forum-stats
 {
-    font-size: 20px;
-    margin-top: 10px;
+    margin: 16px 0px;
+    text-align: center;
+}
+
+.forum-stats span
+{
+    padding: 10px;
+}
+
+.forum-last-message 
+{
+    margin-top: 12px;
 }
