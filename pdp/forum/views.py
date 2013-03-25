@@ -188,11 +188,11 @@ def edit(request):
         # User actions
         if 'follow' in data:
             follow(g_topic)
-    elif request.user == g_topic.author:
+    if request.user == g_topic.author:
         # Author actions
         if 'solved' in data:
             g_topic.is_solved = not g_topic.is_solved
-    elif request.user.is_staff:
+    if request.user.is_staff:
         # Staff actions
         if 'lock' in data:
             g_topic.is_locked = not g_topic.is_locked
@@ -209,9 +209,6 @@ def edit(request):
         else:
             # The admin task doesn't exist
             raise Http404
-    else:
-        # The user task doesn't exist
-        raise Http404
 
     g_topic.save()
     return redirect(g_topic.get_absolute_url())

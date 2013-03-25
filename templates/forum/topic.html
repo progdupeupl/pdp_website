@@ -24,20 +24,20 @@
 {% if user.is_authenticated %}
 <div class="pull-right">
 
-    <form action="/forums/sujet/editer" method="POST">
+    <form action="{% url pdp.forum.views.edit %}" method="POST">
     <input type="hidden" name="topic" value="{{ topic.pk }}" />
 
     <button class="btn {% if topic.is_followed %}btn-info{% endif %}" type="submit" name="follow">
         <i class="{% if topic.is_followed %}icon-white{% endif %} icon-star"></i>
         {% if topic.is_followed %}
-            Suivi
+            Vous suivez ce sujet
         {% else %}
-            Suivre
+            Suivre ce sujet
         {% endif %}
     </button>
     <a href="/forums/sujet/nouveau?forum={{ topic.forum.pk }}" class="btn">
         <i class="icon-plus"></i>
-        Nouveau
+        Nouveau sujet
     </a>
 
     {% if user.is_staff %}
@@ -55,6 +55,7 @@
                     {% endfor %}
                 </select>
                 <button type='submit' name='move' class='btn input-block-level'>
+                    <i class='icon-arrow-right'></i>
                     Déplacer
                 </button>
             "> 
