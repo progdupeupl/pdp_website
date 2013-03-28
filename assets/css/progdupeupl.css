@@ -76,14 +76,13 @@ thead th
 
 .forum-icon
 {
-    height: 64px;
-    background: url("/static/img/forum.png") no-repeat 100% 50%;
-    opacity: .3;
+    background: url("/static/img/forum.png") no-repeat 0 45%;
+    padding-left: 48px;
 }
 
 .forum-icon-unread
 {
-    opacity: 1;
+    background-image: url("/static/img/forum-unread.png");
 }
 
 .forum-stats
