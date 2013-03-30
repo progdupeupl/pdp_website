@@ -49,7 +49,7 @@
     </thead>
     <tbody>
         {% for topic in topics %}
-        <tr class="{% if topic.is_solved %}success{% endif %}">
+        <tr>
             <td style="text-align: center; vertical-align: middle;">
                 {% if topic.is_sticky %}
                 <i class="icon-bookmark" title="Ce sujet est épinglé"></i>

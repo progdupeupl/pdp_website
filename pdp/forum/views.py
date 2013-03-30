@@ -206,9 +206,6 @@ def edit(request):
 
             forum = get_object_or_404(Forum, pk=forum_pk)
             g_topic.forum = forum
-        else:
-            # The admin task doesn't exist
-            raise Http404
 
     g_topic.save()
     return redirect(g_topic.get_absolute_url())
