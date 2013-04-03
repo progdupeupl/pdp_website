@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 
 from pdp.utils import render_template, slugify
 
-from .models import Article
+from .models import Article, get_prev_article, get_next_article
 from .forms import ArticleForm
 
 
@@ -37,7 +37,9 @@ def view(request, article_pk, article_slug):
         return redirect(article.get_absolute_url())
 
     return render_template('article/view.html', {
-        'article': article
+        'article': article,
+        'prev': get_prev_article(article),
+        'next': get_next_article(article)
     })
 
 
@@ -98,3 +100,22 @@ def edit(request):
     return render_template('article/edit.html', {
         'article': article, 'form': form
     })
+
+
+@login_required
+def modify(request):
+    if not request.method == 'POST':
+        raise Http404
+
+    data = request.POST
+
+    article_pk = data['article']
+    article = get_object_or_404(Article, pk=article_pk)
+
+    if request.user == article.author:
+        if 'delete' in data:
+            article.delete()
+            return redirect('/articles/')
+
+    return redirect(article.get_absolute_url())
+
