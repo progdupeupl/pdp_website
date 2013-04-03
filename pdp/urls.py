@@ -9,7 +9,7 @@ import pages.views
 import settings
 
 urlpatterns = patterns('',
-    url(r'articles/', include('pdp.article.urls')),
+    url(r'^articles/', include('pdp.article.urls')),
     url(r'^tutoriels/', include('pdp.tutorial.urls')),
     url(r'^forums/', include('pdp.forum.urls')),
     url(r'^membres/', include('pdp.member.urls')),
