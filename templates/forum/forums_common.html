@@ -3,7 +3,7 @@
 
 {% for forum in category.get_forums %}
 
-<div class="row-fluid">
+<div class="row-fluid row-hover">
     <div class="span6 forum-icon {% if user.is_authenticated and not forum.is_read %}forum-icon-unread{% endif %} hide-phone"> {# HIDE PHONE ? #}
         <h4>
             <a href="{{ forum.get_absolute_url }}">{{ forum.title }}</a><br />

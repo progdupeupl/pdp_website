@@ -52,4 +52,12 @@ Répondre au sujet
 </div>
 {% endif %}
 
+<p>
+    <strong>Dernières réponses :</strong>
+</p>
+
+{% for post in last_posts %}
+    {% include "forum/post_elem.html" %}
+{% endfor %}
+
 {% endblock %}

@@ -8,6 +8,7 @@ from pdp.utils import render_template, slugify
 from pdp.utils.tutorials import move
 
 from .models import Tutorial, Part, Chapter, Extract
+from .models import get_prev_chapter, get_next_chapter
 from .forms import TutorialForm, EditTutorialForm, PartForm, ChapterForm, \
     EmbdedChapterForm, ExtractForm
 
@@ -274,13 +275,20 @@ def view_chapter(request, tutorial_pk, tutorial_slug, part_pos, part_slug,
             and not request.user in chapter.get_tutorial().authors.all():
         raise Http404
 
+    # Check the slugs
+
     if not tutorial_slug == slugify(chapter.part.tutorial.title)\
         or not part_slug == slugify(chapter.part.title)\
             or not chapter_slug == slugify(chapter.title):
         return redirect(chapter.get_absolute_url())
 
+    # Get the next and prev chapters (if any)
+
+    prev_chapter = get_prev_chapter(chapter)
+    next_chapter = get_next_chapter(chapter)
+
     return render_template('tutorial/view_chapter.html', {
-        'chapter': chapter
+        'chapter': chapter, 'next': next_chapter, 'prev': prev_chapter
     })
 
 

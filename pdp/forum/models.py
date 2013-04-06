@@ -110,8 +110,11 @@ class Topic(models.Model):
         except IndexError:
             return None
 
+    def get_posts(self):
+        return Post.objects.filter(topic=self)
+
     def first_post(self):
-        return Post.objects.filter(topic=self)[0]
+        return get_posts(self)[0]
 
     def last_read_post(self):
         try:
