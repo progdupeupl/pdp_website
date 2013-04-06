@@ -29,12 +29,8 @@ def details(request, cat_slug, forum_pk, forum_slug):
     forum = get_object_or_404(Forum, pk=forum_pk)
 
     topics = Topic.objects.all()\
-        .filter(forum__pk=forum.pk).filter(is_sticky=False)\
-        .order_by('-last_message__pubdate')
-
-    topics_sticky = Topic.objects.all()\
-        .filter(forum__pk=forum.pk).filter(is_sticky=True)\
-        .order_by('-last_message__pubdate')
+        .filter(forum__pk=forum.pk)\
+        .order_by('-is_sticky', '-last_message__pubdate')
 
     # Check link
     if not cat_slug == slugify('%s-%s' % (forum.category.pk,
@@ -43,7 +39,7 @@ def details(request, cat_slug, forum_pk, forum_slug):
         return redirect(forum.get_absolute_url())
 
     return render_template('forum/details.html', {
-        'forum': forum, 'topics_sticky': topics_sticky, 'topics': topics
+        'forum': forum, 'topics': topics
     })
 
 
@@ -224,7 +220,6 @@ def answer(request):
         raise Http404
 
     g_topic = get_object_or_404(Topic, pk=topic_pk)
-    last_posts = g_topic.get_posts()[:5]
 
     # Making sure posting is allowed
     if g_topic.is_locked:
@@ -280,7 +275,7 @@ def answer(request):
                 post_cite.author.username, text)
 
         return render_template('forum/answer.html', {
-            'topic': g_topic, 'text': text, 'last_posts': last_posts
+            'topic': g_topic, 'text': text
         })
 
 

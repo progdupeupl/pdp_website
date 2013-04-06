@@ -177,22 +177,3 @@ class Extract(models.Model):
             self.position_in_chapter,
             slugify(self.title)
         )
-
-def get_prev_chapter(chapter):
-    try:
-        return Chapter.objects\
-                .filter(part=chapter.part)\
-                .filter(position_in_part__lt=chapter.position_in_part)\
-                .order_by('-position_in_part')[0]
-    except IndexError:
-        return None
-
-
-def get_next_chapter(chapter):
-    try:
-        return Chapter.objects\
-                .filter(part=chapter.part)\
-                .filter(position_in_part__gt=chapter.position_in_part)\
-                .order_by('position_in_part')[0]
-    except IndexError:
-        return None
