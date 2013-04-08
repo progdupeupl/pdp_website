@@ -17,16 +17,13 @@
 
 {% block content %}
 
-<div class="pull-right well">
-    <strong>Type :</strong>
-    {% if tutorial.is_mini %}mini{% else %}big{% endif %}-tutoriel
-    <br />
-
-    <strong>Auteur{{ tutorial.authors.count|pluralize }} :</strong> 
+<p>
+    {% if tutorial.is_mini %}Mini{% else %}Big{% endif %}-tutoriel
+    par
     {% for author in tutorial.authors.all %}
     <a href="{{ author.get_absolute_url }}">{{ author.username }}</a>
-    {% endfor %}
-</div>
+    {% endfor %}.
+</p>
 
 {% if user.is_authenticated and user in tutorial.authors.all %}
 <p>
