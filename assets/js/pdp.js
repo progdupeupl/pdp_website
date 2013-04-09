@@ -1,7 +1,12 @@
 $(document).ready(function() {
+    /* Popover on move buttons */
     $(".move-btn").popover({html: "true"});
 
-    $("textarea").before("<a href=\"/pages/aide-markdown\" class=\"btn btn-link mdhelper\">Aide-mémoire markdown</a>");
+    /* Tooltips */
+    $(".forum-stats span").tooltip();
+
+    /* Markdown helpers */
+    $("textarea").before("<p style=\"text-align: right;\"><a href=\"/pages/aide-markdown\" class=\"mdhelper\">Aide-mémoire markdown</a></p>");
 
     $(".mdhelper").click(function(event) {
         event.preventDefault();

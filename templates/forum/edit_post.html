@@ -27,14 +27,14 @@
             <label class="control-label" for="id_title">Titre</label>
             <div class="controls">
                 <input type="text" name="title" id="id_title"
-                    value="{{ topic.title }}" />
+                    class="input-xxlarge" value="{{ topic.title }}" />
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="id_subtitle">Sous titre</label>
             <div class="controls">
                 <input type="text" name="subtitle" id="id_subtitle"
-                    value="{{ topic.subtitle }}" />
+                    class="input-xxlarge" value="{{ topic.subtitle }}" />
             </div>
         </div>
     </fieldset>
@@ -71,7 +71,7 @@
     <p style="text-align: center;">
         <b>Prévisualisation de votre message</b>
     </p>
-    {{ text|markdown:"safe,codehilite,extra" }}
+    {{ text|markdown:"safe,codehilite(force_linenos=True),extra" }}
 </div>
 
 {% endblock %}

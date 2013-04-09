@@ -28,15 +28,14 @@ thead th
     background-color: rgb(245, 245, 245);
 }
 
+.table .post-author
+{
+    text-align: center;
+}
+
 .post-message td
 {
     border-top: 0px none;
-}
-
-.post-message td:first-child
-{
-    text-align: center;
-    width: 100px;
 }
 
 /* Add this to anchors to position them correctly in the navbar */
@@ -68,3 +67,31 @@ thead th
 }
 
 
+.media-topic h4:before
+{
+    content: "`";
+}
+
+/* Forums */
+
+.forum-icon
+{
+    background: url("/static/img/forum.png") no-repeat 0 45%;
+    padding-left: 48px;
+}
+
+.forum-icon-unread
+{
+    background-image: url("/static/img/forum-unread.png");
+}
+
+.forum-stats
+{
+    margin: 16px 0px;
+    text-align: center;
+}
+
+.forum-last-message 
+{
+    margin-top: 12px;
+}

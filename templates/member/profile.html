@@ -36,7 +36,7 @@ Profil de {{ usr.username }}
 <div class="tab-content">
     <div class="tab-pane row active" id="general">
         <div class="span2">
-            <img src="{{ profile.get_gravatar_url }}&amp;s=140" alt="Avatar" class="img-polaroid"/><br />
+            <img src="{{ profile.get_gravatar_url }}&amp;s=140" alt="Avatar" width="140" height="140" class="img-polaroid"/><br />
         </div>
 
         <div class="span10">
@@ -68,7 +68,7 @@ Profil de {{ usr.username }}
     {% if profile.biography %}
 
     <div class="tab-pane" id="bio">
-        {{ profile.biography|markdown:"safe,codehilite,extra" }}
+        {{ profile.biography|markdown:"safe,codehilite(force_linenos=True),extra" }}
     </div>
 
     {% endif %}

@@ -150,7 +150,9 @@ class Chapter(models.Model):
         return Extract.objects.all().filter(chapter__pk=self.pk).count()
 
     def get_extracts(self):
-        return Extract.objects.all().filter(chapter__pk=self.pk)
+        return Extract.objects.all()\
+            .filter(chapter__pk=self.pk)\
+            .order_by('position_in_chapter')
 
     def get_tutorial(self):
         if self.part:

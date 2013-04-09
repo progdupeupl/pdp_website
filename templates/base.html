@@ -1,6 +1,6 @@
 {% load url from future %}
 {% load profile %}
-{% load forum_unread_count %}
+{% load interventions %}
 <!doctype html>
 <html>
 <head>
@@ -9,10 +9,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link href="/static/css/bootstrap.css" rel="stylesheet" media="screen" />
-    <link href="/static/css/bootstrap-responsive.css" rel="stylesheet" media="screen" />
-    <link href="/static/css/progdupeupl.css" rel="stylesheet" media="screen" />
-    <link href="/static/css/pygments.css" rel="stylesheet" media="screen" />
+    <link href="/static/css/all.min.css" rel="stylesheet" media="screen" />
+    <link rel="icon" type="image/jpg" href="/static/img/cat.jpg" />
+
 </head>
 <body>
 
@@ -30,8 +29,41 @@
                         <ul class="nav pull-right">
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    Mes interventions
+                                    {% with unread_topic_count=user|interventions_topics_count %}
+                                        {% if unread_topic_count > 0 %}
+                                            <span class="label label-important">{{ unread_topic_count }}</span>
+                                        {% endif %}
+                                    {% endwith %}
+                                    <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="disabled"><a href="#">&mdash; Forums</a></li>
+                                    {% with topics=user|interventions_topics %}
+                                    {% for topic in topics.unread %}
+                                    <li>
+                                        <a href="{{ topic.get_last_answer.get_absolute_url }}">
+                                            <i class="icon-exclamation-sign"></i>
+                                            <strong>
+                                                {{ topic.title }}
+                                            </strong>
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                    {% for topic in topics.read %}
+                                    <li>
+                                        <a href="{{ topic.get_last_answer.get_absolute_url }}">
+                                            {{ topic.title }}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                    {% endwith %}
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     {% with profile=user|profile %}
-                                    <img src="{{ profile.get_gravatar_url }}&amp;s=16" alt="Avatar" style="vertical-align: bottom;" />
+                                    <img src="{{ profile.get_gravatar_url }}&amp;s=16" alt="Avatar" width="16" height="16" style="vertical-align: bottom;" />
                                     {{ user.username }}
                                     <b class="caret"></b>
                                     {% endwith %}
@@ -71,13 +103,7 @@
                         <li {% block menu_forum %}{% endblock %}><a href="/forums/">
                             <i class="icon-white icon-comment"></i>
                             Forums
-                            {% if user.is_authenticated %}
-                                {% with unread_topic_count=user|forum_unread_count %}
-                                    {% if unread_topic_count > 0 %}
-                                        <span class="label label-important">{{ unread_topic_count }}</span>
-                                    {% endif %}
-                                {% endwith %}
-                            {% endif %}
+                            
                         </a></li>
                     </ul>
                 </div>
@@ -109,9 +135,17 @@
         </div>
     </div>
 
-    <script src="/static/js/jquery.min.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
-    <script src="/static/js/pdp.js"></script>
+    <script src="/static/js/all.min.js"></script>
+   
+    <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default">
+            MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                processEscapes: true
+            },
+            messageStyle: 'none'
+        });
+    </script>
 
     {# Additionnal JS files can be loaded in this block #}
     {% block js %}

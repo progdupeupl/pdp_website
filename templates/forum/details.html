@@ -18,18 +18,24 @@
 
 {% block content %}
 
-<div class="pull-right">
 {% if user.is_authenticated %}
-<a href="/forums/sujet/nouveau?forum={{ forum.pk }}" class="btn">
-    <i class="icon-plus"></i>
-    Nouveau
-</a>
-{% endif %}
-</div>
-
 <p>
-    <a href="../.." class="btn">Liste des forums</a>
+    <form action="{% url pdp.forum.views.clear %}" method="POST">
+        <a href="/forums/sujet/nouveau?forum={{ forum.pk }}" class="btn">
+            <i class="icon-plus"></i>
+            Nouveau sujet
+        </a>
+
+        <button type="submit" class="btn">
+            <i class="icon-eye-close"></i>
+            Tout marquer comme lu
+        </button>
+
+        <input type="hidden" name="clear_target" value="{{ forum.pk }}" />
+        {% csrf_token %}
+    </form>
 </p>
+{% endif %}
 
 <table class="table table-hover table-bordered">
     <thead>
@@ -43,7 +49,7 @@
     </thead>
     <tbody>
         {% for topic in topics %}
-        <tr class="{% if topic.is_solved %}success{% endif %}">
+        <tr>
             <td style="text-align: center; vertical-align: middle;">
                 {% if topic.is_sticky %}
                 <i class="icon-bookmark" title="Ce sujet est épinglé"></i>
@@ -58,7 +64,7 @@
                 {% if user.is_authenticated %}
                     {% with topic.last_read_post as last_read_post %}
                     {% ifnotequal last_read_post topic.get_last_answer %}
-                        <i class="icon-exclamation-sign"></i>
+                        <i class="icon-eye-open"></i>
                     {% endifnotequal %}
                     {% endwith %}
                 {% endif %}

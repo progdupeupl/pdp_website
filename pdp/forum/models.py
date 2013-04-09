@@ -8,7 +8,7 @@ from django.template.defaultfilters import slugify
 
 from pdp.utils import get_current_user
 
-POSTS_PER_PAGE = 10
+POSTS_PER_PAGE = 21
 
 
 class Category(models.Model):
@@ -57,6 +57,9 @@ class Forum(models.Model):
         '''Gets the number of threads in the forum'''
         return Topic.objects.all().filter(forum__pk=self.pk).count()
 
+    def get_post_count(self):
+        return Post.objects.all().filter(topic__forum=self).count()
+
     def get_last_message(self):
         '''Gets the last message on the forum, if there are any'''
         try:
@@ -65,7 +68,10 @@ class Forum(models.Model):
             return None
 
     def is_read(self):
-        return not never_read(self.get_last_message().topic)
+        for t in Topic.objects.all().filter(forum=self):
+            if never_read(t):
+                return False
+        return True
 
 
 class Topic(models.Model):
@@ -116,6 +122,16 @@ class Topic(models.Model):
         except Post.DoesNotExist:
             return self.first_post()
 
+    def is_followed(self, user=None):
+        if user is None:
+            user = get_current_user()
+
+        try:
+            TopicFollowed.objects.get(topic=self, user=user)
+        except TopicFollowed.DoesNotExist:
+            return False
+        return True
+
 
 class Post(models.Model):
     '''A forum post'''
@@ -146,6 +162,11 @@ class TopicRead(models.Model):
     user = models.ForeignKey(User)
 
 
+class TopicFollowed(models.Model):
+    topic = models.ForeignKey(Topic)
+    user = models.ForeignKey(User)
+
+
 def never_read(topic, user=None):
     if user is None:
         user = get_current_user()
@@ -160,3 +181,38 @@ def mark_read(topic):
     t = TopicRead(
         post=topic.last_message, topic=topic, user=get_current_user())
     t.save()
+
+
+def clear_forum(forum):
+    '''Clear a forum by marking his topics as read'''
+    for topic in Topic.objects.filter(forum=forum):
+        if never_read(topic):
+            mark_read(topic)
+
+
+def clear_forums():
+    '''Call clear_forum on all forums'''
+    for forum in Forum.objects.all():
+        clear_forum(forum)
+
+
+def follow(topic):
+    try:
+        existing = TopicFollowed.objects.get(topic=topic, user=get_current_user())
+    except TopicFollowed.DoesNotExist:
+        existing = None
+
+    if not existing:
+        # Make the user follow the topic
+        t = TopicFollowed(
+            topic=topic,
+            user=get_current_user()
+        )
+        t.save()
+    else:
+        # If user is already following the topic, we make him don't anymore
+        existing.delete()
+
+
+def get_last_topics():
+    return Topic.objects.all().order_by('-pubdate')[:3]

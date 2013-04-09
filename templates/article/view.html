@@ -18,31 +18,47 @@
 {% endblock %}
 
 {% block content %}
-    
-<div class="pull-right well">
-    <div style="text-align: center;">
-        <img src="/static/img/blank_article.png" alt="Icône" width="64" height="64" />
-    </div>
 
-    <strong>Auteur :</strong>
+{% ifequal user article.author %} 
+<form action="{% url pdp.article.views.modify %}" method="POST">
+    <a href="/articles/editer?article={{ article.pk }}" class="btn">
+        <i class="icon-pencil"></i>
+        Éditer l'article
+    </a>
+
+    <button type="submit" name="delete" class="btn">
+        <i class="icon-remove"></i>
+        Supprimer l'article
+    </button>
+
+    <input type="hidden" name="article" value="{{ article.pk }}" />
+    {% csrf_token %}
+</form>
+{% endifequal %}
+   
+<p>
+    Par
     <a href="{{ article.author.get_absolute_url }}">
         {{ article.author.username }}
     </a>
-    <br />
-    <strong>Publication :</strong>
-    {{ article.pubdate|humane_date }}
+    {{ article.pubdate|humane_date }}.
+</p>
 
-    {% ifequal user article.author %} 
-    <br /><br />
-    <div style="text-align: center;">
-        <a href="/articles/editer?article={{ article.pk }}" class="btn">
-            <i class="icon-pencil"></i>
-            Éditer
-        </a>
-    </div>
-    {% endifequal %}
-</div>
+{% if article.is_visible %}
+    {% include "article/view_pager.html" %}
+{% endif %}
 
-{{ article.text|markdown:"safe,codehilite,extra" }}
+{{ article.text|markdown:"safe,codehilite(force_linenos=True),extra" }}
+
+<hr />
+
+{% if article.is_visible %}
+    {% include "article/view_pager.html" %}
+{% else %}
+    <p>
+        Cet article n'a pas encore été mis en ligne.
+    </p>
+{% endif %}
+
 
 {% endblock %}

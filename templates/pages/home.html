@@ -78,6 +78,13 @@ l'informatique.
             membres mais aussi de s'entrainer ou tout simplement discuter sur
             divers sujets.
         </p>
+        {% if last_topics %}
+            {% for topic in last_topics %}
+                {% include "forum/topic_item_common.html" %}
+            {% endfor %}
+        {% else %}
+            <p>Aucun sujet récent.</p>
+        {% endif %}
         <p>
             <a href="/forums/" class="btn">
                 <i class="icon-comment"></i>

@@ -37,6 +37,7 @@
             {% endfor %}
         </select>
         <button type='submit' name='move' class='btn input-block-level'>
+            <i class='icon-arrow-right'></i>
             Déplacer
         </button>
     ">
@@ -62,7 +63,7 @@
 {% endif %}
 
 {% if part.introduction %}
-    {{ part.introduction|markdown:"safe,codehilite,extra" }}
+    {{ part.introduction|markdown:"safe,codehilite(force_linenos=True),extra" }}
 {% else %}
     <p>Pas d'introduction.</p>
 {% endif %}
@@ -76,7 +77,9 @@
 <ul>
     {% for chapter in part.get_chapters %}
     <li>
-        Chapitre {{ chapter.part.position_in_tutorial }}.{{ chapter.position_in_part }} | <a href="{{ chapter.get_absolute_url }}">{{ chapter.title }}</a>
+        <strong>
+            <a href="{{ chapter.get_absolute_url }}">Chapitre {{ chapter.part.position_in_tutorial }}.{{ chapter.position_in_part }} | {{ chapter.title }}</a>
+        </strong>
         <ul>
             {% for extract in chapter.get_extracts %}
             <li><a href="{{ extract.get_absolute_url }}">{{ extract.title }}</a></li>
@@ -88,7 +91,7 @@
 </ul>
 
 {% if part.conclusion %}
-    {{ part.conclusion|markdown:"safe,codehilite,extra" }}
+    {{ part.conclusion|markdown:"safe,codehilite(force_linenos=True),extra" }}
 {% else %}
     <p>Pas de conclusion.</p>
 {% endif %}

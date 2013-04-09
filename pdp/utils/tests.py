@@ -6,7 +6,10 @@ from django_dynamic_fixture import G
 from django.contrib.auth.models import User
 
 from pdp.member.models import Profile
-from pdp.utils.templatetags.profile import profile
+
+from .templatetags.profile import profile
+from .templatetags.interventions import interventions_topics_count, \
+    interventions_topics
 
 
 class TemplateTagsTests(TestCase):
@@ -20,3 +23,14 @@ class TemplateTagsTests(TestCase):
         user = G(User)
         p = G(Profile, user=user)
         self.assertEqual(p, profile(user))
+
+    def test_interventions_none(self):
+        '''
+        Test both intervention_topics_count and interventions_topics
+        templatetags when no topic should match.
+        '''
+        user = G(User)
+
+        self.assertEqual(interventions_topics_count(user), 0)
+        self.assertEqual(interventions_topics(user), {'unread': [],
+                                                      'read': []})

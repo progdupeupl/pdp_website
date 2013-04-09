@@ -24,12 +24,20 @@
 {% if user.is_authenticated %}
 <div class="pull-right">
 
-    <form action="/forums/sujet/editer" method="POST">
+    <form action="{% url pdp.forum.views.edit %}" method="POST">
     <input type="hidden" name="topic" value="{{ topic.pk }}" />
 
+    <button class="btn {% if topic.is_followed %}btn-info{% endif %}" type="submit" name="follow">
+        <i class="{% if topic.is_followed %}icon-white{% endif %} icon-star"></i>
+        {% if topic.is_followed %}
+            Vous suivez ce sujet
+        {% else %}
+            Suivre ce sujet
+        {% endif %}
+    </button>
     <a href="/forums/sujet/nouveau?forum={{ topic.forum.pk }}" class="btn">
         <i class="icon-plus"></i>
-        Nouveau
+        Nouveau sujet
     </a>
 
     {% if user.is_staff %}
@@ -47,6 +55,7 @@
                     {% endfor %}
                 </select>
                 <button type='submit' name='move' class='btn input-block-level'>
+                    <i class='icon-arrow-right'></i>
                     Déplacer
                 </button>
             "> 
@@ -83,16 +92,6 @@
 </div>
 {% endif %}
 
-<div class="btn-group">
-    <a href="/forums/" class="btn">
-        Forums
-    </a>
-
-    <a href="{{ topic.forum.get_absolute_url }}" class="btn">
-        « {{ topic.forum.title }} »
-    </a>
-</div>
-
 <div class="spacer3"></div>
 
 {% if topic.is_solved %}
@@ -107,7 +106,7 @@
 <table class="table table-bordered topic-table">
     <thead>
         <tr>
-            <th>Auteur</th>
+            <th style="width: 100px;">Auteur</th>
             <th>Message</th>
         </tr>
     </thead>
@@ -150,23 +149,23 @@
 
                 <a href="{{ post.get_absolute_url }}">#</a>
                 &ndash; {{ post.pubdate|humane_date }}
-                </a>
+
+                {% if not post.update = None %}
+                    (dernière édition {{ post.update|humane_date }})
+                {% endif %}
             </td>
         </tr>
         <tr class="post-message {% if post.is_useful %}success{% endif %}">
-            <td>
+            <td class="post-author">
                 {% with profile=post.author|profile %}
-                <img alt="Avatar" src="{{ profile.get_gravatar_url }}" />
+                <img alt="Avatar" width="80" height="80" src="{{ profile.get_gravatar_url }}" />
                 {% endwith %}
             </td>
             <td>
                 {% if forloop.first and nb > 1 %}<strong>Dernier message de la page précédente :</strong><br /><br />{% endif %}
 
-                {{ post.text|markdown:"safe,codehilite,extra" }}
+                {{ post.text|markdown:"safe,codehilite(force_linenos=True),extra" }}
 
-                {% if not post.update = None %}
-                <em>&mdash; Dernière édition {{ post.update|humane_date }}</em>
-                {% endif %}
             </td>
         </tr>
         {% endfor %}
