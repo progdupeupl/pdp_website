@@ -1,7 +1,5 @@
 # coding: utf-8
 
-from datetime import datetime
-
 from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
@@ -74,6 +72,8 @@ def topic(request, topic_pk, topic_slug):
     posts = Post.objects.all().filter(topic__pk=g_topic.pk)\
                               .order_by('position_in_topic')
 
+    last_post = g_topic.last_message
+
     # Handle pagination
     paginator = Paginator(posts, POSTS_PER_PAGE)
 
@@ -105,6 +105,7 @@ def topic(request, topic_pk, topic_slug):
     return render_template('forum/topic.html', {
         'topic': g_topic, 'posts': res, 'categories': categories,
         'pages': range(1, paginator.num_pages + 1), 'nb': page_nbr,
+        'last_post_pk': last_post.pk
     })
 
 
@@ -220,19 +221,27 @@ def answer(request):
         raise Http404
 
     g_topic = get_object_or_404(Topic, pk=topic_pk)
+    posts = Post.objects.filter(topic=g_topic).order_by('-pubdate')[:3]
+    last_post_pk = g_topic.last_message.pk
 
     # Making sure posting is allowed
     if g_topic.is_locked:
         raise Http404
 
+    # Check that the user isn't spamming
+    if g_topic.antispam(request.user):
+        raise Http404
+
     # If we just sent data
     if request.method == 'POST':
+        data = request.POST
+        newpost = last_post_pk != int(data['last_post'])
 
-        # Using the "preview" button or the "more options" button
-        if 'preview' in request.POST or 'plus' in request.GET:
-            text = request.POST['text']
+        # Using the « preview button », the « more » button or new post
+        if 'preview' in data or 'plus' in request.GET or newpost:
             return render_template('forum/answer.html', {
-                'text': text, 'topic': g_topic
+                'text': data['text'], 'topic': g_topic, 'posts': posts,
+                'last_post_pk': last_post_pk, 'newpost': newpost
             })
 
         # Saving the message
@@ -275,7 +284,8 @@ def answer(request):
                 post_cite.author.username, text)
 
         return render_template('forum/answer.html', {
-            'topic': g_topic, 'text': text
+            'topic': g_topic, 'text': text, 'posts': posts,
+            'last_post_pk': last_post_pk
         })
 
 

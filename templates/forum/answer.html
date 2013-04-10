@@ -19,6 +19,15 @@ Répondre au sujet
 {% endblock %}
 
 {% block content %}
+
+{% if newpost %}
+<div class="alert">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>Au moins un nouveau message a été posté</strong> dans la discussion
+    pendant que vous rédigiez le votre.
+</div>
+{% endif %}
+
 <form action="/forums/message/nouveau?sujet={{ topic.pk }}" method="POST">
     <textarea class="input-block-level" name="text" rows="20" id="id_text"
         placeholder="Contenu de votre message au format Markdown.">{{ text }}</textarea>
@@ -40,6 +49,7 @@ Répondre au sujet
         </a>
     </div>
 
+    <input type="hidden" name="last_post" value="{{ last_post_pk }}" />
     {% csrf_token %}
 </form>
 

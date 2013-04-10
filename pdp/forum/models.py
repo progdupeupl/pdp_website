@@ -1,15 +1,18 @@
 # coding: utf-8
 
 from math import ceil
+from datetime import datetime
+import pytz
 
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 
 from pdp.utils import get_current_user
 
 POSTS_PER_PAGE = 21
-
+SPAM_LIMIT_SECONDS = 60*15
 
 class Category(models.Model):
     '''A category, containing forums'''
@@ -132,6 +135,21 @@ class Topic(models.Model):
             return False
         return True
 
+    def antispam(self, user=None):
+        if user is None:
+            user = get_current_user()
+
+        last_user_posts = Post.objects\
+            .filter(topic=self)\
+            .filter(author=user)\
+            .order_by('-pubdate')
+
+        if last_user_posts:
+            last_user_post = last_user_posts[0]
+            t = timezone.now() - last_user_post.pubdate.replace(tzinfo=pytz.utc)
+            if t.total_seconds() < SPAM_LIMIT_SECONDS:
+                return True
+        return False
 
 class Post(models.Model):
     '''A forum post'''
