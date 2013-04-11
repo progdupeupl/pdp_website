@@ -146,10 +146,11 @@ class Topic(models.Model):
 
         if last_user_posts:
             last_user_post = last_user_posts[0]
-            t = timezone.now() - last_user_post.pubdate.replace(tzinfo=pytz.utc)
+            t = timezone.now() - last_user_post.pubdate
             if t.total_seconds() < SPAM_LIMIT_SECONDS:
                 return True
         return False
+
 
 class Post(models.Model):
     '''A forum post'''
