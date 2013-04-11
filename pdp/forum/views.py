@@ -74,7 +74,7 @@ def topic(request, topic_pk, topic_slug):
     posts = Post.objects.all().filter(topic__pk=g_topic.pk)\
                               .order_by('position_in_topic')
 
-    last_post = g_topic.last_message
+    last_post_pk = g_topic.last_message.pk
 
     # Handle pagination
     paginator = Paginator(posts, POSTS_PER_PAGE)
@@ -107,7 +107,7 @@ def topic(request, topic_pk, topic_slug):
     return render_template('forum/topic.html', {
         'topic': g_topic, 'posts': res, 'categories': categories,
         'pages': range(1, paginator.num_pages + 1), 'nb': page_nbr,
-        'last_post_pk': last_post.pk
+        'last_post_pk': last_post_pk
     })
 
 
