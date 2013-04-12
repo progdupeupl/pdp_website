@@ -19,7 +19,7 @@ def index(request):
     '''
     Display the category list with all their forums
     '''
-    categories = Category.objects.all()
+    categories = Category.objects.all().order_by('position')
 
     return render_template('forum/index.html', {
         'categories': categories

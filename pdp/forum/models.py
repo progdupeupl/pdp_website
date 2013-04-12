@@ -1,4 +1,4 @@
-# coding: utf-8
+#from all f as read coding: utf-8
 
 from math import ceil
 from datetime import datetime
@@ -21,6 +21,7 @@ class Category(models.Model):
         verbose_name_plural = 'Catégories'
 
     title = models.CharField('Titre', max_length=80)
+    position = models.IntegerField('Position', null=True, blank=True)
 
     def __unicode__(self):
         '''Textual form of a category'''
@@ -30,7 +31,9 @@ class Category(models.Model):
         return '/forums/%s-%s/' % (self.pk, slugify(self.title))
 
     def get_forums(self):
-        return Forum.objects.all().filter(category=self)
+        return Forum.objects.all()\
+                .filter(category=self)\
+                .order_by('position_in_category')
 
 
 class Forum(models.Model):
@@ -43,6 +46,8 @@ class Forum(models.Model):
     subtitle = models.CharField('Sous-titre', max_length=200)
 
     category = models.ForeignKey(Category, verbose_name='Catégorie')
+    position_in_category = models.IntegerField('Position dans la catégorie',
+                                               null=True, blank=True)
 
     def __unicode__(self):
         '''Textual form of a forum'''
