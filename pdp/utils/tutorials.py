@@ -10,7 +10,7 @@ def move(obj, new_pos, position_f, parent_f, children_fn):
     parent field of the object (eg. 'chapter') and the children function's
     name to apply to parent (eg. 'get_extracts').
 
-    Example :
+    Example for extracts :
 
       move(extract, new_pos, 'position_in_chapter', 'chapter', 'get_extracts')
 
