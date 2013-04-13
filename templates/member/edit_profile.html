@@ -40,6 +40,14 @@
         </div>
 
         <div class="control-group">
+            <label for="id_email" class="control-label">Adresse mail</label>
+            <div class="controls">
+                <input type="text" name="email" id="id_email" class="input-block-level"
+                placeholder="Veuillez entrer une adresse email valide" value="{{ profile.user.email }}"/>
+            </div>
+        </div>
+
+        <div class="control-group">
             <div class="controls">
                 <label class="checkbox">
                     <input type="checkbox" name="show_email"

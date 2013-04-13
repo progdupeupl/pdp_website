@@ -53,7 +53,11 @@ def edit_profile(request):
             data = form.data
             profile.biography = data['biography']
             profile.site = data['site']
+            profile.user.email = data['email']
             profile.show_email = 'show_email' in data
+
+            # Save the user and it's associated profile
+            profile.user.save()
             profile.save()
             return redirect(profile.get_absolute_url())
         else:
