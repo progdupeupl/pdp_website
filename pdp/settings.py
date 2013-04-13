@@ -51,7 +51,7 @@ USE_I18N = True
 USE_L10N = True
 
 # If you set this to False, Django will not use timezone-aware datetimes.
-USE_TZ = True
+USE_TZ = False
 
 SITE_ROOT = os.path.realpath(os.path.dirname(os.path.dirname(__file__)))
 
