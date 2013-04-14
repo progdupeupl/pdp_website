@@ -1,4 +1,4 @@
-#from all f as read coding: utf-8
+# coding: utf-8
 
 from math import ceil
 from datetime import datetime
@@ -161,8 +161,8 @@ class Topic(models.Model):
         Check if the user is allowed to post in a topic according to the
         SPAM_LIMIT_SECONDS value. If user shouldn't be able to post, then
         antispam is activated and this method returns True. Otherwise time
-        elapsed between user's last post and now is enought, and the method
-        will return False.
+        elapsed between user's last post and now is enough, and the method will
+        return False.
         '''
         if user is None:
             user = get_current_user()
