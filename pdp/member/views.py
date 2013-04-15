@@ -84,9 +84,9 @@ def login_view(request):
                 request.session['get_token'] = generate_token()
                 return redirect('/')
             else:
-                error = 'Ce compte n\'est pas actif'
+                error = 'Les identifiants fournis ne sont pas valides'
         else:
-            error = 'Le couple pseudo/mot de passe est erroné'
+            error = 'Veuillez spécifier votre identifiant et votre mot de passe'
     else:
         form = LoginForm()
     csrf_tk['error'] = error
