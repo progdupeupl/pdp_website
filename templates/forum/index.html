@@ -19,6 +19,7 @@ Voici la liste des forums mis à votre disposition pour échanger avec le reste
 de la communauté, rangés par thématiques.
 </p>
 
+{% if user.is_authenticated %}
 <form action="{% url pdp.forum.views.clear %}" method="POST">
     <button type="submit" class="btn">
         <i class="icon-eye-close"></i>
@@ -29,6 +30,7 @@ de la communauté, rangés par thématiques.
 
     {% csrf_token %}
 </form>
+{% endif %}
 
 {% for category in categories %}
 
