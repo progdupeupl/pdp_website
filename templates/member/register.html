@@ -22,9 +22,13 @@ S'inscrire
     {% endif %}
 
     <p>
-    Vous êtes sur le point de vous inscrire sur Progdupeupl. Merci de
-    fournir les informations nécessaires dans le formulaire suivant afin de
-    poursuivre votre inscription.
+    <strong>Vous êtes sur le point de vous inscrire sur Progdupeupl</strong> ; si vous
+    possédez déjà un compte, merci de <a href="{% url pdp.member.views.login_view %}">vous connecter</a>
+    à la place.
+    </p>
+    <p>
+        Veuillez fournir les informations nécessaires dans le
+        formulaire suivant afin de poursuivre votre inscription.
     </p>
 
     <form method="post" action="{% url pdp.member.views.register_view %}"
@@ -75,9 +79,9 @@ S'inscrire
 
     <div class="form-actions">
         <button type="submit" class="btn btn-primary">
-            Valider l'inscription
+            Valider mon inscription
         </button>
-        <a href="#" class="btn">Annuler</a>
+        <a href="/" class="btn">Annuler</a>
     </div>
 
 {% csrf_token %}

@@ -18,7 +18,10 @@ Se connecter
 {% if not user.is_authenticated %}
 
     {% if error %}
-        {{ error }}
+    <div class="alert">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ error }}.
+    </div>
     {% endif %}
 
     Si vous n'avez pas de compte, vous pouvez <a href="{% url pdp.member.views.register_view %}" >vous inscrire</a>.
