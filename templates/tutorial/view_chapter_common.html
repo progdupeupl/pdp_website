@@ -1,6 +1,6 @@
 {# Block displaying a chapter (for large and small tutorials) #}
 {% load markup %}
-
+{% load emarkdown %}
 {% if user in chapter.part.tutorial.authors.all or user in chapter.tutorial.authors.all %}
 <p>
     <form action="{% url pdp.tutorial.views.modify_chapter %}" method="POST">
@@ -69,7 +69,7 @@
 {% endif %}
 
 {% if chapter.introduction %}
-{{ chapter.introduction|markdown:"safe,codehilite(force_linenos=True),extra" }}
+{{ chapter.introduction|emarkdown }}
 {% else %}
 <p>Aucune introduction.</p>
 {% endif %}
@@ -155,7 +155,7 @@
     {% endif %}
 
     {% if extract.text %}
-        {{ extract.text|markdown:"safe,codehilite(force_linenos=True),extra" }}
+        {{ extract.text|emarkdown }}
     {% else %}
     <p>
         Cet extrait est vide.
@@ -166,7 +166,7 @@
 <hr />
 
 {% if chapter.conclusion %}
-{{ chapter.conclusion|markdown:"safe,codehilite(force_linenos=True),extra" }}
+{{ chapter.conclusion|emarkdown }}
 {% else %}
 <p>Aucune conclusion.</p>
 {% endif %}

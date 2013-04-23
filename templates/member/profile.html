@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load emarkdown %}
 {% load markup %}
 {% load humane_date %}
 
@@ -68,7 +69,7 @@ Profil de {{ usr.username }}
     {% if profile.biography %}
 
     <div class="tab-pane" id="bio">
-        {{ profile.biography|markdown:"safe,codehilite(force_linenos=True),extra" }}
+        {{ profile.biography|emarkdown }}
     </div>
 
     {% endif %}
