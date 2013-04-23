@@ -116,11 +116,11 @@ div.hidden-block:target > a.hidden-link-hide
     display: inline;
 }
 
-div.hidden-block p
+div.hidden-block p, div.hidden-block table
 {
     display: none;
 }
-div.hidden-block:target p
+div.hidden-block:target p, div.hidden-block:target table
 {
     display: block;
 }
