@@ -1,4 +1,5 @@
 {% extends "article/base.html" %}
+{% load emarkdown %}
 {% load markup %}
 {% load humane_date %}
 
@@ -48,7 +49,7 @@
     {% include "article/view_pager.html" %}
 {% endif %}
 
-{{ article.text|markdown:"safe,codehilite(force_linenos=True),extra" }}
+{{ article.text|emarkdown }}
 
 <hr />
 

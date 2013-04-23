@@ -1,4 +1,5 @@
 {% extends "forum/base.html" %}
+{% load emarkdown %}
 {% load markup %}
 {% load humane_date %}
 {% load profile %}
@@ -164,7 +165,7 @@
             <td>
                 {% if forloop.first and nb > 1 %}<strong>Dernier message de la page précédente :</strong><br /><br />{% endif %}
 
-                {{ post.text|markdown:"safe,codehilite(force_linenos=True),extra" }}
+                {{ post.text|emarkdown }}
 
             </td>
         </tr>
