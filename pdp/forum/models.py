@@ -197,7 +197,7 @@ class Post(models.Model):
 
     def __unicode__(self):
         '''Textual form of a post'''
-        return u'<Post pour %s, %s>' % (self.topic, self.pk)
+        return u'<Post pour "%s", #%s>' % (self.topic, self.pk)
 
     def get_absolute_url(self):
         page = int(ceil(float(self.position_in_topic) / POSTS_PER_PAGE))
@@ -210,9 +210,18 @@ class TopicRead(models.Model):
     Small model which keeps track of the user viewing topics. It remembers the
     topic he looked and what was the last Post at this time.
     '''
+    class Meta:
+        verbose_name = 'Sujet lu'
+        verbose_name_plural = 'Sujets lus'
+
     topic = models.ForeignKey(Topic)
     post = models.ForeignKey(Post)
     user = models.ForeignKey(User)
+
+    def __unicode__(self):
+        return u'<Sujet "%s" lu par %s, #%s>' % (self.topic,
+                                                self.user,
+                                                self.post.pk)
 
 
 class TopicFollowed(models.Model):
@@ -221,8 +230,16 @@ class TopicFollowed(models.Model):
     instance of this model is stored with an user and topic instance, that
     means that this user is following this topic.
     '''
+    class Meta:
+        verbose_name = 'Sujet suivi'
+        verbose_name_plural = 'Sujets suivis'
+
     topic = models.ForeignKey(Topic)
     user = models.ForeignKey(User)
+
+    def __unicode__(self):
+        return u'<Sujet "%s" suivi par %s>' % (self.topic.title,
+                                               self.user.username)
 
 
 def never_read(topic, user=None):
