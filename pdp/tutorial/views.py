@@ -2,10 +2,10 @@
 
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.http import Http404, HttpResponse
 
 from pdp.utils import render_template, slugify
-from pdp.utils.tutorials import move
+from pdp.utils.tutorials import move, export_tutorial
 
 from .models import Tutorial, Part, Chapter, Extract
 from .forms import TutorialForm, EditTutorialForm, PartForm, ChapterForm, \
@@ -54,6 +54,17 @@ def view_tutorial(request, tutorial_pk, tutorial_slug):
     return render_template('tutorial/view_tutorial.html', {
         'tutorial': tutorial, 'chapter': chapter, 'parts': parts
     })
+
+def download(request):
+    '''Download a tutorial'''
+    import json
+
+    tutorial = get_object_or_404(Tutorial, pk=request.GET['tutoriel'])
+
+    dct = export_tutorial(tutorial)
+    data = json.dumps(dct, indent=4, ensure_ascii=False)
+
+    return HttpResponse(data, mimetype='application/json')
 
 
 @login_required

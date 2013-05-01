@@ -1,5 +1,9 @@
 # coding: utf-8
 
+from collections import OrderedDict
+
+from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
+
 
 def move(obj, new_pos, position_f, parent_f, children_fn):
     '''
@@ -43,3 +47,62 @@ def move(obj, new_pos, position_f, parent_f, children_fn):
     # we can do it now
     setattr(obj, position_f, new_pos)
     obj.save()
+
+
+# Export-to-dict functions
+
+def export_chapter(chapter, export_title=True):
+    '''
+    Export a chapter to a dict
+    '''
+    dct = OrderedDict()
+    if export_title:
+        dct['title'] = chapter.title
+    dct['extracts'] = []
+
+    extracts = Extract.objects.filter(chapter=chapter)\
+            .order_by('position_in_chapter')
+
+    for extract in extracts:
+        extract_dct = OrderedDict()
+        extract_dct['title'] = extract.title
+        extract_dct['text'] = extract.text
+        dct['extracts'].append(extract_dct)
+
+    return dct
+
+
+def export_part(part):
+    '''
+    Export a part to a dict
+    '''
+    dct = OrderedDict()
+    dct['title'] = part.title
+    dct['chapters'] = []
+
+    chapters = Chapter.objects.filter(part=part)
+    for chapter in chapters:
+        dct['chapters'].append(export_chapter(chapter))
+
+    return dct
+
+
+def export_tutorial(tutorial):
+    '''
+    Export a tutorial to a dict
+    '''
+    dct = OrderedDict()
+    dct['title'] = tutorial.title
+    dct['description'] = tutorial.description
+    dct['is_mini'] = tutorial.is_mini
+
+    if tutorial.is_mini:
+        # We export the chapter without its empty title if mini tutorial
+        chapter = Chapter.objects.get(tutorial=tutorial)
+        dct['chapter'] = export_chapter(chapter, export_title=False)
+    else:
+        parts = Part.objects.filter(tutorial=tutorial)
+        for part in parts:
+            dct['parts'].append(export_part(part))
+
+    return dct

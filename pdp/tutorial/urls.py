@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(
     r'voir/(?P<tutorial_pk>\d+)-(?P<tutorial_slug>.+)/$',
     views.view_tutorial),
+    url(r'telecharger', views.download),
 
 # Editing
     url(r'editer/tutoriel$', views.edit_tutorial),

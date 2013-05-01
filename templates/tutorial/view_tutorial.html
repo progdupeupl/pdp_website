@@ -52,6 +52,14 @@
 </p>
 {% endif %}
 
+<p>
+    <a href="{% url pdp.tutorial.views.download %}?tutoriel={{ tutorial.pk }}"
+       class="btn pull-right">
+       <i class="icon-arrow-down"></i>
+        Télécharger (JSON)
+    </a>
+</p>
+
 {% if tutorial.is_mini %}
 {# Small tutorial #}
 
