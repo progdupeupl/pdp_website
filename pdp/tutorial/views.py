@@ -55,6 +55,7 @@ def view_tutorial(request, tutorial_pk, tutorial_slug):
         'tutorial': tutorial, 'chapter': chapter, 'parts': parts
     })
 
+
 def download(request):
     '''Download a tutorial'''
     import json
@@ -64,7 +65,13 @@ def download(request):
     dct = export_tutorial(tutorial)
     data = json.dumps(dct, indent=4, ensure_ascii=False)
 
-    return HttpResponse(data, mimetype='application/json')
+    response = HttpResponse(data, mimetype='application/json')
+    response['Content-Disposition'] = 'attachment; filename=%s.json' % \
+            slugify(tutorial.title)
+
+    return response
+
+
 
 
 @login_required
