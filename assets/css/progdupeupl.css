@@ -29,6 +29,14 @@ div.form-actions {
     background: transparent;
 }
 
+/* Reduce the size of text in blockquote and make it look like regular
+ * paragraphbecause it's widely used in forums */
+blockquote p {
+    font-size: inherit;
+    line-height: inherit;
+    margin-bottom: 10px;
+}
+
 thead th {
     background-color: rgb(51, 51, 51);
     color: #FFF;
