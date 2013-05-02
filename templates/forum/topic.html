@@ -140,8 +140,8 @@
                         </a>
                         {% endif %}
 
-                        <a href="{% if topic.is_locked %}#{% else %}/forums/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.pk }}{% endif %}"
-                            class="btn btn-mini {% if topic.is_locked %}disabled{% endif %}">
+                        <a href="{% if topic.is_locked or topic.antispam %}#{% else %}/forums/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.pk }}{% endif %}"
+                            class="btn btn-mini {% if topic.is_locked or topic.antispam %}disabled{% endif %}">
                             <i class="icon-comment"></i>
                             Citer
                         </a>
@@ -157,7 +157,7 @@
             </td>
         </tr>
         <tr class="post-message {% if post.is_useful %}success{% endif %}">
-            <td class="post-author">
+            <td class="post-author"
                 {% with profile=post.author|profile %}
                 <img alt="Avatar" width="80" height="80" src="{{ profile.get_gravatar_url }}" />
                 {% endwith %}
