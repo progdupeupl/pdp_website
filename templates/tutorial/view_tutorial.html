@@ -60,14 +60,20 @@
 {% else %}
 {# Large tutorial #}
 
-    {% for part in parts %}
-        <h2>
-            <a href="{{ part.get_absolute_url }}">
-                Partie {{ part.position_in_tutorial }} : {{ part.title }}
-            </a>
-        </h2>
-        {% include "tutorial/view_part_common.html" %}
-    {% endfor %}
-{% endif %}
+    {% if parts %}
+        {% for part in parts %}
+            <h2>
+                <a href="{{ part.get_absolute_url }}">
+                    Partie {{ part.position_in_tutorial }} : {{ part.title }}
+                </a>
+            </h2>
+            {% include "tutorial/view_part_common.html" %}
+        {% endfor %}
+    {% else %}
+        <p>
+            Il n'y a actuellement aucune partie dans ce tutoriel.
+        </p>
+    {% endif %}
 
+{% endif %}
 {% endblock %}

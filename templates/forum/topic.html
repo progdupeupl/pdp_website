@@ -180,14 +180,13 @@
 <form action="/forums/message/nouveau?sujet={{ topic.pk }}" method="POST">
     <p>
     <textarea name="text" class="input-block-level" rows="4" {% if topic.is_locked or topic.antispam %}disabled{% endif %}
-        placeholder="{% spaceless %}
-        {% if topic.is_locked %}
-            Ce sujet est verrouillé.
-        {% elif topic.antispam  %}
-            Vous ne pouvez pas encore poster dans ce sujet (protection antispam de 15 min).
-        {% else %}
-            Votre message au format Markdown.
-        {% endif %}{% endspaceless %}"></textarea>
+        placeholder="Votre message au format Markdown.">{% spaceless %}
+            {% if topic.is_locked %}
+                Ce sujet est verrouillé.
+            {% elif topic.antispam  %}
+                Vous ne pouvez pas encore poster dans ce sujet (protection antispam de 15 min).
+            {% endif %}
+        {% endspaceless %}</textarea>
     </p>
 
     <div style="text-align: center;">

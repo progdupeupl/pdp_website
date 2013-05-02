@@ -45,7 +45,7 @@ getStyle = lambda tag, blockcontent, blockid: {
 				 'class':
 				 	['hidden-link-show'],
 				 'text':
-					u'Contenu masqué - Cliquez ici pour afficher',
+					u'Contenu masqué (cliquez pour afficher)',
 				},
 			 '2a':
 				{'href':
@@ -80,7 +80,7 @@ class Element():
 	def completeWith(self, elem):
 		for attr in elem.__attrs:
 			self.setattr(attr, elem.__attrs[attr])
-		self.__text = elem.__text 
+		self.__text = elem.__text
 	def __repr__(self):
 		def formatAttr(name, value):
 			return unicode(name) + '="' + unicode(value) + '"'
