@@ -1,0 +1,55 @@
+{% load humane_date %}
+
+<div class="row-fluid row-hover faketable-row">
+    <div class="span1 faketable-centered">
+        {% if topic.is_sticky %}
+            <i class="icon-bookmark" title="Ce sujet est épinglé"></i>
+        {% endif %}
+        {% if topic.is_locked %}
+            <i class="icon-lock" title="Ce sujet est verrouillé"></i>
+        {% endif %}
+        {% if topic.is_solved %}
+            <i class="icon-ok" title="Ce sujet est résolu"></i>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            {% with topic.last_read_post as last_read_post %}
+            {% ifnotequal last_read_post topic.get_last_answer %}
+                <i class="icon-eye-open"></i>
+            {% endifnotequal %}
+            {% endwith %}
+        {% endif %}
+    </div>
+    <div class="span5">
+        <a href="{{ topic.get_absolute_url }}">
+            {{ topic.title }}
+        </a><br />
+        {{ topic.subtitle }}
+    </div>
+    <div class="span1 hidden-phone">
+        <a href="{{ topic.author.get_absolute_url }}">
+            {{ topic.author.username }}
+        </a>
+    </div>
+    <div class="span1 hidden-phone">
+        {{ topic.get_post_count|add:"-1" }}
+    </div>
+    <div class="span4">
+        {% with answer=topic.get_last_answer %}
+        {% if answer %}
+            <span class="visible-phone" style="display: inline !important;">
+                Dernier message posté
+            </span>
+            <a href="{{ answer.get_absolute_url }}">
+                {{ answer.pubdate|humane_date }}
+            </a>
+            par
+            <a href="{{ answer.author.get_absolute_url }}">
+                {{ answer.author.username }}
+            </a>
+        {% else %}
+            Aucun message
+        {% endif %}
+        {% endwith %}
+    </div>
+</div>

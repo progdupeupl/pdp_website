@@ -102,6 +102,22 @@ thead th {
     margin-top: 12px;
 }
 
+/* The faketable allow to display responsive table using divs */
+.faketable-header {
+    background: rgb(51, 51, 51);
+    color: white;
+
+    font-weight: bold;
+}
+
+.faketable-header div, .faketable-row div {
+    padding: 8px;
+}
+
+.faketable-row {
+    border-bottom: solid 1px rgb(229, 229, 229);
+}
+
 /* CSS classes related to the cssstyles markdown extension */
 a.hidden-link-show, div.hidden-block:not(:target) a.hidden-link-show {
     display: inline;

@@ -32,9 +32,12 @@ def details(request, cat_slug, forum_pk, forum_slug):
     '''
     forum = get_object_or_404(Forum, pk=forum_pk)
 
+    sticky_topics = Topic.objects.all()\
+        .filter(forum__pk=forum.pk, is_sticky=True)\
+        .order_by('-last_message__pubdate')
     topics = Topic.objects.all()\
-        .filter(forum__pk=forum.pk)\
-        .order_by('-is_sticky', '-last_message__pubdate')
+        .filter(forum__pk=forum.pk, is_sticky=False)\
+        .order_by('-last_message__pubdate')
 
     # Check that given URL is correct, otherwise redirect to the good one
     if not cat_slug == slugify('%s-%s' % (forum.category.pk,
@@ -43,7 +46,7 @@ def details(request, cat_slug, forum_pk, forum_slug):
         return redirect(forum.get_absolute_url())
 
     return render_template('forum/details.html', {
-        'forum': forum, 'topics': topics
+        'forum': forum, 'sticky_topics': topics, 'topics': topics
     })
 
 
@@ -398,4 +401,4 @@ def clear(request):
         forum_pk = int(target)
         forum = get_object_or_404(Forum, pk=forum_pk)
         clear_forum(forum)
-        return rediathreadrect(forum.get_absolute_url())
+        return redirect(forum.get_absolute_url())

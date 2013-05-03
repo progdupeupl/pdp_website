@@ -37,65 +37,16 @@
 </p>
 {% endif %}
 
-<table class="table table-hover table-bordered">
-    <thead>
-        <tr>
-            <th class="span1">Statut</th>
-            <th class="span5">Sujet</th>
-            <th class="span1">Auteur</th>
-            <th class="span1">Réponses</th>
-            <th class="span4">Dernière réponse</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for topic in topics %}
-        <tr>
-            <td style="text-align: center; vertical-align: middle;">
-                {% if topic.is_sticky %}
-                <i class="icon-bookmark" title="Ce sujet est épinglé"></i>
-                {% endif %}
-                {% if topic.is_locked %}
-                <i class="icon-lock" title="Ce sujet est verrouillé"></i>
-                {% endif %}
-                {% if topic.is_solved %}
-                <i class="icon-ok" title="Ce sujet est résolu"></i>
-                {% endif %}
+{% include "forum/details_header.html" %}
 
-                {% if user.is_authenticated %}
-                    {% with topic.last_read_post as last_read_post %}
-                    {% ifnotequal last_read_post topic.get_last_answer %}
-                        <i class="icon-eye-open"></i>
-                    {% endifnotequal %}
-                    {% endwith %}
-                {% endif %}
-            </td>
-            <td>
-                <a href="{{ topic.get_absolute_url }}">{{ topic.title }}</a>
-                <br />{{ topic.subtitle }}
-            </td>
-            <td>
-                <a href="{{ topic.author.get_absolute_url }}">
-                    {{ topic.author.username }}</a>
-            </td>
-            <td>
-                {{ topic.get_post_count|add:"-1" }}
-            </td>
-            <td>
-                {% if topic.get_last_answer %}
-                    <a href="{{ topic.get_last_answer.get_absolute_url }}">
-                        {{ topic.get_last_answer.pubdate|humane_date }}
-                    </a>
-                    par
-                    <a href="{{ topic.get_last_answer.author.get_absolute_url }}">
-                        {{ topic.get_last_answer.author.username }}
-                    </a>
-                {% else %}
-                    Aucune
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% for topic in sticky_topics %}
+    {% include "forum/details_row.html" %}
+{% endfor %}
+
+<div class="spacer3" style="border-bottom: solid 1px rgb(229, 229, 229);"></div>
+
+{% for topic in topics %}
+    {% include "forum/details_row.html" %}
+{% endfor %}
 
 {% endblock %}
