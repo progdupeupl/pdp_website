@@ -140,7 +140,7 @@
                         </a>
                         {% endif %}
 
-                        <a href="{% if topic.is_locked or topic.antispam %}#{% else %}/forums/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.pk }}{% endif %}"
+                        <a href="{% if topic.is_locked or topic.antispam %}javascript:;{% else %}/forums/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.pk }}{% endif %}"
                             class="btn btn-mini {% if topic.is_locked or topic.antispam %}disabled{% endif %}">
                             <i class="icon-comment"></i>
                             Citer
