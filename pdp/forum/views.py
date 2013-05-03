@@ -46,7 +46,7 @@ def details(request, cat_slug, forum_pk, forum_slug):
         return redirect(forum.get_absolute_url())
 
     return render_template('forum/details.html', {
-        'forum': forum, 'sticky_topics': topics, 'topics': topics
+        'forum': forum, 'sticky_topics': sticky_topics, 'topics': topics
     })
 
 
