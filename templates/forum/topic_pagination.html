@@ -2,7 +2,7 @@
     <ul>
 
         <li class="{% ifequal nb 1 %}disabled{% endifequal %}">
-            <a href="{% ifnotequal nb 1 %}{{ topic.get_absolute_url }}?page={{ nb|add:"-1" }}{% else %}#{% endifnotequal %}">«</a>
+            <a href="{% ifnotequal nb 1 %}{{ topic.get_absolute_url }}?page={{ nb|add:"-1" }}{% else %}javascript:;{% endifnotequal %}">«</a>
         </li>
 
     {% for page in pages %}
@@ -16,7 +16,7 @@
     {% endfor %}
 
         <li class="{% ifequal nb pages|last %}disabled{% endifequal %}">
-            <a href="{% ifnotequal nb pages|last %}{{ topic.get_absolute_url }}?page={{ nb|add:"1" }}{% else %}#{% endifnotequal %}">»</a>
+            <a href="{% ifnotequal nb pages|last %}{{ topic.get_absolute_url }}?page={{ nb|add:"1" }}{% else %}javascript:;{% endifnotequal %}">»</a>
         </li>
 
     </ul>
