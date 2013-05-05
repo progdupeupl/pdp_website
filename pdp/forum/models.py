@@ -120,7 +120,9 @@ class Topic(models.Model):
         Gets the last answer in the thread, if any
         '''
         try:
-            return Post.objects.all().filter(topic__pk=self.pk).order_by('-pubdate')[0]
+            return Post.objects.all()\
+                    .filter(topic__pk=self.pk)\
+                    .order_by('-pubdate')[0]
         except IndexError:
             return None
 
@@ -172,11 +174,12 @@ class Topic(models.Model):
             .filter(author=user)\
             .order_by('-pubdate')
 
-        if last_user_posts:
+        if last_user_posts and last_user_posts[0] == self.get_last_answer():
             last_user_post = last_user_posts[0]
             t = timezone.now() - last_user_post.pubdate
             if t.total_seconds() < SPAM_LIMIT_SECONDS:
                 return True
+
         return False
 
 
