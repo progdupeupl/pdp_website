@@ -26,7 +26,8 @@ class ThreadLocals(object):
 
 
 def render_template(tmpl, dct=None):
-    return render_to_response(tmpl, dct, context_instance=RequestContext(get_current_request()))
+    return render_to_response(
+        tmpl, dct, context_instance=RequestContext(get_current_request()))
 
 
 def slugify(text):

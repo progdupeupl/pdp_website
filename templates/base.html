@@ -134,8 +134,10 @@
         </div>
     </div>
 
+    {# Load Bootstrap's JS and custom JS with jQuery #}
     <script src="/static/js/all.min.js"></script>
    
+    {# Load MathJax #}
     <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default">
             MathJax.Hub.Config({
             tex2jax: {
@@ -145,6 +147,11 @@
             messageStyle: 'none'
         });
     </script>
+
+    {# Load Google Analytics if the key is set in the config file #}
+    {% if GOOGLE_ANALYTICS_KEY %}
+        {{ GOOGLE_ANALYTICS_KEY }}
+    {% endif %}
 
     {# Additionnal JS files can be loaded in this block #}
     {% block js %}
