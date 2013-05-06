@@ -23,3 +23,13 @@ class ForumTests(TestCase):
 
         resp = self.client.get('/forums/42-test-category')
         self.assertEqual(resp.status_code, 200)
+
+    def test_forum_url(self):
+        '''
+        Test if the URL associated with a forum is ok.
+        '''
+        category = G(Category, pk=42, name='Test category')
+        forum = G(Forum, pk=21, name='Test forum')
+
+        resp = self.client.get('/forums/42-test-category/21-test-forum')
+        self.assertEqual(resp.status_code, 200)
