@@ -93,7 +93,9 @@ class Topic(models.Model):
 
     forum = models.ForeignKey(Forum, verbose_name='Forum')
     author = models.ForeignKey(User, verbose_name='Auteur')
-    last_message = models.ForeignKey('Post', null=True, related_name='last_message', verbose_name='Dernier message')
+    last_message = models.ForeignKey('Post', null=True,
+                                     related_name='last_message',
+                                     verbose_name='Dernier message')
     pubdate = models.DateTimeField('Date de création', auto_now_add=True)
 
     is_solved = models.BooleanField('Est résolu')
