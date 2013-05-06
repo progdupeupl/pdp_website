@@ -5,6 +5,12 @@ body, input, button, select, textarea {
     font-family: georgia;
 }
 
+/* Make paragraphs look prettier */
+p {
+    margin-bottom: 20px;
+    text-align: justify;
+}
+
 /* Make space between the navbar and the breadcrumb */
 .navbar {
     margin-bottom: 15px;
@@ -21,6 +27,10 @@ body, input, button, select, textarea {
     border-top: solid 1px #E5E5E5;
     margin-top: 70px;
     padding: 30px 0;
+    text-align: center;
+}
+
+.footer p {
     text-align: center;
 }
 
@@ -119,6 +129,8 @@ thead th {
 }
 
 /* CSS classes related to the cssstyles markdown extension */
+
+
 a.hidden-link-show, div.hidden-block:not(:target) a.hidden-link-show {
     display: inline;
 }
@@ -135,9 +147,11 @@ div.hidden-block:target > a.hidden-link-hide {
     display: inline;
 }
 
-div.hidden-block p, div.hidden-block table {
+div.hidden-block p, div.hidden-block table, div.hidden-block ul, div.hidden-block ol {
     display: none;
 }
-div.hidden-block:target p, div.hidden-block:target table {
+
+div.hidden-block:target p, div.hidden-block:target table, div.hidden-block:target ul, div.hidden-block:target ol {
     display: block;
 }
+
