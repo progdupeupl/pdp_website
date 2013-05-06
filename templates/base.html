@@ -138,8 +138,8 @@
     <script src="/static/js/all.min.js"></script>
    
     {# Load MathJax #}
-    <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default">
-            MathJax.Hub.Config({
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
             tex2jax: {
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
                 processEscapes: true
@@ -147,6 +147,7 @@
             messageStyle: 'none'
         });
     </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 
     {# Load Google Analytics if the key is set in the config file #}
     {% if GOOGLE_ANALYTICS_KEY %}
