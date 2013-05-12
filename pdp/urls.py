@@ -16,6 +16,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^pages/', include('pdp.pages.urls')),
 
+    url(r'^captcha/', include('captcha.urls')),
+
     url(r'^$', pages.views.home),
 )
 

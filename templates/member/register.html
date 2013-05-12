@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block title %}
 S'incrire &ndash; Membres
@@ -31,65 +32,11 @@ S'inscrire
         formulaire suivant afin de poursuivre votre inscription.
     </p>
 
-    <form method="post" action="{% url pdp.member.views.register_view %}"
-        class="form-horizontal">
-
-    <fieldset>    
-        <legend>Identifiants</legend>
-        <div class="control-group">
-            <label class="control-label" for="id_email">Adresse mail</label>
-            <div class="controls">
-                <input type="text" name="email" id="id_email" class="popover-input"
-                    data-content="Veuillez utiliser une adresse mail valide (votre image de profil sera basée sur l'image Gravatar associée à cette adresse)." />
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="id_username">Nom d'utilisateur</label>
-            <div class="controls">
-                <input type="text" name="username" id="id_username" class="popover-input success"
-                    data-content="Le nom unique qui vous identifiera sur le site." />
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="id_password">Mot de passe</label>
-            <div class="controls">
-                <input type="password" name="password" id="id_password"/>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="id_password_match">Confirmation</label>
-            <div class="controls">
-                <input type="password" name="password_match" id="id_password_match" />
-            </div>
-        </div>
-    </fieldset>
-    <fieldset>
-        <legend>Options</legend>
-        <p>
-            Ces options seront modifiables plus tard dans l'interface de
-            gestion de votre profil si vous le désirez.
-        </p>
-        <div class="control-group">
-            <div class="controls">
-                <label class="checkbox">
-                    <input type="checkbox" name="show_email"/>Afficher mon adresse mail publiquement
-                </label>
-            </div>
-    </fieldset>
-
-    <div class="form-actions">
-        <button type="submit" class="btn btn-primary">
-            Valider mon inscription
-        </button>
-        <a href="/" class="btn">Annuler</a>
-    </div>
-
-{% csrf_token %}
-</form>
+    {% crispy form %}
 
 {% else %}
 
-Vous êtes déjà connecté
+    <p>Vous êtes déjà connecté.</p>
 
 {% endif %}
 

@@ -116,5 +116,10 @@ def register_view(request):
             login(request, user)
             clear_forums()
             return render_template('member/register_success.html')
+        else:
+            return render_template('member/register.html', {'form': form})
 
-    return render_template('member/register.html')
+    form = RegisterForm()
+    return render_template('member/register.html', {
+        'form': form
+    })

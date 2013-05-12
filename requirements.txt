@@ -6,3 +6,4 @@ pytz
 pil
 django-dynamic-fixture
 django-crispy-forms
+django-simple-captcha
