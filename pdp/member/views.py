@@ -110,7 +110,7 @@ def register_view(request):
                 data['username'],
                 data['email'],
                 data['password'])
-            profile = Profile(user=user, show_email='show_email' in data)
+            profile = Profile(user=user, show_email=False)
             profile.save()
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, user)

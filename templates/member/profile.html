@@ -48,7 +48,7 @@ Profil de {{ usr.username }}
                 </span>
             </p>
             <p>
-                {% if profile.show_email %}
+                {% if profile.show_email and user.is_authenticated %}
                 <span class="muted">Adresse mail | </span> {{ usr.email }}<br />
                 {% endif %}
 
