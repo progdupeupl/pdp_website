@@ -1,4 +1,5 @@
 {% load humane_date %}
+{% load upfirstletter %}
 
 <div class="row-fluid row-hover faketable-row">
     <div class="span1 faketable-centered">
@@ -37,11 +38,10 @@
     <div class="span4">
         {% with answer=topic.get_last_answer %}
         {% if answer %}
-            <span class="visible-phone" style="display: inline !important;">
-                Dernier message posté
-            </span>
             <a href="{{ answer.get_absolute_url }}">
-                {{ answer.pubdate|humane_date }}
+                {% with date=answer.pubdate|humane_date %}
+                    {{ date|upfirstletter }}
+                {% endwith %}
             </a>
             par
             <a href="{{ answer.author.get_absolute_url }}">

@@ -1,5 +1,6 @@
 {# Block displaying the list of forums belonging to a category #}
 {% load humane_date %}
+{% load upfirstletter %}
 
 {% for forum in category.get_forums %}
 
@@ -25,9 +26,10 @@
     <div class="span5 forum-last-message hidden-phone">
         <p>
             {% if forum.get_last_message %}
-            Dernier message posté
             <a href="{{ forum.get_last_message.get_absolute_url }}">
-                {{ forum.get_last_message.pubdate|humane_date }}
+                {% with date=forum.get_last_message.pubdate|humane_date %}
+                    {{ date|upfirstletter }}
+                {% endwith %}
             </a>
             par
             <a href="{{ forum.get_last_message.author.get_absolute_url }}">
