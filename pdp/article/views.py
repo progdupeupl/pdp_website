@@ -13,7 +13,8 @@ from .forms import ArticleForm
 
 def index(request):
     '''Displayy articles list'''
-    article = Article.objects.all().filter(is_visible=True)
+    article = Article.objects.all().filter(is_visible=True)\
+            .order_by('-pubdate')
 
     if request.user.is_authenticated():
         user_article = Article.objects.filter(author=request.user)
