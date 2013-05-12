@@ -16,7 +16,7 @@ class LoginForm(forms.Form):
 
 
 class RegisterForm(forms.Form):
-    email = forms.CharField(label='Adresse email')
+    email = forms.EmailField(label='Adresse email')
     username = forms.CharField(label='Nom d\'utilisateur', max_length=30)
     password = forms.CharField(label='Mot de passe', max_length=76, widget=forms.PasswordInput)
     password_confirm = forms.CharField(label='Confirmation', max_length=76, widget=forms.PasswordInput)
@@ -47,6 +47,7 @@ class RegisterForm(forms.Form):
         )
         super(RegisterForm, self).__init__(*args, **kwargs)
 
+
     def clean(self):
         cleaned_data = super(RegisterForm, self).clean()
 
@@ -63,7 +64,6 @@ class RegisterForm(forms.Form):
             del cleaned_data['password_confirm']
 
         # Check that the user doesn't exist yet
-
         username = cleaned_data.get('username')
         if User.objects.filter(username=username).count() > 0:
             msg = u'Ce nom d\'utilisateur est déjà utilisé'
