@@ -56,6 +56,13 @@
                                         </a>
                                     </li>
                                     {% endfor %}
+                                    {% with tr=topics.read %}
+                                        {% if tr|length == 0 %}
+                                        <li class="disabled">
+                                            <a href="javascript:;">Aucune intervention</a>
+                                        </li>
+                                        {% endif %}
+                                    {% endwith %}
                                     {% endwith %}
                                 </ul>
                             </li>
