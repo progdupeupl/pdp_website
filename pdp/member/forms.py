@@ -60,8 +60,11 @@ class RegisterForm(forms.Form):
             self._errors['password'] = self.error_class([''])
             self._errors['password_confirm'] = self.error_class([msg])
 
-            del cleaned_data['password']
-            del cleaned_data['password_confirm']
+            if 'password' in cleaned_data:
+                del cleaned_data['password']
+
+            if 'password_confirm' in cleaned_data:
+                del cleaned_data['password_confirm']
 
         # Check that the user doesn't exist yet
         username = cleaned_data.get('username')
