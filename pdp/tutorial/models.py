@@ -28,6 +28,7 @@ def chapter_icon_path(instance, filename):
 
 
 class Tutorial(models.Model):
+
     '''A tutorial, large or small'''
     class Meta:
         verbose_name = 'Tutoriel'
@@ -41,7 +42,8 @@ class Tutorial(models.Model):
                              null=True, blank=True)
 
     # We could distinguish large/small tutorials by looking at what chapters
-    # are contained directly in a tutorial, but that'd be more complicated than a field
+    # are contained directly in a tutorial, but that'd be more complicated
+    # than a field
     is_mini = models.BooleanField('Est un mini-tutoriel')
     is_visible = models.BooleanField('Est visible publiquement')
 
@@ -68,6 +70,7 @@ def get_last_tutorials():
 
 
 class Part(models.Model):
+
     '''A part, containing chapters'''
     class Meta:
         verbose_name = 'Partie'
@@ -101,6 +104,7 @@ class Part(models.Model):
 
 
 class Chapter(models.Model):
+
     '''A chapter, containing text'''
     class Meta:
         verbose_name = 'Chapitre'
@@ -113,6 +117,11 @@ class Chapter(models.Model):
 
     position_in_part = models.IntegerField('Position dans la partie',
                                            null=True, blank=True)
+
+    # This field is required in order to use pagination in chapters, see the
+    # update_position_in_tutorial() method.
+    position_in_tutorial = models.IntegerField('Position dans le tutoriel',
+                                               null=True, blank=True)
 
     # If the chapter doesn't belong to a part, it's a small tutorial; we need
     # to bind informations about said tutorial directly
@@ -159,8 +168,26 @@ class Chapter(models.Model):
             return self.part.tutorial
         return self.tutorial
 
+    def update_position_in_tutorial(self):
+        '''
+        Update the position_in_tutorial field, but don't save it ; you have
+        to call save() method manually if you want to save the new computed
+        position
+        '''
+        position = 1
+        for part in self.part.tutorial.get_parts():
+            if part.position_in_tutorial < self.part.position_in_tutorial:
+                for chapter in part.get_chapters():
+                    position += 1
+            elif part == self.part:
+                for chapter in part.get_chapters():
+                    if chapter.position_in_part < self.position_in_part:
+                        position += 1
+        self.position_in_tutorial = position
+
 
 class Extract(models.Model):
+
     '''A content extract from a chapter'''
     class Meta:
         verbose_name = 'Extrait'

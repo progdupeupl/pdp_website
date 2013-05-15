@@ -46,7 +46,7 @@ def move(obj, new_pos, position_f, parent_f, children_fn):
     # All objects have been updated except the current one we want to move, so
     # we can do it now
     setattr(obj, position_f, new_pos)
-    obj.save()
+    obj.save() # TODO: Let the user save the modified object himself
 
 
 # Export-to-dict functions

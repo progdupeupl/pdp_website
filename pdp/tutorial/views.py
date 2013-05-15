@@ -67,11 +67,9 @@ def download(request):
 
     response = HttpResponse(data, mimetype='application/json')
     response['Content-Disposition'] = 'attachment; filename=%s.json' % \
-            slugify(tutorial.title)
+        slugify(tutorial.title)
 
     return response
-
-
 
 
 @login_required
@@ -297,8 +295,22 @@ def view_chapter(request, tutorial_pk, tutorial_slug, part_pos, part_slug,
             or not chapter_slug == slugify(chapter.title):
         return redirect(chapter.get_absolute_url())
 
+    prev_chapter = Chapter.objects.all()\
+        .filter(part__tutorial__pk=chapter.part.tutorial.pk)\
+        .filter(position_in_tutorial__lt=chapter.position_in_tutorial)\
+        .order_by('-position_in_tutorial')
+    prev_chapter = prev_chapter[0] if len(prev_chapter) > 0 else None
+
+    next_chapter = Chapter.objects.all()\
+        .filter(part__tutorial__pk=chapter.part.tutorial.pk)\
+        .filter(position_in_tutorial__gt=chapter.position_in_tutorial)\
+        .order_by('position_in_tutorial')
+    next_chapter = next_chapter[0] if len(next_chapter) > 0 else None
+
     return render_template('tutorial/view_chapter.html', {
-        'chapter': chapter
+        'chapter': chapter,
+        'prev': prev_chapter,
+        'next': next_chapter
     })
 
 
@@ -323,6 +335,7 @@ def add_chapter(request):
             chapter.conclusion = data['conclusion']
             chapter.part = part
             chapter.position_in_part = part.get_chapters().count() + 1
+            chapter.update_position_in_tutorial()
             chapter.save()
             return redirect(chapter.get_absolute_url())
     else:
@@ -345,22 +358,30 @@ def modify_chapter(request):
         raise Http404
     chapter = get_object_or_404(Chapter, pk=chapter_pk)
     # Make sure the user is allowed to do that
-    #if not request.user in c.part.tutorial.authors.all():
+    # if not request.user in c.part.tutorial.authors.all():
     #   raise Http404
 
     if 'move' in data:
         new_pos = int(request.POST['move_target'])
         move(chapter, new_pos, 'position_in_part', 'part', 'get_chapters')
+        chapter.update_position_in_tutorial()
+        chapter.save()
 
     elif 'delete' in data:
-        # Move other chapters first
         old_pos = chapter.position_in_part
+        old_tut_pos = chapter.position_in_tutorial
+        # Move other chapters first
         for tut_c in chapter.part.get_chapters():
             if old_pos <= tut_c.position_in_part:
                 tut_c.position_in_part = tut_c.position_in_part - 1
                 tut_c.save()
         # Then delete the chapter
         chapter.delete()
+        # Update all the position_in_tutorial fields for the next chapters
+        for tut_c in Chapter.objects\
+                .filter(position_in_tutorial__gt=old_tut_pos):
+            tut_c.update_position_in_tutorial()
+            tut_c.save()
 
     return redirect(chapter.part.get_absolute_url())
 
