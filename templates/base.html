@@ -1,4 +1,5 @@
 {% load url from future %}
+{% load staticfiles %}
 {% load profile %}
 {% load interventions %}
 <!doctype html>
@@ -9,8 +10,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link href="/static/css/all.min.css" rel="stylesheet" media="screen" />
-    <link rel="icon" type="image/jpg" href="/static/img/cat.jpg" />
+    <link href="{% static "css/all.min.css" %}" rel="stylesheet" media="screen" />
+    <link rel="icon" type="image/jpg" href="{% static "img/cat.jpg" %}" />
 
 </head>
 <body>
@@ -142,7 +143,7 @@
     </div>
 
     {# Load Bootstrap's JS and custom JS with jQuery #}
-    <script src="/static/js/all.min.js"></script>
+    <script src="{% static "js/all.min.js" %}"></script>
    
     {# Load MathJax #}
     <script type="text/x-mathjax-config">
