@@ -4,6 +4,7 @@
 *~
 *.swp
 
+fabfile.py
 media
 pdp/settings_prod.py
 
