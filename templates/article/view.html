@@ -13,9 +13,9 @@
 {% endblock %}
 
 {% block breadcrumb %}
-<li><a href="/">Accueil</a> <span class="divider">/</span></li>
-<li><a href="/articles/">Articles</a> <span class="divider">/</span></li>
-<li class="article">{{ article.title }}</li>
+<a href="{% url pdp.pages.views.home %}">Accueil</a>
+<a href="{% url pdp.article.views.index %}">Articles</a>
+<a href="#" class="article">{{ article.title }}</li>
 {% endblock %}
 
 {% block content %}

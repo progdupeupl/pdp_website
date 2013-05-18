@@ -75,8 +75,12 @@ header {
     
 
     h1, h2, h3, h4, h5, h6 {
-        @include single-text-shadow;
         margin: 1em 0 1em 0;
+        color: $color1;
+
+        small {
+            color: $color2;
+        }
     }
     
     h1 {
@@ -96,14 +100,6 @@ header {
         font-family: 'Merriweather Sans', sans-serif;
         text-align: justify;
     }
-}
-
-.hero {
-    padding: 15px;
-    background: $color5;
-    
-    &:before { content: "{ "; }
-    &:after { content: " }"; }
 }
 
 .breadcrumb {
@@ -126,6 +122,8 @@ header {
                 content: " »";
             }
             
+
+            &:last-child:hover { color: inherit; }
             &:last-child:after {
                 content: "";
             }

@@ -1,28 +1,24 @@
-<div class="media media-tutorial">
-    <div class="media-body">
-        <h4 class="media-heading">
-            <a href="{{ tutorial.get_absolute_url }}">
-                {{ tutorial.title }}
-            </a>
-        </h4>
-         <p>
-            <small>
-                {% if tutorial.is_mini %}
-                    Mini-tuto
-                {% else %}
-                    Big-tuto
-                {% endif %}
-                par 
-                {% with authors=tutorial.authors.all %}
-                    {% for author in authors %}
-                        <a href="{{ author.get_absolute_url }}">{{ author.username }}</a>
-                    {% endfor %}
-                {% endwith %}
-            </small>
-        </p>
+<div class="tutorial-item">
+    <h3>
+        <a href="{{ tutorial.get_absolute_url }}">
+            {{ tutorial.title }}
+        </a>
+        <small>
+            {% if tutorial.is_mini %}
+                tutoriel
+            {% else %}
+                tutoriel étendu
+            {% endif %}
+            rédigé par 
+            {% with authors=tutorial.authors.all %}
+                {% for author in authors %}
+                    <a href="{{ author.get_absolute_url }}">{{ author.username }}</a>
+                {% endfor %}
+            {% endwith %}
+        </small>
+    </h3>
 
-        <p>
-            {{ tutorial.description }}
-        </p>
-    </div>
+    <p>
+        {{ tutorial.description }}
+    </p>
 </div>

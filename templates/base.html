@@ -1,13 +1,13 @@
 ﻿{% load staticfiles %}
 {% load profile %}
 
-<!doctype html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
     <title>{% block title %}Sans nom{% endblock %} &#183; Progdupeupl</title>
     <meta charset="utf-8" />
 
-    <link rel="stylesheet" href="{% static "css/style.css" %}" />
+    <link rel="stylesheet" href="{% static "css/style.min.css" %}" />
 </head>
 <body>
     <header>
@@ -22,7 +22,7 @@
             {% if user.is_authenticated %}
             {% with profile=user|profile %}
                 <a href="#">
-                    <img src="{{ profile.get_gravatar_url }}&amp;s=16" alt="Avatar" />
+                    <img src="{{ profile.get_gravatar_url }}&amp;s=20" alt="Avatar" />
                     {{ user.username }}</a>
             {% endwith %}
             {% else %}

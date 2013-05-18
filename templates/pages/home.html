@@ -1,4 +1,5 @@
 {% extends "pages/base.html" %}
+{% load staticfiles %}
 
 {# Titles #}
 
@@ -17,79 +18,96 @@ Bonjour o/
 {# Content #}
 
 {% block content %}
-<p class="hero">
-    Bienvenue sur <strong>progdupeupl</strong>, 
-    une communauté de passionnés d'informatique et notamment de
-    programmation. Ce site permet non seulement de se former à la programmation,
-    mais également de discuter entre membres pour progresser, découvrir des
-    astuces, partager, aider, en bref : échanger de façon utile sur le monde de
-    l'informatique.
+<p>
+    Bienvenue sur Progdupeupl, <strong>une communauté de passionnés
+    d'informatique</strong> et notamment de programmation. Ce site permet
+    non seulement de se former à la programmation, mais également de discuter
+    entre membres pour progresser, découvrir des astuces, partager, aider, en
+    bref : échanger de façon utile sur le monde de l'informatique.
 </p>
 
-<div class="row">
-    <div class="span4">
-        <h2>Articles <br /><small>Pour se tenir informé.</small></h2>
-        <p>
-            Les articles sont rédigés par la communauté et permettent de se
-            tenir informé des dernières innovations du moment.
-        </p>
-        {% if last_articles %}
-            {% for article in last_articles %}
-                {% include "article/article_item_common.html" %}
-            {% endfor %}
-            <div class="spacer1"></div>
-        {% else %}
-            <p>Pas d'articles pour l'instant.</p>
-        {% endif %}
-        <p>
-            <a href="/articles/" class="btn">
-                <i class="icon-list"></i>
-                Liste des articles
-            </a>
-        </p>
-    </div>
-    <div class="span4">
-        <h2>Tutoriels <br /><small>Pour apprendre.</small></h2>
-        <p>
-            Les tutoriels vous permettent d'apprendre sur divers sujets axés
-            autour de la programmation et de l'informatique.
-        </p>
-        {% if last_tutorials %}
-            {% for tutorial in last_tutorials %}
-                {% include "tutorial/tutorial_item_common.html" %}
-            {% endfor %}
-            <div class="spacer1"></div>
-        {% else %}
-            <p>Aucun tutoriel actuellement.</p>
-        {% endif %}
-        <p>
-            <a href="/tutoriels/" class="btn">
-                <i class="icon-list"></i>
-                Liste des tutoriels
-            </a>
-        </p>
-    </div>
-    <div class="span4">
-        <h2>Forums <br /><small>Pour discuter et partager.</small></h2>
-        <p>
-            Les forums vous permettent de venir poser vos questions aux autres
-            membres mais aussi de s'entrainer ou tout simplement discuter sur
-            divers sujets.
-        </p>
-        {% if last_topics %}
-            {% for topic in last_topics %}
-                {% include "forum/topic_item_common.html" %}
-            {% endfor %}
-        {% else %}
-            <p>Aucun sujet récent.</p>
-        {% endif %}
-        <p>
-            <a href="/forums/" class="btn">
-                <i class="icon-comment"></i>
-                Accéder aux forums
-            </a>
-        </p>
-    </div>
-</div>
+{# Articles #}
+
+<nav class="feed-links">
+    <a href="#">RSS</a>
+    <a href="#">ATOM</a>
+</nav>
+
+<h2>Des articles <small>pour se tenir informé</small></h2>
+
+<p>
+    Les articles sont rédigés par la communauté et permettent aussi bien de se tenir informé des dernières innovations du moment que de découvrir de nouveaux concepts liés aux différents domaines de l'informatique. Voici la liste des trois derniers articles publiés sur le site :
+</p>
+
+{% if last_articles %}
+    {% for article in last_articles %}
+        {% include "article/article_item_common.html" %}
+    {% endfor %}
+    <div class="spacer1"></div>
+{% else %}
+    <p>Pas d'articles pour l'instant.</p>
+{% endif %}
+<p>
+    <a href="/articles/" class="btn">
+        <i class="icon-list"></i>
+        Aller à la liste des articles
+    </a>
+</p>
+
+{# Tutorials #}
+
+<nav class="feed-links">
+    <a href="#">RSS</a>
+    <a href="#">ATOM</a>
+</nav>
+
+<h2>Des tutoriels <small>pour apprendre</small></h2>
+
+<p>
+    Les tutoriels vous permettent de découvrir et d'apprendre sur divers sujets variés axés autour de l'informatique de manière plus avancée qu'avec les articles. Voici les trois derniers tutoriels parus sur Progdupeupl :
+</p>
+{% if last_tutorials %}
+    {% for tutorial in last_tutorials %}
+        {% include "tutorial/tutorial_item_common.html" %}
+    {% endfor %}
+    <div class="spacer1"></div>
+{% else %}
+    <p>Aucun tutoriel actuellement.</p>
+{% endif %}
+<p>
+    <a href="/tutoriels/" class="btn">
+        <i class="icon-list"></i>
+        Liste des tutoriels
+    </a>
+</p>
+
+{# Forums #}
+
+<nav class="feed-links">
+    <a href="#">RSS</a>
+    <a href="#">ATOM</a>
+</nav>
+
+<h2>Forums <small>pour discuter et partager</small></h2>
+
+<p>
+    Les forums vous permettent de venir poser vos questions aux autres
+    membres mais aussi de s'entrainer ou tout simplement discuter sur
+    divers sujets avec le reste de la communauté. Voici les derniers
+    sujets créés sur le forum :
+</p>
+{% if last_topics %}
+    {% for topic in last_topics %}
+        {% include "forum/topic_item_common.html" %}
+    {% endfor %}
+{% else %}
+    <p>Aucun sujet récent.</p>
+{% endif %}
+<p>
+    <a href="/forums/" class="btn">
+        <i class="icon-comment"></i>
+        Accéder aux forums
+    </a>
+</p>
 
 {% endblock %}

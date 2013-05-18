@@ -9,8 +9,8 @@ Liste des articles
 {% endblock %}
 
 {% block breadcrumb %}
-<li><a href="/">Accueil</a> <span class="divider">/</span></li>
-<li class="artive">Articles</li>
+<a href="{% url pdp.pages.views.home %}">Accueil</a>
+<a href="#" class="artive">Articles</li>
 {% endblock %}
 
 {% block content %}
