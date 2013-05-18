@@ -7,19 +7,17 @@ Accueil
 {% endblock %}
 
 {% block headline %}
-Progdupeupl<br />
-<small>Bonjour, monde !</small>
+Bonjour o/
 {% endblock %}
 
 {% block breadcrumb %}
-<li class="active">Accueil</li>
+<a href="#" class="active">Accueil</a>
 {% endblock %}
 
 {# Content #}
 
 {% block content %}
-<div class="hero-unit">
-<p>
+<p class="hero">
     Bienvenue sur <strong>progdupeupl</strong>, 
     une communauté de passionnés d'informatique et notamment de
     programmation. Ce site permet non seulement de se former à la programmation,
@@ -27,14 +25,6 @@ Progdupeupl<br />
     astuces, partager, aider, en bref : échanger de façon utile sur le monde de
     l'informatique.
 </p>
-{% if not user.is_authenticated %}
-    <div class="spacer2"></div>
-    <p style="text-align: center;">
-        <a href="{% url pdp.member.views.login_view %}" class="btn btn-large">Se connecter</a>
-        <a href="{% url pdp.member.views.register_view %}" class="btn btn-primary btn-large">Nous rejoindre</a>
-    </p>
-{% endif %}
-</div>
 
 <div class="row">
     <div class="span4">

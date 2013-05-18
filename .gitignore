@@ -1,8 +1,11 @@
 *.pyc
 *.db
+assets/.sass-cache
 
 *~
 *.swp
+*.old
+*.bak
 
 fabfile.py
 media

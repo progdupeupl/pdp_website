@@ -1,0 +1,222 @@
+@charset "UTF-8";
+@import url(http://fonts.googleapis.com/css?family=Roboto+Slab:300,400,700);
+@import url(http://fonts.googleapis.com/css?family=Merriweather+Sans:300,400,700);
+/*
+ *  File style.scss
+ *  Main file generated using all other sass files in this directory.
+ *
+ */
+/* Load the main colors */
+/*
+ *  File _colors.scss
+ *  Set the 5 main colors of the website from the EtroWallpaper6 kuler color set.
+ *
+ */
+/* Set the default text-shadow values for the `@include single-text-shadow;` command */
+/* Load the SCSS parts */
+/*
+ *  File _base.scss
+ *  Styling the main page associated with the `base.html` template.
+ *
+ */
+/* line 10, ../sass/_base.scss */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* line 15, ../sass/_base.scss */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto Slab', serif;
+  font-size: 15px;
+  background: #1c2f40;
+}
+
+/* line 23, ../sass/_base.scss */
+header {
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
+  background-color: #1c2f40;
+  color: #f2e9d8;
+  height: 42px;
+  padding: 0;
+}
+/* line 30, ../sass/_base.scss */
+header h1 {
+  float: left;
+  font-size: 18px;
+  padding: 8px;
+  font-weight: normal;
+  display: inline-block;
+  margin: 0 10px 0 10px;
+}
+/* line 39, ../sass/_base.scss */
+header nav {
+  display: inline-block;
+  height: 42px;
+}
+/* line 42, ../sass/_base.scss */
+header nav a {
+  height: 100%;
+  margin: 0;
+  padding: 8px;
+  position: relative;
+  top: 10px;
+  font-size: 14px;
+}
+/* line 49, ../sass/_base.scss */
+header nav a:hover {
+  color: #8094a6;
+}
+/* line 52, ../sass/_base.scss */
+header nav .active {
+  color: #8094a6;
+}
+/* line 57, ../sass/_base.scss */
+header nav:last-child {
+  float: right;
+  margin-right: 10px;
+}
+
+/* line 63, ../sass/_base.scss */
+.container {
+  background: white;
+  margin: 0;
+  padding-bottom: 3em;
+}
+
+/* line 69, ../sass/_base.scss */
+.content {
+  width: 940px;
+  height: 100%;
+  margin: 0 auto;
+  font-weight: 300;
+}
+/* line 77, ../sass/_base.scss */
+.content h1, .content h2, .content h3, .content h4, .content h5, .content h6 {
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
+  margin: 1em 0 1em 0;
+}
+/* line 82, ../sass/_base.scss */
+.content h1 {
+  font-size: 28px;
+}
+/* line 86, ../sass/_base.scss */
+.content ul {
+  list-style-type: square;
+}
+/* line 90, ../sass/_base.scss */
+.content a {
+  color: #1c2f40;
+  font-weight: bold;
+}
+/* line 95, ../sass/_base.scss */
+.content p {
+  font-family: 'Merriweather Sans', sans-serif;
+  text-align: justify;
+}
+
+/* line 101, ../sass/_base.scss */
+.hero {
+  padding: 15px;
+  background: #f2e9d8;
+}
+/* line 105, ../sass/_base.scss */
+.hero:before {
+  content: "{ ";
+}
+/* line 106, ../sass/_base.scss */
+.hero:after {
+  content: " }";
+}
+
+/* line 109, ../sass/_base.scss */
+.breadcrumb {
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
+  padding: 4px;
+  background: #4c6173;
+  color: #f2e9d8;
+  font-size: 12px;
+}
+/* line 116, ../sass/_base.scss */
+.breadcrumb nav {
+  width: 940px;
+  margin: 0 auto;
+}
+/* line 121, ../sass/_base.scss */
+.breadcrumb nav a:hover {
+  color: #d9d1ba;
+}
+/* line 125, ../sass/_base.scss */
+.breadcrumb nav a:after {
+  content: " »";
+}
+/* line 129, ../sass/_base.scss */
+.breadcrumb nav a:last-child:after {
+  content: "";
+}
+
+/* line 136, ../sass/_base.scss */
+footer {
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 42px;
+  font-size: 14px;
+  background-color: #1c2f40;
+  color: #f2e9d8;
+  font-weight: 300;
+}
+/* line 148, ../sass/_base.scss */
+footer a {
+  color: #8094a6;
+}
+/* line 150, ../sass/_base.scss */
+footer a:hover {
+  color: #d9d1ba;
+}
+/* line 153, ../sass/_base.scss */
+footer section {
+  padding: 11px;
+  margin: 0 auto;
+}
+/* line 157, ../sass/_base.scss */
+footer section nav a {
+  margin-right: 6px;
+}
+/* line 161, ../sass/_base.scss */
+footer section .right {
+  float: right;
+  text-align: right;
+}
+/* line 164, ../sass/_base.scss */
+footer section .right nav a {
+  margin-right: 0px;
+  margin-left: 6px;
+}
+
+@media (min-width: 1200px) {
+  /* line 175, ../sass/_base.scss */
+  .content, .breadcrumb nav {
+    width: 1170px;
+  }
+}
+@media (min-width: 768px) and (max-width: 979px) {
+  /* line 181, ../sass/_base.scss */
+  .content, .breadcrumb nav {
+    width: 724px;
+  }
+}
+@media (min-width: 767px) and (max-width: 768px) {
+  /* line 187, ../sass/_base.scss */
+  .content, .breadcrumb nav {
+    width: 724px;
+  }
+}
+@media (max-width: 767px) {
+  /* line 193, ../sass/_base.scss */
+  .content, .breadcrumb nav {
+    width: auto;
+    padding: 0 20px 0 20px;
+  }
+}

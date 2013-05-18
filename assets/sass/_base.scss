@@ -1,0 +1,197 @@
+﻿/*
+ *  File _base.scss
+ *  Styling the main page associated with the `base.html` template.
+ *
+ */
+
+$footer-height: 2em;
+$footer-link-spacing: 6px;
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto Slab', serif;
+    font-size: 15px;
+    background: $color1;
+}
+
+header {
+    @include single-text-shadow;
+    background-color: $color1;
+    color: $color5;
+    height: 42px;
+    padding: 0;
+
+    h1 {
+        float: left;
+        font-size: 18px;
+        padding: 8px;
+        font-weight: normal;
+        display: inline-block;
+        margin: 0 10px 0 10px;
+    }
+
+    nav {
+        display: inline-block;
+        height: 42px;
+        a {
+            height: 100%;
+            margin: 0;
+            padding: 8px;
+            position: relative;
+            top: 10px;
+            font-size: 14px;
+            &:hover { color: $color3; }
+
+        }
+        .active {
+            color: $color3;
+        }
+    }
+
+    nav:last-child {
+        float: right;
+        margin-right: 10px;
+    }
+}
+
+.container {
+    background: white;
+    margin: 0;
+    padding-bottom: 3em;
+}
+
+.content {
+    width: 940px;    
+    height: 100%;
+
+    margin: 0 auto;
+    font-weight: 300;
+    
+
+    h1, h2, h3, h4, h5, h6 {
+        @include single-text-shadow;
+        margin: 1em 0 1em 0;
+    }
+    
+    h1 {
+        font-size: 28px;
+    }
+
+    ul {
+        list-style-type: square;
+    }
+
+    a {
+        color: $color1;
+        font-weight: bold;
+    }
+    
+    p {
+        font-family: 'Merriweather Sans', sans-serif;
+        text-align: justify;
+    }
+}
+
+.hero {
+    padding: 15px;
+    background: $color5;
+    
+    &:before { content: "{ "; }
+    &:after { content: " }"; }
+}
+
+.breadcrumb {
+    @include single-text-shadow;
+    padding: 4px;
+    background: $color2;
+    color: $color5;
+    font-size: 12px;
+    
+    nav {
+        width: 940px;
+        margin: 0 auto;
+        
+        a {
+            &:hover {
+                color: $color4;
+            }
+            
+            &:after {
+                content: " »";
+            }
+            
+            &:last-child:after {
+                content: "";
+            }
+        }
+    }
+}
+
+footer {
+    @include single-text-shadow;
+    
+    width: 100%;
+    height: 42px;
+    font-size: 14px;
+    
+
+    background-color: $color1;
+    color: $color5;
+    font-weight: 300;
+
+    a {
+        color: $color3;
+        &:hover { color: $color4; }
+    }
+
+    section {
+        padding: 11px;
+        margin: 0 auto;
+
+        nav a {
+            margin-right: $footer-link-spacing;
+        }
+
+        .right {
+            float: right;
+            text-align: right;
+            nav a {
+                margin-right: 0px;
+                margin-left: $footer-link-spacing;
+            }
+        }
+
+    }
+}
+
+
+@media (min-width: 1200px) {
+    .content, .breadcrumb nav {
+        width: 1170px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+    .content, .breadcrumb nav {
+        width: 724px;
+    }
+}
+
+@media (min-width: 767px) and (max-width: 768px) {
+    .content, .breadcrumb nav {
+        width: 724px;
+    }
+}
+
+@media (max-width: 767px) {
+    .content, .breadcrumb nav {
+        width: auto;
+        padding: 0 20px 0 20px;
+    }
+}

@@ -1,179 +1,60 @@
-{% load url from future %}
-{% load staticfiles %}
+﻿{% load staticfiles %}
 {% load profile %}
-{% load interventions %}
+
 <!doctype html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
-    <title>{% block title %}Sans nom{% endblock %} | progdupeu.pl</title>
-
+    <title>{% block title %}Sans nom{% endblock %} &#183; Progdupeupl</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link href="{% static "css/all.min.css" %}" rel="stylesheet" media="screen" />
-    <link rel="icon" type="image/jpg" href="{% static "img/cat.jpg" %}" />
-
+    <link rel="stylesheet" href="{% static "css/style.css" %}" />
 </head>
 <body>
-
-    <div class="navbar navbar-static-top">
-        <div class="navbar-inner">
-            <div class="container-fluid">
-                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </a>
-                <a href="/" class="brand">progdupeu.pl</a>
-                <div class="nav-collapse collapse">
-                    {% if user.is_authenticated %}
-                        <ul class="nav pull-right">
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    Mes interventions
-                                    {% with unread_topic_count=user|interventions_topics_count %}
-                                        {% if unread_topic_count > 0 %}
-                                            <span class="label label-important">{{ unread_topic_count }}</span>
-                                        {% endif %}
-                                    {% endwith %}
-                                    <b class="caret"></b>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    {% with topics=user|interventions_topics %}
-                                    {% for topic in topics.unread %}
-                                    <li>
-                                        <a href="{{ topic.get_last_answer.get_absolute_url }}">
-                                            <i class="icon-exclamation-sign"></i>
-                                            <strong>
-                                                {{ topic.title }}
-                                            </strong>
-                                        </a>
-                                    </li>
-                                    {% endfor %}
-                                    {% for topic in topics.read %}
-                                    <li>
-                                        <a href="{{ topic.get_last_answer.get_absolute_url }}">
-                                            {{ topic.title }}
-                                        </a>
-                                    </li>
-                                    {% endfor %}
-                                    {% with tr=topics.read %}
-                                        {% if tr|length == 0 %}
-                                        <li class="disabled">
-                                            <a href="javascript:;">Aucune intervention</a>
-                                        </li>
-                                        {% endif %}
-                                    {% endwith %}
-                                    {% endwith %}
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    {% with profile=user|profile %}
-                                    <img src="{{ profile.get_gravatar_url }}&amp;s=16" alt="Avatar" width="16" height="16" style="vertical-align: bottom;" />
-                                    {{ user.username }}
-                                    <b class="caret"></b>
-                                    {% endwith %}
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="{{ user.get_absolute_url }}">
-                                        <i class="icon-user"></i>
-                                        Profil
-                                    </a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="/membres/deconnexion/{{ get_token }}">
-                                        <i class="icon-off"></i>
-                                        Se déconnecter
-                                    </a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    {% else %}
-                        <ul class="nav pull-right">
-                            <li><a href="/membres/connexion">Connexion</a></li>
-                            <li><a href="/membres/inscription">Inscription</a></li>
-                        </ul>
-                    {% endif %}
-                    <ul class="nav">
-                        <li {% block menu_home %}{% endblock %}><a href="/">
-                            <i class="icon-white icon-home"></i>
-                            Accueil
-                        </a></li>
-                        <li {% block menu_article %}{% endblock %}><a href="/articles/">
-                            <i class="icon-white icon-file"></i>
-                            Articles
-                        </a></li>
-                        <li {% block menu_tutorial %}{% endblock %}><a href="/tutoriels/">
-                            <i class="icon-white icon-book"></i>
-                            Tutoriels
-                        </a></li>
-                        <li {% block menu_forum %}{% endblock %}><a href="/forums/">
-                            <i class="icon-white icon-comment"></i>
-                            Forums
-                            
-                        </a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <header>
+        <h1><a href="/">Progdupeupl</a></h1>
+        <nav>
+            <a href="{% url pdp.pages.views.home %}" {% block menu_home %}{% endblock %}>Accueil</a>
+            <a href="{% url pdp.article.views.index %}" {% block menu_article %}{% endblock %}>Articles</a>
+            <a href="{% url pdp.tutorial.views.index %}" {% block menu_tutorial %}{% endblock %}>Tutoriels</a>
+            <a href="{% url pdp.forum.views.index %}" {% block menu_forum %}{% endblock %}>Forums</a>
+        </nav>
+        <nav>
+            {% if user.is_authenticated %}
+            {% with profile=user|profile %}
+                <a href="#">
+                    <img src="{{ profile.get_gravatar_url }}&amp;s=16" alt="Avatar" />
+                    {{ user.username }}</a>
+            {% endwith %}
+            {% else %}
+                <a href="{% url pdp.member.views.register_view %}">S'inscrire</a>
+                <a href="{% url pdp.member.views.login_view %}">Se connecter</a>
+            {% endif %}
+        </nav>
+    </header>
     <div class="container">
-        <ul class="breadcrumb">
-            {% block breadcrumb %}
-            {% endblock %}
-        </ul>
-
-        <div class="page-header">
+        <div class="breadcrumb">
+            <nav>
+                {% block breadcrumb %}{% endblock %}
+            </nav>
+        </div>
+        <section class="content">
+            
             <h1>{% block headline %}{% endblock %}</h1>
-        </div>
-
-        {% block content %}{% endblock %}
-
-        <div class="spacer3"></div>
+            {% block content %}{% endblock %} 
+            
+        </section>
     </div>
 
-    <div class="footer">
-        <div class="container">
-            <p>&copy; progdupeu.pl 2013</p>
-            <a href="https://twitter.com/Progdupeupl">Contact</a> &#183;
-            <a href="http://paste.awesom.eu/">Pastebin</a> &#183;
-            <a href="https://bitbucket.org/MicroJoe/progdupeupl">Code source</a>
-        </div>
-    </div>
-
-    {# Load Bootstrap's JS and custom JS with jQuery #}
-    <script src="{% static "js/all.min.js" %}"></script>
-   
-    {# Load MathJax #}
-    <script type="text/x-mathjax-config">
-        MathJax.Hub.Config({
-            tex2jax: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                processEscapes: true
-            },
-            messageStyle: 'none'
-        });
-    </script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
-
-    {# Load Google Analytics if the key is set in the config file #}
-    {% if GOOGLE_ANALYTICS_KEY %}
-        <script type="text/javascript">
-            var _gaq = _gaq || [];
-            _gaq.push(['_setAccount', '{{ GOOGLE_ANALYTICS_KEY }}']);
-            _gaq.push(['_trackPageview']);
-
-            (function() {
-                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-            })();
-        </script>
-    {% endif %}
-
-    {# Additionnal JS files can be loaded in this block #}
-    {% block js %}
-    {% endblock %}
+    <footer>
+        <section>
+            <div class="right">
+                <nav>
+                    <a href="https://twitter.com/Progdupeupl">Twitter</a>
+                    <a href="https://bitbucket.org/MicroJoe/progdupeupl">Bitbucket</a>
+                </nav>
+            </div>
+            &copy; Progdupeupl
+        </section>
+    </footer>
 </body>
 </html>
