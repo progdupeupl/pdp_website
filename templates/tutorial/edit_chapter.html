@@ -10,16 +10,14 @@
 {% endblock %}
 
 {% block breadcrumb %}
-<li><a href="/">Accueil</a> <span class="divider">/</span></li>
-<li><a href="/tutoriels/">Tutoriels</a> <span class="divider">/</span></li>
 {% if chapter.tutorial %}
-    <li><a href="{{ chapter.tutorial.get_absolute_url }}">{{ chapter.tutorial.title }}</a> <span class="divider">/</span></li>
+    <a href="{{ chapter.tutorial.get_absolute_url }}">{{ chapter.tutorial.title }}</a>
 {% else %}
-    <li><a href="{{ chapter.part.tutorial.get_absolute_url }}">{{ chapter.part.tutorial.title }}</a> <span class="divider">/</span></li>
-    <li><a href="{{ chapter.part.get_absolute_url }}">{{ chapter.part.title }}</a> <span class="divider">/</span></li>
-    <li><a href="{{ chapter.get_absolute_url }}">{{ chapter.title }}</a> <span class="divider">/</span></li>
+    <a href="{{ chapter.part.tutorial.get_absolute_url }}">{{ chapter.part.tutorial.title }}</a>
+    <a href="{{ chapter.part.get_absolute_url }}">{{ chapter.part.title }}</a>
+    <a href="{{ chapter.get_absolute_url }}">{{ chapter.title }}</a>
 {% endif %}
-<li class="active">Éditer le chapitre</li>
+Éditer le chapitre
 {% endblock %}
 
 {% block content %}

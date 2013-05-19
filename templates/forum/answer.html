@@ -12,12 +12,10 @@ Répondre au sujet<br />
 {% endblock %}
 
 {% block breadcrumb %}
-<li><a href="/">Accueil</a> <span class="divider">/</span></li>
-<li><a href="/forums/">Forums</a> <span class="divider">/</span></li>
-<li><a href="{{ topic.forum.category.get_absolute_url }}">{{ topic.forum.category.title }}</a> <span class="divider">/</span></li>
-<li><a href="{{ topic.forum.get_absolute_url }}">{{ topic.forum.title }}</a> <span class="divider">/</span></li>
-<li><a href="{{ topic.get_absolute_url }}">{{ topic.title }}</a> <span class="divider">/</span></li>
-<li class="active">Répondre au sujet</li>
+<a href="{{ topic.forum.category.get_absolute_url }}">{{ topic.forum.category.title }}</a>
+<a href="{{ topic.forum.get_absolute_url }}">{{ topic.forum.title }}</a>
+<a href="{{ topic.get_absolute_url }}">{{ topic.title }}</a>
+Répondre au sujet
 {% endblock %}
 
 {% block content %}

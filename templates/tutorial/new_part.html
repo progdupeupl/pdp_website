@@ -11,10 +11,8 @@ Nouvelle partie
 {% endblock %}
 
 {% block breadcrumb %}
-<li><a href="/">Accueil</a> <span class="divider">/</span></li>
-<li><a href="/tutoriels/">Tutoriels</a> <span class="divider">/</span></li>
-<li><a href="{{ tutorial.get_absolute_url }}">{{ tutorial.title }}</a> <span class="divider">/</span></li>
-<li class="active">Nouvelle partie</li>
+<a href="{{ tutorial.get_absolute_url }}">{{ tutorial.title }}</a>
+Nouvelle partie
 {% endblock %}
 
 {% block content %}

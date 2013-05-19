@@ -1,6 +1,8 @@
 *.pyc
 *.db
+
 assets/.sass-cache
+assets/css/*
 
 *~
 *.swp

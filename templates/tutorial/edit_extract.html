@@ -11,17 +11,14 @@
 {% endblock %}
 
 {% block breadcrumb %}
-<li><a href="/">Accueil</a> <span class="divider">/</span></li>
-<li><a href="/tutoriels/">Tutoriels</a> <span class="divider">/</span></li>
 {% if extract.chapter.tutorial %}
-    <li><a href="{{ extract.chapter.tutorial.get_absolute_url }}">{{ extract.chapter.tutorial.title }}</a> <span class="divider">/</span></li>
+    <a href="{{ extract.chapter.tutorial.get_absolute_url }}">{{ extract.chapter.tutorial.title }}</a>
 {% else %}
-    <li><a href="{{ extract.chapter.part.tutorial.get_absolute_url }}">{{ extract.chapter.part.tutorial.title }}</a> <span class="divider">/</span></li>
-    <li><a href="{{ extract.chapter.part.get_absolute_url }}">{{ extract.chapter.part.title }}</a> <span class="divider">/</span></li>
-    <li><a href="{{ extract.chapter.get_absolute_url }}">{{ extract.chapter.title }}</a> <span class="divider">/</span></li>
+    <a href="{{ extract.chapter.part.tutorial.get_absolute_url }}">{{ extract.chapter.part.tutorial.title }}</a>
+    <a href="{{ extract.chapter.part.get_absolute_url }}">{{ extract.chapter.part.title }}</a>
+    <a href="{{ extract.chapter.get_absolute_url }}">{{ extract.chapter.title }}</a>
 {% endif %}
-    <li><a href="{{ extract.get_absolute_url }}">{{ extract.title }}</a> <span class="divider">/</span></li>
-    <li class="active">Éditer l'extrait</li>
+    Éditer l'extrait
 {% endblock %}
 
 {% block content %}

@@ -1,4 +1,9 @@
-{% extends "pages/base.html" %}
+{% extends "base.html" %}
+
+{% block menu_home %}
+class="active"
+{% endblock %}
+
 {% load staticfiles %}
 
 {# Titles #}
@@ -9,10 +14,6 @@ Accueil
 
 {% block headline %}
 Bonjour o/
-{% endblock %}
-
-{% block breadcrumb %}
-<a href="#" class="active">Accueil</a>
 {% endblock %}
 
 {# Content #}

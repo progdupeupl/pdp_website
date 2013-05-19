@@ -1,0 +1,37 @@
+/* 
+ * File maintenance.scss
+ * Main file for maintenance page
+ *
+ */
+
+@import "fonts";
+@import "colors";
+
+/* Set the default text-shadow values for the `@include single-text-shadow;` command */
+$default-text-shadow-color: rgba(black, 0.5); 
+$default-text-shadow-blur: 0px;
+$default-text-shadow-v-offset: 1px;
+$default-text-shadow-h-offset: 1px;
+@import "compass/css3/text-shadow";
+
+body {
+    background: $color1;
+    color: $color5;
+    font-family: 'Roboto Slab', serif;
+    font-size: 15px;
+    width: 940px;
+    margin: 0 auto;
+}
+
+h1 {
+    @include single-text-shadow;
+}
+
+a {
+    text-decoration: none;
+    color: $color3;
+}
+
+p {
+    font-family: 'Merriweather Sans', sans-serif;
+}

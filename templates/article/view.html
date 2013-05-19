@@ -13,9 +13,7 @@
 {% endblock %}
 
 {% block breadcrumb %}
-<a href="{% url pdp.pages.views.home %}">Accueil</a>
-<a href="{% url pdp.article.views.index %}">Articles</a>
-<a href="#" class="article">{{ article.title }}</li>
+    {{ article.title }}
 {% endblock %}
 
 {% block content %}
@@ -38,7 +36,7 @@
 {% endifequal %}
    
 <p>
-    Par
+    Rédigé par
     <a href="{{ article.author.get_absolute_url }}">
         {{ article.author.username }}
     </a>

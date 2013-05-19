@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block breadcrumb_base %}
+<a href="{% url pdp.tutorial.views.index %}">Tutoriels</a>
+{% endblock %}
+
 {% block menu_tutorial %}
 class="active"
 {% endblock %}

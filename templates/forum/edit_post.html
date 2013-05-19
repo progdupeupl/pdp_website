@@ -11,12 +11,10 @@
 {% endblock %}
 
 {% block breadcrumb %}
-<li><a href="/">Accueil</a> <span class="divider">/</span></li>
-<li><a href="/forums/">Forums</a><span class="divider">/</span></li>
-<li><a href="{{ post.topic.forum.category.get_absolute_url }}">{{ post.topic.forum.category.title }}</a> <span class="divider">/</span></li>
-<li><a href="{{ post.topic.forum.get_absolute_url }}">{{ post.topic.forum.title }}</a> <span class="divider">/</span></li>
-<li><a href="{{ post.topic.get_absolute_url }}">{{ post.topic.title }}</a> <span class="divider">/</span></li>
-<li class="active">Éditer un message</li>
+<a href="{{ post.topic.forum.category.get_absolute_url }}">{{ post.topic.forum.category.title }}</a> 
+<a href="{{ post.topic.forum.get_absolute_url }}">{{ post.topic.forum.title }}</a>
+<a href="{{ post.topic.get_absolute_url }}">{{ post.topic.title }}</a>
+Éditer un message
 {% endblock %}
 
 {% block content %}

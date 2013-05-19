@@ -11,11 +11,15 @@ def home(request):
     '''
     Display the home page with last articles, tutorials and topics added
     '''
-    return render_template('pages/home.html', {
+    return render_template('home.html', {
         'last_articles': get_last_articles(),
         'last_tutorials': get_last_tutorials(),
         'last_topics': get_last_topics(),
     })
+
+
+def index(request):
+    return render_template('pages/index.html')
 
 
 def help_markdown(request):

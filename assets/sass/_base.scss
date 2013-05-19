@@ -121,12 +121,6 @@ header {
             &:after {
                 content: " »";
             }
-            
-
-            &:last-child:hover { color: inherit; }
-            &:last-child:after {
-                content: "";
-            }
         }
     }
 }

@@ -10,9 +10,7 @@
 {% endblock %}
 
 {% block breadcrumb %}
-<li><a href="/">Accueil</a> <span class="divider">/</span></li>
-<li><a href="/tutoriels/">Tutoriels</a> <span class="divider">/</span></li>
-<li class="active">{{ tutorial.title }}</li>
+{{ tutorial.title }}
 {% endblock %}
 
 {% block content %}

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "member/base.html" %}
 {% load markup %}
 
 {% block title %}
@@ -10,10 +10,8 @@
 {% endblock %}
 
 {% block breadcrumb %}
-<li><a href="/">Accueil</a> <span class="divider">/</span></li>
-<li><a href="/membres/">Membres</a> <span class="divider">/</span></li>
-<li><a href="{{ profile.user.get_absolute_url }}">{{ profile.user.username }}</a> <span class="divider">/</span></li>
-<li class="active">Éditer mon profil</li>
+<a href="{{ profile.user.get_absolute_url }}">{{ profile.user.username }}</a>
+Éditer mon profil
 {% endblock %}
 
 {% block content %}

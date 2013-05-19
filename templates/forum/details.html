@@ -10,10 +10,8 @@
 {% endblock %}
 
 {% block breadcrumb %}
-<li><a href="/">Accueil</a> <span class="divider">/</span></li>
-<li><a href="/forums/">Forums</a> <span class="divider">/</span></li>
-<li><a href="{{ forum.category.get_absolute_url }}">{{ forum.category.title }}</a> <span class="divider">/</span></li>
-<li class="active">{{ forum.title }}</li>
+<a href="{{ forum.category.get_absolute_url }}">{{ forum.category.title }}</a>
+{{ forum.title }}
 {% endblock %}
 
 {% block content %}

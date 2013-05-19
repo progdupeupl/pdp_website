@@ -11,11 +11,9 @@ Nouveau sujet
 {% endblock %}
 
 {% block breadcrumb %}
-<li><a href="/">Accueil</a> <span class="divider">/</span></li>
-<li><a href="/forums/">Forums</a> <span class="divider">/</span></li>
-<li><a href="{{ forum.category.get_absolute_url }}">{{ forum.category.title }}</a> <span class="divider">/</span></li>
-<li><a href="{{ forum.get_absolute_url }}">{{ forum.title }}</a> <span class="divider">/</span></li>
-<li class="active">Nouveau sujet</li>
+<a href="{{ forum.category.get_absolute_url }}">{{ forum.category.title }}</a>
+<a href="{{ forum.get_absolute_url }}">{{ forum.title }}</a>
+Nouveau sujeT
 {% endblock %}
 
 {% block content %}

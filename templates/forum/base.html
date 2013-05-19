@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+
+{% block breadcrumb_base %}
+<a href="{% url pdp.forum.views.index %}">Forums</a>
+{% endblock %}
+
 {% block menu_forum %}
 class="active"
 {% endblock %}

@@ -10,10 +10,8 @@
 {% endblock %}
 
 {% block breadcrumb %}
-<a href="{% url pdp.pages.views.home %}">Accueil</a>
-<a href="{% url pdp.article.views.index %}">Articles</a>
 <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
-<a href="#" class="active">Éditer l'article</a>
+Éditer l'article
 {% endblock %}
 
 {% block content %}

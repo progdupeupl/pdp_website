@@ -10,11 +10,9 @@
 {% endblock %}
 
 {% block breadcrumb %}
-<li><a href="/">Accueil</a> <span class="divider">/</span></li>
-<li><a href="/tutoriels/">Tutoriels</a> <span class="divider">/</span></li>
-<li><a href="{{ chapter.part.tutorial.get_absolute_url }}">{{ chapter.part.tutorial.title }}</a> <span class="divider">/</span></li>
-<li><a href="{{ chapter.part.get_absolute_url }}">{{ chapter.part.title }}</a> <span class="divider">/</span></li>
-<li class="active">{{ chapter.title }}</li>
+<a href="{{ chapter.part.tutorial.get_absolute_url }}">{{ chapter.part.tutorial.title }}</a>
+<a href="{{ chapter.part.get_absolute_url }}">{{ chapter.part.title }}</a>
+{{ chapter.title }}
 {% endblock %}
 
 {% block content %}
