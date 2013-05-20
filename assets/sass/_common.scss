@@ -4,6 +4,10 @@
  *
  */
 
+.article-items, .tutorial-items, .topic-items {
+    margin-bottom: 2em;
+}
+
 .article-item, .tutorial-item, .topic-item {
     background: $color5;
     border-left: solid 5px $color1;

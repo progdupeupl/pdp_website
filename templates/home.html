@@ -41,16 +41,16 @@ Bonjour o/
 </p>
 
 {% if last_articles %}
+    <div class="article-items">
     {% for article in last_articles %}
         {% include "article/article_item_common.html" %}
     {% endfor %}
-    <div class="spacer1"></div>
+    </div>
 {% else %}
     <p>Pas d'articles pour l'instant.</p>
 {% endif %}
 <p>
-    <a href="/articles/" class="btn">
-        <i class="icon-list"></i>
+<a href="{% url pdp.article.views.index %}" class="button">
         Aller à la liste des articles
     </a>
 </p>
@@ -68,16 +68,16 @@ Bonjour o/
     Les tutoriels vous permettent de découvrir et d'apprendre sur divers sujets variés axés autour de l'informatique de manière plus avancée qu'avec les articles. Voici les trois derniers tutoriels parus sur Progdupeupl :
 </p>
 {% if last_tutorials %}
+    <div class="tutorial-items">
     {% for tutorial in last_tutorials %}
         {% include "tutorial/tutorial_item_common.html" %}
     {% endfor %}
-    <div class="spacer1"></div>
+    </div>
 {% else %}
     <p>Aucun tutoriel actuellement.</p>
 {% endif %}
 <p>
-    <a href="/tutoriels/" class="btn">
-        <i class="icon-list"></i>
+<a href="{% url pdp.tutorial.views.index %}" class="button">
         Liste des tutoriels
     </a>
 </p>
@@ -98,15 +98,17 @@ Bonjour o/
     sujets créés sur le forum :
 </p>
 {% if last_topics %}
+    <div class="topic-items">
     {% for topic in last_topics %}
         {% include "forum/topic_item_common.html" %}
     {% endfor %}
+    </div>
 {% else %}
     <p>Aucun sujet récent.</p>
 {% endif %}
+
 <p>
-    <a href="/forums/" class="btn">
-        <i class="icon-comment"></i>
+    <a href="{% url pdp.forum.views.index %}" class="button">
         Accéder aux forums
     </a>
 </p>

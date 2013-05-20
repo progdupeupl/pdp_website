@@ -20,40 +20,36 @@ Liste des articles
 
 {% if user.is_authenticated %}
 <p>
-    <a href="/articles/nouveau" class="btn">
-        <i class="icon-plus"></i>
+    <a href="/articles/nouveau" class="button">
         Nouvel article
     </a>
 </p>
 {% endif %}
 
-<div class="row">
-
-    <div class="span6">
-        <h3>Derniers articles</h3>
-        {% if articles %}
-            {% for article in articles %}
-                {% include "article/article_item_common.html" %}
-            {% endfor %}
-        {% else %}
-            <p>Aucun article disponible.</p>
-        {% endif %}
+<h2>Derniers articles</h2>
+{% if articles %}
+    <div class="article-items">
+    {% for article in articles %}
+        {% include "article/article_item_common.html" %}
+    {% endfor %}
     </div>
+{% else %}
+    <p>Aucun article disponible.</p>
+{% endif %}
 
-    {% if user.is_authenticated %}
-    <div class="span6">
-        <h3>Vos articles</h3>
+{% if user.is_authenticated %}
+    <h2>Vos articles</h2>
 
 
-        {% if not user_articles %}
-            <p>Vous n'avez pas encore rédigé d'article.</P>
-        {% else %}
-            {% for article in user_articles %}
-                {% include "article/article_item_common.html" %}
-            {% endfor %}
-        {% endif %}
-    </div>
+    {% if not user_articles %}
+        <p>Vous n'avez pas encore rédigé d'article.</P>
+    {% else %}
+        <div class="article-items">
+        {% for article in user_articles %}
+            {% include "article/article_item_common.html" %}
+        {% endfor %}
+        </div>
     {% endif %}
-</div>
+{% endif %}
 
 {% endblock %}

@@ -87,6 +87,8 @@ header {
         font-size: 28px;
     }
 
+    strong { font-weight: bold; }
+
     ul {
         list-style-type: square;
     }
@@ -99,6 +101,18 @@ header {
     p {
         font-family: 'Merriweather Sans', sans-serif;
         text-align: justify;
+    }
+
+    .button {
+        padding: 5px 10px 5px 10px;
+        font-weight: 300;
+        background: $color1;
+        color: $color5;
+        border: solid 2px $color2;
+
+        &:hover {
+            background: $color2;
+        }
     }
 }
 
