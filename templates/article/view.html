@@ -37,9 +37,10 @@
    
 <p>
     Rédigé par
-    <a href="{{ article.author.get_absolute_url }}">
-        {{ article.author.username }}
-    </a>
+    {% with member=article.author %}
+        {% include "member/member_item_common.html" %}
+    {% endwith %}
+    et publié 
     {{ article.pubdate|humane_date }}.
 </p>
 

@@ -16,12 +16,22 @@
 {% block content %}
 
 <p>
-    {% if tutorial.is_mini %}Mini{% else %}Big{% endif %}-tutoriel
-    par
-    {% for author in tutorial.authors.all %}
-    <a href="{{ author.get_absolute_url }}">{{ author.username }}</a>
+    Tutoriel
+    {% if not tutorial.is_mini %}
+        étendu
+    {% endif %}
+    rédigé par
+    {% for member in tutorial.authors.all %}
+        {% if forloop.counter > 1 %}
+            {% if forloop.last %}
+                et
+            {% else %}
+                ,
+            {% endif %}
+        {% endif %}
+        {% include "member/member_item_common.html" %}
     {% endfor %}.
-</p>
+</nav>
 
 {% if user.is_authenticated and user in tutorial.authors.all %}
 <p>
