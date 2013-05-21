@@ -9,6 +9,7 @@ from pdp.utils import render_template, slugify
 
 from .models import Article, get_prev_article, get_next_article
 from .forms import ArticleForm
+from .feeds import LastArticlesFeedRSS, LastArticlesFeedATOM
 
 
 def index(request):
@@ -119,4 +120,5 @@ def modify(request):
             return redirect('/articles/')
 
     return redirect(article.get_absolute_url())
+
 

@@ -56,3 +56,25 @@
         vertical-align: middle;
     }
 }
+
+.pager {
+    /* Each pager entry should only be on one line */
+    height: 1em;
+
+    padding-top: 1em;
+    padding-bottom: 1em;
+
+    .prev {
+        float: left;
+        &:before {
+            content: "← ";
+        }
+    }
+
+    .next {
+        float: right;
+        &:after {
+            content: " →";
+        }
+    }
+}

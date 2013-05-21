@@ -28,7 +28,6 @@ def chapter_icon_path(instance, filename):
 
 
 class Tutorial(models.Model):
-
     '''A tutorial, large or small'''
     class Meta:
         verbose_name = 'Tutoriel'
