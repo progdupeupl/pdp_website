@@ -21,7 +21,7 @@
         <nav>
             {% if user.is_authenticated %}
             {% with profile=user|profile %}
-                <a href="#">
+                <a href="{{ user.get_absolute_url }}">
                     <img src="{{ profile.get_gravatar_url }}&amp;s=20" alt="Avatar" />
                     {{ user.username }}</a>
             {% endwith %}
@@ -63,7 +63,7 @@
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
             tex2jax: {
-                inlineMath: [['$', '$']], [['\\(', '\\)']],
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
                 processEscapes: true
             }
         });

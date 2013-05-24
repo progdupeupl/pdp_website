@@ -29,10 +29,7 @@ Bonjour o/
 
 {# Articles #}
 
-<nav class="feed-links">
-    <a href="{% url article-feed-rss %}">RSS</a>
-    <a href="{% url article-feed-atom %}">ATOM</a>
-</nav>
+{% include "article/feeds.part.html" %}
 
 <h2>Des articles <small>pour se tenir informé</small></h2>
 
@@ -57,10 +54,7 @@ Bonjour o/
 
 {# Tutorials #}
 
-<nav class="feed-links">
-    <a href="{% url tutorial-feed-rss %}">RSS</a>
-    <a href="{% url tutorial-feed-atom %}">ATOM</a>
-</nav>
+{% include "tutorial/feeds.part.html" %}
 
 <h2>Des tutoriels <small>pour apprendre</small></h2>
 
@@ -83,9 +77,6 @@ Bonjour o/
 </p>
 
 {# Forums #}
-
-<nav class="feed-links">
-</nav>
 
 <h2>Forums <small>pour discuter et partager</small></h2>
 
