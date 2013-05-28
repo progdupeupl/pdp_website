@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
-    <title>{% block title %}Sans nom{% endblock %} &#183; Progdupeupl</title>
+    <title>{% block title %}Sans nom{% endblock %}{% block title_base %}{% endblock %} &#183; Progdupeupl</title>
     <meta charset="utf-8" />
 
     <link rel="stylesheet" href="{% static "css/style.min.css" %}" />
@@ -40,10 +40,10 @@
             </nav>
         </div>
         <section class="content">
-            
+
             <h1>{% block headline %}{% endblock %}</h1>
-            {% block content %}{% endblock %} 
-            
+            {% block content %}{% endblock %}
+
         </section>
     </div>
 
@@ -55,7 +55,7 @@
                     <a href="https://bitbucket.org/MicroJoe/progdupeupl">Bitbucket</a>
                 </nav>
             </div>
-            &copy; Progdupeupl
+            &copy; Progdupeupl 2013
         </section>
     </footer>
 

@@ -15,9 +15,6 @@ urlpatterns = patterns('',
     url(r'message/nouveau$', views.answer),
     url(r'message/utile$', views.useful_post),
 
-    # Forum utils
-    url(r'forum/nettoyer$', views.clear),
-
     # Forum details
     url(r'(?P<cat_slug>.+)/(?P<forum_pk>\d+)-(?P<forum_slug>.+)/$',
         views.details),

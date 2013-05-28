@@ -1,7 +1,7 @@
 {% extends "member/base.html" %}
 
 {% block title %}
-Membres
+Liste des membres
 {% endblock %}
 
 {% block headline %}
@@ -18,26 +18,10 @@ Liste des membres
     Sur cette page vous pourrez trouver la liste des membres inscrits au site.
 </p>
 
-<table class="table table-hover table-bordered">
-    <thead>
-        <tr>
-            <th>Pseudo</th>
-            <th>Date d'inscription</th>
-            <th>Dernière connexion</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for profile in profiles %}
-        <tr>
-            <td>
-                <a href="{{ profile.get_absolute_url }}">
-                    {{ profile.user.username }}</a>
-            </td>
-            <td>{{ profile.user.date_joined }}</td>
-            <td>{{ profile.user.last_login }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+
+
+{% for member in members %}
+    {% include "member/member_item_common.html" %}
+{% endfor %}
 
 {% endblock %}

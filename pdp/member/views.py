@@ -11,7 +11,6 @@ from django.core.context_processors import csrf
 
 from pdp.utils.tokens import generate_token
 from pdp.utils import render_template
-from pdp.forum.models import clear_forums
 
 from models import Profile
 from forms import LoginForm, ProfileForm, RegisterForm
@@ -19,9 +18,9 @@ from forms import LoginForm, ProfileForm, RegisterForm
 
 def index(request):
     '''Displays the list of registered users'''
-    profiles = Profile.objects.all().order_by('user__date_joined')
+    members = User.objects.order_by('date_joined')
     return render_template('member/index.html', {
-        'profiles': profiles
+        'members': members
     })
 
 
@@ -114,7 +113,6 @@ def register_view(request):
             profile.save()
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, user)
-            clear_forums()
             return render_template('member/register_success.html')
         else:
             return render_template('member/register.html', {'form': form})

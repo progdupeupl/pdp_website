@@ -2,9 +2,10 @@
 {% load emarkdown %}
 {% load markup %}
 {% load humane_date %}
+{% load email_obfuscator %}
 
 {% block title %}
-{{ usr.username }} &ndash; Membres
+{{ usr.username }}
 {% endblock %}
 
 {% block headline %}
@@ -18,85 +19,67 @@ Profil de {{ usr.username }}
 {% block content %}
 
 {% ifequal profile.user user %}
-<p>
-<a href="/membres/editer?profil={{ profile.pk }}" class="btn">
-    <i class="icon-pencil"></i>
-    Éditer mon profil
-</a>
-</p>
+    <p>
+        <a href="/membres/editer?profil={{ profile.pk }}" class="button">
+            <i class="icon-pencil"></i>
+            Éditer mon profil
+        </a>
+    </p>
 {% endifequal %}
 
-<ul class="nav nav-tabs">
-    <li class="active"><a href="#general" data-toggle="tab">Informations générales</a></li>
-    <li {% if not profile.biography %}class="disabled"{% endif %}><a {% if profile.biography %}href="#bio" data-toggle="tab"{% endif %}>Biographie</a></li>
-    <li><a href="#stats" data-toggle="tab">Statistiques</a></li>
-</ul>
 
-<div class="tab-content">
-    <div class="tab-pane row active" id="general">
-        <div class="span2">
-            <img src="{{ profile.get_gravatar_url }}&amp;s=140" alt="Avatar" width="140" height="140" class="img-polaroid"/><br />
-        </div>
+{# Main informations #}
+<img src="{{ profile.get_gravatar_url }}&amp;s=140" alt="Avatar" width="140" height="140" class="img-polaroid"/><br />
 
-        <div class="span10">
-            <div class="spacer2"></div>
-            <p>
-                <span style="font-size: 300%;">
-                    {{ usr.username }}
-                </span>
-            </p>
-            <p>
-                {% if profile.show_email and user.is_authenticated %}
-                <span class="muted">Adresse mail | </span> {{ usr.email }}<br />
-                {% endif %}
-
-                <span class="muted">Site internet | </span>
-                    {% if profile.site %}
-                    <a href="{{ profile.site }}">{{ profile.site }}</a>
-                    {% else %}
-                    aucun
-                    {% endif %}
-                    <br />
-
-                <span class="muted">Date d'inscription |</span> {{ usr.date_joined|humane_date }}<br />
-                <span class="muted">Dernière connexion |</span> {{ usr.last_login|humane_date }}
-            </p>
-        </div>
-    </div>
-
-    {% if profile.biography %}
-
-    <div class="tab-pane" id="bio">
-        {{ profile.biography|emarkdown }}
-    </div>
-
+<p>
+    <span style="font-size: 300%;">
+        {{ usr.username }}
+    </span>
+</p>
+<p>
+    {% if profile.show_email and user.is_authenticated %}
+    Adresse mail : {{ usr.email|obfuscate_mailto }}<br />
     {% endif %}
 
-    <div class="tab-pane" id="stats">
+    Site internet :
+        {% if profile.site %}
+        <a href="{{ profile.site }}">{{ profile.site }}</a>
+        {% else %}
+        aucun
+        {% endif %}
+        <br />
 
-        <div class="row-fluid">
-            <div class="span4">
-                <h3>Sur les forums</h3>
-                <span class="pull-right">{{ profile.get_post_count }}</span>Messages postés<br />
-                <span class="pull-right">{{ profile.get_topic_count }}</span>Sujets créés
-            </div>
+    Date d'inscription : {{ usr.date_joined|humane_date }}<br />
+    Dernière connexion : {{ usr.last_login|humane_date }}
+</p>
 
-            <div class="span4">
-                <h3>Dans les tutoriels</h3>
-                <span class="pull-right">{{ profile.get_visible_tutorials.count }}</span>Tutoriels en ligne<br />
-                <span class="pull-right">{{ profile.get_hidden_tutorials.count }}</span>Tutoriels en cours de rédaction<br />
-                <span class="pull-right">{{ profile.get_tutorials.count }}</span>Total
-            </div>
+{# Stats #}
+<h2>Statistiques</h2>
+<h3>Sur les forums</h3>
+<p>
+    Messages postés : {{ profile.get_post_count }}<br />
+    Sujets créés : {{ profile.get_topic_count }}
+</p>
+<h3>Dans les tutoriels</h3>
+<p>
+    Tutoriels en ligne : {{ profile.get_visible_tutorials.count }}<br />
+    Tutoriels en cours de rédaction : {{ profile.get_hidden_tutorials.count }}<br />
+    Total : {{ profile.get_tutorials.count }}
+</p>
+<h3>Et les articles</h3>
+<p>
+    Articles en ligne : {{ profile.get_visible_articles.count }}<br />
+    Articles en cours de rédaction : {{ profile.get_hidden_articles.count }}<br />
+    Total : {{ profile.get_articles.count }}
+</p>
 
-            <div class="span4">
-                <h3>Et les articles</h3>
-                <span class="pull-right">{{ profile.get_visible_articles.count }}</span>Articles en ligne<br />
-                <span class="pull-right">{{ profile.get_hidden_articles.count }}</span>Articles en cours de rédaction <br />
-                <span class="pull-right">{{ profile.get_articles.count }}</span>Total
-            </div>
-        </div>
+{# Biography #}
 
-    </div>
-</div>
+{% if profile.biography %}
+
+<h2>Biographie</h2>
+{{ profile.biography|emarkdown }}
+
+{% endif %}
 
 {% endblock %}

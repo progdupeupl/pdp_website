@@ -1,23 +1,20 @@
-<div class="pagination">
-    <ul>
+<nav class="pagination">
 
-        <li class="{% ifequal nb 1 %}disabled{% endifequal %}">
-            <a href="{% ifnotequal nb 1 %}{{ topic.get_absolute_url }}?page={{ nb|add:"-1" }}{% else %}javascript:;{% endifnotequal %}">«</a>
-        </li>
+    <a class="{% ifequal nb 1 %}disabled{% endifequal %}"
+    href="{% ifnotequal nb 1 %}{{ topic.get_absolute_url }}?page={{ nb|add:"-1" }}{% else %}javascript:;{% endifnotequal %}">
+        «
+    </a>
 
-    {% for page in pages %}
-        <li class="{% ifequal page nb %}active{% endifequal %}">
-            {% ifnotequal page nb %}
-                <a href="{{ topic.get_absolute_url }}?page={{ page }}">{{ page }}</a>
-            {% else %}
-                <a href="#">{{ page }}</a>
-            {% endifnotequal %}
-        </li>
-    {% endfor %}
+{% for page in pages %}
+    <a class="{% ifequal page nb %}active{% endifequal %}"
+    href="{% ifnotequal page nb %}{{ topic.get_absolute_url }}?page={{ page }}{% else %}javascript:;{% endifnotequal %}">
+        {{ page }}
+    </a>
+{% endfor %}
 
-        <li class="{% ifequal nb pages|last %}disabled{% endifequal %}">
-            <a href="{% ifnotequal nb pages|last %}{{ topic.get_absolute_url }}?page={{ nb|add:"1" }}{% else %}javascript:;{% endifnotequal %}">»</a>
-        </li>
+    <a class="{% ifequal nb pages|last %}disabled{% endifequal %}"
+       href="{% ifnotequal nb pages|last %}{{ topic.get_absolute_url }}?page={{ nb|add:"1" }}{% else %}javascript:;{% endifnotequal %}">
+        »
+    </a>
 
-    </ul>
-</div>
+</nav>

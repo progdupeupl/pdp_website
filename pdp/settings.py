@@ -149,6 +149,7 @@ INSTALLED_APPS = (
     'south',
     'crispy_forms',
     'captcha',
+    'email_obfuscator',
 
     'pdp.member',
     'pdp.forum',

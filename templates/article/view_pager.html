@@ -1,20 +1,13 @@
-<ul class="pager">
-
+<nav class="pager">
     {% if prev %}
-    <li class="previous">
-        <a href="{{ prev.get_absolute_url }}">
-            &larr;
+        <a class="prev" href="{{ prev.get_absolute_url }}">
             {{ prev.title }}
         </a>
-    </li>
     {% endif %}
-    
+
     {% if next %}
-    <li class="next">
-        <a href="{{ next.get_absolute_url }}">
+        <a class="next" href="{{ next.get_absolute_url }}">
             {{ next.title }}
-            &rarr;
         </a>
-    </li>
     {% endif %}
-</ul>
+</nav>

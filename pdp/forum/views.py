@@ -10,7 +10,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from pdp.utils import render_template, slugify
 
 from models import Category, Forum, Topic, Post, POSTS_PER_PAGE
-from models import never_read, mark_read, clear_forum, clear_forums
+from models import never_read, mark_read
 from models import follow
 from forms import TopicForm, PostForm
 
@@ -376,29 +376,3 @@ def useful_post(request):
     post.save()
 
     return redirect(post.get_absolute_url())
-
-
-@login_required
-def clear(request):
-    '''
-    Clear forums by marking all topics of one or all forums as read by the user
-    '''
-
-    if not request.method == 'POST':
-        raise Http404
-
-    try:
-        target = request.POST['clear_target']
-    except KeyError:
-        raise Http404
-
-    if target == 'all':
-        # Clear all forums
-        clear_forums()
-        return redirect('/forums/')
-    else:
-        # Clear only the forum passed via POST field
-        forum_pk = int(target)
-        forum = get_object_or_404(Forum, pk=forum_pk)
-        clear_forum(forum)
-        return redirect(forum.get_absolute_url())

@@ -1,23 +1,23 @@
 <div class="tutorial-item">
     <h3>
         <a href="{{ tutorial.get_absolute_url }}">
-            {{ tutorial.title }}
+            « {{ tutorial.title }} »
         </a>
-        <small>
-            {% if tutorial.is_mini %}
-                tutoriel
-            {% else %}
-                tutoriel étendu
-            {% endif %}
-            rédigé par 
-            {% with authors=tutorial.authors.all %}
-                {% for author in authors %}
-                    <a href="{{ author.get_absolute_url }}">{{ author.username }}</a>
-                {% endfor %}
-            {% endwith %}
-        </small>
-    </h3>
 
+    </h3>
+    <p class="inline-description">
+        {% if tutorial.is_mini %}
+            tutoriel
+        {% else %}
+            tutoriel étendu
+        {% endif %}
+        rédigé par
+        {% with authors=tutorial.authors.all %}
+            {% for author in authors %}
+                <a href="{{ author.get_absolute_url }}">{{ author.username }}</a>
+            {% endfor %}
+        {% endwith %}
+    </p>
     <p>
         {{ tutorial.description }}
     </p>

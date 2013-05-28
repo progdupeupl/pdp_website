@@ -2,49 +2,39 @@
 {% load humane_date %}
 
 {% block title %}
-{{ forum.title }} &ndash; Forums
+    {{ forum.title }}
 {% endblock %}
 
 {% block headline %}
-{{ forum.title }} <br /><small>{{ forum.subtitle }}</small>
+    {{ forum.title }} <br />
+    <small>{{ forum.subtitle }}</small>
 {% endblock %}
 
 {% block breadcrumb %}
-<a href="{{ forum.category.get_absolute_url }}">{{ forum.category.title }}</a>
-{{ forum.title }}
+    <a href="{{ forum.category.get_absolute_url }}">{{ forum.category.title }}</a>
+    {{ forum.title }}
 {% endblock %}
 
 {% block content %}
 
 {% if user.is_authenticated %}
 <p>
-    <form action="{% url pdp.forum.views.clear %}" method="POST">
-        <a href="/forums/sujet/nouveau?forum={{ forum.pk }}" class="btn">
-            <i class="icon-plus"></i>
-            Nouveau sujet
-        </a>
-
-        <button type="submit" class="btn">
-            <i class="icon-eye-close"></i>
-            Tout marquer comme lu
-        </button>
-
-        <input type="hidden" name="clear_target" value="{{ forum.pk }}" />
-        {% csrf_token %}
-    </form>
+    <a href="/forums/sujet/nouveau?forum={{ forum.pk }}" class="button">
+        Nouveau sujet
+    </a>
 </p>
 {% endif %}
 
-{% include "forum/details_header.html" %}
-
+<div class="topic-items">
 {% for topic in sticky_topics %}
     {% include "forum/details_row.html" %}
 {% endfor %}
+</div>
 
-<div class="spacer3" style="border-bottom: solid 1px rgb(229, 229, 229);"></div>
-
+<div class="topic-items">
 {% for topic in topics %}
     {% include "forum/details_row.html" %}
 {% endfor %}
+</div>
 
 {% endblock %}

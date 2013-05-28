@@ -1,0 +1,53 @@
+.button {
+    height: 24px;
+    padding: 2px 5px 2px 5px;
+    margin-right: 3px;
+
+    background: white;
+    border: solid 1px $color2;
+
+    color: $color2;
+
+    cursor: pointer;
+
+    font-family: 'Merriweather Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 300 !important;
+
+    &:hover {
+        color: $color1;
+    }
+}
+
+.button-disabled {
+    opacity: 0.5;
+}
+
+.button-active {
+    background: $color2;
+    color: $color5;
+    border-color: $color1;
+    &:hover {
+        color: $color4;
+    }
+}
+
+@mixin button-icon($icon) {
+    padding-left: 23px;
+    background-image: url("../img/icons/" + $icon);
+    background-position: 5px 50%;
+    background-repeat: no-repeat;
+}
+
+@mixin button-colored($color) {
+    border-color: $color;
+    color: $color;
+    &:hover {
+        border-color: darken($color, 10%);
+        color: darken($color, 10%);
+    }
+}
+
+@mixin button-colored-active($color) {
+    background-color: lighten($color, 50%);
+}

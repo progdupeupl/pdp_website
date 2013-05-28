@@ -3,15 +3,15 @@
 {% load markup %}
 
 {% block title %}
-Éditer un message &ndash; Forums
+    Éditer un message
 {% endblock %}
 
 {% block headline %}
-Éditer un message
+    Éditer un message
 {% endblock %}
 
 {% block breadcrumb %}
-<a href="{{ post.topic.forum.category.get_absolute_url }}">{{ post.topic.forum.category.title }}</a> 
+<a href="{{ post.topic.forum.category.get_absolute_url }}">{{ post.topic.forum.category.title }}</a>
 <a href="{{ post.topic.forum.get_absolute_url }}">{{ post.topic.forum.title }}</a>
 <a href="{{ post.topic.get_absolute_url }}">{{ post.topic.title }}</a>
 Éditer un message

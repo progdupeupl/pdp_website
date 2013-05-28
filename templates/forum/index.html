@@ -1,44 +1,27 @@
 {% extends "forum/base.html" %}
+
 {% block title %}
-Forums
+    Liste des forums
 {% endblock %}
 
 {% block headline %}
-Liste des forums
+    Liste des forums
 {% endblock %}
 
 {% block breadcrumb %}
-Liste des forums
+    Lste des forums
 {% endblock %}
 
 {% block content %}
-
 <p>
 Voici la liste des forums mis à votre disposition pour échanger avec le reste
 de la communauté, rangés par thématiques.
 </p>
 
-{% if user.is_authenticated %}
-<form action="{% url pdp.forum.views.clear %}" method="POST">
-    <button type="submit" class="btn">
-        <i class="icon-eye-close"></i>
-        Tout marquer comme lu
-    </button>
-
-    <input type="hidden" name="clear_target" value="all" />
-
-    {% csrf_token %}
-</form>
-{% endif %}
-
 {% for category in categories %}
-
-<h2>
-    {{ category.title }}
-</h2>
-
-{% include "forum/forums_common.html" %}
-
+    <h2>
+        {{ category.title }}
+    </h2>
+    {% include "forum/forums_common.html" %}
 {% endfor %}
-
 {% endblock %}

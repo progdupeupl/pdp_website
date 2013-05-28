@@ -9,7 +9,7 @@
 @import "colors";
 
 /* Set the default text-shadow values for the `@include single-text-shadow;` command */
-$default-text-shadow-color: rgba(black, 0.5); 
+$default-text-shadow-color: rgba(black, 0.5);
 $default-text-shadow-blur: 0px;
 $default-text-shadow-v-offset: 1px;
 $default-text-shadow-h-offset: 1px;
@@ -17,4 +17,5 @@ $default-text-shadow-h-offset: 1px;
 
 /* Load the SCSS parts */
 @import "base";
+@import "button";
 @import "common";

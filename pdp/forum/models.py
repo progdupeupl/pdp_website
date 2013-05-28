@@ -124,7 +124,7 @@ class Topic(models.Model):
         try:
             return Post.objects.all()\
                     .filter(topic__pk=self.pk)\
-                    .order_by('-pubdate')[0]
+                    .order_by('-pubdate')[1]
         except IndexError:
             return None
 
@@ -268,22 +268,6 @@ def mark_read(topic):
         post=topic.last_message, topic=topic, user=get_current_user())
     t.save()
 
-
-def clear_forum(forum):
-    '''
-    Clear a forum by marking all of its topics as read by the user
-    '''
-    for topic in Topic.objects.filter(forum=forum):
-        if never_read(topic):
-            mark_read(topic)
-
-
-def clear_forums():
-    '''
-    Call clear_forum on all avaible forums
-    '''
-    for forum in Forum.objects.all():
-        clear_forum(forum)
 
 
 def follow(topic):

@@ -1,54 +1,54 @@
 {% load humane_date %}
-{% load upfirstletter %}
 
-<div class="row-fluid row-hover faketable-row">
-    <div class="span1 faketable-centered">
-        {% if topic.is_sticky %}
-            <i class="icon-bookmark" title="Ce sujet est épinglé"></i>
-        {% endif %}
-        {% if topic.is_locked %}
-            <i class="icon-lock" title="Ce sujet est verrouillé"></i>
-        {% endif %}
-        {% if topic.is_solved %}
-            <i class="icon-ok" title="Ce sujet est résolu"></i>
-        {% endif %}
+{% if topic.is_sticky %}
+    <i class="icon-bookmark" title="Ce sujet est épinglé"></i>
+{% endif %}
+{% if topic.is_locked %}
+    <i class="icon-lock" title="Ce sujet est verrouillé"></i>
+{% endif %}
+{% if topic.is_solved %}
+    <i class="icon-ok" title="Ce sujet est résolu"></i>
+{% endif %}
 
-        {% if user.is_authenticated %}
-            {% with topic.last_read_post as last_read_post %}
-            {% ifnotequal last_read_post topic.get_last_answer %}
-                <i class="icon-eye-open"></i>
-            {% endifnotequal %}
-            {% endwith %}
-        {% endif %}
-    </div>
-    <div class="span5">
+{% if user.is_authenticated %}
+    {% with topic.last_read_post as last_read_post %}
+    {% ifnotequal last_read_post topic.get_last_answer %}
+        <i class="icon-eye-open"></i>
+    {% endifnotequal %}
+    {% endwith %}
+{% endif %}
+
+<div class="topic-item">
+
+
+    <h3>
         <a href="{{ topic.get_absolute_url }}">
             {{ topic.title }}
-        </a><br />
-        {{ topic.subtitle }}
-    </div>
-    <div class="span1 hidden-phone">
-        <a href="{{ topic.author.get_absolute_url }}">
-            {{ topic.author.username }}
         </a>
-    </div>
-    <div class="span1 hidden-phone">
-        {{ topic.get_post_count|add:"-1" }}
-    </div>
-    <div class="span4">
+
+    </h3>
+    <p class="inline-description">
+        créé par
+        <a href="{{ topic.author.get_absolute_url }}">
+            {{ topic.author.username }}</a>,
+        {% with answers_count=topic.get_post_count|add:"-1" %}
+            {{ answers_count }} réponse{{ answers_count|pluralize }}
+        {% endwith %}
         {% with answer=topic.get_last_answer %}
         {% if answer %}
+            (dernière
             <a href="{{ answer.get_absolute_url }}">
                 {% with date=answer.pubdate|humane_date %}
-                    {{ date|upfirstletter }}
+                    {{ date }}
                 {% endwith %}
             </a>
             par
             <a href="{{ answer.author.get_absolute_url }}">
-                {{ answer.author.username }}</a>.
-        {% else %}
-            Aucun message
+                {{ answer.author.username }}</a>)
         {% endif %}
         {% endwith %}
-    </div>
+    </p>
+    <p>
+        {{ topic.subtitle }}
+    </p>
 </div>
