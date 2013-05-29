@@ -12,4 +12,6 @@ register = template.Library()
 
 @register.filter(needs_autoescape=False)
 def emarkdown(value):
-	return mark_safe(markdown.markdown(value, extensions=[md_cssstyle,"codehilite(force_linenos=True)","extra"]))
+	# TODO: use simple quotes and 4-spaces tabulations like in other files
+
+	return mark_safe(markdown.markdown(value, extensions=[md_cssstyle,"codehilite(force_linenos=True)","extra"], safe_mode=True))
