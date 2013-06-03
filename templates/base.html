@@ -6,59 +6,137 @@
     <title>{% block title %}Sans nom{% endblock %}{% block title_base %}{% endblock %} &#183; Progdupeupl</title>
     <meta charset="utf-8" />
 
-    <link rel="stylesheet" href="{% static "css/style.min.css" %}" />
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{% static "css/progdupeupl.css" %}" />
+    <script src="{% static "js/vendor/custom.modernizr.js" %}"></script>
 </head>
 <body>
-    <header>
-        <h1><a href="/">Progdupeupl</a></h1>
-        <nav>
-            <a href="{% url pdp.pages.views.home %}" {% block menu_home %}{% endblock %}>Accueil</a>
-            <a href="{% url pdp.article.views.index %}" {% block menu_article %}{% endblock %}>Articles</a>
-            <a href="{% url pdp.tutorial.views.index %}" {% block menu_tutorial %}{% endblock %}>Tutoriels</a>
-            <a href="{% url pdp.forum.views.index %}" {% block menu_forum %}{% endblock %}>Forums</a>
-        </nav>
-        <nav>
-            {% if user.is_authenticated %}
-            {% with profile=user|profile %}
-                <a href="{{ user.get_absolute_url }}">
-                    <img src="{{ profile.get_gravatar_url }}&amp;s=20" alt="Avatar" />
-                    {{ user.username }}</a>
-            {% endwith %}
-            {% else %}
-                <a href="{% url pdp.member.views.register_view %}">S'inscrire</a>
-                <a href="{% url pdp.member.views.login_view %}">Se connecter</a>
-            {% endif %}
-        </nav>
-    </header>
-    <div class="container">
-        <div class="breadcrumb">
-            <nav>
-                <a href="{% url pdp.pages.views.home %}">Accueil</a>
+    
+    <nav class="top-bar" data-options="is_hover:false">
+        <ul class="title-area">
+            <li class="name">
+                <h1><a href="/">Progdupeupl</a></h1>
+            </li>
+            <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+        </ul>
+        
+        <section class="top-bar-section">
+            
+            {# Theses menu_* blocks are set or not in applications derived base.html #}
+            {# in order to set the menu entry active or not. #}
+            
+            <ul class="left">
+                <li {% block menu_home %}{% endblock %}>
+                    <a href="{% url pdp.pages.views.home %}">Accueil</a>
+                </li>
+                <li {% block menu_article %}{% endblock %}>
+                    <a href="{% url pdp.article.views.index %}">Articles</a>
+                </li>
+                <li {% block menu_tutorial %}{% endblock %}>
+                    <a href="{% url pdp.tutorial.views.index %}">Tutoriels</a>
+                </li>
+                <li {% block menu_forum %}{% endblock %}>
+                    <a href="{% url pdp.forum.views.index %}">Forums</a>
+                </li>
+            </ul>
+            
+            <ul class="right">
+                {% if user.is_authenticated %}
+                <li class="has-dropdown">
+                    
+                    {% with profile=user|profile %}
+                        <a href="#">
+                            <img src="{{ profile.get_gravatar_url }}&amp;s=32" alt="Avatar" width="32" height="32" />
+                            {{ user.username }}
+                        </a>
+                    {% endwith %}
+                    
+                    <ul class="dropdown">
+                        <li><a href="{{ user.get_absolute_url }}">Profil</a></li>
+                        <li><a href="{% url pdp.member.views.logout_view %}">Se déconnecter</a></li>
+                    </ul>
+                </li>
+                {% else %}
+                <li>
+                    <a href="{% url pdp.member.views.register_view %}">S'inscrire</a>
+                </li>
+                <li>
+                    <a href="{% url pdp.member.views.login_view %}">Se connecter</a>
+                </li>
+                {% endif %}
+            </ul>
+        </section>
+    </nav>
+    
+    <div class="row">
+        <div class="large-12 columns">
+            <ul class="breadcrumbs">
+                <li>
+                    <a href="{% url pdp.pages.views.home %}">Accueil</a>
+                </li>
                 {% block breadcrumb_base %}{% endblock %}
                 {% block breadcrumb %}{% endblock %}
-            </nav>
+            </ul>
         </div>
-        <section class="content">
-
-            <h1>{% block headline %}{% endblock %}</h1>
-            {% block content %}{% endblock %}
-
-        </section>
     </div>
-
-    <footer>
-        <section>
-            <div class="right">
-                <nav>
-                    <a href="https://twitter.com/Progdupeupl">Twitter</a>
-                    <a href="https://bitbucket.org/MicroJoe/progdupeupl">Bitbucket</a>
-                </nav>
+    
+    <div class="row">
+        <div class="large-8 columns">
+            <h1>{% block headline %}{% endblock %}</h1>
+        </div>
+        <div class="large-4 columns">
+            <div class="headline-actions right">
+                {% block headline-actions %}{% endblock %}
             </div>
-            &copy; Progdupeupl 2013
-        </section>
-    </footer>
-
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="large-12 columns">
+            <h1>
+                <small>
+                    {% block headline-sub %}{% endblock %}
+                </small>
+            </h1>
+            
+            {% if notify %}
+                <div class="alert-box success">
+                    {{ notify }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% block content %}{% endblock %}
+    
+    {# Footer #}
+    
+    <div class="row full-width footer">
+        <div class="large-4 columns">
+            <p>&copy; Progdupeupl 2013</p>
+        </div>
+        <div class="large-8 columns">
+            <ul class="inline-list right">
+                <li><a href="http://smoothirc.net/">SmoothIRC</a></li>
+                <li><a href="https://twitter.com/Progdupeupl">Twitter</a></li>
+                <li><a href="https://bitbucket.org/MicroJoe/progdupeupl">Bitbucket</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <script src="{% static "js/vendor/jquery.js" %}"></script>
+    <script src="{% static "js/foundation.min.js" %}"></script>
+    
+    <script>
+        $(document).foundation('topbar dropdown', {
+            custom_back_text: true,
+            back_text: 'Précédent'
+        });
+    </script>
+    
     {# MathJax #}
+    
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
             tex2jax: {
@@ -68,5 +146,9 @@
         });
     </script>
     <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+    
+    {% block additionnal-js %}{% endblock %}
+    
 </body>
 </html>

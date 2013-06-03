@@ -1,27 +1,40 @@
 {% extends "forum/base.html" %}
 
 {% block title %}
-    Liste des forums
+    Forums
 {% endblock %}
 
 {% block headline %}
-    Liste des forums
+   Forums
 {% endblock %}
 
 {% block breadcrumb %}
-    Lste des forums
+    <a class="current" href="#">Index</a>
 {% endblock %}
 
 {% block content %}
-<p>
-Voici la liste des forums mis à votre disposition pour échanger avec le reste
-de la communauté, rangés par thématiques.
-</p>
-
+    
+<div class="row">
+    <div class="large-12 columns">
+        <p>
+            Voici la liste des forums mis à votre disposition pour échanger avec le reste
+            de la communauté, rangés par thématiques.
+        </p>
+    </div>
+</div>
+    
 {% for category in categories %}
-    <h2>
-        {{ category.title }}
-    </h2>
-    {% include "forum/forums_common.html" %}
+<div class="row">
+    <div class="large-12 columns">
+        
+            <h2>
+                {{ category.title }}
+            </h2>
+    </div>
+</div>
+{% include "forum/forums_common.html" %}
 {% endfor %}
+
+
+
 {% endblock %}

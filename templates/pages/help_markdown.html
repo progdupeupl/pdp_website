@@ -1,25 +1,38 @@
 {% extends "pages/base.html" %}
 
 {% block title %}
-Aide-mémoire Markdown
+    Markdown
 {% endblock %}
 
 {% block headline %}
-Aide-mémoire Markdown
+    Markdown
+{% endblock %}
+
+{% block headline-sub %}
+    Petit aide-mémoire pour mieux rédiger
 {% endblock %}
 
 {% block breadcrumb %}
-Aide-mémoire Markdown
+    <li class="current"><a href="#">Markdown</a></li>
 {% endblock %}
 
 {% block content %}
+    
+<div class="row">
+    <div class="large-12 columns">
+        <p>
+            Voici un petit aide-mémoire permettant de vous souvenir des différents
+            éléments disponibles à l'aide de la syntaxe Markdown utilisée (massivement)
+            sur ce site. Les balises maisons développées pour le site sont marquées
+            d'une étoile.
+        </p>
+    </div>
+</div>
 
-<p>
-    Voici un petit aide-mémoire permettant de vous souvenir des différents
-    éléments disponibles à l'aide de la syntaxe Markdown utilisée (massivement)
-    sur ce site.
-</p>
-<div class="spacer3"></div>
-{% include "pages/help_markdown_part.html" %}
+<div class="row">
+    <div class="large-12 columns">
+        {% include "pages/help_markdown_part.html" %}
+    </div>
+</div>
 
 {% endblock %}

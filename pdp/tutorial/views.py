@@ -1,15 +1,17 @@
 # coding: utf-8
 
 from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
+from django.core.urlresolvers import reverse
 
 from pdp.utils import render_template, slugify
 from pdp.utils.tutorials import move, export_tutorial
 
 from .models import Tutorial, Part, Chapter, Extract
 from .forms import TutorialForm, EditTutorialForm, PartForm, ChapterForm, \
-    EmbdedChapterForm, ExtractForm
+    EmbdedChapterForm, ExtractForm, EditExtractForm
 
 
 def index(request):
@@ -99,8 +101,6 @@ def add_tutorial(request):
                 chapter.save()
 
             return redirect(tutorial.get_absolute_url())
-        else:
-            raise Http404
     else:
         form = TutorialForm()
 
@@ -153,6 +153,37 @@ def modify_tutorial(request):
     if 'delete' in request.POST:
         tutorial.delete()
         return redirect('/tutoriels/')
+    
+    elif 'add_author' in request.POST:
+        redirect_url = reverse('pdp.tutorial.views.edit_tutorial') + '?tutoriel=%s' % tutorial.pk
+        
+        author_username = request.POST['author']
+        author = None        
+        try:
+            author = User.objects.get(username=author_username)
+        except User.DoesNotExist:
+            return redirect(redirect_url)
+        
+        tutorial.authors.add(author)
+        tutorial.save()
+        
+        return redirect(redirect_url)
+    
+    elif 'remove_author' in request.POST:
+        redirect_url = reverse('pdp.tutorial.views.edit_tutorial') + '?tutoriel=%s' % tutorial.pk
+        
+        if tutorial.authors.all().count() <= 1:
+            raise Http404
+        
+        author_pk = request.POST['author']
+        author = get_object_or_404(User, pk=author_pk)
+        
+        tutorial.authors.remove(author)
+        tutorial.save()
+        
+        return redirect(redirect_url)
+    
+    raise Http404
 
 # Part
 
@@ -449,6 +480,8 @@ def add_extract(request):
         raise Http404
     chapter = get_object_or_404(Chapter, pk=chapter_pk)
 
+    notify = None
+
     if request.method == 'POST':
         form = ExtractForm(request.POST)
         if form.is_valid():
@@ -459,12 +492,17 @@ def add_extract(request):
             extract.title = data['title']
             extract.text = data['text']
             extract.save()
-            return redirect(extract.get_absolute_url())
+            
+            if 'submit_continue' in request.POST:
+                form = ExtractForm()
+                notify = u'Extrait %s ajouté avec succès.' % extract.title
+            else:
+                return redirect(extract.get_absolute_url())
     else:
         form = ExtractForm()
 
     return render_template('tutorial/new_extract.html', {
-        'chapter': chapter, 'form': form
+        'chapter': chapter, 'form': form, 'notify': notify
     })
 
 
@@ -485,7 +523,7 @@ def edit_extract(request):
         raise Http404
 
     if request.method == 'POST':
-        form = ExtractForm(request.POST)
+        form = EditExtractForm(request.POST)
         if form.is_valid():
             data = form.data
             extract.title = data['title']
@@ -493,7 +531,7 @@ def edit_extract(request):
             extract.save()
             return redirect(extract.get_absolute_url())
     else:
-        form = ExtractForm({
+        form = EditExtractForm({
             'title': extract.title,
             'text': extract.text
         })
@@ -523,7 +561,6 @@ def modify_extract(request):
                     1
                 extract_c.save()
         extract.delete()
-
         return redirect(chapter.get_absolute_url())
 
     elif 'move' in data:

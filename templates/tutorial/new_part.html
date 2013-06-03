@@ -3,22 +3,30 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-Nouvelle partie &ndash; Tutoriels
+    Nouvelle partie &ndash; Tutoriels
 {% endblock %}
 
 {% block headline %}
-Nouvelle partie
+    Nouvelle partie
+{% endblock %}
+
+{% block headline-sub %}
+    {{ tutorial.title }}
 {% endblock %}
 
 {% block breadcrumb %}
-<a href="{{ tutorial.get_absolute_url }}">{{ tutorial.title }}</a>
-Nouvelle partie
+    <li><a href="{{ tutorial.get_absolute_url }}">{{ tutorial.title }}</a></li>
+    <li class="current"><a href="#">Nouvelle partie</a></li>
 {% endblock %}
 
 {% block content %}
 
 {% include "tutorial/part_common.html" %}
 
-{% crispy form %}
+<div class="row">
+    <div class="large-12 columns">
+        {% crispy form %}
+    </div>
+</div>
 
 {% endblock %}

@@ -1,17 +1,10 @@
 {% load humane_date %}
 
-<div class="article-item">
-    <h3 class="inline-title">
-        <a href="{{ article.get_absolute_url }}">
-            « {{ article.title }} »
-        </a>
-    </h3>
-    <p class="inline-description">
-        rédigé par
-            <a href="{{ article.author.get_absolute_url }}">
-                {{ article.author.username }}
-            </a>
-            {{ article.pubdate|humane_date }}
-    </p>
-    <p>{{ article.description }}</p>
-</div>
+<h5>
+    <a href="{{ article.get_absolute_url }}">
+        {{ article.title }}
+    </a>
+</h5>
+<p>
+    {{ article.description }}
+</p>

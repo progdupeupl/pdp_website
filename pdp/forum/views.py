@@ -26,11 +26,11 @@ def index(request):
     })
 
 
-def details(request, cat_slug, forum_pk, forum_slug):
+def details(request, cat_slug, forum_slug):
     '''
     Display the given forum and all its topics
     '''
-    forum = get_object_or_404(Forum, pk=forum_pk)
+    forum = get_object_or_404(Forum, slug=forum_slug)
 
     sticky_topics = Topic.objects.all()\
         .filter(forum__pk=forum.pk, is_sticky=True)\
@@ -39,27 +39,17 @@ def details(request, cat_slug, forum_pk, forum_slug):
         .filter(forum__pk=forum.pk, is_sticky=False)\
         .order_by('-last_message__pubdate')
 
-    # Check that given URL is correct, otherwise redirect to the good one
-    if not cat_slug == slugify('%s-%s' % (forum.category.pk,
-                                          forum.category.title))\
-            or not forum_slug == slugify(forum.title):
-        return redirect(forum.get_absolute_url())
-
     return render_template('forum/details.html', {
         'forum': forum, 'sticky_topics': sticky_topics, 'topics': topics
     })
 
 
-def cat_details(request, cat_pk, cat_slug):
+def cat_details(request, cat_slug):
     '''
     Display the forums belonging to the given category
     '''
-    category = get_object_or_404(Category, pk=cat_pk)
+    category = get_object_or_404(Category, slug=cat_slug)
     forums = Forum.objects.all().filter(category__pk=category.pk)
-
-    # Check link
-    if not cat_slug == slugify(category.title):
-        return redirect(category.get_absolute_url())
 
     return render_template('forum/cat_details.html', {
         'category': category, 'forums': forums

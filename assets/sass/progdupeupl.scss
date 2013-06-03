@@ -1,0 +1,73 @@
+@import "settings";
+@import "normalize";
+@import "foundation";
+@import "compass";
+
+@import "pygments";
+
+/* Fix bug on textareas with Foundation, see https://groups.google.com/forum/?fromgroups#!topic/foundation-framework-/b2uVmpvW7wI */
+textarea {
+    height: auto;
+}
+
+p, ul, ol, td, th {
+    font-size: emCalc(14px);
+}
+
+h1, h2 {
+    a {
+        color: darken($primary-color, 25%);
+    }
+}
+
+table {
+    width: 100%;
+}
+
+.asteriskField {
+    color: $alert-color;
+}
+
+.breadcrumbs {
+    @include text-shadow(1px 1px 0px rgb(255, 255, 255));
+}
+
+.top-bar {
+    @include background-image(linear-gradient(top bottom, rgb(84, 180, 235), rgb(47, 164, 231)));
+    
+    border-bottom: solid 1px rgb(25, 144, 213);
+    
+    @include box-shadow(0px 1px 10px rgba(0, 0, 0, 0.1));
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
+    
+    .dropdown {
+        text-shadow: none;
+    }
+}
+
+.headline-actions {
+    margin-top: emCalc(24px);
+}
+
+.footer {
+    border-top: solid 1px $secondary-color;
+    
+    margin-top: emCalc(14px);
+    padding-top: emCalc(14px);
+}
+
+.forum-topic-count, .forum-post-count {
+    font-size: emCalc(24px);
+    padding: emCalc(15px);
+    
+    text-align: center;
+}
+
+/* Do not regroup in an .alert-box block, does not work otherwise */
+.alert-box.success {
+    color: rgb(102, 149, 51);
+}
+
+.forum-topic-last-message {
+    padding-top: 0.6em;
+}

@@ -2,46 +2,39 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-S'incrire
+    S'incrire
 {% endblock %}
 
 {% block headline %}
-S'inscrire
+    S'inscrire
 {% endblock %}
 
 {% block breadcrumb %}
-Inscription
+    <li class="current"><a href="#">S'inscrire</a></li>
 {% endblock %}
 
 {% block content %}
-{% if not user.is_authenticated %}
+    
+<div class="row">
+    <div class="large-12">
+        {% if not user.is_authenticated %}
+            {% if error %}
+                {{ error }}
+            {% endif %}
+            <p>
+                <strong>Vous êtes sur le point de vous inscrire sur Progdupeupl</strong> ; si vous
+                possédez déjà un compte, merci de <a href="{% url pdp.member.views.login_view %}">vous connecter</a>
+                à la place.
+            </p>
+            <p>
+                Veuillez fournir les informations nécessaires dans le
+                formulaire suivant afin de poursuivre votre inscription.
+            </p>
+            {% crispy form %}
+        {% else %}
+            <p>Vous êtes déjà connecté.</p>
+        {% endif %}
+    </div>
+</div>
 
-    {% if error %}
-        {{ error }}
-    {% endif %}
-
-    <p>
-    <strong>Vous êtes sur le point de vous inscrire sur Progdupeupl</strong> ; si vous
-    possédez déjà un compte, merci de <a href="{% url pdp.member.views.login_view %}">vous connecter</a>
-    à la place.
-    </p>
-    <p>
-        Veuillez fournir les informations nécessaires dans le
-        formulaire suivant afin de poursuivre votre inscription.
-    </p>
-
-    {% crispy form %}
-
-{% else %}
-
-    <p>Vous êtes déjà connecté.</p>
-
-{% endif %}
-
-{% endblock %}
-
-{% block js %}
-<script type="text/javascript">
-    $('.popover-input').popover({trigger: 'focus', title: 'Aide'});
-</script>
 {% endblock %}

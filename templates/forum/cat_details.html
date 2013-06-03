@@ -5,20 +5,17 @@
 {% endblock %}
 
 {% block headline %}
-    {{ category.title }}<br />
-    <small>{{ category.subtitle }}</small>
-{% endblock %}
-
-{% block breadcrumb %}
     {{ category.title }}
 {% endblock %}
 
+
+{% block breadcrumb %}
+    <li class="current"><a href="#">{{ category.title }}</a></li>
+{% endblock %}
+
 {% block content %}
-
-<p>
-Forums dans la catégorie sélectionnée :
-</p>
-
+    
+    
 {% include "forum/forums_common.html" %}
 
 {% endblock %}

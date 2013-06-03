@@ -2,28 +2,44 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-Nouvel extrait &ndash; Tutoriels
+    Nouvel extrait &ndash; Tutoriels
 {% endblock %}
 
 {% block headline %}
-Nouvel extrait
+    Nouvel extrait
+{% endblock %}
+
+{% block headline-sub %}
+    {% if chapter.part %}
+        {{ chapter.title }}
+    {% else %}
+        {{ chapter.tutorial.title }}
+    {% endif %}
 {% endblock %}
 
 {% block breadcrumb %}
-{% if chapter.part %}
-    <a href="{{ chapter.part.tutorial.get_absolute_url }}">{{ chapter.part.tutorial.title }}</a>
-    <a href="{{ chapter.part.get_absolute_url }}">{{ chapter.part.title }}</a>
-    <a href="{{ chapter.get_absolute_url }}">{{ chapter.title }}</a> 
-{% else %}
-    <a href="{{ chapter.tutorial.get_absolute_url }}">{{ chapter.tutorial.title }}</a>
-{% endif %}
-    Ajouter un extrait
+    {% if chapter.part %}
+        <li><a href="{{ chapter.part.tutorial.get_absolute_url }}">{{ chapter.part.tutorial.title }}</a></li>
+        <li><a href="{{ chapter.part.get_absolute_url }}">{{ chapter.part.title }}</a></li>
+        <li><a href="{{ chapter.get_absolute_url }}">{{ chapter.title }}</a> </li>
+    {% else %}
+        <li><a href="{{ chapter.tutorial.get_absolute_url }}">{{ chapter.tutorial.title }}</a></li>
+    {% endif %}
+    <li class="current"><a href="#">Ajouter un extrait</a></li>
 {% endblock %}
 
 {% block content %}
 
-{% include "tutorial/extract_common.html" %}
+<div class="row">
+    <div class="large-12 columns">
+        {% include "tutorial/extract_common.html" %}
+    </div>
+</div>
 
-{% crispy form %}
+<div class="row">
+    <div class="large-12 columns">
+        {% crispy form %}
+    </div>
+</div>
 
 {% endblock %}

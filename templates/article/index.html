@@ -1,58 +1,76 @@
 {% extends "article/base.html" %}
 
 {% block title %}
-Articles
+    Articles
 {% endblock %}
 
 {% block headline %}
-Liste des articles
+    Articles
 {% endblock %}
 
 {% block breadcrumb %}
-Liste des articles
+    <li class="current"><a href="#">Index</a></li>
+{% endblock %}
+
+{% block headline-actions %}
+    <div class="button-group">
+        
+        <a href="#" class="button secondary dropdown" data-dropdown="articles-drop-feeds">
+            Flux
+        </a><br />
+        <ul id="articles-drop-feeds" class="f-dropdown">
+            <li><a href="{% url article-feed-rss %}">RSS</a></li>
+            <li><a href="{% url article-feed-atom %}">ATOM</a></li>
+        </ul>
+        
+        {% if user.is_authenticated %}
+            <a href=" {% url pdp.article.views.new %}" class="button">
+                Nouvel article
+            </a>
+        {% endif %}
+        
+    </div>
 {% endblock %}
 
 {% block content %}
-
-<p>
-    Les articles sont rédigés par la communauté et permettent aussi bien de se tenir informé des dernières innovations du moment que de découvrir de nouveaux concepts liés aux différents domaines de l'informatique.
-    Voici la liste des articles publiés sur le site.
-</p>
-
-{% if user.is_authenticated %}
-<p>
-    <a href="/articles/nouveau" class="button">
-        Nouvel article
-    </a>
-</p>
-{% endif %}
-
-{% include "tutorial/feeds.part.html" %}
-
-<h2>Derniers articles</h2>
-{% if articles %}
-    <div class="article-items">
-    {% for article in articles %}
-        {% include "article/article_item_common.html" %}
-    {% endfor %}
+    
+<div class="row">
+    <div class="large-12 columns">
+        <p>
+            Les articles sont rédigés par la communauté et permettent aussi bien de se tenir informé des dernières innovations du moment que de découvrir de nouveaux concepts liés aux différents domaines de l'informatique.
+        </p>
     </div>
-{% else %}
-    <p>Aucun article disponible.</p>
-{% endif %}
+</div>
 
-{% if user.is_authenticated %}
-    <h2>Vos articles</h2>
+<div class="row">
+    <div class="large-6 columns">
+        <h2>À la une</h2>
+        {% if articles %}
+            <div class="article-items">
+            {% for article in articles %}
+                {% include "article/article_item_common.html" %}
+            {% endfor %}
+            </div>
+        {% else %}
+            <p>Aucun article disponible.</p>
+        {% endif %}
+    </div>
+    <div class="large-6 columns">
+        {% if user.is_authenticated %}
+            <h2>Vos articles</h2>
+            {% if not user_articles %}
+                <p>Vous n'avez pas encore rédigé d'article.</P>
+            {% else %}
+                <div class="article-items">
+                {% for article in user_articles %}
+                    {% include "article/article_item_common.html" %}
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
 
 
-    {% if not user_articles %}
-        <p>Vous n'avez pas encore rédigé d'article.</P>
-    {% else %}
-        <div class="article-items">
-        {% for article in user_articles %}
-            {% include "article/article_item_common.html" %}
-        {% endfor %}
-        </div>
-    {% endif %}
-{% endif %}
 
 {% endblock %}

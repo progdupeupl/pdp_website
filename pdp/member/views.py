@@ -15,6 +15,7 @@ from pdp.utils import render_template
 from models import Profile
 from forms import LoginForm, ProfileForm, RegisterForm
 
+from pdp.forum.models import Forum
 
 def index(request):
     '''Displays the list of registered users'''
@@ -27,12 +28,16 @@ def index(request):
 def details(request, user_name):
     '''Displays details about a profile'''
     usr = get_object_or_404(User, username=user_name)
+    
     try:
         profile = usr.get_profile()
     except SiteProfileNotAvailable:
         raise Http404
+    
+    forums = Forum.objects.all()
+    
     return render_template('member/profile.html', {
-        'usr': usr, 'profile': profile
+        'usr': usr, 'profile': profile, 'forums': forums
     })
 
 

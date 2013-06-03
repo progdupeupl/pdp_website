@@ -11,9 +11,9 @@
 {% endblock %}
 
 {% block breadcrumb %}
-<a href="{{ forum.category.get_absolute_url }}">{{ forum.category.title }}</a>
-<a href="{{ forum.get_absolute_url }}">{{ forum.title }}</a>
-Nouveau sujeT
+    <li><a href="{{ forum.category.get_absolute_url }}">{{ forum.category.title }}</a></li>
+    <li><a href="{{ forum.get_absolute_url }}">{{ forum.title }}</a></li>
+    <li class="current"><a href="#">Nouveau sujet</a></li>
 {% endblock %}
 
 {% block content %}

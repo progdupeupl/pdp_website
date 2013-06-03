@@ -2,23 +2,31 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-Nouveau chapitre &ndash; Tutoriels
+    Nouveau chapitre &ndash; Tutoriels
 {% endblock %}
 
 {% block headline %}
-Nouveau chapitre
+    Nouveau chapitre
+{% endblock %}
+
+{% block headline-sub %}
+    {{ part.title }}
 {% endblock %}
 
 {% block breadcrumb %}
-<a href="{{ part.tutorial.get_absolute_url }}">{{ part.tutorial.title }}</a>
-<a href="{{ part.get_absolute_url }}">{{ part.title }}</a>
-Nouveau chapitre
+    <li><a href="{{ part.tutorial.get_absolute_url }}">{{ part.tutorial.title }}</a></li>
+    <li><a href="{{ part.get_absolute_url }}">{{ part.title }}</a></li>
+    <li class="current"><a href="#">Nouveau chapitre</a></li>
 {% endblock %}
 
 {% block content %}
 
 {% include "tutorial/chapter_common.html" %}
 
-{% crispy form %}
+<div class="row">
+    <div class="large-12 columns">
+        {% crispy form %}
+    </div>
+</div>
 
 {% endblock %}

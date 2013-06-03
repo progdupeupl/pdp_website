@@ -1,19 +1,11 @@
 {% load humane_date %}
 
-<div class="topic-item">
-    <h3>
-        <a href="{{ topic.get_absolute_url }}">
-            « {{ topic.title }} »
-        </a>
-    </h3>
-    <p class="inline-description">
-        créé par
-        <a href="{{ topic.author.get_absolute_url }}">
-            {{ topic.author }}
-        </a>
-        {{ topic.pubdate|humane_date }}
-    </p>
-    <p>
-        {{ topic.subtitle }}
-    </p>
-</div>
+
+<h5>
+    <a href="{{ topic.get_absolute_url }}">
+        {{ topic.title }}
+    </a>
+</h5>
+<p>
+    {{ topic.subtitle }}
+</p>

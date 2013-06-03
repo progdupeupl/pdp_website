@@ -13,6 +13,9 @@ urlpatterns = patterns('',
         name='tutorial-feed-atom'),
 
 # Viewing
+
+    # TODO: Handle redirect
+
     url(r'^voir/(?P<tutorial_pk>\d+)-(?P<tutorial_slug>.+)/' +
     r'(?P<part_pos>\d+)-(?P<part_slug>.+)/' +
     r'(?P<chapter_pos>\d+)-(?P<chapter_slug>.+)$', views.view_chapter),
@@ -20,9 +23,11 @@ urlpatterns = patterns('',
     url(r'^voir/(?P<tutorial_pk>\d+)-(?P<tutorial_slug>.+)/' +
     r'(?P<part_pos>\d+)-(?P<part_slug>.+)/$', views.view_part),
 
-    url(
-    r'^voir/(?P<tutorial_pk>\d+)-(?P<tutorial_slug>.+)/$',
-    views.view_tutorial),
+    # url(
+    # r'^voir/(?P<tutorial_pk>\d+)-(?P<tutorial_slug>.+)/$',
+    # views.view_tutorial),
+    url(r'^(?P<tutorial_pk>\d+)/(?P<tutorial_slug>.+)/$',
+        views.view_tutorial),
 
     url(r'^telecharger', views.download),
 

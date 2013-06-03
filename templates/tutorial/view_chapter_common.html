@@ -1,172 +1,90 @@
-{# Block displaying a chapter (for large and small tutorials) #}
 {% load markup %}
 {% load emarkdown %}
-{% if user in chapter.part.tutorial.authors.all or user in chapter.tutorial.authors.all %}
-<p>
-    <form action="{% url pdp.tutorial.views.modify_chapter %}" method="POST">
-    <a href="/tutoriels/nouveau/extrait?chapitre={{ chapter.pk }}" class="btn">
-        <i class="icon-plus"></i>
-        Ajouter un extrait
-    </a>
-    
-    {# Part moving is only allowed for large tutorials #}
-    {% if chapter.part %}
-    <a href="javascript:void(0)" class="btn move-btn" data-toggle="popover" data-original-title="Déplacer le chapitre..." data-placement="bottom"
-        data-content="
-        <select class='input-block-level' name='move_target'>
-            {% if chapter.position_in_part > 1 %}
-                <option value='{{ chapter.position_in_part|add:"-1" }}'>Monter</option>
-            {% endif %}
-            {% if chapter.position_in_part < tutorial.get_parts.count %}
-            <option value='{{ chapter.position_in_part|add:"1" }}'>Descendre</option>
-            {% endif %}
-                <option disabled>&mdash; Déplacer avant</option>
-            {% for chapter_mv in chapter.part.get_chapters %}
-                {% if chapter != chapter_mv and chapter_mv.position_in_part|add:"-1" != chapter.position_in_part %}
-                <option value='{% if chapter_mv.position_in_part < chapter.position_in_part %}{{ chapter_mv.position_in_part }}{% else %}{{ chapter_mv.position_in_part|add:"-1" }}{% endif %}'>
-                        Chapitre {{ chapter_mv.position_in_part }} : {{ chapter_mv.title }}
-                    </option>
-                {% endif %}
-            {% endfor %}
-            <option disabled>&mdash; Déplacer après</option>
-            {% for chapter_mv in chapter.part.get_chapters %}
-                {% if chapter != chapter_mv and chapter_mv.position_in_part|add:"1" != chapter.position_in_part %}
-                <option value='{% if chapter_mv.position_in_part < chapter.position_in_part %}{{ chapter_mv.position_in_part|add:"1" }}{% else %}{{ chapter_mv.position_in_part }}{% endif %}'>
-                        Chapitre {{ chapter_mv.position_in_part }} : {{ chapter_mv.title }}
-                    </option>
-                {% endif %}
-            {% endfor %}
-        </select>
-        <button type='submit' name='move' class='btn input-block-level'>
-            <i class='icon-arrow-right'></i>
-            Déplacer
-        </button>
-    ">
-        <i class="icon-move"></i>
-        Déplacer le chapitre
-    </a>
-    {% endif %}
 
-    <div class="btn-group">
-        <a href="/tutoriels/editer/chapitre?chapitre={{ chapter.pk }}" class="btn">
-            <i class="icon-pencil"></i>
-            Éditer le chapitre
-        </a>
-
-        {# Part deletion is only available for large tutorials #}
-        {% if chapter.part %}
-        <button type="submit" name="delete" class="btn">
-            <i class="icon-remove"></i>
-            Supprimer le chapitre
-        </button>
+<div class="row">
+    <div class="large-12 columns">
+        {% if chapter.introduction %}
+            {{ chapter.introduction|emarkdown }}
+        {% else %}
+            <p>Aucune introduction.</p>
+        {% endif %}
+        
+        {% if chapter.get_extracts %}
+            <ul>
+                {% for extract in chapter.get_extracts %}
+                    <li>
+                        <a href="#{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
+                            {{ extract.title }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>
+                Aucun extrait.
+            </p>
         {% endif %}
     </div>
-
-    <input type="hidden" name="chapter" value="{{ chapter.pk }}" />
-    {% csrf_token %}
-    </form>
-</p>
-{% endif %}
-
-{% if chapter.introduction %}
-{{ chapter.introduction|emarkdown }}
-{% else %}
-<p>Aucune introduction.</p>
-{% endif %}
-
-<div>
-    {% if chapter.get_extracts %}
-    <ul>
-    {% for extract in chapter.get_extracts %}
-        <li>
-            <a href="#{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
-                {{ extract.title }}
-            </a>
-        </li>
-    {% endfor %}
-    </ul>
-    {% else %}
-    <p>
-        Aucun extrait.
-    </p>
-    {% endif %}
 </div>
+
+{% if user in chapter.part.tutorial.authors.all or user in chapter.tutorial.authors.all %}
+<div class="row">
+    <div class="large-12 columns">
+        <a href="/tutoriels/nouveau/extrait?chapitre={{ chapter.pk }}" class="button">
+            Ajouter 
+        </a>
+    </div>
+</div>
+{% endif %}
 
 <hr />
 
 {% for extract in chapter.get_extracts %}
-    <h2 id="{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">{{ extract.title }}</h2>
-
-    {% if user in chapter.part.tutorial.authors.all or user in chapter.tutorial.authors.all %}
-    <p>
-        <form action="{% url pdp.tutorial.views.modify_extract %}" method="POST">
-
-        <a href="javascript:void(0)" class="btn move-btn" daata-toggle="popover" data-original-title="Déplacer l'extrait..." data-placement="bottom"
-            data-content="
-                <select class='input-block-level' name='move_target'>
-                    {% if extract.position_in_chapter > 1 %}
-                        <option value='{{ extract.position_in_chapter|add:"-1" }}'>Monter</option>
-                    {% endif %}
-                    {% if extract.position_in_chapter < extract.chapter.get_extracts.count %}
-                        <option value='{{ extract.position_in_chapter|add:"1" }}'>Descendre</option>
-                    {% endif %}
-                    <option disabled>&mdash; Déplacer avant</option>
-                    {% for extract_mv in extract.chapter.get_extracts %}
-                        {% if extract != extract_mv and extract_mv.position_in_chapter|add:"-1" != extract.position_in_chapter %}
-                        <option value='{% if extract_mv.position_in_chapter < extract.position_in_chapter %}{{ extract_mv.position_in_chapter }}{% else %}{{ extract_mv.position_in_chapter|add:"-1" }}{% endif %}'>
-                                Extrait {{ extract_mv.position_in_chapter }} : {{ extract_mv.title }}
-                            </option>
-                        {% endif %}
-                    {% endfor %}
-                    <option disabled>&mdash; Déplacer après</option>
-                    {% for extract_mv in extract.chapter.get_extracts %}
-                        {% if extract != extract_mv and extract_mv.position_in_chapter|add:"1" != extract.position_in_chapter %}
-                        <option value='{% if extract_mv.position_in_chapter < extract.position_in_chapter %}{{ extract_mv.position_in_chapter|add:"1" }}{% else %}{{ extract_mv.position_in_chapter }}{% endif %}'>
-                                Extrait {{ extract_mv.position_in_chapter }} : {{ extract_mv.title }}
-                            </option>
-                        {% endif %}
-                    {% endfor %}
-
-                </select>   
-                <button type='submit' name='move' class='btn input-block-level'>
-                    <i class='icon-arrow-right'></i>
-                    Déplacer
-                </button>
-            ">
-            <i class="icon-move"></i>
-            Déplacer l'extrait
-        </a>
-
-        <div class="btn-group">
-            <a href="{% url pdp.tutorial.views.edit_extract %}?extrait={{ extract.pk }}" class="btn">
-                <i class="icon-pencil"></i>
-                Éditer l'extrait
+<div class="row">
+    <div class="large-12 columns">
+        <h2 id="{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
+            <a href="#{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
+                {{ extract.title }}
             </a>
-            <button type="submit" name="delete" class="btn">
-                <i class="icon-remove"></i>
-                Supprimer l'extrait
-            </button>
-        </div>
-
-        <input type="hidden" name="extract" value="{{ extract.pk }}" />
-        {% csrf_token %}
-        </form>
-    </p>
-    {% endif %}
-
-    {% if extract.text %}
-        {{ extract.text|emarkdown }}
-    {% else %}
-    <p>
-        Cet extrait est vide.
-    </p>
-    {% endif %}
+        </h2>
+        
+        {% if user in chapter.part.tutorial.authors.all or user in chapter.tutorial.authors.all %}
+            <form action="{% url pdp.tutorial.views.modify_extract %}" method="post">
+                <div class="button-group">
+                    <a href="{% url pdp.tutorial.views.edit_extract %}?extrait={{ extract.pk }}" class="button">
+                        Éditer
+                    </a>
+                    <a href="#" class="button secondary">
+                        Déplacer
+                    </a>
+                    <button type="submit" name="delete" class="button secondary">
+                        Supprimer
+                    </button>
+                </div>
+                <input type="hidden" name="extract" value="{{ extract.pk }}" />
+                {% csrf_token %}
+            </form>
+        {% endif %}
+        
+        {% if extract.text %}
+            {{ extract.text|emarkdown }}
+        {% else %}
+            <p>
+                Cet extrait est vide.
+            </p>
+        {% endif %}
+    </div>
+</div>
 {% endfor %}
 
-<hr />
+<hr />    
 
-{% if chapter.conclusion %}
-{{ chapter.conclusion|emarkdown }}
-{% else %}
-<p>Aucune conclusion.</p>
-{% endif %}
+<div class="row">
+    <div class="large-12 columns">
+        {% if chapter.conclusion %}
+            {{ chapter.conclusion|emarkdown }}
+        {% else %}
+            <p>Aucune conclusion.</p>
+        {% endif %}
+    </div>
+</div>

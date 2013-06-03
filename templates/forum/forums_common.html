@@ -1,16 +1,30 @@
 {# Block displaying the list of forums belonging to a category #}
 {% load humane_date %}
-<div class="forum-items">
-    {% for forum in category.get_forums %}
-        <div class="forum-item">
-            <h3>
-                <a href="{{ forum.get_absolute_url }}">{{ forum.title }}</a>
-            </h3>
-            <p class="inline-description">
-                {% if forum.get_last_message %}
-                (dernier message
+{% load upfirstletter %}
+
+{% for forum in category.get_forums %}
+<div class="row">
+    <div class="large-6 columns">
+        <h5>
+            <a href="{{ forum.get_absolute_url }}">{{ forum.title }}</a>
+        </h5>
+        <p>
+            {{ forum.subtitle }}
+        </p>
+    </div>
+    <div class="large-1 columns forum-topic-count">
+        {{ forum.get_topic_count }}
+    </div>
+    <div class="large-1 columns forum-post-count">
+        {{ forum.get_post_count }}
+    </div>
+    <div class="large-4 columns forum-topic-last-message">
+        <p>
+            {% if forum.get_last_message %}
                 <a href="{{ forum.get_last_message.get_absolute_url }}">
-                    {{ forum.get_last_message.pubdate|humane_date }}
+                    {% with date=forum.get_last_message.pubdate|humane_date %}
+                        {{ date|upfirstletter }}
+                    {% endwith %}
                 </a>
                 par
                 <a href="{{ forum.get_last_message.author.get_absolute_url }}">
@@ -18,12 +32,13 @@
                 </a>
                 dans
                 <a href="{{ forum.get_last_message.topic.get_absolute_url }}">
-                    {{ forum.get_last_message.topic.title }}</a>)
-                {% else %}
-                    (aucun message)
-                {% endif %}
-            </p>
-            <p>{{ forum.subtitle }}</p>
-        </div>
-    {% endfor %}
+                    {{ forum.get_last_message.topic.title }}
+                </a>
+            {% else %}
+                Aucun message.
+            {% endif %}
+        </p>
+    </div>
 </div>
+    
+{% endfor %}

@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block breadcrumb_base %}
-<a href="{% url pdp.article.views.index %}">Articles</a>
+    <li><a href="{% url pdp.article.views.index %}">Articles</a></li>
 {% endblock %}
 
 {% block menu_article %}
-class="active"
+    class="active"
 {% endblock %}

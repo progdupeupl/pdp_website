@@ -3,19 +3,29 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-Nouveau tutoriel &ndash; Tutoriels
+    Nouveau tutoriel &ndash; Tutoriels
 {% endblock %}
 
 {% block headline %}
-Nouveau tutoriel
+    Nouveau tutoriel
 {% endblock %}
 
 {% block breadcrumb %}
-Nouveau tutoriel
+    <li class="current"><a href="#">Nouveau tutoriel</a></li>
 {% endblock %}
 
 {% block content %}
 
-{% crispy form %}
+<div class="row">
+    <div class="large-12 columns">
+        {% include "tutorial/tutorial_desc.part.html" %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="large-12 columns">
+        {% crispy form %}
+    </div>
+</div>
 
 {% endblock %}

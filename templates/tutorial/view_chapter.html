@@ -9,10 +9,33 @@
 {{ chapter.title }}
 {% endblock %}
 
+{% block headline-actions %}
+    {% if user in chapter.part.tutorial.authors.all or user in chapter.tutorial.authors.all %}
+        <form action="{% url pdp.tutorial.views.modify_chapter %}" method="POST">
+            <div class="button-group">        
+                <a href="/tutoriels/editer/chapitre?chapitre={{ chapter.pk }}" class="button">
+                    Éditer
+                </a>
+                {% if chapter.part %}
+                    <a href="#" class="button secondary">
+                        Déplacer
+                    </a>
+                    <button type="submit" name="delete" class="button secondary">
+                        Supprimer
+                    </button>
+                {% endif %}
+            </div>
+        
+            <input type="hidden" name="chapter" value="{{ chapter.pk }}" />
+            {% csrf_token %}
+        </form>
+    {% endif %}
+{% endblock %}
+
 {% block breadcrumb %}
-<a href="{{ chapter.part.tutorial.get_absolute_url }}">{{ chapter.part.tutorial.title }}</a>
-<a href="{{ chapter.part.get_absolute_url }}">{{ chapter.part.title }}</a>
-{{ chapter.title }}
+    <li><a href="{{ chapter.part.tutorial.get_absolute_url }}">{{ chapter.part.tutorial.title }}</a></li>
+    <li><a href="{{ chapter.part.get_absolute_url }}">{{ chapter.part.title }}</a></li>
+    <li class="current"><a href="#">{{ chapter.title }}</a></li>
 {% endblock %}
 
 {% block content %}

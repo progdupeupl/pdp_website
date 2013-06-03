@@ -7,58 +7,70 @@
 {% endblock %}
 
 {% block headline %}
-    Répondre au sujet<br />
-    <small>{{ topic.title }}</small>
+    Répondre au sujet
+{% endblock %}
+
+{% block headline-sub %}
+    {{ topic.title }}
 {% endblock %}
 
 {% block breadcrumb %}
-<a href="{{ topic.forum.category.get_absolute_url }}">{{ topic.forum.category.title }}</a>
-<a href="{{ topic.forum.get_absolute_url }}">{{ topic.forum.title }}</a>
-<a href="{{ topic.get_absolute_url }}">{{ topic.title }}</a>
-Répondre au sujet
+    <li><a href="{{ topic.forum.category.get_absolute_url }}">{{ topic.forum.category.title }}</a></li>
+    <li><a href="{{ topic.forum.get_absolute_url }}">{{ topic.forum.title }}</a></li>
+    <li><a href="{{ topic.get_absolute_url }}">{{ topic.title }}</a></li>
+    <li class="current"><a href="#">Répondre au sujet</a></li>
 {% endblock %}
 
 {% block content %}
 
 {% if newpost %}
-<div class="alert">
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-    <strong>Au moins un nouveau message a été posté</strong> dans la discussion
-    pendant que vous rédigiez le votre.
+<div class="row">
+    <div class="large-12 columns">
+        <div class="alert-box alert">
+            <strong>Au moins un nouveau message a été posté</strong> dans la discussion
+            pendant que vous rédigiez le votre.
+        </div>
+    </div>
 </div>
 {% endif %}
 
-<form action="/forums/message/nouveau?sujet={{ topic.pk }}" method="POST">
-    <textarea class="input-block-level" name="text" rows="20" id="id_text"
-        placeholder="Contenu de votre message au format Markdown.">{{ text }}</textarea>
-
-    <div style="text-align: center;">
-        <button type="submit" class="btn btn-primary">
-            <i class="icon-ok icon-white"></i>
-            Répondre
-        </button>
-
-        <button type="submit" name="preview" class="btn">
-            <i class="icon-eye-open"></i>
-            Prévisualisation
-        </button>
-
-        <a href="{{ topic.get_absolute_url }}" class="btn">
-            <i class="icon-remove"></i>
-            Annuler
-        </a>
+<div class="row">
+    <div class="large-12">
+        <form action="/forums/message/nouveau?sujet={{ topic.pk }}" method="POST">
+            <textarea class="input-block-level" name="text" rows="20" id="id_text"
+                placeholder="Contenu de votre message au format Markdown.">{{ text }}</textarea>
+        
+            <div style="text-align: center;">
+                <button type="submit" class="button">
+                    <i class="icon-ok icon-white"></i>
+                    Répondre
+                </button>
+        
+                <button type="submit" name="preview" class="button secondary">
+                    <i class="icon-eye-open"></i>
+                    Prévisualisation
+                </button>
+        
+                <a href="{{ topic.get_absolute_url }}" class="button secondary">
+                    <i class="icon-remove"></i>
+                    Annuler
+                </a>
+            </div>
+        
+            <input type="hidden" name="last_post" value="{{ last_post_pk }}" />
+            {% csrf_token %}
+        </form>
     </div>
-
-    <input type="hidden" name="last_post" value="{{ last_post_pk }}" />
-    {% csrf_token %}
-</form>
+</div>
 
 {% if text %}
-<div class="well">
-    <p style="text-align: center;">
-        <b>Prévisualisation de votre message</b>
-    </p>
-    {{ text|emarkdown }}
+<div class="row">
+    <div class="large-12 columns">
+        <div class="panel">
+            <h5>Prévisualisation de votre message</h5>
+            {{ text|emarkdown }}
+        </div>
+    </div>
 </div>
 {% endif %}
 

@@ -2,20 +2,35 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-Éditer &ndash; Articles
+    Éditer &ndash; Articles
 {% endblock %}
 
 {% block headline %}
-Éditer l'article
+    Éditer l'article
 {% endblock %}
 
 {% block breadcrumb %}
-<a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
-Éditer l'article
+    <li><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></li>
+    <li class="current"><a href="#">Éditer</a></li>
 {% endblock %}
 
 {% block content %}
 
-{% crispy form %}
+{% if article.is_visible %}
+    <div class="row">
+        <div class="large-12 columns">
+            <div class="alert-box alert">
+                <strong>Cet article est actuellement en ligne !</strong> Veuillez être particulièrement prudent au niveau des changements que vous apportez à celui-ci.
+                Vous pouvez modifier la forme de celui-ci, mais évitez d'en modifier le fond !
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<div class="row">
+    <div class="large-12 columns">
+        {% crispy form %}
+    </div>
+</div>
 
 {% endblock %}

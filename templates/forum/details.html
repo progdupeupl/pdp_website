@@ -6,24 +6,30 @@
 {% endblock %}
 
 {% block headline %}
-    {{ forum.title }} <br />
-    <small>{{ forum.subtitle }}</small>
+    {{ forum.title }}
+{% endblock %}
+
+{% block headline-sub %}
+    {{ forum.subtitle }}
 {% endblock %}
 
 {% block breadcrumb %}
-    <a href="{{ forum.category.get_absolute_url }}">{{ forum.category.title }}</a>
-    {{ forum.title }}
+    <li><a href="{{ forum.category.get_absolute_url }}">{{ forum.category.title }}</a></li>
+    <li class="current"><a href="#">{{ forum.title }}</a></li>
+{% endblock %}
+
+{% block headline-actions %}
+    {% if user.is_authenticated %}
+        <p>
+            <a href="/forums/sujet/nouveau?forum={{ forum.pk }}" class="button">
+                Nouveau sujet
+            </a>
+        </p>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
 
-{% if user.is_authenticated %}
-<p>
-    <a href="/forums/sujet/nouveau?forum={{ forum.pk }}" class="button">
-        Nouveau sujet
-    </a>
-</p>
-{% endif %}
 
 <div class="topic-items">
 {% for topic in sticky_topics %}

@@ -19,87 +19,110 @@ Bonjour o/
 {# Content #}
 
 {% block content %}
-<p>
-    Bienvenue sur Progdupeupl, <strong>une communauté de passionnés
-    d'informatique</strong> et notamment de programmation. Ce site permet
-    non seulement de se former à la programmation, mais également de discuter
-    entre membres pour progresser, découvrir des astuces, partager, aider, en
-    bref : échanger de façon utile sur le monde de l'informatique.
-</p>
-
-{# Articles #}
-
-{% include "article/feeds.part.html" %}
-
-<h2>Des articles <small>pour se tenir informé</small></h2>
-
-<p>
-    Les articles sont rédigés par la communauté et permettent aussi bien de se tenir informé des dernières innovations du moment que de découvrir de nouveaux concepts liés aux différents domaines de l'informatique. Voici la liste des trois derniers articles publiés sur le site :
-</p>
-
-{% if last_articles %}
-    <div class="article-items">
-    {% for article in last_articles %}
-        {% include "article/article_item_common.html" %}
-    {% endfor %}
+<div class="row">
+    <div class="large-12 columns">
+        <p>
+            Bienvenue sur Progdupeupl, <strong>une communauté de passionnés
+            d'informatique</strong> et notamment de programmation. Ce site permet
+            non seulement de se former à la programmation, mais également de discuter
+            entre membres pour progresser, découvrir des astuces, partager, aider, en
+            bref : échanger de façon utile sur le monde de l'informatique.
+        </p>
     </div>
-{% else %}
-    <p>Pas d'articles pour l'instant.</p>
-{% endif %}
-<p>
-<a href="{% url pdp.article.views.index %}" class="button">
-        Aller à la liste des articles
-    </a>
-</p>
+</div>
 
-{# Tutorials #}
-
-{% include "tutorial/feeds.part.html" %}
-
-<h2>Des tutoriels <small>pour apprendre</small></h2>
-
-<p>
-    Les tutoriels vous permettent de découvrir et d'apprendre sur divers sujets variés axés autour de l'informatique de manière plus avancée qu'avec les articles. Voici les trois derniers tutoriels parus sur Progdupeupl :
-</p>
-{% if last_tutorials %}
-    <div class="tutorial-items">
-    {% for tutorial in last_tutorials %}
-        {% include "tutorial/tutorial_item_common.html" %}
-    {% endfor %}
+<div class="row">
+    {# Articles #}
+    <div class="large-4 columns">
+        <h2>
+            <a href="{% url pdp.article.views.index %}">
+                Articles
+            </a>
+        </h2>
+        
+        {% if last_articles %}
+            {% for article in last_articles %}
+                {% include "article/article_item_common.html" %}
+            {% endfor %}
+        {% else %}
+            <p>Pas d'articles pour l'instant.</p>
+        {% endif %}
     </div>
-{% else %}
-    <p>Aucun tutoriel actuellement.</p>
-{% endif %}
-<p>
-<a href="{% url pdp.tutorial.views.index %}" class="button">
-        Liste des tutoriels
-    </a>
-</p>
-
-{# Forums #}
-
-<h2>Des forums <small>pour discuter et partager</small></h2>
-
-<p>
-    Les forums vous permettent de venir poser vos questions aux autres
-    membres mais aussi de s'entrainer ou tout simplement discuter sur
-    divers sujets avec le reste de la communauté. Voici les derniers
-    sujets créés sur le forum :
-</p>
-{% if last_topics %}
-    <div class="topic-items">
-    {% for topic in last_topics %}
-        {% include "forum/topic_item_common.html" %}
-    {% endfor %}
+    
+    <div class="large-4 columns">
+        <h2>
+            <a href="{% url pdp.tutorial.views.index %}">
+                Tutoriels
+            </a>
+        </h2>
+        
+        {% if last_tutorials %}
+            {% for tutorial in last_tutorials %}
+                {% include "tutorial/tutorial_item_common.html" %}
+            {% endfor %}
+        {% else %}
+            <p>Aucun tutoriel actuellement.</p>
+        {% endif %}
     </div>
-{% else %}
-    <p>Aucun sujet récent.</p>
-{% endif %}
-
-<p>
-    <a href="{% url pdp.forum.views.index %}" class="button">
-        Accéder aux forums
-    </a>
-</p>
+    <div class="large-4 columns">
+        <h2>
+            <a href="{% url pdp.forum.views.index %}">
+                Forums
+            </a>
+        </h2>
+        
+        {% if last_topics %}
+            {% for topic in last_topics %}
+                {% include "forum/topic_item_common.html" %}
+            {% endfor %}
+        {% else %}
+            <p>Aucun sujet récent.</p>
+        {% endif %}
+    </div>
+</div>
+<div class="row">
+    <div class="large-4 columns">
+        <div class="button-group">
+            <a href="{% url pdp.article.views.index %}" class="button">
+                Aller aux articles
+            </a>
+            <a href="#" class="button secondary dropdown" data-dropdown="articles-drop-feeds">
+                Flux
+            </a><br />
+            <ul id="articles-drop-feeds" class="f-dropdown">
+                <li><a href="{% url article-feed-rss %}">RSS</a></li>
+                <li><a href="{% url article-feed-atom %}">ATOM</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="large-4 columns">
+        <div class="button-group">
+            <a href="{% url pdp.tutorial.views.index %}" class="button">
+                Aller aux tutoriels
+            </a>
+            <a href="#" class="button secondary dropdown" data-dropdown="tutorials-drop-feeds">
+                Flux
+            </a><br />
+            <ul id="tutorials-drop-feeds" class="f-dropdown">
+                <li><a href="{% url tutorial-feed-rss %}">RSS</a></li>
+                <li><a href="{% url tutorial-feed-atom %}">ATOM</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="large-4 columns">
+        <div class="button-group full-width">
+            <a href="{% url pdp.forum.views.index %}" class="button">
+                Aller aux forums
+            </a>
+        </div>
+    </div>
+</div>
+<p></p>
+<div class="row">
+    <div class="large-8 columns">
+        <h2>En savoir plus</h2>
+        <p>blablabla</p>
+    </div>
+</div>
 
 {% endblock %}

@@ -1,5 +1,18 @@
 {% load humane_date %}
 
+<div class="row">
+    <div class="large-6 columns">
+        <h5>
+            <a href="{{ topic.get_absolute_url }}">
+                {{ topic.title }}
+            </a>
+        </h5>
+        <p>
+            {{ topic.subtitle }}
+        </p>
+    </div>
+</div>
+
 {% if topic.is_sticky %}
     <i class="icon-bookmark" title="Ce sujet est épinglé"></i>
 {% endif %}
@@ -12,43 +25,8 @@
 
 {% if user.is_authenticated %}
     {% with topic.last_read_post as last_read_post %}
-    {% ifnotequal last_read_post topic.get_last_answer %}
-        <i class="icon-eye-open"></i>
-    {% endifnotequal %}
+        {% ifnotequal last_read_post topic.get_last_answer %}
+            <i class="icon-eye-open"></i>
+        {% endifnotequal %}
     {% endwith %}
 {% endif %}
-
-<div class="topic-item">
-
-
-    <h3>
-        <a href="{{ topic.get_absolute_url }}">
-            {{ topic.title }}
-        </a>
-
-    </h3>
-    <p class="inline-description">
-        créé par
-        <a href="{{ topic.author.get_absolute_url }}">
-            {{ topic.author.username }}</a>,
-        {% with answers_count=topic.get_post_count|add:"-1" %}
-            {{ answers_count }} réponse{{ answers_count|pluralize }}
-        {% endwith %}
-        {% with answer=topic.get_last_answer %}
-        {% if answer %}
-            (dernière
-            <a href="{{ answer.get_absolute_url }}">
-                {% with date=answer.pubdate|humane_date %}
-                    {{ date }}
-                {% endwith %}
-            </a>
-            par
-            <a href="{{ answer.author.get_absolute_url }}">
-                {{ answer.author.username }}</a>)
-        {% endif %}
-        {% endwith %}
-    </p>
-    <p>
-        {{ topic.subtitle }}
-    </p>
-</div>

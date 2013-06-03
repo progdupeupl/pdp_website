@@ -22,13 +22,14 @@ class Category(models.Model):
 
     title = models.CharField('Titre', max_length=80)
     position = models.IntegerField('Position', null=True, blank=True)
+    slug = models.SlugField()
 
     def __unicode__(self):
         '''Textual form of a category'''
         return self.title
 
     def get_absolute_url(self):
-        return '/forums/%s-%s/' % (self.pk, slugify(self.title))
+        return '/forums/%s/' % self.slug
 
     def get_forums(self):
         return Forum.objects.all()\
@@ -48,17 +49,17 @@ class Forum(models.Model):
     category = models.ForeignKey(Category, verbose_name='Catégorie')
     position_in_category = models.IntegerField('Position dans la catégorie',
                                                null=True, blank=True)
+    
+    slug = models.SlugField()
 
     def __unicode__(self):
         '''Textual form of a forum'''
         return self.title
 
     def get_absolute_url(self):
-        return '/forums/%s-%s/%s-%s/' % (
-            self.category.pk,
-            slugify(self.category.title),
-            self.pk,
-            slugify(self.title),
+        return '/forums/%s/%s/' % (
+            self.category.slug,
+            self.slug,
         )
 
     def get_topic_count(self):
@@ -109,7 +110,7 @@ class Topic(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '/forums/sujet/%s-%s' % (self.pk, slugify(self.title))
+        return '/forums/sujet/%s/%s' % (self.pk, slugify(self.title))
 
     def get_post_count(self):
         '''

@@ -5,81 +5,152 @@
 {% load email_obfuscator %}
 
 {% block title %}
-{{ usr.username }}
+    {{ usr.username }}
 {% endblock %}
 
 {% block headline %}
-Profil de {{ usr.username }}
+    {{ usr.username }}
 {% endblock %}
 
 {% block breadcrumb %}
-{{ usr.username }}
+    <li class="current"><a href="#">{{ usr.username }}</a></li>
+{% endblock %}
+
+{% block headline-actions %}
+    {% ifequal profile.user user %}
+        <a href="/membres/editer?profil={{ profile.pk }}" class="button">
+            Éditer mon profil
+        </a>
+    {% endifequal %}
 {% endblock %}
 
 {% block content %}
+    
+<div class="row">
+    <div class="large-2 columns">
+        <img src="{{ profile.get_gravatar_url }}&amp;s=140" alt="Avatar" width="140" height="140" class="th"/>
+    </div>
+    <div class="large-10 columns">
+        <p>
+            {% if profile.show_email and user.is_authenticated %}
+                Adresse mail : {{ usr.email|obfuscate_mailto }}<br />
+            {% endif %}
+        
+            {% if profile.site %}
+                Site internet : <a href="{{ profile.site }}">{{ profile.site }}</a><br />
+            {% endif %}
+        
+            Inscrit {{ usr.date_joined|humane_date }},
+            dernière connexion {{ usr.last_login|humane_date }}
+        </p>
+    </div>
+</div>
 
-{% ifequal profile.user user %}
-    <p>
-        <a href="/membres/editer?profil={{ profile.pk }}" class="button">
-            <i class="icon-pencil"></i>
-            Éditer mon profil
-        </a>
-    </p>
-{% endifequal %}
-
-
-{# Main informations #}
-<img src="{{ profile.get_gravatar_url }}&amp;s=140" alt="Avatar" width="140" height="140" class="img-polaroid"/><br />
-
-<p>
-    <span style="font-size: 300%;">
-        {{ usr.username }}
-    </span>
-</p>
-<p>
-    {% if profile.show_email and user.is_authenticated %}
-    Adresse mail : {{ usr.email|obfuscate_mailto }}<br />
-    {% endif %}
-
-    Site internet :
-        {% if profile.site %}
-        <a href="{{ profile.site }}">{{ profile.site }}</a>
-        {% else %}
-        aucun
-        {% endif %}
-        <br />
-
-    Date d'inscription : {{ usr.date_joined|humane_date }}<br />
-    Dernière connexion : {{ usr.last_login|humane_date }}
-</p>
-
-{# Stats #}
-<h2>Statistiques</h2>
-<h3>Sur les forums</h3>
-<p>
-    Messages postés : {{ profile.get_post_count }}<br />
-    Sujets créés : {{ profile.get_topic_count }}
-</p>
-<h3>Dans les tutoriels</h3>
-<p>
-    Tutoriels en ligne : {{ profile.get_visible_tutorials.count }}<br />
-    Tutoriels en cours de rédaction : {{ profile.get_hidden_tutorials.count }}<br />
-    Total : {{ profile.get_tutorials.count }}
-</p>
-<h3>Et les articles</h3>
-<p>
-    Articles en ligne : {{ profile.get_visible_articles.count }}<br />
-    Articles en cours de rédaction : {{ profile.get_hidden_articles.count }}<br />
-    Total : {{ profile.get_articles.count }}
-</p>
+<div class="row">
+    <div class="large-4 columns">
+        <h3>Articles</h3>
+        <div id="articles-graph" style="width:100%; height:200px;"></div>
+    </div>
+    <div class="large-4 columns">
+        <h3>Tutoriels</h3>
+        <div id="tutorials-graph" style="width:100%; height:200px;"></div>
+    </div>
+    <div class="large-4 columns">
+        <h3>Forums</h3>
+        <div id="forums-graph" style="width:100%; height:200px;"></div>
+    </div>
+</div>
 
 {# Biography #}
 
 {% if profile.biography %}
-
-<h2>Biographie</h2>
-{{ profile.biography|emarkdown }}
+    
+<div class="row">
+    <div class="large-12 columns">
+        <h2>Biographie</h2>
+        {{ profile.biography|emarkdown }}
+    </div>
+</div>
 
 {% endif %}
 
+{% endblock %}
+
+{% block additionnal-js %}
+<script>
+    $(function () { 
+        $('#articles-graph').highcharts({
+            chart: {
+                type: 'column'
+            },
+            credits : {
+                enabled: false
+            },
+            title: {
+                text: null
+            },
+            xAxis: {
+                categories: ['En cours de rédaction', 'En ligne']
+            },
+            yAxis: {
+                title: {
+                    text: null
+                }
+            },
+            series: [{
+                name: 'Articles',
+                data: [{{ profile.get_hidden_articles.count }}, {{ profile.get_visible_articles.count }}],
+                showInLegend: false
+            }]
+        });
+        $('#tutorials-graph').highcharts({
+            chart: {
+                type: 'column'
+            },
+            credits : {
+                enabled: false
+            },
+            title: {
+                text: null
+            },
+            xAxis: {
+                categories: ['En cours de rédaction', 'En ligne']
+            },
+            yAxis: {
+                title: {
+                    text: null
+                }
+            },
+            series: [{
+                name: 'Tutoriels',
+                data: [{{ profile.get_hidden_tutorials.count }}, {{ profile.get_visible_tutorials.count }}],
+                showInLegend: false
+            }]
+        });
+        $('#forums-graph').highcharts({
+            chart: {
+                type: 'column'
+            },
+            credits : {
+                enabled: false
+            },
+            title: {
+                text: null
+            },
+            xAxis: {
+                categories: ['Sujets', 'Messages']
+            },
+            yAxis: {
+                title: {
+                    text: null
+                }
+            },
+            series: [{
+                name: 'Éléments',
+                data: [{{ profile.get_topic_count }}, {{ profile.get_post_count }}],
+                showInLegend: false
+            }]
+        });
+    });
+</script>
 {% endblock %}

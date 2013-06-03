@@ -50,7 +50,7 @@ class Tutorial(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '/tutoriels/voir/%s-%s/' % (self.pk, slugify(self.title))
+        return '/tutoriels/%s/%s/' % (self.pk, slugify(self.title))
 
     def get_parts(self):
         return Part.objects.all()\

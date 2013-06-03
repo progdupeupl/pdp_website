@@ -9,174 +9,171 @@
 {% endblock %}
 
 {% block headline %}
-    {{ topic.title }} <br /><small>{{ topic.subtitle }}</small>
+    <a href="{{ topic.get_absolute_url }}">
+        {{ topic.title }}
+    </a>
+{% endblock %}
+
+{% block headline-sub %}
+    {{ topic.subtitle }}
 {% endblock %}
 
 {% block breadcrumb %}
-    <a href="{{ topic.forum.category.get_absolute_url }}">{{ topic.forum.category.title }}</a>
-    <a href="{{ topic.forum.get_absolute_url }}">{{ topic.forum.title }}</a>
-    {{ topic.title }}
+    <li><a href="{{ topic.forum.category.get_absolute_url }}">{{ topic.forum.category.title }}</a></li>
+    <li><a href="{{ topic.forum.get_absolute_url }}">{{ topic.forum.title }}</a></li>
+    <li class="current"><a href="#">{{ topic.title }}</a></li>
+{% endblock %}
+
+{% block headline-actions %}
+    {% if user.is_authenticated %}
+        <form action="{% url pdp.forum.views.edit %}" method="POST" class="topic-actions">
+            <input type="hidden" name="topic" value="{{ topic.pk }}" />
+            <div class="button-group">
+                <a href="/forums/sujet/nouveau?forum={{ topic.forum.pk }}" class="button">
+                    Nouveau
+                </a>
+                {% if topic.author.pk == user.pk %}
+                <button type="submit" name="solved" class="button {% if topic.is_solved %}success{% else %}secondary{% endif %}">
+                    {% if topic.is_solved %}
+                        Résolu
+                    {% else %}
+                        Résolu ?
+                    {% endif %}
+                </button>
+                {% endif %}
+                <button class="button {% if not topic.is_followed %}secondary{% endif %}" type="submit" name="follow">
+                    <i class="{% if topic.is_followed %}icon-white{% endif %} icon-star"></i>
+                    {% if topic.is_followed %}
+                        Suivi
+                    {% else %}
+                        Suivre
+                    {% endif %}
+                </button>
+            </div>
+            
+            {% csrf_token %}
+        </form>
+        
+        {% if user.is_staff %}
+            <form action="{% url pdp.forum.views.edit %}" method="POST" class="topic-actions">
+                <input type="hidden" name="topic" value="{{ topic.pk }}" />
+            
+                <div class="button-group">
+                    {# Button to make the thread a post-it #}
+                    <button type="submit" name="sticky"
+                        class="button {% if not topic.is_sticky %}secondary{% endif %}">
+                        Post-it
+                    </button>
+                    {# Button to lock the thread #}
+                    <button type="submit" name="lock" class="button {% if not topic.is_locked %}secondary{% endif %}">
+                        Verrouill{% if topic.is_locked %}é{% else %}er{% endif %}
+                    </button>
+                </div>
+                
+                {% csrf_token %}
+            </form>
+        {% endif %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
-
-{% if user.is_authenticated %}
-    <form action="{% url pdp.forum.views.edit %}" method="POST" class="topic-actions">
-    <input type="hidden" name="topic" value="{{ topic.pk }}" />
-
-    <button class="button button-follow {% if topic.is_followed %}button-follow-active{% endif %}" type="submit" name="follow">
-        <i class="{% if topic.is_followed %}icon-white{% endif %} icon-star"></i>
-        {% if topic.is_followed %}
-            Vous suivez ce sujet
-        {% else %}
-            Suivre ce sujet
-        {% endif %}
-    </button>
-    <a href="/forums/sujet/nouveau?forum={{ topic.forum.pk }}" class="button">
-        Nouveau sujet
-    </a>
-
-    {% if user.is_staff %}
-    {# Button to move the thread #}
-    <a href="javascript:void(0)" class="button move-btn" data-toggle="popover" data-original-title="Déplacer le sujet dans..." data-placement="bottom"
-        data-content="
-            <select class='input-block-level' name='move_target'>
-                {% for category_mv in categories %}
-                    <option disabled>&mdash; {{ category_mv.title }}</option>
-                    {% for forum_mv in category_mv.get_forums %}
-                        <option value='{{ forum_mv.pk }}'>{{ forum_mv.title }}</option>
-                    {% endfor %}
-                {% endfor %}
-            </select>
-            <button type='submit' name='move' class='btn input-block-level'>
-                <i class='icon-arrow-right'></i>
-                Déplacer
-            </button>
-        ">
-        <i class="icon-move"></i>
-        Déplacer
-    </a>
-    {# Button to make the thread a post-it #}
-    <button type="submit" name="sticky"
-        class="button button-sticky {% if topic.is_sticky %}button-sticky-active{% endif %}">
-        <i class="icon-bookmark {% if topic.is_sticky %}icon-white{% endif %}"></i>
-        Post-it
-    </button>
-    {# Button to lock the thread #}
-    <button type="submit" name="lock"
-        class="button button-lock {% if topic.is_locked %}button-lock-active{% endif %}">
-        <i class="icon-lock {% if topic.is_locked %}icon-white{% endif %}"></i>
-        Verrouill{% if topic.is_locked %}é{% else %}er{% endif %}
-    </button>
-    {% endif %}
-    {% if topic.author.pk == user.pk %}
-
-        {# Button to indicate the problem in the thread was solved #}
-        <button type="submit" name="solved"
-            class="button button-solved {% if topic.is_solved %}button-solved-active{% endif %}">
-            <i class="icon-flag {% if topic.is_solved %}icon-white{% endif %}"></i>
-                {% if topic.is_solved %}
-                    Résolu
-                {% else %}
-                    Marquer comme résolu
-                {% endif %}
-        </button>
-
-    {% endif %}
-    {% csrf_token %}
-    </form>
-{% endif %}
-
-<div class="spacer3"></div>
-
+    
 {% if topic.is_solved %}
-<div class="alert alert-success">
-    <strong>Ce sujet est résolu</strong>, l'auteur de ce sujet a trouvé une
-    solution satisfaisant son problème.
+<div class="row">
+    <div class="large-12">  
+        <div class="alert-box success">
+            <strong>Ce sujet est résolu</strong>, l'auteur de ce sujet a trouvé une
+            solution satisfaisant son problème.
+        </div>
+    </div>
 </div>
 {% endif %}
 
 {% include "forum/topic_pagination.html" %}
 
 
-{% for post in posts %}
-<div id="p{{ post.id }}" class="post {% if forloop.first and nb > 1 %}post-repeated{% endif %}">
-    <p class="post-header">
-        {# Buttons on the answers #}
-        {% if user.is_authenticated %}
-        <span class="post-buttons">
-            {% if topic.author == user and post.author != user %}
-            <a href="/forums/message/utile?message={{ post.pk }}" class="button btn-mini {% if post.is_useful %}btn-success{% endif %}">
-                Cette réponse m'a aidé
+{% for post in posts %}  
+    <div class="row" id="p{{ post.id }}">
+        <div class="large-1 columns">
+            <a href="{{ post.author.get_absolute_url }}">
+                {{ post.author.username }}
             </a>
+        </div>
+        <div class="large-11 columns">
+            <div class="right">
+                {% if user.is_authenticated %}
+                    <div class="button-group">
+                        {% if topic.author == user and post.author != user %}
+                            <a href="/forums/message/utile?message={{ post.pk }}" class="button secondary small {% if post.is_useful %}btn-success{% endif %}">
+                                Cette réponse m'a aidé
+                            </a>
+                        {% endif %}
+            
+                        {% if post.author == user %}
+                            <a href="/forums/message/editer?message={{ post.pk }}" class="button secondary small">
+                                Éditer
+                            </a>
+                        {% endif %}
+            
+                        {% if not topic.is_locked and not topic.antispam %}
+                            <a href="/forums/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.pk }}"
+                                class="button secondary small">
+                                Citer
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            {{ post.pubdate|humane_date }}
+            {% if not post.update = None %}
+                (dernière édition {{ post.update|humane_date }})
             {% endif %}
-
-            {% if post.author == user %}
-            <a href="/forums/message/editer?message={{ post.pk }}" class="button button-edit">
-                Éditer
-            </a>
+            {% if forloop.first and nb > 1 %}
+                &ndash; page précédente
             {% endif %}
-
-
-            {% if not topic.is_locked and not topic.antispam %}
-            <a href="/forums/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.pk }}"
-                class="button button-quote">
-                Citer
-            </a>
-            {% endif %}
-        </span>
-        {% endif %}
-
-        <a href="{{ post.get_absolute_url }}">#</a>
-
-        {# Author #}
-        Par
-        {% with member=post.author %}
-            {% include "member/member_item_common.html" %}
-        {% endwith %}
-        {{ post.pubdate|humane_date }}
-        {% if not post.update = None %}
-            (dernière édition {{ post.update|humane_date }})
-        {% endif %}
-        {% if forloop.first and nb > 1 %}
-            &ndash; page précédente
-        {% endif %}
-    </p>
-    <div class="post-message">
-        {{ post.text|emarkdown }}
+        </div>
     </div>
-</div>
+    <div class="row">
+        <div class="large-1 columns">
+            {% with profile=post.author|profile %}
+                <img src="{{ profile.get_gravatar_url }}" alt="Avatar" />
+            {% endwith %}
+        </div>
+        <div class="large-11 columns">
+            {{ post.text|emarkdown }}
+        </div>
+    </div>
 {% endfor %}
 
 {% include "forum/topic_pagination.html" %}
 
 {% if user.is_authenticated %}
-<div class="offset2 span8">
-<form action="/forums/message/nouveau?sujet={{ topic.pk }}" method="POST">
-    <p>
-    <textarea name="text" class="input-block-level" rows="4" {% if topic.is_locked or topic.antispam %}disabled{% endif %}
-        placeholder="Votre message au format Markdown.">{% spaceless %}
-            {% if topic.is_locked %}
-                Ce sujet est verrouillé.
-            {% elif topic.antispam  %}
-                Vous ne pouvez pas encore poster dans ce sujet (protection antispam de 15 min).
-            {% endif %}
-        {% endspaceless %}</textarea>
-    </p>
-
-    <div style="text-align: center;">
-        <button class="button btn-primary" type="submit" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
-                Répondre
-            </button>
-            <button type="submit" formaction="/forums/message/nouveau?sujet={{ topic.pk }}&amp;plus"
-                class="button" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
-                Plus d'options
-            </button>
+<div class="row">
+    <div class="large-8 large-offset-2 columns">
+        <form action="/forums/message/nouveau?sujet={{ topic.pk }}" method="POST">
+            <textarea name="text" rows="10" {% if topic.is_locked or topic.antispam %}disabled{% endif %}
+                placeholder="Votre message au format Markdown.">{% spaceless %}
+                    {% if topic.is_locked %}
+                        Ce sujet est verrouillé.
+                    {% elif topic.antispam  %}
+                        Vous ne pouvez pas encore poster dans ce sujet (protection antispam de 15 min).
+                    {% endif %}
+                {% endspaceless %}</textarea>
+        
+            <div style="text-align: center;">
+                <button class="button btn-primary" type="submit" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
+                    Répondre
+                </button>
+                <button type="submit" formaction="/forums/message/nouveau?sujet={{ topic.pk }}&amp;plus"
+                    class="button secondary" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
+                    Plus d'options
+                </button>
+            </div>
+        
+            <input type="hidden" name="last_post" value="{{ last_post_pk }}" />
+            {% csrf_token %}
+        </form>
     </div>
-
-    <input type="hidden" name="last_post" value="{{ last_post_pk }}" />
-    {% csrf_token %}
-</form>
 </div>
 {% endif %}
 

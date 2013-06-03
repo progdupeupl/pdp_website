@@ -1,13 +1,18 @@
-<nav class="pager">
-    {% if prev %}
-        <a class="prev" href="{{ prev.get_absolute_url }}">
-            {{ prev.title }}
-        </a>
-    {% endif %}
-
-    {% if next %}
-        <a class="next" href="{{ next.get_absolute_url }}">
-            {{ next.title }}
-        </a>
-    {% endif %}
-</nav>
+<div class="row">
+    <div class="large-6 columns">
+        {% if prev %}
+            <a class="button secondary" href="{{ prev.get_absolute_url }}">
+                « {{ prev.title }}
+            </a>
+        {% endif %}
+    </div>
+    <div class="large-6 columns">
+        <div class="right">
+            {% if next %}
+               <a class="button secondary" href="{{ next.get_absolute_url }}">
+                   {{ next.title }} »
+               </a>
+           {% endif %}
+        </div>
+    </div>
+</div>

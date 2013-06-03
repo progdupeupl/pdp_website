@@ -11,19 +11,28 @@
 {% endblock %}
 
 {% block breadcrumb %}
-{% if extract.chapter.tutorial %}
-    <a href="{{ extract.chapter.tutorial.get_absolute_url }}">{{ extract.chapter.tutorial.title }}</a>
-{% else %}
-    <a href="{{ extract.chapter.part.tutorial.get_absolute_url }}">{{ extract.chapter.part.tutorial.title }}</a>
-    <a href="{{ extract.chapter.part.get_absolute_url }}">{{ extract.chapter.part.title }}</a>
-    <a href="{{ extract.chapter.get_absolute_url }}">{{ extract.chapter.title }}</a>
-{% endif %}
-    Éditer l'extrait
+    {% if extract.chapter.tutorial %}
+        <li><a href="{{ extract.chapter.tutorial.get_absolute_url }}">{{ extract.chapter.tutorial.title }}</a></li>
+    {% else %}
+        <li><a href="{{ extract.chapter.part.tutorial.get_absolute_url }}">{{ extract.chapter.part.tutorial.title }}</a></li>
+        <li><a href="{{ extract.chapter.part.get_absolute_url }}">{{ extract.chapter.part.title }}</a></li>
+        <li><a href="{{ extract.chapter.get_absolute_url }}">{{ extract.chapter.title }}</a></li>
+    {% endif %}
+    <li class="current"><a href="#">Éditer l'extrait</a></li>
 {% endblock %}
 
 {% block content %}
 
-{% include "tutorial/extract_common.html" %}
-{% crispy form %}
+<div class="row">
+    <div class="large-12 columns">
+        {% include "tutorial/extract_common.html" %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="large-12 columns">
+        {% crispy form %}
+    </div>
+</div>
 
 {% endblock %}

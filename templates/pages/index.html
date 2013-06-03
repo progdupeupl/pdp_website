@@ -1,17 +1,23 @@
 {% extends "pages/base.html" %}
 
 {% block title %}
-Liste des pages
+    Pages
 {% endblock %}
 
 {% block breadcrumb %}
-Liste des pages
+    <li class="current"><a href="#">Index</a></li>
 {% endblock %}
 
 {% block headline %}
-Liste des pages
+    Pages
 {% endblock %}
 
 {% block content %}
-<a href="{% url pdp.pages.views.help_markdown %}">Documentation de Markdwon et des différentes extensions</a>
+    
+<div class="row">
+    <div class="large-12">
+        <a href="{% url pdp.pages.views.help_markdown %}">Documentation de Markdwon et des différentes extensions</a>
+    </div>
+</div>
+
 {% endblock %}
