@@ -5,17 +5,17 @@
 {% for forum in category.get_forums %}
 <div class="row">
     <div class="large-6 columns">
-        <h5>
-            <a href="{{ forum.get_absolute_url }}">{{ forum.title }}</a>
-        </h5>
+        <a href="{{ forum.get_absolute_url }}">
+            {{ forum.title }}
+        </a>
         <p>
             {{ forum.subtitle }}
         </p>
     </div>
-    <div class="large-1 columns forum-topic-count">
+    <div class="large-1 columns hide-on-phones forum-topic-count">
         {{ forum.get_topic_count }}
     </div>
-    <div class="large-1 columns forum-post-count">
+    <div class="large-1 columns hide-on-phones forum-post-count">
         {{ forum.get_post_count }}
     </div>
     <div class="large-4 columns forum-topic-last-message">

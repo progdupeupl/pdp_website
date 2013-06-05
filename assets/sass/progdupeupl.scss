@@ -20,9 +20,35 @@ h1, h2 {
     }
 }
 
+p { text-align: justify; }
+
 table {
     width: 100%;
 }
+
+header {
+    background-color: darken($primary-color, 10%);
+    
+    h1, p {
+        color: white;
+    }
+    
+    margin-bottom: emCalc(30px);
+}
+
+.top-bar {
+    @include background-image(linear-gradient(top bottom, rgb(84, 180, 235), rgb(47, 164, 231)));
+    @include box-shadow(0px 1px 10px rgba(0, 0, 0, 0.1));
+    
+    .dropdown {
+        text-shadow: none;
+    }
+}
+
+.top-bar, header {
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
+}
+
 
 .asteriskField {
     color: $alert-color;
@@ -30,19 +56,6 @@ table {
 
 .breadcrumbs {
     @include text-shadow(1px 1px 0px rgb(255, 255, 255));
-}
-
-.top-bar {
-    @include background-image(linear-gradient(top bottom, rgb(84, 180, 235), rgb(47, 164, 231)));
-    
-    border-bottom: solid 1px rgb(25, 144, 213);
-    
-    @include box-shadow(0px 1px 10px rgba(0, 0, 0, 0.1));
-    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
-    
-    .dropdown {
-        text-shadow: none;
-    }
 }
 
 .headline-actions {
@@ -58,7 +71,7 @@ table {
 
 .forum-topic-count, .forum-post-count {
     font-size: emCalc(24px);
-    padding: emCalc(15px);
+    padding: emCalc(5px);
     
     text-align: center;
 }
@@ -66,8 +79,4 @@ table {
 /* Do not regroup in an .alert-box block, does not work otherwise */
 .alert-box.success {
     color: rgb(102, 149, 51);
-}
-
-.forum-topic-last-message {
-    padding-top: 0.6em;
 }

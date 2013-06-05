@@ -5,7 +5,7 @@ from django import forms
 from django.contrib.auth.models import User
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, Field, HTML
+from crispy_forms_foundation.layout import Layout, Div, Fieldset, Submit, Field, HTML
 from crispy_forms.bootstrap import FormActions
 
 from captcha.fields import CaptchaField
@@ -13,7 +13,6 @@ from captcha.fields import CaptchaField
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=30)
     password = forms.CharField(max_length=76, widget=forms.PasswordInput)
-
 
 class RegisterForm(forms.Form):
     email = forms.EmailField(label='Adresse email')
@@ -40,9 +39,10 @@ class RegisterForm(forms.Form):
                 u'Captcha',
                 Field('captcha'),
             ),
-            FormActions(
+            Div(
                 Submit('submit', 'Valider mon inscription'),
-                HTML('<a href="/" class="btn">Annuler</a>'),
+                HTML('<a href="/" class="button secondary">Annuler</a>'),
+                css_class='button-group'
             )
         )
         super(RegisterForm, self).__init__(*args, **kwargs)

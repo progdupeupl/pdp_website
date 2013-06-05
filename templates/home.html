@@ -16,18 +16,23 @@ Accueil
 Bonjour o/
 {% endblock %}
 
+{% block header %}
+    <h1>Bienvenue</h1>
+    <p>
+        Bienvenue sur Progdupeupl, <strong>une communauté de passionnés
+        d'informatique</strong> et notamment de programmation. Ce site permet
+        non seulement de se former à la programmation, mais également de discuter
+        entre membres pour progresser, découvrir des astuces, partager, aider, en
+        bref : échanger de façon utile sur le monde de l'informatique.
+    </p>
+{% endblock %}
+
 {# Content #}
 
 {% block content %}
 <div class="row">
     <div class="large-12 columns">
-        <p>
-            Bienvenue sur Progdupeupl, <strong>une communauté de passionnés
-            d'informatique</strong> et notamment de programmation. Ce site permet
-            non seulement de se former à la programmation, mais également de discuter
-            entre membres pour progresser, découvrir des astuces, partager, aider, en
-            bref : échanger de façon utile sur le monde de l'informatique.
-        </p>
+        
     </div>
 </div>
 
@@ -115,13 +120,6 @@ Bonjour o/
                 Aller aux forums
             </a>
         </div>
-    </div>
-</div>
-<p></p>
-<div class="row">
-    <div class="large-8 columns">
-        <h2>En savoir plus</h2>
-        <p>blablabla</p>
     </div>
 </div>
 

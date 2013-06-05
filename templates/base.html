@@ -47,7 +47,7 @@
                     
                     {% with profile=user|profile %}
                         <a href="#">
-                            <img src="{{ profile.get_gravatar_url }}&amp;s=32" alt="Avatar" width="32" height="32" />
+                            <img src="{{ profile.get_gravatar_url }}&amp;s=24" alt="Avatar" width="24" height="24" />
                             {{ user.username }}
                         </a>
                     {% endwith %}
@@ -68,6 +68,14 @@
             </ul>
         </section>
     </nav>
+    
+    <header>
+        <div class="row">
+            <div class="twelve columns">
+                {% block header %}{% endblock %}
+            </div>
+        </div>
+    </header>
     
     <div class="row">
         <div class="large-12 columns">
