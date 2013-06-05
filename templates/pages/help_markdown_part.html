@@ -1,3 +1,9 @@
+<h2>
+    Formattage de base
+</h2>
+
+
+
 <table>
     <thead>
         <tr>
@@ -27,38 +33,8 @@
             <td>Image</td>
             <td><code>![Texte alternatif](http://progdupeu.pl/static/img/cat.jpg)</code></td>
             <td><img alt="Texte alternatif" src="http://progdupeu.pl/static/img/cat.jpg" /></td>
-        </tr><tr>
-            <td>Code inline</td>
-            <td><code>`texte`</code></td>
-            <td><code>texte</code></td>
-        </tr><tr>
-            <td>Bloc de code</td>
-            <td>
-<pre>
-```python
-from os import path
-```</pre>
-            <p>ou</p>
-<pre>
-␣␣␣␣:::python
-␣␣␣␣from os import path</pre>
-            </td>
-            <td>
-                <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
-</pre></div>
-            </td></tr></table>
-            </td>
-        </tr><tr>
-            <td>Citation</td>
-            <td>
-<pre>
-&gt; Texte à citer.
-</pre>
-            </td>
-            <td>
-                <blockquote><p>Texte à citer.</p></blockquote>
-            </td>
-        </tr><tr>
+        </tr>
+        <tr>
             <td>Listes</td>
             <td>
 <pre>
@@ -79,6 +55,16 @@ from os import path
                 </ul>
             </td>
             </tr><tr>
+            <td>Citation</td>
+            <td>
+<pre>
+&gt; Texte à citer.
+</pre>
+            </td>
+            <td>
+                <blockquote><p>Texte à citer.</p></blockquote>
+            </td>
+        </tr><tr>
             <td>Abrévitations</td>
             <td>
 <pre>
@@ -90,8 +76,62 @@ Ce site utilise HTML et CSS.
             <td>
                 <p>Ce site utilise <abbr title="Hyper Text Markup Language">HTML</abbr> et <abbr title="Cascading Style Sheets">CSS</abbr>.</p> 
             </td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>
+    Code
+</h2>
+        
+<table>
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th style="width: 30%;">Vous tapez</th>
+            <th>Vous voyez</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Code inline</td>
+            <td><code>`texte`</code></td>
+            <td><code>texte</code></td>
         </tr><tr>
-            <td>Bloc secret*</td>
+            <td>Bloc de code</td>
+            <td>
+<pre>
+```python
+from os import path
+```</pre>
+            <p>ou</p>
+<pre>
+␣␣␣␣:::python
+␣␣␣␣from os import path</pre>
+            </td>
+            <td>
+                <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
+</pre></div></td></tr></table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>
+    Extensions
+</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th>Vous tapez</th>
+            <th>Vous voyez</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Bloc secret</td>
             <td>
 <pre>
 [secret]{
@@ -102,7 +142,7 @@ Ce site utilise HTML et CSS.
                 <p>Mon précieux</p>
             </td>
         </tr><tr>
-            <td>Bloc flottant*</td>
+            <td>Bloc flottant</td>
             <td>
 <pre>
 [droite]{

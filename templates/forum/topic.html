@@ -139,7 +139,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="large-2 columns">
+        <div class="large-2 columns hide-for-small">
             {% with profile=post.author|profile %}
                 <img src="{{ profile.get_gravatar_url }}&amp;?s=80" width="80" height="80" alt="Avatar" />
             {% endwith %}

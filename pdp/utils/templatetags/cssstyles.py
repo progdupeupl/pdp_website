@@ -9,7 +9,7 @@ from markdown.extensions import Extension
 
 HTMLELEMENTS = ['p', 'a', 'div', 'blockquote', 'hr']
 HTMLATTRIBUTES = ['style', 'id', 'href', 'class']
-STYLE_REG = reg = re.compile(r'\[([a-z]+)\]\{(.+?)\}', re.DOTALL)
+STYLE_REG = reg = re.compile(r'\[([a-z]+)\]\{(.+?)\r?\n\}', re.DOTALL)
 
 getStyle = lambda tag, blockcontent, blockid: {
 	'flg':{'div':
