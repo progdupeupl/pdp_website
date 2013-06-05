@@ -95,7 +95,7 @@
 {% for post in posts %}  
     <div class="row post-head" id="p{{ post.id }}">
         <div class="large-2 columns">
-            <p style="text-align: center;">
+            <ps>
                 <a href="{{ post.author.get_absolute_url }}">
                     {{ post.author.username }}
                 </a>
@@ -139,7 +139,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="large-2 columns" style="text-align: center;">
+        <div class="large-2 columns">
             {% with profile=post.author|profile %}
                 <img src="{{ profile.get_gravatar_url }}&amp;?s=80" width="80" height="80" alt="Avatar" />
             {% endwith %}

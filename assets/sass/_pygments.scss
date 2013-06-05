@@ -64,19 +64,27 @@
 .codehilitetable {
     width: 100% !important;
     table-layout: fixed;
+    border-color: rgba(0, 0, 0, 0.15);
     
     td {
         padding: 0;
     }
     
     .linenos {
-        border-right: 1px solid rgb(221, 221, 221);
+        background-color: rgb(251, 251, 252);
+        border-right: 1px solid rgb(236, 236, 240);
         width: 46px; /* Can handle up to 9999 lines of code without overflowing */
+    }
+    
+    .codehilite, .linenos {
+        padding-top: 15px;
+        padding-bottom: 15px;
     }
     
     .linenodiv pre {
         text-align: right;
         padding-right: emCalc(6px);
+        color: rgb(190, 190, 197);
     }
     
     .codehilite pre {
@@ -87,7 +95,7 @@
         width: 100%;
         height: auto;
         overflow: auto;
-      }
+    }
     
     .codehilite pre {
         word-wrap: break-word;
