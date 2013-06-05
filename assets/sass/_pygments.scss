@@ -60,3 +60,38 @@
 .codehilite .vg { color: #19177C } /* Name.Variable.Global */
 .codehilite .vi { color: #19177C } /* Name.Variable.Instance */
 .codehilite .il { color: #666666 } /* Literal.Number.Integer.Long */
+
+.codehilitetable {
+    width: 100% !important;
+    table-layout: fixed;
+    
+    td {
+        padding: 0;
+    }
+    
+    .linenos {
+        border-right: 1px solid rgb(221, 221, 221);
+        width: 46px; /* Can handle up to 9999 lines of code without overflowing */
+    }
+    
+    .linenodiv pre {
+        text-align: right;
+        padding-right: emCalc(6px);
+    }
+    
+    .codehilite pre {
+        padding-left: emCalc(6px);
+    }
+    
+    .codehilite {
+        width: 100%;
+        height: auto;
+        overflow: auto;
+      }
+    
+    .codehilite pre {
+        word-wrap: break-word;
+        white-space: pre; overflow: auto;
+        overflow: auto;
+    }
+}

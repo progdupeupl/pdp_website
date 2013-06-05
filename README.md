@@ -11,10 +11,12 @@ comments) though some parts may - of course - be in French. PEP-8 is good too.
 ## Dependencies
 
 To install all Python dependencies, simply run
-`pip install -r requirements.txt`. Moreover, in order to generate the
+`pip install -r requirements.txt`.
+
+Moreover, in order to generate the
 CSS files with included Makefile, you will need to install 
-[Compass](http://compass-style.org) program using the `gem install compass`
-command and [YUI Compressor](http://yui.github.io/yuicompressor/).
+[Compass](http://compass-style.org) and [Zurb Foundation](http://foundation.zurb.com/)' ruby gems
+using `gem install compass zurb-foundation`.
 
 ## Copyright
 

@@ -93,13 +93,15 @@
 
 
 {% for post in posts %}  
-    <div class="row" id="p{{ post.id }}">
-        <div class="large-1 columns">
-            <a href="{{ post.author.get_absolute_url }}">
-                {{ post.author.username }}
-            </a>
+    <div class="row post-head" id="p{{ post.id }}">
+        <div class="large-2 columns">
+            <p style="text-align: center;">
+                <a href="{{ post.author.get_absolute_url }}">
+                    {{ post.author.username }}
+                </a>
+            </p>
         </div>
-        <div class="large-11 columns">
+        <div class="large-10 columns">
             <div class="right">
                 {% if user.is_authenticated %}
                     <div class="button-group">
@@ -124,22 +126,25 @@
                     </div>
                 {% endif %}
             </div>
-            {{ post.pubdate|humane_date }}
-            {% if not post.update = None %}
-                (dernière édition {{ post.update|humane_date }})
-            {% endif %}
-            {% if forloop.first and nb > 1 %}
-                &ndash; page précédente
-            {% endif %}
+            <p>
+                <a href="#p{{ post.pk }}">#</a>
+                {{ post.pubdate|humane_date }}
+                {% if not post.update = None %}
+                    (dernière édition {{ post.update|humane_date }})
+                {% endif %}
+                {% if forloop.first and nb > 1 %}
+                    &ndash; page précédente
+                {% endif %}
+            </p>
         </div>
     </div>
     <div class="row">
-        <div class="large-1 columns">
+        <div class="large-2 columns" style="text-align: center;">
             {% with profile=post.author|profile %}
-                <img src="{{ profile.get_gravatar_url }}" alt="Avatar" />
+                <img src="{{ profile.get_gravatar_url }}&amp;?s=80" width="80" height="80" alt="Avatar" />
             {% endwith %}
         </div>
-        <div class="large-11 columns">
+        <div class="large-10 columns">
             {{ post.text|emarkdown }}
         </div>
     </div>
