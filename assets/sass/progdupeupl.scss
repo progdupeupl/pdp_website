@@ -33,6 +33,10 @@ header {
         color: white;
     }
     
+    p {
+        padding-bottom: emCalc(5px);
+    }
+    
     margin-bottom: emCalc(30px);
 }
 

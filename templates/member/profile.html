@@ -18,8 +18,8 @@
 
 {% block headline-actions %}
     {% ifequal profile.user user %}
-        <a href="/membres/editer?profil={{ profile.pk }}" class="button">
-            Éditer mon profil
+        <a href="{% url pdp.member.views.edit_profile %}" class="button">
+            Éditer
         </a>
     {% endifequal %}
 {% endblock %}
@@ -49,15 +49,60 @@
 <div class="row">
     <div class="large-4 columns">
         <h3>Articles</h3>
-        <div id="articles-graph" style="width:100%; height:200px;"></div>
+        <table>
+            <tbody>
+                <tr>
+                    <td>En cours de rédaction</td>
+                    <td>{{ profile.get_hidden_articles.count }}</td>
+                </tr>
+                <tr>
+                    <td>En ligne</td>
+                    <td>{{ profile.get_visible_articles.count }}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>Total</td>
+                    <td>{{ profile.get_articles.count }}</td>
+                </tr>
+            </tfoot>
+        </table>
     </div>
     <div class="large-4 columns">
         <h3>Tutoriels</h3>
-        <div id="tutorials-graph" style="width:100%; height:200px;"></div>
+        <table>
+            <tbody>
+                <tr>
+                    <td>En cours de rédaction</td>
+                    <td>{{ profile.get_hidden_tutorials.count }}</td>
+                </tr>
+                <tr>
+                    <td>En ligne</td>
+                    <td>{{ profile.get_visible_tutorials.count }}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>Total</td>
+                    <td>{{ profile.get_tutorials.count }}</td>
+                </tr>
+            </tfoot>
+        </table>
     </div>
     <div class="large-4 columns">
         <h3>Forums</h3>
-        <div id="forums-graph" style="width:100%; height:200px;"></div>
+        <table>
+            <tbody>
+                <tr>
+                    <td>Sujets créés</td>
+                    <td>{{ profile.get_topic_count }}</td>
+                </tr>
+                <tr>
+                    <td>Messages postés</td>
+                    <td>{{ profile.get_post_count }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -74,83 +119,4 @@
 
 {% endif %}
 
-{% endblock %}
-
-{% block additionnal-js %}
-<script>
-    $(function () { 
-        $('#articles-graph').highcharts({
-            chart: {
-                type: 'column'
-            },
-            credits : {
-                enabled: false
-            },
-            title: {
-                text: null
-            },
-            xAxis: {
-                categories: ['En cours de rédaction', 'En ligne']
-            },
-            yAxis: {
-                title: {
-                    text: null
-                }
-            },
-            series: [{
-                name: 'Articles',
-                data: [{{ profile.get_hidden_articles.count }}, {{ profile.get_visible_articles.count }}],
-                showInLegend: false
-            }]
-        });
-        $('#tutorials-graph').highcharts({
-            chart: {
-                type: 'column'
-            },
-            credits : {
-                enabled: false
-            },
-            title: {
-                text: null
-            },
-            xAxis: {
-                categories: ['En cours de rédaction', 'En ligne']
-            },
-            yAxis: {
-                title: {
-                    text: null
-                }
-            },
-            series: [{
-                name: 'Tutoriels',
-                data: [{{ profile.get_hidden_tutorials.count }}, {{ profile.get_visible_tutorials.count }}],
-                showInLegend: false
-            }]
-        });
-        $('#forums-graph').highcharts({
-            chart: {
-                type: 'column'
-            },
-            credits : {
-                enabled: false
-            },
-            title: {
-                text: null
-            },
-            xAxis: {
-                categories: ['Sujets', 'Messages']
-            },
-            yAxis: {
-                title: {
-                    text: null
-                }
-            },
-            series: [{
-                name: 'Éléments',
-                data: [{{ profile.get_topic_count }}, {{ profile.get_post_count }}],
-                showInLegend: false
-            }]
-        });
-    });
-</script>
 {% endblock %}

@@ -45,9 +45,10 @@ def details(request, user_name):
 def edit_profile(request):
     try:
         profile_pk = int(request.GET['profil'])
+        profile = get_object_or_404(Profile, pk=profile_pk)
     except KeyError:
-        raise Http404
-    profile = get_object_or_404(Profile, pk=profile_pk)
+        profile = get_object_or_404(Profile, user=request.user)
+        
     # Making sure the user is allowed to do that
     if not request.user == profile.user:
         raise Http404

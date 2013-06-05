@@ -12,13 +12,13 @@
             {{ forum.subtitle }}
         </p>
     </div>
-    <div class="large-1 columns hide-on-phones forum-topic-count">
+    <div class="large-1 columns hide-for-small forum-topic-count">
         {{ forum.get_topic_count }}
     </div>
-    <div class="large-1 columns hide-on-phones forum-post-count">
+    <div class="large-1 columns hide-for-small forum-post-count">
         {{ forum.get_post_count }}
     </div>
-    <div class="large-4 columns forum-topic-last-message">
+    <div class="large-4 columns hide-for-small forum-topic-last-message">
         <p>
             {% if forum.get_last_message %}
                 <a href="{{ forum.get_last_message.get_absolute_url }}">
