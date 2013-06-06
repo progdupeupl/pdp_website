@@ -1,132 +1,52 @@
-@import "settings";
+/* First of all, normalize */
+
 @import "normalize";
-@import "foundation";
+
+/* Foundation */
+
+@import "settings";
+
+@import "foundation/components/global";
+@import "foundation/components/grid";
+@import "foundation/components/visibility";
+@import "foundation/components/block-grid";
+@import "foundation/components/type";
+@import "foundation/components/buttons";
+@import "foundation/components/forms";
+@import "foundation/components/custom-forms";
+@import "foundation/components/button-groups";
+@import "foundation/components/dropdown-buttons";
+@import "foundation/components/split-buttons";
+// @import "foundation/components/flex-video";
+@import "foundation/components/section";
+@import "foundation/components/top-bar";
+// @import "foundation/components/orbit";
+// @import "foundation/components/reveal";
+// @import "foundation/components/joyride";
+@import "foundation/components/clearing";
+@import "foundation/components/alert-boxes";
+@import "foundation/components/breadcrumbs";
+@import "foundation/components/keystrokes";
+@import "foundation/components/labels";
+@import "foundation/components/inline-lists";
+@import "foundation/components/pagination";
+@import "foundation/components/panels";
+// @import "foundation/components/pricing-tables";
+@import "foundation/components/progress-bars";
+@import "foundation/components/side-nav";
+@import "foundation/components/sub-nav";
+// @import "foundation/components/switch";
+// @import "foundation/components/magellan";
+@import "foundation/components/tables";
+@import "foundation/components/thumbs";
+@import "foundation/components/tooltips";
+@import "foundation/components/dropdown";
+
 @import "compass";
+
+/* And now our custom SCSS */
 
 @import "pygments";
 
-/* Fix bug on textareas with Foundation, see https://groups.google.com/forum/?fromgroups#!topic/foundation-framework-/b2uVmpvW7wI */
-textarea {
-    height: auto;
-}
-
-p, ul, ol, td, th {
-    font-size: emCalc(14px);
-}
-
-h1, h2 {
-    a {
-        color: darken($primary-color, 25%);
-    }
-}
-
-p { text-align: justify; }
-
-table {
-    width: 100%;
-}
-
-header {
-    background-color: darken($primary-color, 10%);
-    
-    h1, p {
-        color: white;
-    }
-    
-    p {
-        padding-bottom: emCalc(5px);
-    }
-    
-    margin-bottom: emCalc(30px);
-}
-
-.top-bar {
-    @include background-image(linear-gradient(top bottom, rgb(84, 180, 235), rgb(47, 164, 231)));
-    @include box-shadow(0px 1px 10px rgba(0, 0, 0, 0.1));
-    
-    .dropdown {
-        text-shadow: none;
-    }
-}
-
-.top-bar, header {
-    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
-}
-
-
-.asteriskField {
-    color: $alert-color;
-}
-
-.breadcrumbs {
-    @include text-shadow(1px 1px 0px rgb(255, 255, 255));
-}
-
-.headline-actions {
-    margin-top: emCalc(24px);
-}
-
-.footer {
-    border-top: solid 1px $secondary-color;
-    
-    margin-top: emCalc(14px);
-    padding-top: emCalc(14px);
-}
-
-.forum-topic-count, .forum-post-count {
-    font-size: emCalc(24px);
-    padding: emCalc(5px);
-    
-    text-align: center;
-}
-
-/* Do not regroup in an .alert-box block, does not work otherwise */
-.alert-box.success {
-    color: rgb(102, 149, 51);
-}
-
-.post-head {
-    margin-top: emCalc(10px);
-    margin-bottom: emCalc(10px);
-    
-    background-color: rgb(245, 245, 245);
-    border-top: 1px solid rgb(221, 221, 221);
-    
-    padding: 3px;
-    
-    p {
-        padding: 0;
-        margin: 0;
-    }
-}
-
-/* CSS classes related to the cssstyles markdown extension */
-
-
-a.hidden-link-show, div.hidden-block:not(:target) a.hidden-link-show {
-    display: inline;
-}
-
-a.hidden-link-hide, div.hidden-block:not(:target) a.hidden-link-hide {
-    display: none;
-}
-
-div.hidden-block:target > a.hidden-link-show {
-    display: none;
-}
-
-div.hidden-block:target > a.hidden-link-hide {
-    display: inline;
-}
-
-div.hidden-block p, div.hidden-block table, div.hidden-block ul, div.hidden-block ol {
-    display: none;
-}
-
-div.hidden-block:target p, div.hidden-block:target table, div.hidden-block:target ul, div.hidden-block:target ol {
-    display: block;
-}
-
-a.hidden-link-show, a.hidden-link-hide {
-    font-size: emCalc(14px);
-}
+@import "misc";
+@import "forums";

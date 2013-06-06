@@ -184,6 +184,10 @@ class Topic(models.Model):
                 return True
 
         return False
+    
+    def never_read(self):
+        return never_read(self)
+    
 
 
 class Post(models.Model):

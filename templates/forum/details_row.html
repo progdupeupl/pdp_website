@@ -1,12 +1,44 @@
 {% load humane_date %}
+{% load upfirstletter %}
 
-<div class="row">
-    <div class="large-6 columns">
+<div class="forum-entry forum-entry-topic">
+    <div class="forum-entry-title
+    {% if user.is_authenticated %}
+        {% if topic.never_read %}
+            unread
+        {% endif %}
+    {% endif %}">
         <a href="{{ topic.get_absolute_url }}">
             {{ topic.title }}
         </a>
         <p>
-            {{ topic.subtitle }}
+            {% if topic.subtitle %}
+                {{ topic.subtitle }}
+            {% else %}
+                <span class="no-subtitle">Aucun sous-titre.</span>
+            {% endif %}
+        </p>
+    </div>
+    <div class="forum-entry-count">
+        {{ topic.get_post_count|add:"-1" }}
+    </div>
+    <div class="forum-entry-desc">
+        <p>
+            {% with answer=topic.get_last_answer %}
+                {% if answer %}
+                    <a href="{{ answer.get_absolute_url }}">
+                        {% with date=answer.pubdate|humane_date %}
+                            {{ date|upfirstletter }}
+                        {% endwith %}
+                    </a>
+                    par
+                    <a href="{{ answer.author.get_absolute_url }}">
+                        {{ answer.author.username }}
+                    </a>
+                {% else %}
+                    Aucune réponse
+                {% endif %}
+            {% endwith %}
         </p>
     </div>
 </div>

@@ -1,0 +1,72 @@
+/* Fix bug on textareas with Foundation, see https://groups.google.com/forum/?fromgroups#!topic/foundation-framework-/b2uVmpvW7wI */
+textarea {
+    height: auto;
+}
+
+p, ul, ol, td, th {
+    font-size: emCalc(14px);
+}
+
+h1, h2 {
+    a {
+        color: darken($primary-color, 25%);
+    }
+}
+
+p { text-align: justify; }
+
+table {
+    width: 100%;
+}
+
+header {
+    background-color: darken($primary-color, 10%);
+    
+    h1, p {
+        color: white;
+    }
+    
+    p {
+        padding-bottom: emCalc(5px);
+    }
+    
+    margin-bottom: emCalc(30px);
+}
+
+.top-bar {
+    @include background-image(linear-gradient(top bottom, rgb(84, 180, 235), rgb(47, 164, 231)));
+    @include box-shadow(0px 1px 10px rgba(0, 0, 0, 0.1));
+    
+    .dropdown {
+        text-shadow: none;
+    }
+}
+
+.top-bar, header {
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
+}
+
+
+.asteriskField {
+    color: $alert-color;
+}
+
+.breadcrumbs {
+    @include text-shadow(1px 1px 0px rgb(255, 255, 255));
+}
+
+.headline-actions {
+    margin-top: emCalc(24px);
+}
+
+.footer {
+    border-top: solid 1px $secondary-color;
+    
+    margin-top: emCalc(14px);
+    padding-top: emCalc(14px);
+}
+
+/* Do not regroup in an .alert-box block, does not work otherwise */
+.alert-box.success {
+    color: rgb(102, 149, 51);
+}
