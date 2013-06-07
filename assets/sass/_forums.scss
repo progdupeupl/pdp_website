@@ -38,6 +38,7 @@
     
     .forum-entry-desc {
         @include grid-column(4, true);
+        @extend .hide-for-small;
     }
     
     /* Specific rules */

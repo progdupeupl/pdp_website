@@ -1221,8 +1221,8 @@ $topbar-title-weight:                  normal;
 // Style the top bar dropdown elements
 
 // $topbar-dropdown-bg:                   #222;
-$topbar-dropdown-link-color:           $body-font-color;
-$topbar-dropdown-link-bg:              #eee;
+$topbar-dropdown-link-color:           #fff;
+$topbar-dropdown-link-bg:              darken($primary-color, 15%);
 // $topbar-dropdown-toggle-size:          5px;
 // $topbar-dropdown-toggle-color:         #fff;
 $topbar-dropdown-toggle-alpha:         1;
