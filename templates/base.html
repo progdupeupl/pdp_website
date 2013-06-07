@@ -15,7 +15,7 @@
 </head>
 <body>
     
-    <nav class="top-bar" data-options="is_hover:false">
+    <nav class="top-bar">
         <ul class="title-area">
             <li class="name">
                 <h1><a href="/">Progdupeupl</a></h1>
@@ -59,7 +59,7 @@
                             {% for topic in topics.unread %}
                             <li>
                                 <a href="{{ topic.get_last_answer.get_absolute_url }}">
-                                    <i class="icon-exclamation-sign"></i>
+                                    <span class="label">!</span>
                                     <strong>
                                         {{ topic.title }}
                                     </strong>

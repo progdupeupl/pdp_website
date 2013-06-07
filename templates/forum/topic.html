@@ -155,7 +155,7 @@
 {% if user.is_authenticated %}
 <div class="row">
     <div class="large-8 large-offset-2 columns">
-        <form action="/forums/message/nouveau?sujet={{ topic.pk }}" method="POST">
+        <form action="{% url pdp.forum.views.answer %}?sujet={{ topic.pk }}" method="POST">
             <textarea name="text" rows="10" {% if topic.is_locked or topic.antispam %}disabled{% endif %}
                 placeholder="Votre message au format Markdown.">{% spaceless %}
                     {% if topic.is_locked %}
@@ -169,7 +169,7 @@
                 <button class="button btn-primary" type="submit" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
                     Répondre
                 </button>
-                <button type="submit" formaction="/forums/message/nouveau?sujet={{ topic.pk }}&amp;plus"
+                <button type="submit" name="more"
                     class="button secondary" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
                     Plus d'options
                 </button>

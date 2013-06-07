@@ -247,7 +247,7 @@ def answer(request):
         newpost = last_post_pk != int(data['last_post'])
 
         # Using the « preview button », the « more » button or new post
-        if 'preview' in data or 'plus' in request.GET or newpost:
+        if 'preview' in data or 'more' in data or newpost:
             return render_template('forum/answer.html', {
                 'text': data['text'], 'topic': g_topic, 'posts': posts,
                 'last_post_pk': last_post_pk, 'newpost': newpost

@@ -41,8 +41,8 @@
         @extend .hide-for-small;
     }
     
-    /* Specific rules */
-    .forum-entry-topic .forum-entry-title {
+    /* Specific rules, actually don't work */
+    .forum-entry-topic > .forum-entry-title {
         @include grid-column(7);
     }
 }
