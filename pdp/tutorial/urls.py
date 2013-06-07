@@ -23,8 +23,6 @@ urlpatterns = patterns('',
     url(r'^(?P<tutorial_pk>\d+)/(?P<tutorial_slug>.+)/' +
     r'(?P<part_slug>.+)/$', views.view_part),
 
-    
-    
     url(r'^(?P<tutorial_pk>\d+)/(?P<tutorial_slug>.+)/$',
         views.view_tutorial),
 
@@ -34,10 +32,12 @@ urlpatterns = patterns('',
     
     url(r'^voir/(?P<tutorial_pk>\d+)-(?P<tutorial_slug>.+)/' +
         r'(?P<part_pos>\d+)-(?P<part_slug>.+)/' +
-        r'(?P<chapter_pos>\d+)-(?P<chapter_slug>.+)$', views.deprecated_view_chapter_redirect),
+        r'(?P<chapter_pos>\d+)-(?P<chapter_slug>.+)$',
+        views.deprecated_view_chapter_redirect),
     
     url(r'^voir/(?P<tutorial_pk>\d+)-(?P<tutorial_slug>.+)/' +
-        r'(?P<part_pos>\d+)-(?P<part_slug>.+)/$', views.deprecated_view_part_redirect),
+        r'(?P<part_pos>\d+)-(?P<part_slug>.+)/$',
+        views.deprecated_view_part_redirect),
 
     url(
         r'^voir/(?P<tutorial_pk>\d+)-(?P<tutorial_slug>.+)/$',

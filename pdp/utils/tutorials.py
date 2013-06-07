@@ -95,12 +95,13 @@ def export_tutorial(tutorial):
     dct['title'] = tutorial.title
     dct['description'] = tutorial.description
     dct['is_mini'] = tutorial.is_mini
-
+    
     if tutorial.is_mini:
         # We export the chapter without its empty title if mini tutorial
         chapter = Chapter.objects.get(tutorial=tutorial)
         dct['chapter'] = export_chapter(chapter, export_title=False)
     else:
+        dct['parts'] = []
         parts = Part.objects.filter(tutorial=tutorial)
         for part in parts:
             dct['parts'].append(export_part(part))

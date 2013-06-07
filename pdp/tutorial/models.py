@@ -4,6 +4,7 @@ from os import path
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 from pdp.utils import slugify
 
@@ -56,7 +57,9 @@ class Tutorial(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '/tutoriels/%s/%s/' % (self.pk, slugify(self.title))
+        return reverse('pdp.tutorial.views.view_tutorial', args=[
+            self.pk, slugify(self.title)
+        ])
 
     def get_parts(self):
         return Part.objects.all()\
@@ -104,7 +107,11 @@ class Part(models.Model):
             (self.tutorial.title, self.position_in_tutorial)
 
     def get_absolute_url(self):
-        return self.tutorial.get_absolute_url() + '%s/' % self.slug
+        return reverse('pdp.tutorial.views.view_part', args=[
+            self.tutorial.pk,
+            self.tutorial.slug,
+            self.slug,
+        ])
 
     def get_chapters(self):
         return Chapter.objects.all()\

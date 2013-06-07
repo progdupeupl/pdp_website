@@ -136,6 +136,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
     # Custom context processors
     'pdp.utils.context_processors.analytics',
+    'pdp.utils.context_processors.versions',
 )
 
 INSTALLED_APPS = (
