@@ -9,9 +9,9 @@
             <p>Aucune introduction.</p>
         {% endif %}
         
-        {% if chapter.get_extracts %}
+        {% if extracts %}
             <ul>
-                {% for extract in chapter.get_extracts %}
+                {% for extract in extracts %}
                     <li>
                         <a href="#{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
                             {{ extract.title }}
@@ -27,7 +27,7 @@
     </div>
 </div>
 
-{% if user in chapter.part.tutorial.authors.all or user in chapter.tutorial.authors.all %}
+{% if user in authors %}
 <div class="row">
     <div class="large-12 columns">
         <a href="/tutoriels/nouveau/extrait?chapitre={{ chapter.pk }}" class="button">
@@ -39,7 +39,7 @@
 
 <hr />
 
-{% for extract in chapter.get_extracts %}
+{% for extract in extracts %}
 <div class="row">
     <div class="large-12 columns">
         <h2 id="{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
@@ -48,7 +48,7 @@
             </a>
         </h2>
         
-        {% if user in chapter.part.tutorial.authors.all or user in chapter.tutorial.authors.all %}
+        {% if user in authors %}
             <form action="{% url pdp.tutorial.views.modify_extract %}" method="post">
                 <div class="button-group">
                     <a href="{% url pdp.tutorial.views.edit_extract %}?extrait={{ extract.pk }}" class="button">
