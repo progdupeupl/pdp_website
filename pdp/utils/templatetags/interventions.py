@@ -6,17 +6,6 @@ from pdp.forum.models import TopicFollowed, never_read
 
 register = template.Library()
 
-
-@register.filter('interventions_topics_count')
-def interventions_topics_count(user):
-    topicsfollowed = TopicFollowed.objects.filter(user=user)
-    count = 0
-    for topicfollowed in topicsfollowed:
-        if never_read(topicfollowed.topic):
-            count += 1
-    return count
-
-
 @register.filter('interventions_topics')
 def interventions_topics(user):
     topicsfollowed = TopicFollowed.objects.filter(user=user)\

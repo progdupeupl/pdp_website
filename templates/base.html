@@ -45,41 +45,39 @@
             
             <ul class="right">
                 {% if user.is_authenticated %}
-                <li class="has-dropdown">
-                    <a href="#">
-                        {% with unread_topic_count=user|interventions_topics_count %}
-                            {% if unread_topic_count > 0 %}
-                                <span class="label alert">{{ unread_topic_count }}</span>
-                            {% endif %}
-                        {% endwith %}
-                        Sujets suivis
-                    </a>
-                    <ul class="dropdown">
-                         {% with topics=user|interventions_topics %}
-                            {% for topic in topics.unread %}
-                            <li>
-                                <a href="{{ topic.get_last_answer.get_absolute_url }}">
-                                    <span class="label">!</span>
-                                    <strong>
-                                        {{ topic.title }}
-                                    </strong>
-                                </a>
-                            </li>
-                            {% endfor %}
-                            {% for topic in topics.read %}
-                            <li>
-                                <a href="{{ topic.get_last_answer.get_absolute_url }}">
-                                    {{ topic.title }}
-                                </a>
-                            </li>
-                            {% endfor %}
-                            {% with tr=topics.read %}
-                                {% with tu=topics.unread %}
-                                    {% if tr|length == 0 and tu|length == 0 %}
-                                        <li class="disabled">
-                                            <a href="javascript:;">Aucun sujet suivi</a>
-                                        </li>
+                    {% with topics=user|interventions_topics %}
+                        {% with unread_topics=topics.unread %}
+                            <li class="has-dropdown">
+                                <a href="#">
+                                    {% if unread_topics|length > 0 %}
+                                        <span class="label alert">{{ unread_topics|length }}</span>
                                     {% endif %}
+                                    Sujets suivis
+                                </a>
+                                <ul class="dropdown">
+                                    {% with read_topics=topics.read %}
+                                        {% for topic in unread_topics %}
+                                            <li>
+                                                <a href="{{ topic.get_last_answer.get_absolute_url }}">
+                                                    <span class="label">!</span>
+                                                    <strong>
+                                                        {{ topic.title }}
+                                                    </strong>
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                        {% for topic in topics_read %}
+                                            <li>
+                                                <a href="{{ topic.get_last_answer.get_absolute_url }}">
+                                                    {{ topic.title }}
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                        {% if topics_read|length == 0 and topics_unread|length == 0 %}
+                                            <li class="disabled">
+                                                <a href="javascript:;">Aucun sujet suivi</a>
+                                            </li>
+                                        {% endif %}
                                 {% endwith %}
                             {% endwith %}
                         {% endwith %}
