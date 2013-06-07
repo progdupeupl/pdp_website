@@ -1,6 +1,4 @@
 {% extends "forum/base.html" %}
-{% load emarkdown %}
-{% load markup %}
 
 {% block title %}
     Répondre au sujet
@@ -64,14 +62,7 @@
 </div>
 
 {% if text %}
-<div class="row" id="previsualisation">
-    <div class="large-12 columns">
-        <div class="panel">
-            <h5>Prévisualisation de votre message</h5>
-            {{ text|emarkdown }}
-        </div>
-    </div>
-</div>
+    {% include "forum/previsualization.part.html" %}
 {% endif %}
 
 {% endblock %}
