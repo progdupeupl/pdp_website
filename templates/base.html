@@ -1,5 +1,7 @@
 ﻿{% load staticfiles %}
 {% load profile %}
+{% load interventions %}
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
@@ -44,14 +46,54 @@
             <ul class="right">
                 {% if user.is_authenticated %}
                 <li class="has-dropdown">
-                    
+                    <a href="#">
+                        {% with unread_topic_count=user|interventions_topics_count %}
+                            {% if unread_topic_count > 0 %}
+                                <span class="label alert">{{ unread_topic_count }}</span>
+                            {% endif %}
+                        {% endwith %}
+                        Sujets suivis
+                    </a>
+                    <ul class="dropdown">
+                         {% with topics=user|interventions_topics %}
+                            {% for topic in topics.unread %}
+                            <li>
+                                <a href="{{ topic.get_last_answer.get_absolute_url }}">
+                                    <i class="icon-exclamation-sign"></i>
+                                    <strong>
+                                        {{ topic.title }}
+                                    </strong>
+                                </a>
+                            </li>
+                            {% endfor %}
+                            {% for topic in topics.read %}
+                            <li>
+                                <a href="{{ topic.get_last_answer.get_absolute_url }}">
+                                    {{ topic.title }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                            {% with tr=topics.read %}
+                                {% with tu=topics.unread %}
+                                    {% if tr|length == 0 and tu|length == 0 %}
+                                        <li class="disabled">
+                                            <a href="javascript:;">Aucun sujet suivi</a>
+                                        </li>
+                                    {% endif %}
+                                {% endwith %}
+                            {% endwith %}
+                        {% endwith %}
+                        <li class="divider"></li>
+                        <li><a href="#">Voir tous les sujets suivis</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
                     {% with profile=user|profile %}
                         <a href="#">
                             <img src="{{ profile.get_gravatar_url }}&amp;s=24" alt="Avatar" width="24" height="24" />
                             {{ user.username }}
                         </a>
                     {% endwith %}
-                    
                     <ul class="dropdown">
                         <li><a href="{{ user.get_absolute_url }}">Profil</a></li>
                         <li><a href="{% url pdp.member.views.logout_view %}">Se déconnecter</a></li>
@@ -133,7 +175,7 @@
         </div>
     </div>
     
-    <script src="{% static "js/vendor/zepto.js" %}"></script>
+    <script src="{% static "js/vendor/jquery.js" %}"></script>
     <script src="{% static "js/foundation.min.js" %}"></script>
     
     <script>
