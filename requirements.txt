@@ -8,3 +8,4 @@ django-dynamic-fixture
 django-crispy-forms
 django-simple-captcha
 django-email-obfuscator
+django-debug-toolbar

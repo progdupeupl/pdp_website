@@ -3,7 +3,7 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponsePermanentRedirect
 from django.core.urlresolvers import reverse
 
 from pdp.utils import render_template, slugify
@@ -188,17 +188,18 @@ def modify_tutorial(request):
 # Part
 
 
-def view_part(request, tutorial_pk, tutorial_slug, part_pos, part_slug):
+def view_part(request, tutorial_pk, tutorial_slug, part_slug):
     '''Display a part'''
-    part = Part.objects.get(
-        position_in_tutorial=part_pos, tutorial__pk=tutorial_pk)
+    part = get_object_or_404(Part,
+        slug=part_slug, tutorial__pk=tutorial_pk)
 
-    if not part.tutorial.is_visible and not request.user in \
-            part.tutorial.authors.all():
+    tutorial = part.tutorial
+    if not tutorial.is_visible and not request.user in \
+            tutorial.authors.all():
         raise Http404
 
     # Make sure the URL is well-formed
-    if not tutorial_slug == slugify(part.tutorial.title)\
+    if not tutorial_slug == slugify(tutorial.title)\
             or not part_slug == slugify(part.title):
         return redirect(part.get_absolute_url())
 
@@ -309,19 +310,21 @@ def edit_part(request):
 
 # Chapter
 
-def view_chapter(request, tutorial_pk, tutorial_slug, part_pos, part_slug,
-                 chapter_pos, chapter_slug):
+def view_chapter(request, tutorial_pk, tutorial_slug, part_slug,
+                 chapter_slug):
     '''View chapter'''
 
-    chapter = Chapter.objects.get(position_in_part=chapter_pos,
-                                  part__position_in_tutorial=part_pos,
-                                  part__tutorial__pk=tutorial_pk)
-
-    if not chapter.get_tutorial().is_visible \
-            and not request.user in chapter.get_tutorial().authors.all():
+    chapter = get_object_or_404(Chapter,
+                                slug=chapter_slug,
+                                part__slug=part_slug,
+                                part__tutorial__pk=tutorial_pk)
+    
+    tutorial = chapter.get_tutorial()
+    if not tutorial.is_visible \
+            and not request.user in tutorial.authors.all():
         raise Http404
 
-    if not tutorial_slug == slugify(chapter.part.tutorial.title)\
+    if not tutorial_slug == slugify(tutorial.title)\
         or not part_slug == slugify(chapter.part.title)\
             or not chapter_slug == slugify(chapter.title):
         return redirect(chapter.get_absolute_url())
@@ -571,3 +574,21 @@ def modify_extract(request):
         return redirect(extract.get_absolute_url())
 
     raise Http404
+
+# Handling deprecated links
+
+def deprecated_view_tutorial_redirect(request, tutorial_pk, tutorial_slug):
+    tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
+    return redirect(tutorial.get_absolute_url(), permanent=True)
+
+def deprecated_view_part_redirect(request, tutorial_pk, tutorial_slug, part_pos, part_slug):
+    part = Part.objects.get(
+        position_in_tutorial=part_pos, tutorial__pk=tutorial_pk)
+    return redirect(part.get_absolute_url(), permanent=True)
+
+def deprecated_view_chapter_redirect(request, tutorial_pk, tutorial_slug, part_pos, part_slug,
+                 chapter_pos, chapter_slug):
+    chapter = Chapter.objects.get(position_in_part=chapter_pos,
+                                  part__position_in_tutorial=part_pos,
+                                  part__tutorial__pk=tutorial_pk)
+    return redirect(chapter.get_absolute_url(), permanent=True)

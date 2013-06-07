@@ -1,3 +1,6 @@
+.gitignore
+pdp/settings.py
+
 *.pyc
 *.db
 

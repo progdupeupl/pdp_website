@@ -66,7 +66,7 @@
                                                 </a>
                                             </li>
                                         {% endfor %}
-                                        {% for topic in topics_read %}
+                                        {% for topic in read_topics %}
                                             <li>
                                                 <a href="{{ topic.get_last_answer.get_absolute_url }}">
                                                     {{ topic.title }}

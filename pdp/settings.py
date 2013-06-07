@@ -109,6 +109,7 @@ MIDDLEWARE_CLASSES = (
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'pdp.utils.ThreadLocals',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'pdp.urls'
@@ -151,6 +152,7 @@ INSTALLED_APPS = (
     'crispy_forms_foundation',
     'captcha',
     'email_obfuscator',
+    'debug_toolbar',
 
     'pdp.member',
     'pdp.forum',

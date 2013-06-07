@@ -36,6 +36,8 @@ class Tutorial(models.Model):
     title = models.CharField('Titre', max_length=80)
     description = models.CharField('Description', max_length=200)
     authors = models.ManyToManyField(User, verbose_name='Auteurs')
+    
+    slug = models.SlugField()
 
     icon = models.ImageField(upload_to=tutorial_icon_path,
                              null=True, blank=True)
@@ -45,6 +47,10 @@ class Tutorial(models.Model):
     # than a field
     is_mini = models.BooleanField('Est un mini-tutoriel')
     is_visible = models.BooleanField('Est visible publiquement')
+    
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Tutorial, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.title
@@ -84,18 +90,21 @@ class Part(models.Model):
 
     introduction = models.TextField('Introduction')
     conclusion = models.TextField('Conclusion')
+    
+    slug = models.SlugField()
 
     # The list of chapters is shown between introduction and conclusion
+    
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Part, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return '<Partie pour %s, %s>' % \
             (self.tutorial.title, self.position_in_tutorial)
 
     def get_absolute_url(self):
-        return self.tutorial.get_absolute_url() + '%s-%s/' % (
-            self.position_in_tutorial,
-            slugify(self.title)
-        )
+        return self.tutorial.get_absolute_url() + '%s/' % self.slug
 
     def get_chapters(self):
         return Chapter.objects.all()\
@@ -131,6 +140,12 @@ class Chapter(models.Model):
 
     introduction = models.TextField('Introduction')
     conclusion = models.TextField('Conclusion')
+    
+    slug = models.SlugField()
+    
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Chapter, self).save(*args, **kwargs)   
 
     def __unicode__(self):
         if self.tutorial:
@@ -146,11 +161,8 @@ class Chapter(models.Model):
             return self.tutorial.get_absolute_url()
 
         elif self.part:
-            return self.part.get_absolute_url() + '%s-%s' % (
-                self.position_in_part,
-                slugify(self.title)
-            )
-
+            return self.part.get_absolute_url() + '%s/' % self.slug
+            
         else:
             return '/tutoriels/'
 
