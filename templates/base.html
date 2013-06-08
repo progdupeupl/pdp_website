@@ -58,7 +58,7 @@
                                     {% with read_topics=topics.read %}
                                         {% for topic in unread_topics %}
                                             <li>
-                                                <a href="{{ topic.get_last_answer.get_absolute_url }}">
+                                                <a href="{{ topic.get_last_anwser.get_absolute_url }}">
                                                     <span class="label">!</span>
                                                     <strong>
                                                         {{ topic.title }}
@@ -68,9 +68,16 @@
                                         {% endfor %}
                                         {% for topic in read_topics %}
                                             <li>
-                                                <a href="{{ topic.get_last_answer.get_absolute_url }}">
-                                                    {{ topic.title }}
-                                                </a>
+                                                {% with last_answer=topic.get_last_answer %}
+                                                    <a href="
+                                                        {% if last_anwser %}
+                                                            {{ last_answer.get_absolute_url }}
+                                                        {% else %}
+                                                            {{ topic.first_post.get_absolute_url }}
+                                                        {% endif %}">
+                                                        {{ topic.title }}
+                                                    </a>
+                                                {% endwith %}
                                             </li>
                                         {% endfor %}
                                         {% if topics_read|length == 0 and topics_unread|length == 0 %}
@@ -81,8 +88,6 @@
                                 {% endwith %}
                             {% endwith %}
                         {% endwith %}
-                        <li class="divider"></li>
-                        <li><a href="#">Voir tous les sujets suivis</a></li>
                     </ul>
                 </li>
                 <li class="has-dropdown">
