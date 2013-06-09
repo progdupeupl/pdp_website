@@ -3,8 +3,7 @@
 from django import forms
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, Field, Div
-from crispy_forms.bootstrap import FormActions
+from crispy_forms.layout import Layout, Fieldset, Submit, Field, Div, HTML
 
 from crispy_forms_foundation.layout import Layout, Fieldset, Submit, Field, ButtonHolder
 
@@ -57,8 +56,8 @@ class EditTutorialForm(forms.Form):
         self.helper.form_method = 'post'
 
         self.helper.layout = Layout(
-            Field('title', css_class='input-xxlarge'),
-            Field('description', css_class='input-block-level'),
+            Field('title'),
+            Field('description'),
             Submit('submit', 'Valider')
         )
         super(EditTutorialForm, self).__init__(*args, **kwargs)
@@ -132,8 +131,12 @@ class ChapterForm(forms.Form):
                 Field('introduction', css_class='input-block-level'),
                 Field('conclusion', css_class='input-block-level')
             ),
-            FormActions(
-                Submit('submit', 'Valider')
+            ButtonHolder(
+                Div(
+                    Submit('submit', 'Ajouter'),
+                    Submit('submit_continue', 'Ajouter et continuer', css_class='secondary'),
+                    css_class='button-group'
+                ),
             )
         )
         super(ChapterForm, self).__init__(*args, **kwargs)
@@ -161,7 +164,7 @@ class EmbdedChapterForm(forms.Form):
                 Field('introduction', css_class='input-block-level'),
                 Field('conclusion', css_class='input-block-level')
             ),
-            FormActions(
+            ButtonHolder(
                 Submit('submit', 'Valider')
             )
         )

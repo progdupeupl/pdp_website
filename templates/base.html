@@ -152,11 +152,12 @@
                     {% block headline-sub %}{% endblock %}
                 </small>
             </h1>
-            
-            {% if notify %}
-                <div class="alert-box success">
-                    {{ notify }}
-                </div>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert-box {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             {% endif %}
         </div>
     </div>

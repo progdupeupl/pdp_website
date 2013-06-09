@@ -3,14 +3,14 @@
 from pytz import utc
 from datetime import datetime
 
+from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test.client import Client
-from django_dynamic_fixture import G
 
-from django.contrib.auth.models import User
+from django_dynamic_fixture import G
+from django_dynamic_fixture.decorators import skip_for_database, SQLITE3
 
 from pdp.article.models import Article, get_last_articles
-
 
 class ArticleTests(TestCase):
     def test_last_articles_zero(self):
@@ -29,6 +29,7 @@ class ArticleTests(TestCase):
         self.assertEqual(1, len(get_last_articles()))
         self.assertEqual(article, get_last_articles()[0])
 
+    @skip_for_database(SQLITE3)
     def test_last_articles_many(self):
         '''Tests that the last articles work correctly'''
         articles = []
@@ -41,7 +42,7 @@ class ArticleTests(TestCase):
         for n, val in enumerate(last):
             self.assertEqual(val, articles[n])
 
-    # Urls
+    # URLs
 
     def test_url_index(self):
         '''Tests viewing the index page of articles'''

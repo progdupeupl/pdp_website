@@ -215,6 +215,10 @@ class Extract(models.Model):
     chapter = models.ForeignKey(Chapter, verbose_name='Chapitre parent')
     position_in_chapter = models.IntegerField('Position dans le chapitre')
     text = models.TextField('Texte')
+    
+    def __unicode__(self):
+        return u'<extrait \'%s\'>' % self.title
+    
 
     def get_absolute_url(self):
         return '%s#%s-%s' % (

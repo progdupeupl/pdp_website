@@ -1,10 +1,11 @@
 # coding: utf-8
 
 from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse, HttpResponsePermanentRedirect
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from pdp.utils import render_template, slugify
 from pdp.utils.tutorials import move, export_tutorial
@@ -63,13 +64,16 @@ def download(request):
     import json
 
     tutorial = get_object_or_404(Tutorial, pk=request.GET['tutoriel'])
+    
+    if not tutorial.is_visible and not request.user in tutorial.authors.all():
+        raise Http404
 
     dct = export_tutorial(tutorial)
     data = json.dumps(dct, indent=4, ensure_ascii=False)
 
     response = HttpResponse(data, mimetype='application/json')
     response['Content-Disposition'] = 'attachment; filename=%s.json' % \
-        slugify(tutorial.title)
+        tutorial.slug
 
     return response
 
@@ -356,22 +360,43 @@ def add_chapter(request):
     except KeyError:
         raise Http404
     part = get_object_or_404(Part, pk=part_pk)
+    
     # Make sure the user is allowed to do that
     if not request.user in part.tutorial.authors.all():
         raise Http404
+    
     if request.method == 'POST':
         form = ChapterForm(request.POST)
         if form.is_valid():
             data = form.data
-            chapter = Chapter()
-            chapter.title = data['title']
-            chapter.introduction = data['introduction']
-            chapter.conclusion = data['conclusion']
-            chapter.part = part
-            chapter.position_in_part = part.get_chapters().count() + 1
-            chapter.update_position_in_tutorial()
-            chapter.save()
-            return redirect(chapter.get_absolute_url())
+            
+            # We check that another chapter doesn't exist with the same slug
+            already_exist = False
+            for p_chapter in part.get_chapters():
+                if p_chapter.slug == slugify(data['title']):
+                    already_exist = True
+                    break
+            
+            if not already_exist:
+                chapter = Chapter()
+                chapter.title = data['title']
+                chapter.introduction = data['introduction']
+                chapter.conclusion = data['conclusion']
+                chapter.part = part
+                chapter.position_in_part = part.get_chapters().count() + 1
+                chapter.update_position_in_tutorial()
+                chapter.save()
+                
+                if 'submit_continue' in request.POST:
+                    form = ChapterForm()
+                    messages.success(request,
+                                     u'Chapitre « %s » ajouté avec succès.' % \
+                                     chapter.title)
+                else:
+                    return redirect(chapter.get_absolute_url())
+            else:
+                messages.error(request, u'Un chapitre portant le même nom '
+                                        u'existe déjà dans cette partie.')
     else:
         form = ChapterForm()
 
@@ -391,9 +416,10 @@ def modify_chapter(request):
     except KeyError:
         raise Http404
     chapter = get_object_or_404(Chapter, pk=chapter_pk)
+    
     # Make sure the user is allowed to do that
-    # if not request.user in c.part.tutorial.authors.all():
-    #   raise Http404
+    if not request.user in chapter.get_tutorial().authors.all():
+       raise Http404
 
     if 'move' in data:
         new_pos = int(request.POST['move_target'])
@@ -498,7 +524,7 @@ def add_extract(request):
             
             if 'submit_continue' in request.POST:
                 form = ExtractForm()
-                notify = u'Extrait %s ajouté avec succès.' % extract.title
+                messages.success(request, u'Extrait « %s » ajouté avec succès.' % extract.title)
             else:
                 return redirect(extract.get_absolute_url())
     else:

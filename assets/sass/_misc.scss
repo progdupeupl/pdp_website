@@ -78,6 +78,27 @@ nav.top-bar {
 }
 
 /* Do not regroup in an .alert-box block, does not work otherwise */
+.alert-box {
+    @include text-shadow(0px 1px 0px rgba(255, 255, 255, 0.5));
+    color: rgb(221, 86, 0);
+    background-color: rgb(241, 206, 171);
+    border: 1px solid rgb(239, 185, 158);
+}
+
 .alert-box.success {
     color: rgb(102, 149, 51);
+    background-color: rgb(213, 236, 191);
+    border-color: rgb(210, 230, 171);
+}
+
+.alert-box.error {
+    color: rgb(189, 66, 71);
+    background-color: rgb(242, 189, 177);
+    border-color: rgb(240, 165, 164);
+}
+
+.alert-box.info {
+    color: rgb(23, 138, 204);
+    background-color: rgb(167, 223, 241);
+    border-color: rgb(136, 228, 236);
 }

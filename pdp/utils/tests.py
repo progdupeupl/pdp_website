@@ -8,8 +8,7 @@ from django.contrib.auth.models import User
 from pdp.member.models import Profile
 
 from .templatetags.profile import profile
-from .templatetags.interventions import interventions_topics_count, \
-    interventions_topics
+from .templatetags.interventions import interventions_topics
 
 
 class TemplateTagsTests(TestCase):
@@ -31,6 +30,5 @@ class TemplateTagsTests(TestCase):
         '''
         user = G(User)
 
-        self.assertEqual(interventions_topics_count(user), 0)
         self.assertEqual(interventions_topics(user), {'unread': [],
                                                       'read': []})

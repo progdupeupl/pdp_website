@@ -92,60 +92,62 @@
 {% include "forum/topic_pagination.html" %}
 
 
-{% for post in posts %}  
-    <div class="row post-head" id="p{{ post.id }}">
-        <div class="large-2 columns">
-            <p>
-                <a href="{{ post.author.get_absolute_url }}">
-                    {{ post.author.username }}
-                </a>
-            </p>
-        </div>
-        <div class="large-10 columns">
-            <div class="right">
-                {% if user.is_authenticated %}
-                    <div class="button-group">
-                        {% if topic.author == user and post.author != user %}
-                            <a href="/forums/message/utile?message={{ post.pk }}" class="button secondary small {% if post.is_useful %}btn-success{% endif %}">
-                                Cette réponse m'a aidé
-                            </a>
-                        {% endif %}
-            
-                        {% if post.author == user %}
-                            <a href="/forums/message/editer?message={{ post.pk }}" class="button secondary small">
-                                Éditer
-                            </a>
-                        {% endif %}
-            
-                        {% if not topic.is_locked and not topic.antispam %}
-                            <a href="/forums/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.pk }}"
-                                class="button secondary small">
-                                Citer
-                            </a>
-                        {% endif %}
-                    </div>
-                {% endif %}
+{% for post in posts %}
+    <div class="post {% if forloop.first and nb > 1 %}before{% endif %}">
+        <div class="row post-head" id="p{{ post.id }}">
+            <div class="large-2 columns">
+                <p>
+                    <a href="{{ post.author.get_absolute_url }}">
+                        {{ post.author.username }}
+                    </a>
+                </p>
             </div>
-            <p>
-                <a href="#p{{ post.pk }}">#</a>
-                {{ post.pubdate|humane_date }}
-                {% if not post.update = None %}
-                    (dernière édition {{ post.update|humane_date }})
-                {% endif %}
-                {% if forloop.first and nb > 1 %}
-                    &ndash; page précédente
-                {% endif %}
-            </p>
+            <div class="large-10 columns">
+                <div class="right">
+                    {% if user.is_authenticated %}
+                        <div class="button-group">
+                            {% if topic.author == user and post.author != user %}
+                                <a href="/forums/message/utile?message={{ post.pk }}" class="button secondary small {% if post.is_useful %}btn-success{% endif %}">
+                                    Cette réponse m'a aidé
+                                </a>
+                            {% endif %}
+                
+                            {% if post.author == user %}
+                                <a href="/forums/message/editer?message={{ post.pk }}" class="button secondary small">
+                                    Éditer
+                                </a>
+                            {% endif %}
+                
+                            {% if not topic.is_locked and not topic.antispam %}
+                                <a href="/forums/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.pk }}"
+                                    class="button secondary small">
+                                    Citer
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+                <p>
+                    <a href="#p{{ post.pk }}">#</a>
+                    {{ post.pubdate|humane_date }}
+                    {% if not post.update = None %}
+                        (dernière édition {{ post.update|humane_date }})
+                    {% endif %}
+                    {% if forloop.first and nb > 1 %}
+                        &ndash; page précédente
+                    {% endif %}
+                </p>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="large-2 columns hide-for-small">
-            {% with profile=post.author|profile %}
-                <img src="{{ profile.get_gravatar_url }}&amp;?s=80" width="80" height="80" alt="Avatar" />
-            {% endwith %}
-        </div>
-        <div class="large-10 columns">
-            {{ post.text|emarkdown }}
+        <div class="row">
+            <div class="large-2 columns hide-for-small">
+                {% with profile=post.author|profile %}
+                    <img src="{{ profile.get_gravatar_url }}&amp;?s=80" width="80" height="80" alt="Avatar" />
+                {% endwith %}
+            </div>
+            <div class="large-10 columns">
+                {{ post.text|emarkdown }}
+            </div>
         </div>
     </div>
 {% endfor %}

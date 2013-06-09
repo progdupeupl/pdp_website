@@ -36,46 +36,47 @@ class TutorialTests(TestCase):
         for n, val in enumerate(last):
             self.assertEqual(val, articles[n])
 
-    # Urls
+    # Current URL tests
 
     def test_url_index(self):
         '''Tests viewing the index page of tutorials'''
-        client = Client()
-        self.assertEqual(200, client.get('/tutoriels/').status_code)
+        resp = self.client.get('/tutoriels/')
+        self.assertEqual(200, resp.status_code)
 
     def test_url_new_tutorial(self):
         '''Tests adding a new tutorial as anonymous'''
-        client = Client()
-        self.assertEqual(302,
-                         client.get('/tutoriels/nouveau/tutoriel').status_code)
+        resp = self.client.get('/tutoriels/nouveau/tutoriel')
+        self.assertEqual(302, resp.status_code)
 
     def test_url_view_tutorial_invisible(self):
         '''Testing viewing an invisible tutorial as anonymous'''
-        client = Client()
         tutorial = G(Tutorial, is_visible=False)
-        self.assertEqual(404,
-                         client.get(tutorial.get_absolute_url()).status_code)
+        resp = self.client.get(tutorial.get_absolute_url())
+        self.assertEqual(404, resp.status_code)
 
     def test_url_view_tutorial_visible(self):
         '''Testing viewing a visible tutorial as anonymous'''
-        client = Client()
         tutorial = G(Tutorial, is_visible=True)
-        self.assertEqual(200,
-                         client.get(tutorial.get_absolute_url()).status_code)
+        resp = self.client.get(tutorial.get_absolute_url())
+        self.assertEqual(200, resp.status_code)
 
     def test_url_view_part_invisible(self):
         '''Testing viewing a part from invisible tutorial as anonymous'''
-        client = Client()
         tutorial = G(Tutorial, is_visible=False, is_mini=False)
         part = G(Part, tutorial=tutorial)
-        self.assertEqual(404,
-                         client.get(part.get_absolute_url()).status_code)
+        resp = self.client.get(part.get_absolute_url())
+        self.assertEqual(404, resp.status_code)
 
     def test_url_view_part_visible(self):
         '''Testing viewing a part from visible tutorial as anonymous'''
-        client = Client()
         tutorial = G(Tutorial, is_visible=True, is_mini=False)
         part = G(Part, tutorial=tutorial)
-        self.assertEqual(200,
-                         client.get(part.get_absolute_url()).status_code)
-
+        resp = self.client.get(part.get_absolute_url())
+        self.assertEqual(200, resp.status_code)
+        
+    # Deprecated URL redirect tests
+    
+    def test_url_deprecated_tutorial(self):
+        tutorial = G(Tutorial, pk=42, title='Test tutorial')
+        resp = self.client.get('/tutoriels/voir/42-test-tutorial/')
+        self.assertRedirects(resp, tutorial.get_absolute_url(), 301)
