@@ -21,6 +21,7 @@ table {
 
 header {
     background-color: darken($primary-color, 10%);
+    background-image: url("../img/header_background.png");
     
     h1, p {
         color: white;
@@ -33,10 +34,8 @@ header {
     margin-bottom: emCalc(30px);
 }
 
-.top-bar {
-    @include background-image(linear-gradient(top bottom, rgb(84, 180, 235), rgb(47, 164, 231)));
-    @include box-shadow(0px 1px 10px rgba(0, 0, 0, 0.1));
-    
+nav.top-bar {
+    @include box-shadow(0px 1px 10px rgba(0, 0, 0, 0.1));    
     .dropdown {
         text-shadow: none;
         
@@ -44,6 +43,15 @@ header {
             background-color: darken($primary-color, 5%);
         }
     }
+}
+
+/* Topbar gradient */
+
+.top-bar, .top-bar-section li:not(.active) a:not(.button) {
+    background-image: linear-gradient(rgb(84, 180, 235), rgb(47, 164, 231)) ;
+}
+.top-bar-section .dropdown li a {
+    background-image: none !important;
 }
 
 .top-bar, header {
