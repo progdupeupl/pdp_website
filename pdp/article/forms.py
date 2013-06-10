@@ -3,8 +3,7 @@
 from django import forms
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, Field
-from crispy_forms.bootstrap import FormActions
+from crispy_forms_foundation.layout import Layout, Fieldset, Submit, Field, ButtonHolder, HTML
 
 
 class ArticleForm(forms.Form):
@@ -29,17 +28,9 @@ class ArticleForm(forms.Form):
         self.helper.form_method = 'post'
 
         self.helper.layout = Layout(
-            Fieldset(
-                u'Général',
-                Field('title', css_class='input-xxlarge'),
-                Field('description', css_class='input-block-level')
-            ),
-            Fieldset(
-                u'Contenu',
-                Field('text', css_class='input-block-level')
-            ),
-            FormActions(
-                Submit('submit', 'Valider')
-            )
+            Field('title', css_class='input-xxlarge'),
+            Field('description', css_class='input-block-level'),
+            Field('text', css_class='input-block-level'),
+            Submit('submit', 'Valider'),
         )
         super(ArticleForm, self).__init__(*args, **kwargs)
