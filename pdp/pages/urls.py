@@ -6,9 +6,8 @@ import views
 
 urlpatterns = patterns('',
 
-    # Markdown helper (fallback and AJAX)
+    # Markdown helper
     url(r'^markdown$', views.help_markdown),
-    url(r'^markdown.ajax$', views.help_markdown_ajax),
 
     url(r'^$', views.index),
 )

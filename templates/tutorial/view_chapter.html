@@ -44,7 +44,7 @@
     {% with authors=tutorial.authors.all %}
         {% with extracts=chapter.get_extracts %}
             {% include "tutorial/view_chapter_pager.html" %}
-            {% include "tutorial/view_chapter_common.html" %}
+            {% include "tutorial/view_chapter_common.part.html" %}
             {% include "tutorial/view_chapter_pager.html" %}
         {% endwith %}
     {% endwith %}

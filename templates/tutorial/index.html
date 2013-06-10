@@ -41,7 +41,7 @@
         {% if tutorials %}
             <div class="tutorial-items">
             {% for tutorial in tutorials %}
-                {% include "tutorial/tutorial_item_common.html" %}
+                {% include "tutorial/tutorial_item_common.part.html" %}
             {% endfor %}
             </div>
         {% else %}
@@ -56,7 +56,7 @@
             {% else %}
                 <div class="tutorial-items">
                 {% for tutorial in user_tutorials %}
-                    {% include "tutorial/tutorial_item_common.html" %}
+                    {% include "tutorial/tutorial_item_common.part.html" %}
                 {% endfor %}
                 </div>
             {% endif %}

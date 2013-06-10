@@ -49,7 +49,7 @@
                 <tbody>
                     {% for member in tutorial.authors.all %}
                         <tr>
-                            <td>{% include "member/member_item_common.html" %}</td>
+                            <td>{% include "member/member_item_common.part.html" %}</td>
                             <td>
                                 {% if tutorial.authors.count > 1 %}
                                 <button type="submit" name="author" value="{{ member.pk }}">

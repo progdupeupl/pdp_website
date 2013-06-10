@@ -59,7 +59,7 @@
                         ,
                     {% endif %}
                 {% endif %}
-                {% include "member/member_item_common.html" %}
+                {% include "member/member_item_common.part.html" %}
             {% endfor %}.
         </p>
     </div>
@@ -72,7 +72,7 @@
         {% if tutorial.is_mini %}
         {# Small tutorial #}
         
-            {% include "tutorial/view_chapter_common.html" %}
+            {% include "tutorial/view_chapter_common.part.html" %}
         
         {% else %}
         {# Large tutorial #}
@@ -84,7 +84,7 @@
                             Partie {{ part.position_in_tutorial }} : {{ part.title }}
                         </a>
                     </h2>
-                    {% include "tutorial/view_part_common.html" %}
+                    {% include "tutorial/view_part_common.part.html" %}
                 {% endfor %}
             {% else %}
                 <p>

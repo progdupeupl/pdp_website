@@ -89,7 +89,7 @@
 </div>
 {% endif %}
 
-{% include "forum/topic_pagination.html" %}
+{% include "forum/topic_pagination.part.html" %}
 
 
 {% for post in posts %}
@@ -152,7 +152,7 @@
     </div>
 {% endfor %}
 
-{% include "forum/topic_pagination.html" %}
+{% include "forum/topic_pagination.part.html" %}
 
 {% if user.is_authenticated %}
 <div class="row">

@@ -63,7 +63,7 @@ Bonjour o/
         
         {% if last_tutorials %}
             {% for tutorial in last_tutorials %}
-                {% include "tutorial/tutorial_item_common.html" %}
+                {% include "tutorial/tutorial_item_common.part.html" %}
             {% endfor %}
         {% else %}
             <p>Aucun tutoriel actuellement.</p>
@@ -78,7 +78,7 @@ Bonjour o/
         
         {% if last_topics %}
             {% for topic in last_topics %}
-                {% include "forum/topic_item_common.html" %}
+                {% include "forum/topic_item_common.part.html" %}
             {% endfor %}
         {% else %}
             <p>Aucun sujet récent.</p>

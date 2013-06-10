@@ -47,7 +47,7 @@
         <p>
             Rédigé par
             {% with member=article.author %}
-                {% include "member/member_item_common.html" %}
+                {% include "member/member_item_common.part.html" %}
             {% endwith %}
             et publié
             {{ article.pubdate|humane_date }}.

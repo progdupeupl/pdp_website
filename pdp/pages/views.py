@@ -28,11 +28,3 @@ def help_markdown(request):
     browser doesn't support AJAX page loading with jQuery
     '''
     return render_template('pages/help_markdown.html')
-
-
-def help_markdown_ajax(request):
-    '''
-    View used with jQuery in order to display markdown helper on textarea
-    fields which always contain markdown formatted text
-    '''
-    return render_template('pages/help_markdown_part.html')
