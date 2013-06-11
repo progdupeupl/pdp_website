@@ -2,30 +2,38 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-Éditer le chapitre &ndash; Tutoriels
+    Éditer le chapitre
 {% endblock %}
 
 {% block headline %}
-Éditer le chapitre
+    Éditer le chapitre
 {% endblock %}
 
 {% block breadcrumb %}
 {% if chapter.tutorial %}
-    <a href="{{ chapter.tutorial.get_absolute_url }}">{{ chapter.tutorial.title }}</a>
+    <li><a href="{{ chapter.tutorial.get_absolute_url }}">{{ chapter.tutorial.title }}</a></li>
 {% else %}
-    <a href="{{ chapter.part.tutorial.get_absolute_url }}">{{ chapter.part.tutorial.title }}</a>
-    <a href="{{ chapter.part.get_absolute_url }}">{{ chapter.part.title }}</a>
-    <a href="{{ chapter.get_absolute_url }}">{{ chapter.title }}</a>
+    <li><a href="{{ chapter.part.tutorial.get_absolute_url }}">{{ chapter.part.tutorial.title }}</a></li>
+    <li><a href="{{ chapter.part.get_absolute_url }}">{{ chapter.part.title }}</a></li>
+    <li><a href="{{ chapter.get_absolute_url }}">{{ chapter.title }}</a></li>
 {% endif %}
-Éditer le chapitre
+    <li class="current"><a href="#">Éditer le chapitre</a></li>
 {% endblock %}
 
 {% block content %}
 
 {% if chapter.part %}
-    {% include "tutorial/chapter_common.part.html" %}
+<div class="row">
+    <div class="large-12 columns">
+        {% include "tutorial/chapter_common.part.html" %}
+    </div>
+</div>
 {% endif %}
 
-{% crispy form %}
+<div class="row">
+    <div class="large-12 columns">
+        {% crispy form %}
+    </div>
+</div>
 
 {% endblock %}
