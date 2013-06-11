@@ -13,10 +13,15 @@
         </p>
     </div>
     <div class="forum-entry-count">
-        {{ forum.get_topic_count }}
+        <span class="label">
+            {{ forum.get_topic_count }}
+        </span>
+        <span class="label secondary">
+            {{ forum.get_post_count }}
+        </span>
     </div>
     <div class="forum-entry-count">
-        {{ forum.get_post_count }}
+        
     </div>
     <div class="forum-entry-desc">
         <p>

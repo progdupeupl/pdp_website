@@ -31,11 +31,13 @@
 {% block content %}
 
 
+{% if sticky_topics %}
 <div class="topic-items">
-{% for topic in sticky_topics %}
-    {% include "forum/details_row.part.html" %}
-{% endfor %}
+    {% for topic in sticky_topics %}
+        {% include "forum/details_row.part.html" %}
+    {% endfor %}
 </div>
+{% endif %}
 
 <div class="topic-items">
 {% for topic in topics %}

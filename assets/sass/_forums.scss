@@ -31,19 +31,17 @@
     .forum-entry-count {
         @include grid-column(1);
         @extend .hide-for-small;
-        font-size: emCalc(24px);
-        padding: emCalc(5px);
         text-align: center;
+        
+        span {
+            width: 100%;
+            display: block;
+        }
     }
     
     .forum-entry-desc {
-        @include grid-column(4, true);
+        @include grid-column(5, true);
         @extend .hide-for-small;
-    }
-    
-    /* Specific rules, actually don't work */
-    .forum-entry-topic > .forum-entry-title {
-        @include grid-column(7);
     }
 }
 

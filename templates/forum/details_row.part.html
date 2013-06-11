@@ -20,7 +20,9 @@
         </p>
     </div>
     <div class="forum-entry-count">
-        {{ topic.get_post_count|add:"-1" }}
+        <span class="label">
+            {{ topic.get_post_count|add:"-1" }}
+        </span>
     </div>
     <div class="forum-entry-desc">
         <p>
