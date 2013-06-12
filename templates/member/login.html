@@ -28,29 +28,32 @@
             </p>
         
             <form method="post" action="{% url pdp.member.views.login_view %}" class="form-horizontal">
-                <fieldset>
-                    <legend>Identification</legend>
-                    <div class="control-group">
-                        <label class="control-label" for="id_username">Identifiant</label>
-                        <div class="controls">
+                    <div class="row">
+                        <div class="small-2 columns">
+                            <label class="right inline" for="id_username">Identifiant</label>
+                        </div>
+                        <div class="small-10 columns">
                             <input type="text" name="username" id="id_username" maxlength="30" />
                         </div>
                     </div>
-                    <div class="control-group">
-                        <label class="control-label" for="id_password">Mot magique</label>
-                        <div class="controls">
+                    <div class="row">
+                        <div class="small-2 columns">
+                            <label class="right inline" for="id_password">Mot magique</label>
+                        </div>
+                        <div class="small-10 columns">
                             <input type="password" name="password" id="id_password" maxlength="76" />
                         </div>
                     </div>
-                </fieldset>
         
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">
-                        Se connecter
-                    </button>
-                    <a href="/" class="btn">
-                        Annuler
-                    </a>
+                <div class="row">
+                    <div class="small-10 small-offset-2 columns">
+                        <button type="submit" class="button">
+                            Se connecter
+                        </button>
+                        <a href="/" class="button secondary">
+                            Annuler
+                        </a>
+                    </div>
                 </div>
         
                 {% csrf_token %}
