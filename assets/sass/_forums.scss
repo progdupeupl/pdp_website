@@ -1,6 +1,17 @@
+.forum-entries {
+    margin-bottom: emCalc(32px);   
+}
+
+.forum-entries.sticky {
+    .forum-entry {
+        background: lighten(rgb(167, 223, 241), 16%);
+    }
+}
+
 .forum-entry {
     @include grid-row();
-    margin-bottom: emCalc(10px);
+    padding-top: emCalc(5px);
+    padding-bottom: emCalc(5px);
     
     /* Common rules */
     .forum-entry-title {

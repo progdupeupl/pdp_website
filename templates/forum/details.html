@@ -32,17 +32,17 @@
 
 
 {% if sticky_topics %}
-<div class="topic-items">
-    {% for topic in sticky_topics %}
-        {% include "forum/details_row.part.html" %}
-    {% endfor %}
-</div>
+    <div class="forum-entries sticky">
+        {% for topic in sticky_topics %}
+            {% include "forum/details_row.part.html" %}
+        {% endfor %}
+    </div>
 {% endif %}
 
-<div class="topic-items">
-{% for topic in topics %}
-    {% include "forum/details_row.part.html" %}
-{% endfor %}
+<div class="forum-entries">
+    {% for topic in topics %}
+        {% include "forum/details_row.part.html" %}
+    {% endfor %}
 </div>
 
 {% endblock %}
