@@ -121,4 +121,9 @@ def modify(request):
 
     return redirect(article.get_absolute_url())
 
+# Deprecated URLs
+
+def deprecated_view_redirect(request, article_pk, article_slug):
+    article = get_object_or_404(Article, pk=article_pk)
+    return redirect(article.get_absolute_url(), permanent=True)
 

@@ -13,7 +13,8 @@ urlpatterns = patterns('',
     
     # TODO: Handle redirect
 
-    # url(r'^voir/(?P<article_pk>\d+)-(?P<article_slug>.+)$', views.view),
+    url(r'^voir/(?P<article_pk>\d+)-(?P<article_slug>.+)$',
+        views.deprecated_view_redirect),
     url(r'^(?P<article_pk>\d+)/(?P<article_slug>.+)$', views.view),
     url(r'^nouveau$', views.new),
     url(r'^editer$', views.edit),

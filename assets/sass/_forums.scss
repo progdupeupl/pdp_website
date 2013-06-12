@@ -56,6 +56,14 @@
     }
 }
 
+.forum-entry-locked {
+    background-color: lighten(rgb(241, 206, 171), 14%);
+}
+
+.forum-entry-solved {
+    background-color: lighten(rgb(213, 236, 191), 10%);
+}
+
 .before {
     opacity: 0.6;
 }
