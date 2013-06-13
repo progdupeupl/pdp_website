@@ -9,3 +9,4 @@ django-crispy-forms
 django-simple-captcha
 django-email-obfuscator
 django-debug-toolbar
+crispy-forms-foundation
