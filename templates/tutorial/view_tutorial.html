@@ -17,12 +17,15 @@
     {% if user.is_authenticated and user in tutorial.authors.all %}
         <form action="{% url pdp.tutorial.views.modify_tutorial %}" method="post">
             <div class="button-group">
-                {% if not tutorial.is_mini %}
-                    <a href="/tutoriels/nouveau/partie?tutoriel={{ tutorial.pk }}" class="button">
-                        <i class="icon-plus"></i>
-                        Ajouter
-                    </a>
-                {% endif %}
+                <a href="
+                    {% if not tutorial.is_mini %}
+                        {% url pdp.tutorial.views.add_part %}?tutoriel={{ tutorial.pk }}
+                    {% else %}
+                        {% url pdp.tutorial.views.add_extract %}?chapitre={{ tutorial.get_chapter.pk }}
+                    {% endif %}" class="button">
+                    <i class="icon-plus"></i>
+                    Ajouter
+                </a>
                 <a href="{% url pdp.tutorial.views.edit_tutorial %}?tutoriel={{ tutorial.pk }}" class="button">
                     <i class="icon-pencil"></i>
                     Éditer
