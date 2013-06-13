@@ -15,6 +15,10 @@ h1, h2 {
 
 p { text-align: justify; }
 
+ul, ol {
+    margin-left: emCalc(40px);
+}
+
 table {
     width: 100%;
 }
