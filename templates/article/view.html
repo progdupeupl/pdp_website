@@ -4,7 +4,7 @@
 {% load humane_date %}
 
 {% block title %}
-    {{ article.title }} &ndash; Articles
+    {{ article.title }}
 {% endblock %}
 
 {% block headline %}
@@ -39,7 +39,7 @@
 {% block content %}
 
 {% if article.is_visible %}
-    {% include "article/view_pager.html" %}
+    {% include "article/view_pager.part.html" %}
 {% endif %}
 
 <div class="row">
@@ -58,7 +58,7 @@
 </div>
 
 {% if article.is_visible %}
-    {% include "article/view_pager.html" %}
+    {% include "article/view_pager.part.html" %}
 {% else %}
     <p>
         Cet article n'a pas encore été mis en ligne.

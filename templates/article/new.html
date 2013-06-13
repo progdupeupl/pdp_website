@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-    Nouveau &ndash; Articles
+    Nouveau
 {% endblock %}
 
 {% block headline %}
@@ -14,7 +14,11 @@
 {% endblock %}
 
 {% block content %}
-
-{% crispy form %}
+    
+<div class="row">
+    <div class="large-12 columns">
+        {% crispy form %}
+    </div>
+</div>
 
 {% endblock %}

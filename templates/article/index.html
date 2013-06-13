@@ -1,7 +1,7 @@
 {% extends "article/base.html" %}
 
 {% block title %}
-    Articles
+    Liste des articles
 {% endblock %}
 
 {% block header %}
@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block headline %}
-    Articles
+    Liste des articles
 {% endblock %}
 
 {% block breadcrumb %}
@@ -32,7 +32,7 @@
         </ul>
         
         {% if user.is_authenticated %}
-            <a href=" {% url pdp.article.views.new %}" class="button">
+            <a href="{% url pdp.article.views.new %}" class="button">
                 Nouvel article
             </a>
         {% endif %}
@@ -56,7 +56,7 @@
         {% if articles %}
             <div class="article-items">
             {% for article in articles %}
-                {% include "article/article_item_common.html" %}
+                {% include "article/article_item_common.part.html" %}
             {% endfor %}
             </div>
         {% else %}
@@ -70,9 +70,9 @@
                 <p>Vous n'avez pas encore rédigé d'article.</P>
             {% else %}
                 <div class="article-items">
-                {% for article in user_articles %}
-                    {% include "article/article_item_common.html" %}
-                {% endfor %}
+                    {% for article in user_articles %}
+                        {% include "article/article_item_common.part.html" %}
+                    {% endfor %}
                 </div>
             {% endif %}
         {% endif %}
