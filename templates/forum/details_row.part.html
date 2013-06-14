@@ -18,13 +18,11 @@
         <a href="{{ topic.get_absolute_url }}">
             {{ topic.title }}
         </a>
-        <p>
-            {% if topic.subtitle %}
+        {% if topic.subtitle %}
+            <p>
                 {{ topic.subtitle }}
-            {% else %}
-                <span class="no-subtitle">Aucun sous-titre.</span>
-            {% endif %}
-        </p>
+            </p>
+        {% endif %}
     </div>
     <div class="forum-entry-count">
         <span class="label">
@@ -33,21 +31,27 @@
     </div>
     <div class="forum-entry-desc">
         <p>
+            {% with member=topic.author %}
+                Par {% include "member/member_item_common.part.html" %}
+            {% endwith %}
+            <br />
             {% with answer=topic.get_last_answer %}
                 {% if answer %}
+                    Dernière rép.
                     <a href="{{ answer.get_absolute_url }}">
                         {% with date=answer.pubdate|humane_date %}
-                            {{ date|upfirstletter }}
+                            {{ date }}
                         {% endwith %}
                     </a>
                     par
-                    <a href="{{ answer.author.get_absolute_url }}">
-                        {{ answer.author.username }}
-                    </a>
+                    {% with member=answer.author %}
+                        {% include "member/member_item_common.part.html" %}
+                    {% endwith %}
                 {% else %}
-                    Aucune réponse
+                    aucune réponse
                 {% endif %}
             {% endwith %}
+            
         </p>
     </div>
 </div>

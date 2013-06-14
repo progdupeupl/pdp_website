@@ -66,16 +66,14 @@ class Tutorial(models.Model):
             .filter(tutorial__pk=self.pk)\
             .order_by('position_in_tutorial')
 
-
-def get_last_tutorials():
-    # TODO: Sort by publish date (or update?)
-    return Tutorial.objects.all().filter(is_visible=True).order_by('title')[:3]
-
     def get_chapter(self):
         '''Gets the chapter associated with the tutorial if it's small'''
         # We can use get since we know there'll only be one chapter
         return Chapter.objects.get(tutorial__pk=self.pk)
-
+    
+def get_last_tutorials():
+    # TODO: Sort by publish date (or update?)
+    return Tutorial.objects.all().filter(is_visible=True).order_by('title')[:3]
 
 class Part(models.Model):
 

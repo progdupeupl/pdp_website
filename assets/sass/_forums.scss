@@ -2,7 +2,7 @@
     margin-bottom: emCalc(32px);   
 }
 
-.forum-entries.sticky {
+.forum-entries.forum-entries-sticky {
     .forum-entry {
         background: lighten(rgb(167, 223, 241), 16%);
     }
@@ -26,10 +26,6 @@
         p {
             margin: 0;
             padding: 0;
-            
-            .no-subtitle {
-                color: darken($secondary-color, 10%);
-            }
         }
         
         background-image: url("../img/forums-normal.png");
@@ -53,6 +49,12 @@
     .forum-entry-desc {
         @include grid-column(5, true);
         @extend .hide-for-small;
+        //line-height: emCalc(14px);
+        
+        p {
+            margin: 0;
+            padding: 0;
+        }
     }
 }
 

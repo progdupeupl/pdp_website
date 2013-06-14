@@ -1,90 +1,94 @@
 {% load markup %}
 {% load emarkdown %}
 
-<div class="row">
-    <div class="large-12 columns">
-        {% if chapter.introduction %}
-            {{ chapter.introduction|emarkdown }}
-        {% else %}
-            <p>Aucune introduction.</p>
-        {% endif %}
-        
-        {% if extracts %}
-            <ul>
-                {% for extract in extracts %}
-                    <li>
-                        <a href="#{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
-                            {{ extract.title }}
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>
-                Aucun extrait.
-            </p>
-        {% endif %}
+{% with extracts=chapter.get_extracts %}
+    
+    <div class="row">
+        <div class="large-12 columns">
+            {% if chapter.introduction %}
+                {{ chapter.introduction|emarkdown }}
+            {% else %}
+                <p>Aucune introduction.</p>
+            {% endif %}
+            
+            {% if extracts %}
+                <ul>
+                    {% for extract in extracts %}
+                        <li>
+                            <a href="#{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
+                                {{ extract.title }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>
+                    Aucun extrait.
+                </p>
+            {% endif %}
+        </div>
     </div>
-</div>
-
-{% if user in authors %}
-<div class="row">
-    <div class="large-12 columns">
-        <a href="/tutoriels/nouveau/extrait?chapitre={{ chapter.pk }}" class="button">
-            Ajouter 
-        </a>
-    </div>
-</div>
-{% endif %}
-
-<hr />
-
-{% for extract in extracts %}
-<div class="row">
-    <div class="large-12 columns">
-        <h2 id="{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
-            <a href="#{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
-                {{ extract.title }}
+    
+    {% if user in authors %}
+    <div class="row">
+        <div class="large-12 columns">
+            <a href="/tutoriels/nouveau/extrait?chapitre={{ chapter.pk }}" class="button">
+                Ajouter 
             </a>
-        </h2>
-        
-        {% if user in authors %}
-            <form action="{% url pdp.tutorial.views.modify_extract %}" method="post">
-                <div class="button-group">
-                    <a href="{% url pdp.tutorial.views.edit_extract %}?extrait={{ extract.pk }}" class="button">
-                        Éditer
-                    </a>
-                    <a href="#" class="button secondary">
-                        Déplacer
-                    </a>
-                    <button type="submit" name="delete" class="button secondary">
-                        Supprimer
-                    </button>
-                </div>
-                <input type="hidden" name="extract" value="{{ extract.pk }}" />
-                {% csrf_token %}
-            </form>
-        {% endif %}
-        
-        {% if extract.text %}
-            {{ extract.text|emarkdown }}
-        {% else %}
-            <p>
-                Cet extrait est vide.
-            </p>
-        {% endif %}
+        </div>
     </div>
-</div>
-{% endfor %}
-
-<hr />    
-
-<div class="row">
-    <div class="large-12 columns">
-        {% if chapter.conclusion %}
-            {{ chapter.conclusion|emarkdown }}
-        {% else %}
-            <p>Aucune conclusion.</p>
-        {% endif %}
+    {% endif %}
+    
+    <hr />
+    
+    {% for extract in extracts %}
+    <div class="row">
+        <div class="large-12 columns">
+            <h2 id="{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
+                <a href="#{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
+                    {{ extract.title }}
+                </a>
+            </h2>
+            
+            {% if user in authors %}
+                <form action="{% url pdp.tutorial.views.modify_extract %}" method="post">
+                    <div class="button-group">
+                        <a href="{% url pdp.tutorial.views.edit_extract %}?extrait={{ extract.pk }}" class="button">
+                            Éditer
+                        </a>
+                        <a href="#" class="button secondary">
+                            Déplacer
+                        </a>
+                        <button type="submit" name="delete" class="button secondary">
+                            Supprimer
+                        </button>
+                    </div>
+                    <input type="hidden" name="extract" value="{{ extract.pk }}" />
+                    {% csrf_token %}
+                </form>
+            {% endif %}
+            
+            {% if extract.text %}
+                {{ extract.text|emarkdown }}
+            {% else %}
+                <p>
+                    Cet extrait est vide.
+                </p>
+            {% endif %}
+        </div>
     </div>
-</div>
+    {% endfor %}
+    
+    <hr />    
+    
+    <div class="row">
+        <div class="large-12 columns">
+            {% if chapter.conclusion %}
+                {{ chapter.conclusion|emarkdown }}
+            {% else %}
+                <p>Aucune conclusion.</p>
+            {% endif %}
+        </div>
+    </div>
+
+{% endwith %}

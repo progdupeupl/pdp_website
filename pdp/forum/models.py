@@ -122,18 +122,22 @@ class Topic(models.Model):
         '''
         Gets the last answer in the thread, if any
         '''
-        try:
-            return Post.objects.all()\
-                    .filter(topic__pk=self.pk)\
-                    .order_by('-pubdate')[1]
-        except IndexError:
+        last_post = Post.objects.all()\
+                .filter(topic__pk=self.pk)\
+                .order_by('-pubdate')[0]
+        
+        if last_post == self.first_post():
             return None
+        else:
+            return last_post
 
     def first_post(self):
         '''
         Return the first post of a topic, written by topic's author
         '''
-        return Post.objects.filter(topic=self)[0]
+        return Post.objects\
+            .filter(topic=self)\
+            .order_by('pubdate')[0]
 
     def last_read_post(self):
         '''

@@ -62,7 +62,7 @@
                                     {% with read_topics=topics.read %}
                                         {% for topic in unread_topics %}
                                             <li>
-                                                <a href="{{ topic.get_last_anwser.get_absolute_url }}">
+                                                <a href="{{ topic.get_last_answer.get_absolute_url }}">
                                                     <span class="label">!</span>
                                                     <strong>
                                                         {{ topic.title }}
@@ -74,7 +74,7 @@
                                             <li>
                                                 {% with last_answer=topic.get_last_answer %}
                                                     <a href="
-                                                        {% if last_anwser %}
+                                                        {% if last_answer %}
                                                             {{ last_answer.get_absolute_url }}
                                                         {% else %}
                                                             {{ topic.first_post.get_absolute_url }}
