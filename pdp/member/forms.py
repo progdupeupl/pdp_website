@@ -77,10 +77,10 @@ class RegisterForm(forms.Form):
 
         return cleaned_data
 
-
+# update extra information about user
 class ProfileForm(forms.Form):
     biography = forms.CharField(label='Biographie',required=False, widget=forms.Textarea(attrs={'placeholder':'Votre biographie au format Markdown.'}))
-    site = forms.CharField(label='Site Internet',required=False, max_length=128,widget=forms.TextInput(attrs={'placeholder':'Lien vers votre site internet personnel.'}),)
+    site = forms.CharField(label='Site Internet',required=False, max_length=128,widget=forms.TextInput(attrs={'placeholder':'Lien vers votre site internet personnel.'}))
     show_email = forms.BooleanField(label='Afficher mon adresse mail publiquement',required=False)
 
     def __init__(self, user, *args, **kwargs):
@@ -91,6 +91,12 @@ class ProfileForm(forms.Form):
         self.user = user
         profile = Profile.objects.get(user=self.user)
 
+        #to get initial value form checkbox show email
+        initial = kwargs.get('initial', {})
+        value_checked = ''
+        if 'show_email' in initial and initial['show_email']:
+            value_checked = 'checked'
+
         self.helper.layout = Layout(
             Fieldset(
                 u'Public',
@@ -98,7 +104,7 @@ class ProfileForm(forms.Form):
                 Field('site'),
                 #inline checkbox is not supported by crispy form
                 HTML('<div id="div_id_show_email" class="ctrlHolder checkbox" style="padding-top:10px">\
-                <label for="id_show_email" > <input id="id_show_email" type="checkbox" class="checkboxinput" name="show_email" />\
+                <label for="id_show_email" > <input id="id_show_email" type="checkbox" class="checkboxinput" name="show_email" '+ value_checked +'/>\
                 Afficher mon adresse mail publiquement</label></div>'),
             ),
             Div(
@@ -108,7 +114,7 @@ class ProfileForm(forms.Form):
         )
         super(ProfileForm, self).__init__(*args, **kwargs)
 
-
+# to update a password
 class ChangePasswordForm(forms.Form):
     password_new = forms.CharField(label='Nouveau mot de passe ', max_length=76, widget=forms.PasswordInput)
     password_old = forms.CharField(label='Mot de passe actuel ', max_length=76, widget=forms.PasswordInput)
@@ -144,7 +150,7 @@ class ChangePasswordForm(forms.Form):
         password_confirm = cleaned_data.get('password_confirm')
    
         
-        # check if the actual password is correct 
+        # check if the actual password is not empty 
         if password_old:
             user_exist = authenticate(username=self.user.username, password=password_old)
             # bad password go sodomize yourself

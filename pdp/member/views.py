@@ -6,6 +6,7 @@ from django.http import Http404
 from django.contrib.auth.models import User, SiteProfileNotAvailable
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
 from django.core.context_processors import csrf
 from django.template import RequestContext
@@ -34,7 +35,8 @@ def details(request, user_name):
         profile = usr.get_profile()
     except SiteProfileNotAvailable:
         raise Http404
-    
+   
+    #attention ça peut faire très mal avec un forum bien plein !! 
     forums = Forum.objects.all()
     
     return render_template('member/profile.html', {
@@ -129,6 +131,7 @@ def register_view(request):
         'form': form
     })
 
+#settings for public profile
 @login_required
 def settings_profile(request):
     #extra information about the current user
@@ -145,12 +148,16 @@ def settings_profile(request):
             profile.show_email = 'show_email' in form.data 
 
             # Save the profile
+            # and redirect the user to the configuration space
+            # with message indicate the state of the operation
             try:
                 profile.save()
             except:
-                raise Http404
+                messages.error(request,'Une erreur est survenue!')
+                return redirect('/membres/parametres/profil')
 
-            return redirect(profile.get_absolute_url())
+            messages.success(request,'Le profil a été mis à jours.')
+            return redirect('/membres/parametres/profil')
         else:
             return render_to_response('member/settings_profile.html',c,RequestContext(request))
     else:
@@ -172,9 +179,14 @@ def settings_account(request):
             'form' : form,
         }
         if form.is_valid():
-            request.user.set_password(form.data['password_new'])
-            request.user.save()
-            return redirect(request.user.get_absolute_url())
+            try:
+                request.user.set_password(form.data['password_new'])
+                request.user.save()
+                messages.success(request,'Le mot de passe a bien été modifié.')
+                return redirect('/membres/parametres/profil')
+            except:
+                messages.error(request,'Une erreur est survenue!')
+                return redirect('/membres/parametres/profil')
         else:
             return render_to_response('member/settings_account.html',c,RequestContext(request))
     else:
