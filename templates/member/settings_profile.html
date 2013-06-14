@@ -3,7 +3,7 @@
 
 {% block breadcrumb %}
     <li><a href="{{ user.get_absolute_url }}">{{ user.username }}</a></li>
-    <li><a href="{{ user.get_absolute_url }}">Paramètres</a></li>
+    <li><a href="{% url pdp.member.views.settings_profile %}">Paramètres</a></li>
     <li class="current"><a href="#">Profil</a></li>
 {% endblock %}
 
@@ -13,12 +13,9 @@
 {% endblock %}
 
 {% block settings_form %}
-<div class="row">
-    <div class="large-12 columns">
-        {% crispy form %}
+    <div class="row">
+        <div class="large-12 columns">
+            {% crispy form %}
+        </div>
     </div>
-</div>
-
-
-
 {% endblock %}

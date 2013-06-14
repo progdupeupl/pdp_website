@@ -15,6 +15,7 @@
     <script src="{% static "js/vendor/custom.modernizr.js" %}"></script>
     
     <link rel="shortcut icon" type="image/png" href="{% static "img/favicon.png" %}">
+    
 </head>
 <body>
     
@@ -158,8 +159,9 @@
             </h1>
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert-box {{ message.tags }}">
-                        {{ message }}
+                    <div data-alert class="alert-box {{ message.tags }}">
+                        <span>{{ message }}</span>
+                        <a href="#" class="close">&times;</a>
                     </div>
                 {% endfor %}
             {% endif %}
@@ -192,6 +194,10 @@
         $(document).foundation('topbar dropdown tooltip', {
             custom_back_text: true,
             back_text: 'Précédent'
+        });
+        /* alert boxes initialisation */
+        $(document).ready(function(){
+            $(document).foundation();
         });
     </script>
     
