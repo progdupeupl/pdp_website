@@ -96,7 +96,10 @@ class ProfileForm(forms.Form):
                 u'Public',
                 Field('biography'),
                 Field('site'),
-                Field('show_email'),
+                #inline checkbox is not supported by crispy form
+                HTML('<div id="div_id_show_email" class="ctrlHolder checkbox" style="padding-top:10px">\
+                <label for="id_show_email" > <input id="id_show_email" type="checkbox" class="checkboxinput" name="show_email" />\
+                Afficher mon adresse mail publiquement</label></div>'),
             ),
             Div(
                 Submit('submit', 'Editer mon profil'),
