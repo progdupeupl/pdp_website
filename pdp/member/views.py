@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render_to_response
 from django.http import Http404
 
 from django.contrib.auth.models import User, SiteProfileNotAvailable
@@ -8,12 +8,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
 from django.core.context_processors import csrf
+from django.template import RequestContext
 
 from pdp.utils.tokens import generate_token
 from pdp.utils import render_template
 
 from models import Profile
-from forms import LoginForm, ProfileForm, RegisterForm
+from forms import LoginForm, ProfileForm, RegisterForm, ChangePasswordForm
 
 from pdp.forum.models import Forum
 
@@ -127,3 +128,58 @@ def register_view(request):
     return render_template('member/register.html', {
         'form': form
     })
+
+@login_required
+def settings_profile(request):
+    #extra information about the current user
+    profile = Profile.objects.get(user=request.user)
+
+    if request.method == 'POST':
+        form = ProfileForm(request.user, request.POST)
+        c = {
+            'form' : form,
+        }
+        if form.is_valid():
+            profile.biography = form.data['biography']
+            profile.site = form.data['site']
+            profile.show_email = 'show_email' in form.data 
+
+            # Save the profile
+            try:
+                profile.save()
+            except:
+                raise Http404
+
+            return redirect(profile.get_absolute_url())
+        else:
+            return render_to_response('member/settings_profile.html',c,RequestContext(request))
+    else:
+        form = ProfileForm(request.user,initial={
+            'biography':profile.biography,
+            'site':profile.site,
+            'show_email':profile.show_email}
+        )
+        c = {
+            'form' : form
+        }
+        return render_to_response('member/settings_profile.html',c,RequestContext(request))
+
+@login_required
+def settings_account(request):
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.user,request.POST)
+        c = {
+            'form' : form,
+        }
+        if form.is_valid():
+            request.user.set_password(form.data['password_new'])
+            request.user.save()
+            return redirect(request.user.get_absolute_url())
+        else:
+            return render_to_response('member/settings_account.html',c,RequestContext(request))
+    else:
+        form = ChangePasswordForm(request.user)
+        c = {
+            'form' : form,
+        }
+        return render_to_response('member/settings_account.html',c,RequestContext(request))

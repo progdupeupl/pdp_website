@@ -18,8 +18,8 @@
 
 {% block headline-actions %}
     {% ifequal profile.user user %}
-        <a href="{% url pdp.member.views.edit_profile %}" class="button">
-            Éditer
+        <a href="{% url pdp.member.views.settings_profile %}" class="button">
+            Paramètres
         </a>
     {% endifequal %}
 {% endblock %}
