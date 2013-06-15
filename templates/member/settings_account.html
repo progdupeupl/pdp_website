@@ -2,20 +2,19 @@
 {% load crispy_forms_tags %}
 
 {% block breadcrumb %}
-    <li><a href="{{ user.get_absolute_url }}">{{ user.username }}</a></li>
     <li><a href="{% url pdp.member.views.settings_profile %}">Paramètres</a></li>
     <li class="current"><a href="#">Compte</a></li>
 {% endblock %}
 
 {% block subnav %}
-	<dd><a href="{% url pdp.member.views.settings_profile %}">Profil</a></dd>
-	<dd class="active"><a href="{% url pdp.member.views.settings_account %}">Compte</a></dd>
+    <dd><a href="{% url pdp.member.views.settings_profile %}">Profil</a></dd>
+    <dd class="active"><a href="{% url pdp.member.views.settings_account %}">Compte</a></dd>
 {% endblock %}
 
 {% block settings_form %}
 <div class="row">
     <div class="large-12 columns">
-		{% crispy form %}
+        {% crispy form %}
     </div>
 </div>
 {% endblock %}

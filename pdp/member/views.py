@@ -30,17 +30,16 @@ def index(request):
 def details(request, user_name):
     '''Displays details about a profile'''
     usr = get_object_or_404(User, username=user_name)
-    
+
     try:
         profile = usr.get_profile()
     except SiteProfileNotAvailable:
         raise Http404
-   
-    #attention ça peut faire très mal avec un forum bien plein !! 
+
     forums = Forum.objects.all()
-    
+
     return render_template('member/profile.html', {
-        'usr': usr, 'profile': profile, 'forums': forums
+        'usr': usr, 'profile': profile
     })
 
 
@@ -51,7 +50,7 @@ def edit_profile(request):
         profile = get_object_or_404(Profile, pk=profile_pk)
     except KeyError:
         profile = get_object_or_404(Profile, user=request.user)
-        
+
     # Making sure the user is allowed to do that
     if not request.user == profile.user:
         raise Http404
@@ -145,7 +144,7 @@ def settings_profile(request):
         if form.is_valid():
             profile.biography = form.data['biography']
             profile.site = form.data['site']
-            profile.show_email = 'show_email' in form.data 
+            profile.show_email = 'show_email' in form.data
 
             # Save the profile
             # and redirect the user to the configuration space
@@ -153,10 +152,10 @@ def settings_profile(request):
             try:
                 profile.save()
             except:
-                messages.error(request,'Une erreur est survenue!')
+                messages.error(request,'Une erreur est survenue.')
                 return redirect('/membres/parametres/profil')
 
-            messages.success(request,'Le profil a été mis à jours.')
+            messages.success(request,'Le profil a correctement été mis à jour.')
             return redirect('/membres/parametres/profil')
         else:
             return render_to_response('member/settings_profile.html',c,RequestContext(request))
@@ -185,7 +184,7 @@ def settings_account(request):
                 messages.success(request,'Le mot de passe a bien été modifié.')
                 return redirect('/membres/parametres/profil')
             except:
-                messages.error(request,'Une erreur est survenue!')
+                messages.error(request,'Une erreur est survenue.')
                 return redirect('/membres/parametres/profil')
         else:
             return render_to_response('member/settings_account.html',c,RequestContext(request))

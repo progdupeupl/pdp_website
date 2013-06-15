@@ -15,6 +15,7 @@ assets/css/*
 fabfile.py
 media
 static
+env
 pdp/settings_prod.py
 
 *.pyproj

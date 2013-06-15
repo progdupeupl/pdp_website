@@ -7,7 +7,6 @@ from django.contrib.auth import authenticate
 
 from crispy_forms.helper import FormHelper
 from crispy_forms_foundation.layout import Layout, Div, Fieldset, Submit, Field, HTML
-from crispy_forms.bootstrap import FormActions
 
 from captcha.fields import CaptchaField
 
@@ -79,13 +78,24 @@ class RegisterForm(forms.Form):
 
 # update extra information about user
 class ProfileForm(forms.Form):
-    biography = forms.CharField(label='Biographie',required=False, widget=forms.Textarea(attrs={'placeholder':'Votre biographie au format Markdown.'}))
-    site = forms.CharField(label='Site Internet',required=False, max_length=128,widget=forms.TextInput(attrs={'placeholder':'Lien vers votre site internet personnel.'}))
-    show_email = forms.BooleanField(label='Afficher mon adresse mail publiquement',required=False)
+    biography = forms.CharField(
+        label='Biographie',
+        required=False,
+        widget=forms.Textarea(
+            attrs={'placeholder':'Votre biographie au format Markdown.'}))
+    site = forms.CharField(
+        label='Site internet',
+        required=False,
+        max_length=128,
+        widget=forms.TextInput(
+            attrs={'placeholder':'Lien vers votre site internet personnel '
+                   '(ne pas oublier le http:// ou https:// devant).'}))
+    show_email = forms.BooleanField(
+        label='Afficher mon adresse mail publiquement',
+        required=False)
 
     def __init__(self, user, *args, **kwargs):
         self.helper = FormHelper()
-        self.helper.form_class = 'form-horizontal'
         self.helper.form_method = 'post'
 
         self.user = user
@@ -148,21 +158,20 @@ class ChangePasswordForm(forms.Form):
         password_old = cleaned_data.get('password_old')
         password_new = cleaned_data.get('password_new')
         password_confirm = cleaned_data.get('password_confirm')
-   
-        
-        # check if the actual password is not empty 
+
+
+        # Check if the actual password is not empty
         if password_old:
             user_exist = authenticate(username=self.user.username, password=password_old)
-            # bad password go sodomize yourself
             if not user_exist and password_old != "":
-                self._errors['password_old'] = self.error_class([u'Mot de passe incorrect'])
+                self._errors['password_old'] = self.error_class([u'Mot de passe incorrect.'])
                 if 'password_old' in cleaned_data:
                     del cleaned_data['password_old']
 
         # Check that the password and it's confirmation match
         if not password_confirm == password_new:
-            msg = u'Les mots de passe sont différents'
-            self._errors['password_new'] = self.error_class([''])
+            msg = u'Les mots de passe sont différents.'
+            self._errors['password_new'] = self.error_class([msg])
             self._errors['password_confirm'] = self.error_class([msg])
 
             if 'password_new' in cleaned_data:

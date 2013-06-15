@@ -26,23 +26,23 @@ table {
 header {
     background-color: darken($primary-color, 10%);
     background-image: url("../img/header_background.png");
-    
+
     h1, p {
         color: white;
     }
-    
+
     p {
         padding-bottom: emCalc(5px);
     }
-    
+
     margin-bottom: emCalc(30px);
 }
 
 nav.top-bar {
-    @include box-shadow(0px 1px 10px rgba(0, 0, 0, 0.1));    
+    @include box-shadow(0px 1px 10px rgba(0, 0, 0, 0.1));
     .dropdown {
         text-shadow: none;
-        
+
         a:hover {
             background-color: darken($primary-color, 5%);
         }
@@ -76,7 +76,7 @@ nav.top-bar {
 
 .footer {
     border-top: solid 1px $secondary-color;
-    
+
     margin-top: emCalc(14px);
     padding-top: emCalc(14px);
 }
@@ -87,6 +87,10 @@ nav.top-bar {
     color: rgb(221, 86, 0);
     background-color: rgb(241, 206, 171);
     border: 1px solid rgb(239, 185, 158);
+
+    .close {
+        margin-top: emCalc(3px);
+    }
 }
 
 .alert-box.success {

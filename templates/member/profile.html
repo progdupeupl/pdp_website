@@ -25,7 +25,7 @@
 {% endblock %}
 
 {% block content %}
-    
+
 <div class="row">
     <div class="large-2 columns">
         <img src="{{ profile.get_gravatar_url }}&amp;s=140" alt="Avatar" width="140" height="140" class="th"/>
@@ -35,13 +35,13 @@
             {% if profile.show_email and user.is_authenticated %}
                 Adresse mail : {{ usr.email|obfuscate_mailto }}<br />
             {% endif %}
-        
+
             {% if profile.site %}
                 Site internet : <a href="{{ profile.site }}">{{ profile.site }}</a><br />
             {% endif %}
-        
+
             Inscrit {{ usr.date_joined|humane_date }},
-            dernière connexion {{ usr.last_login|humane_date }}
+            dernière connexion {{ usr.last_login|humane_date }}.
         </p>
     </div>
 </div>
@@ -109,7 +109,7 @@
 {# Biography #}
 
 {% if profile.biography %}
-    
+
 <div class="row">
     <div class="large-12 columns">
         <h2>Biographie</h2>
