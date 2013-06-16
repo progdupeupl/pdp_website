@@ -32,7 +32,7 @@ Bonjour o/
 {% block content %}
 <div class="row">
     <div class="large-12 columns">
-        
+
     </div>
 </div>
 
@@ -44,7 +44,7 @@ Bonjour o/
                 Articles
             </a>
         </h2>
-        
+
         {% if last_articles %}
             {% for article in last_articles %}
                 {% include "article/article_item_common.part.html" %}
@@ -53,14 +53,14 @@ Bonjour o/
             <p>Pas d'articles pour l'instant.</p>
         {% endif %}
     </div>
-    
+
     <div class="large-4 columns">
         <h2>
             <a href="{% url pdp.tutorial.views.index %}">
                 Tutoriels
             </a>
         </h2>
-        
+
         {% if last_tutorials %}
             {% for tutorial in last_tutorials %}
                 {% include "tutorial/tutorial_item_common.part.html" %}
@@ -75,7 +75,7 @@ Bonjour o/
                 Forums
             </a>
         </h2>
-        
+
         {% if last_topics %}
             {% for topic in last_topics %}
                 {% include "forum/topic_item_common.part.html" %}
@@ -85,7 +85,7 @@ Bonjour o/
         {% endif %}
     </div>
 </div>
-<div class="row">
+<div class="row hide-for-small">
     <div class="large-4 columns">
         <div class="button-group">
             <a href="{% url pdp.article.views.index %}" class="button">

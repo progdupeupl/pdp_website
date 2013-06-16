@@ -49,13 +49,19 @@ nav.top-bar {
     }
 }
 
-/* Topbar gradient */
+/* Topbar gradient (but not for folded topbar) */
 
-.top-bar, .top-bar-section li:not(.active) a:not(.button) {
+.top-bar {
     background-image: linear-gradient(rgb(84, 180, 235), rgb(47, 164, 231)) ;
 }
-.top-bar-section .dropdown li a {
-    background-image: none !important;
+
+@media #{$small} {
+    .top-bar-section li:not(.active) a:not(.button) {
+        background-image: linear-gradient(rgb(84, 180, 235), rgb(47, 164, 231)) ;
+    }
+    .top-bar-section .dropdown li a {
+        background-image: none !important;
+    }
 }
 
 .top-bar, header {
