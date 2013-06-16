@@ -11,13 +11,14 @@
     <link href='http://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="{% static "css/progdupeupl.css" %}" />
-    
+
     <script src="{% static "js/vendor/custom.modernizr.js" %}"></script>
-    
+
     <link rel="shortcut icon" type="image/png" href="{% static "img/favicon.png" %}">
+
 </head>
 <body>
-    
+
     <nav class="top-bar">
         <ul class="title-area">
             <li class="name">
@@ -25,12 +26,12 @@
             </li>
             <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
         </ul>
-        
+
         <section class="top-bar-section">
-            
+
             {# Theses menu_* blocks are set or not in applications derived base.html #}
             {# in order to set the menu entry active or not. #}
-            
+
             <ul class="left">
                 <li {% block menu_home %}{% endblock %}>
                     <a href="{% url pdp.pages.views.home %}">Accueil</a>
@@ -45,7 +46,7 @@
                     <a href="{% url pdp.forum.views.index %}">Forums</a>
                 </li>
             </ul>
-            
+
             <ul class="right">
                 {% if user.is_authenticated %}
                     {% with topics=user|interventions_topics %}
@@ -102,6 +103,7 @@
                     {% endwith %}
                     <ul class="dropdown">
                         <li><a href="{{ user.get_absolute_url }}">Profil</a></li>
+                        <li><a href="{% url pdp.member.views.settings_profile %}">Paramètres</a></li>
                         <li><a href="{% url pdp.member.views.logout_view %}">Se déconnecter</a></li>
                     </ul>
                 </li>
@@ -116,7 +118,7 @@
             </ul>
         </section>
     </nav>
-    
+
     <header>
         <div class="row">
             <div class="twelve columns">
@@ -124,7 +126,7 @@
             </div>
         </div>
     </header>
-    
+
     <div class="row">
         <div class="large-12 columns">
             <ul class="breadcrumbs">
@@ -136,7 +138,7 @@
             </ul>
         </div>
     </div>
-    
+
     <div class="row">
         <div class="large-8 columns">
             <h1>{% block headline %}{% endblock %}</h1>
@@ -147,7 +149,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="row">
         <div class="large-12 columns">
             <h1>
@@ -157,18 +159,19 @@
             </h1>
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert-box {{ message.tags }}">
-                        {{ message }}
+                    <div data-alert class="alert-box {{ message.tags }}">
+                        <span>{{ message }}</span>
+                        <a href="#" class="close">&times;</a>
                     </div>
                 {% endfor %}
             {% endif %}
         </div>
     </div>
-    
+
     {% block content %}{% endblock %}
-    
+
     {# Footer #}
-    
+
     <div class="row full-width footer">
         <div class="large-4 columns">
             <p>&copy; Progdupeupl 2013</p>
@@ -183,19 +186,19 @@
             </ul>
         </div>
     </div>
-    
+
     <script src="{% static "js/vendor/jquery.js" %}"></script>
     <script src="{% static "js/foundation.min.js" %}"></script>
-    
+
     <script>
-        $(document).foundation('topbar dropdown tooltip', {
+        $(document).foundation('topbar dropdown tooltip alerts', {
             custom_back_text: true,
             back_text: 'Précédent'
         });
     </script>
-    
+
     {# MathJax #}
-    
+
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
             tex2jax: {
@@ -206,8 +209,8 @@
         });
     </script>
     <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
+
     {% block additionnal-js %}{% endblock %}
-    
+
 </body>
 </html>
