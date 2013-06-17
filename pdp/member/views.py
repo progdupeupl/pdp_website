@@ -145,6 +145,7 @@ def settings_profile(request):
             profile.biography = form.data['biography']
             profile.site = form.data['site']
             profile.show_email = 'show_email' in form.data
+            profile.avatar_url = form.data['avatar_url']
 
             # Save the profile
             # and redirect the user to the configuration space
@@ -161,9 +162,10 @@ def settings_profile(request):
             return render_to_response('member/settings_profile.html',c,RequestContext(request))
     else:
         form = ProfileForm(request.user,initial={
-            'biography':profile.biography,
-            'site':profile.site,
-            'show_email':profile.show_email}
+            'biography': profile.biography,
+            'site': profile.site,
+            'avatar_url': profile.avatar_url,
+            'show_email': profile.show_email}
         )
         c = {
             'form' : form

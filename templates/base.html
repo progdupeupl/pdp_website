@@ -99,7 +99,7 @@
                 <li class="has-dropdown">
                     {% with profile=user|profile %}
                         <a href="#">
-                            <img src="{{ profile.get_gravatar_url }}&amp;s=24" alt="Avatar" width="24" height="24" />
+                            <img src="{{ profile.get_avatar_url }}" alt="Avatar" width="24" height="24" />
                             {{ user.username }}
                         </a>
                     {% endwith %}

@@ -93,6 +93,12 @@ class ProfileForm(forms.Form):
     show_email = forms.BooleanField(
         label='Afficher mon adresse mail publiquement',
         required=False)
+    avatar_url = forms.CharField(
+        label='Avatar',
+        required=False,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Lien vers un avatar externe '
+                   '(laisser vide pour utiliser Gravatar).'}))
 
     def __init__(self, user, *args, **kwargs):
         self.helper = FormHelper()
@@ -112,6 +118,7 @@ class ProfileForm(forms.Form):
                 u'Public',
                 Field('biography'),
                 Field('site'),
+                Field('avatar_url'),
                 #inline checkbox is not supported by crispy form
                 HTML('<div id="div_id_show_email" class="ctrlHolder checkbox" style="padding-top:10px">\
                 <label for="id_show_email" > <input id="id_show_email" type="checkbox" class="checkboxinput" name="show_email" '+ value_checked +'/>\

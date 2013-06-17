@@ -50,14 +50,14 @@
                     {% endif %}
                 </button>
             </div>
-            
+
             {% csrf_token %}
         </form>
-        
+
         {% if user.is_staff %}
             <form action="{% url pdp.forum.views.edit %}" method="POST" class="topic-actions">
                 <input type="hidden" name="topic" value="{{ topic.pk }}" />
-            
+
                 <div class="button-group">
                     {# Button to make the thread a post-it #}
                     <button type="submit" name="sticky"
@@ -69,7 +69,7 @@
                         Verrouill{% if topic.is_locked %}é{% else %}er{% endif %}
                     </button>
                 </div>
-                
+
                 {% csrf_token %}
             </form>
         {% endif %}
@@ -77,10 +77,10 @@
 {% endblock %}
 
 {% block content %}
-    
+
 {% if topic.is_solved %}
 <div class="row">
-    <div class="large-12">  
+    <div class="large-12">
         <div class="alert-box success">
             <strong>Ce sujet est résolu</strong>, l'auteur de ce sujet a trouvé une
             solution satisfaisant son problème.
@@ -111,13 +111,13 @@
                                     Cette réponse m'a aidé
                                 </a>
                             {% endif %}
-                
+
                             {% if post.author == user %}
                                 <a href="/forums/message/editer?message={{ post.pk }}" class="button secondary small">
                                     Éditer
                                 </a>
                             {% endif %}
-                
+
                             {% if not topic.is_locked and not topic.antispam %}
                                 <a href="/forums/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.pk }}"
                                     class="button secondary small">
@@ -142,7 +142,7 @@
         <div class="row">
             <div class="large-2 columns hide-for-small">
                 {% with profile=post.author|profile %}
-                    <img src="{{ profile.get_gravatar_url }}&amp;?s=80" width="80" height="80" alt="Avatar" />
+                    <img src="{{ profile.get_avatar_url }}" width="80" height="80" alt="Avatar" />
                 {% endwith %}
             </div>
             <div class="large-10 columns">
@@ -166,7 +166,7 @@
                         Vous ne pouvez pas encore poster dans ce sujet (protection antispam de 15 min).
                     {% endif %}
                 {% endspaceless %}</textarea>
-        
+
             <div style="text-align: center;">
                 <button class="button btn-primary" type="submit" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
                     Répondre
@@ -176,7 +176,7 @@
                     Plus d'options
                 </button>
             </div>
-        
+
             <input type="hidden" name="last_post" value="{{ last_post_pk }}" />
             {% csrf_token %}
         </form>

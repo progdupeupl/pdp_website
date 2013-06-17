@@ -22,6 +22,8 @@ class Profile(models.Model):
     show_email = models.BooleanField('Afficher adresse mail publiquement',
                                      default=True)
 
+    avatar_url = models.CharField('URL de l\'avatar', max_length=128, null=True, blank=True)
+
     biography = models.TextField('Biographie', blank=True)
 
     def __unicode__(self):
@@ -32,9 +34,12 @@ class Profile(models.Model):
         '''Absolute URL to the profile page'''
         return '/membres/voir/%s' % self.user.username
 
-    def get_gravatar_url(self):
-        '''Avatar URL (using Gravatar)'''
-        return 'http://gravatar.com/avatar/%s?d=identicon' % md5(self.user.email).hexdigest()
+    def get_avatar_url(self):
+        '''Avatar URL (using custom URL or Gravatar)'''
+        if self.avatar_url:
+            return self.avatar_url
+        else:
+            return 'http://gravatar.com/avatar/%s?d=identicon' % md5(self.user.email).hexdigest()
 
     def get_post_count(self):
         '''Number of messages posted'''
