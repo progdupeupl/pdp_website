@@ -19,5 +19,6 @@ def interventions_topics(user):
         else:
             topics_read.append(topicfollowed.topic)
 
+    read_topics_count = 5 - (len(topics_unread) if len(topics_unread) < 5 else 5)
     return {'unread': topics_unread,
-            'read': topics_read[:5 - len(topics_unread)]}
+            'read': topics_read[:read_topics_count]}
