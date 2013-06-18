@@ -73,10 +73,10 @@ class TutorialTests(TestCase):
         part = G(Part, tutorial=tutorial)
         resp = self.client.get(part.get_absolute_url())
         self.assertEqual(200, resp.status_code)
-        
+
     # Deprecated URL redirect tests
-    
+
     def test_url_deprecated_tutorial(self):
-        tutorial = G(Tutorial, pk=42, title='Test tutorial')
+        tutorial = G(Tutorial, id=42, title='Test tutorial', is_visible=True)
         resp = self.client.get('/tutoriels/voir/42-test-tutorial/')
         self.assertRedirects(resp, tutorial.get_absolute_url(), 301)
