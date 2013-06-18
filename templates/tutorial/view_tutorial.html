@@ -45,7 +45,7 @@
 {% endblock %}
 
 {% block content %}
-    
+
 <div class="row">
     <div class="large-12 columns">
         <p>
@@ -70,16 +70,18 @@
 
 <div class="row">
     <div class="large-12 columns">
-        
-        
+
+
         {% if tutorial.is_mini %}
         {# Small tutorial #}
-        
-            {% include "tutorial/view_chapter_common.part.html" %}
-        
+
+            {% with authors=tutorial.authors.all %}
+                {% include "tutorial/view_chapter_common.part.html" %}
+            {% endwith %}
+
         {% else %}
         {# Large tutorial #}
-        
+
             {% if parts %}
                 {% for part in parts %}
                     <h2>
@@ -94,7 +96,7 @@
                     Il n'y a actuellement aucune partie dans ce tutoriel.
                 </p>
             {% endif %}
-        
+
         {% endif %}
         {% endblock %}
     </div>

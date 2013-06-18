@@ -2,7 +2,7 @@
 {% load emarkdown %}
 
 {% with extracts=chapter.get_extracts %}
-    
+
     <div class="row">
         <div class="large-12 columns">
             {% if chapter.introduction %}
@@ -10,7 +10,7 @@
             {% else %}
                 <p>Aucune introduction.</p>
             {% endif %}
-            
+
             {% if extracts %}
                 <ul>
                     {% for extract in extracts %}
@@ -28,19 +28,19 @@
             {% endif %}
         </div>
     </div>
-    
-    {% if user in authors %}
+
+    {% if user in authors and not tutorial.is_mini %}
     <div class="row">
         <div class="large-12 columns">
             <a href="/tutoriels/nouveau/extrait?chapitre={{ chapter.pk }}" class="button">
-                Ajouter 
+                Ajouter
             </a>
         </div>
     </div>
     {% endif %}
-    
+
     <hr />
-    
+
     {% for extract in extracts %}
     <div class="row">
         <div class="large-12 columns">
@@ -49,7 +49,7 @@
                     {{ extract.title }}
                 </a>
             </h2>
-            
+
             {% if user in authors %}
                 <form action="{% url pdp.tutorial.views.modify_extract %}" method="post">
                     <div class="button-group">
@@ -67,7 +67,7 @@
                     {% csrf_token %}
                 </form>
             {% endif %}
-            
+
             {% if extract.text %}
                 {{ extract.text|emarkdown }}
             {% else %}
@@ -78,9 +78,9 @@
         </div>
     </div>
     {% endfor %}
-    
-    <hr />    
-    
+
+    <hr />
+
     <div class="row">
         <div class="large-12 columns">
             {% if chapter.conclusion %}
