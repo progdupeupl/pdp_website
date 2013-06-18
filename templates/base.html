@@ -62,9 +62,10 @@
                                 </a>
                                 <ul class="dropdown">
                                     {% with read_topics=topics.read %}
+                                        {# Unread topics #}
                                         {% for topic in unread_topics %}
                                             <li>
-                                                <a href="{{ topic.get_last_answer.get_absolute_url }}">
+                                                <a href="{{ topic.last_read_post.get_absolute_url }}">
                                                     <span class="label">!</span>
                                                     <strong>
                                                         {{ topic.title }}
@@ -72,6 +73,7 @@
                                                 </a>
                                             </li>
                                         {% endfor %}
+                                        {# Read topics #}
                                         {% for topic in read_topics %}
                                             <li>
                                                 {% with last_answer=topic.get_last_answer %}
