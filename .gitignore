@@ -1,4 +1,5 @@
 .gitignore
+.git/
 pdp/settings.py
 
 *.pyc
@@ -12,10 +13,10 @@ assets/css/*
 *.old
 *.bak
 
-fabfile.py
-media
-static
-env
+fabfile_local.py
+media/
+static/
+env/
 pdp/settings_prod.py
 
 *.pyproj

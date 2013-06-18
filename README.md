@@ -10,11 +10,11 @@ comments) though some parts may - of course - be in French. PEP-8 is good too.
 
 ## Dependencies
 
-To install all Python dependencies, simply run
+To install all Python 2 dependencies, simply run
 `pip install -r requirements.txt`.
 
 Moreover, in order to generate the
-CSS files with included Makefile, you will need to install 
+CSS files with included Makefile, you will need to install
 [Compass](http://compass-style.org) and [Zurb Foundation](http://foundation.zurb.com/)' ruby gems
 using `gem install compass zurb-foundation`.
 
