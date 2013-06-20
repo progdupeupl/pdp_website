@@ -5,7 +5,9 @@ from django.contrib.auth.models import User
 
 from pdp.utils import slugify
 
+
 class Article(models.Model):
+
     class Meta:
         verbose_name = 'Article'
         verbose_name_plural = 'Articles'
@@ -28,15 +30,17 @@ class Article(models.Model):
 
 
 def get_last_articles():
-    return Article.objects.all().filter(is_visible=True).order_by('-pubdate')[:3]
+    return Article.objects.all()\
+        .filter(is_visible=True)\
+        .order_by('-pubdate')[:3]
 
 
 def get_prev_article(g_article):
     try:
         return Article.objects\
-                .filter(is_visible=True)\
-                .filter(pubdate__lt=g_article.pubdate)\
-                .order_by('-pubdate')[0]
+            .filter(is_visible=True)\
+            .filter(pubdate__lt=g_article.pubdate)\
+            .order_by('-pubdate')[0]
     except IndexError:
         return None
 
@@ -44,8 +48,8 @@ def get_prev_article(g_article):
 def get_next_article(g_article):
     try:
         return Article.objects\
-                .filter(is_visible=True)\
-                .filter(pubdate__gt=g_article.pubdate)\
-                .order_by('pubdate')[0]
+            .filter(is_visible=True)\
+            .filter(pubdate__gt=g_article.pubdate)\
+            .order_by('pubdate')[0]
     except IndexError:
         return None

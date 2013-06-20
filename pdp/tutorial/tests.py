@@ -1,13 +1,13 @@
 # coding: utf-8
 
 from django.test import TestCase
-from django.test.client import Client
 from django_dynamic_fixture import G
 
 from pdp.tutorial.models import Tutorial, Part, get_last_tutorials
 
 
 class TutorialTests(TestCase):
+
     def test_last_tutorials_zero(self):
         '''
         Tests that the last articles work if there are no visible articles.

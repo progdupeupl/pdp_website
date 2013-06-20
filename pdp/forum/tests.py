@@ -8,6 +8,7 @@ from django_dynamic_fixture import G
 from pdp.member.models import Profile
 from .models import Category, Forum, Topic, Post
 
+
 class ForumTests(TestCase):
 
     # Current URL tests

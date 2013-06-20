@@ -9,13 +9,13 @@ from pdp.utils import render_template, slugify
 
 from .models import Article, get_prev_article, get_next_article
 from .forms import ArticleForm
-from .feeds import LastArticlesFeedRSS, LastArticlesFeedATOM
 
 
 def index(request):
     '''Displayy articles list'''
-    article = Article.objects.all().filter(is_visible=True)\
-            .order_by('-pubdate')
+    article = Article.objects.all()\
+        .filter(is_visible=True)\
+        .order_by('-pubdate')
 
     if request.user.is_authenticated():
         user_article = Article.objects.filter(author=request.user)
@@ -121,9 +121,9 @@ def modify(request):
 
     return redirect(article.get_absolute_url())
 
+
 # Deprecated URLs
 
 def deprecated_view_redirect(request, article_pk, article_slug):
     article = get_object_or_404(Article, pk=article_pk)
     return redirect(article.get_absolute_url(), permanent=True)
-

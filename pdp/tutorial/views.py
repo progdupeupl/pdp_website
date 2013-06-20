@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from django.shortcuts import get_object_or_404, redirect
-from django.http import Http404, HttpResponse, HttpResponsePermanentRedirect
+from django.http import Http404, HttpResponse
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -64,7 +64,7 @@ def download(request):
     import json
 
     tutorial = get_object_or_404(Tutorial, pk=request.GET['tutoriel'])
-    
+
     if not tutorial.is_visible and not request.user in tutorial.authors.all():
         raise Http404
 
@@ -157,36 +157,38 @@ def modify_tutorial(request):
     if 'delete' in request.POST:
         tutorial.delete()
         return redirect('/tutoriels/')
-    
+
     elif 'add_author' in request.POST:
-        redirect_url = reverse('pdp.tutorial.views.edit_tutorial') + '?tutoriel=%s' % tutorial.pk
-        
+        redirect_url = reverse(
+            'pdp.tutorial.views.edit_tutorial') + '?tutoriel=%s' % tutorial.pk
+
         author_username = request.POST['author']
-        author = None        
+        author = None
         try:
             author = User.objects.get(username=author_username)
         except User.DoesNotExist:
             return redirect(redirect_url)
-        
+
         tutorial.authors.add(author)
         tutorial.save()
-        
+
         return redirect(redirect_url)
-    
+
     elif 'remove_author' in request.POST:
-        redirect_url = reverse('pdp.tutorial.views.edit_tutorial') + '?tutoriel=%s' % tutorial.pk
-        
+        redirect_url = reverse(
+            'pdp.tutorial.views.edit_tutorial') + '?tutoriel=%s' % tutorial.pk
+
         if tutorial.authors.all().count() <= 1:
             raise Http404
-        
+
         author_pk = request.POST['author']
         author = get_object_or_404(User, pk=author_pk)
-        
+
         tutorial.authors.remove(author)
         tutorial.save()
-        
+
         return redirect(redirect_url)
-    
+
     raise Http404
 
 # Part
@@ -195,7 +197,7 @@ def modify_tutorial(request):
 def view_part(request, tutorial_pk, tutorial_slug, part_slug):
     '''Display a part'''
     part = get_object_or_404(Part,
-        slug=part_slug, tutorial__pk=tutorial_pk)
+                             slug=part_slug, tutorial__pk=tutorial_pk)
 
     tutorial = part.tutorial
     if not tutorial.is_visible and not request.user in \
@@ -322,7 +324,7 @@ def view_chapter(request, tutorial_pk, tutorial_slug, part_slug,
                                 slug=chapter_slug,
                                 part__slug=part_slug,
                                 part__tutorial__pk=tutorial_pk)
-    
+
     tutorial = chapter.get_tutorial()
     if not tutorial.is_visible \
             and not request.user in tutorial.authors.all():
@@ -360,23 +362,23 @@ def add_chapter(request):
     except KeyError:
         raise Http404
     part = get_object_or_404(Part, pk=part_pk)
-    
+
     # Make sure the user is allowed to do that
     if not request.user in part.tutorial.authors.all():
         raise Http404
-    
+
     if request.method == 'POST':
         form = ChapterForm(request.POST)
         if form.is_valid():
             data = form.data
-            
+
             # We check that another chapter doesn't exist with the same slug
             already_exist = False
             for p_chapter in part.get_chapters():
                 if p_chapter.slug == slugify(data['title']):
                     already_exist = True
                     break
-            
+
             if not already_exist:
                 chapter = Chapter()
                 chapter.title = data['title']
@@ -386,11 +388,11 @@ def add_chapter(request):
                 chapter.position_in_part = part.get_chapters().count() + 1
                 chapter.update_position_in_tutorial()
                 chapter.save()
-                
+
                 if 'submit_continue' in request.POST:
                     form = ChapterForm()
                     messages.success(request,
-                                     u'Chapitre « %s » ajouté avec succès.' % \
+                                     u'Chapitre « %s » ajouté avec succès.' %
                                      chapter.title)
                 else:
                     return redirect(chapter.get_absolute_url())
@@ -416,10 +418,10 @@ def modify_chapter(request):
     except KeyError:
         raise Http404
     chapter = get_object_or_404(Chapter, pk=chapter_pk)
-    
+
     # Make sure the user is allowed to do that
     if not request.user in chapter.get_tutorial().authors.all():
-       raise Http404
+        raise Http404
 
     if 'move' in data:
         new_pos = int(request.POST['move_target'])
@@ -521,10 +523,12 @@ def add_extract(request):
             extract.title = data['title']
             extract.text = data['text']
             extract.save()
-            
+
             if 'submit_continue' in request.POST:
                 form = ExtractForm()
-                messages.success(request, u'Extrait « %s » ajouté avec succès.' % extract.title)
+                messages.success(
+                    request, u'Extrait « %s » ajouté avec succès.' %
+                    extract.title)
             else:
                 return redirect(extract.get_absolute_url())
     else:
@@ -601,19 +605,23 @@ def modify_extract(request):
 
     raise Http404
 
+
 # Handling deprecated links
 
 def deprecated_view_tutorial_redirect(request, tutorial_pk, tutorial_slug):
     tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
     return redirect(tutorial.get_absolute_url(), permanent=True)
 
+
 def deprecated_view_part_redirect(request, tutorial_pk, tutorial_slug, part_pos, part_slug):
     part = Part.objects.get(
         position_in_tutorial=part_pos, tutorial__pk=tutorial_pk)
     return redirect(part.get_absolute_url(), permanent=True)
 
-def deprecated_view_chapter_redirect(request, tutorial_pk, tutorial_slug, part_pos, part_slug,
-                 chapter_pos, chapter_slug):
+
+def deprecated_view_chapter_redirect(
+    request, tutorial_pk, tutorial_slug, part_pos, part_slug,
+        chapter_pos, chapter_slug):
     chapter = Chapter.objects.get(position_in_part=chapter_pos,
                                   part__position_in_tutorial=part_pos,
                                   part__tutorial__pk=tutorial_pk)
