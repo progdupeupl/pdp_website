@@ -1,20 +1,24 @@
 {% extends "base.html" %}
 
 {% block title %}
-Erreur 500
+    Erreur 500
 {% endblock %}
 
 {% block headline %}
-Erreur 500
+    Erreur 500
 {% endblock %}
 
 {% block breadcrumb %}
-<li><a href="/">Accueil</a> <span class="divider">/</span></li>
-<li class="active">Erreur 500</li>
+    <li><a href="/">Accueil</a> <span class="divider">/</span></li>
+    <li class="active">Erreur 500</li>
 {% endblock %}
 
 {% block content %}
-Si vous voyez cette page, c'est que vous avez trouvé un bug. Merci de reporter
-cette erreur en expliquant comment vous avez procédé pour tomber sur cette
-page.
+<div class="row">
+    <div class="large-12 columns">
+        Si vous voyez cette page, c'est que vous avez trouvé un bug. Merci de
+        reporter cette erreur en expliquant comment vous avez procédé pour
+        tomber sur cette page.
+    </div>
+</div>
 {% endblock %}
