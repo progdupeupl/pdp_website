@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 from django_dynamic_fixture import G
 
+from pdp.member.models import Profile
 from .models import Category, Forum, Topic, Post
 
 class ForumTests(TestCase):
@@ -19,14 +20,17 @@ class ForumTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_category_url(self):
-        category = G(Category, id=42, title='Test category', slug='test-category')
+        category = G(Category, id=42, title='Test category',
+                     slug='test-category')
 
         resp = self.client.get(category.get_absolute_url())
         self.assertEqual(resp.status_code, 200)
 
     def test_forum_url(self):
-        category = G(Category, id=42, title='Test category', slug='test-category')
-        forum = G(Forum, id=21, title='Test forum', slug='test-forum', category=category)
+        category = G(Category, id=42, title='Test category',
+                     slug='test-category')
+        forum = G(Forum, id=21, title='Test forum', slug='test-forum',
+                  category=category)
 
         resp = self.client.get(forum.get_absolute_url())
         self.assertEqual(resp.status_code, 200)
@@ -34,14 +38,33 @@ class ForumTests(TestCase):
     # Deprecated URL redirect tests
 
     def test_deprecated_category_url_redirect(self):
-        category = G(Category, id=42, title='Test category', slug='test-category')
+        category = G(Category, id=42, title='Test category',
+                     slug='test-category')
 
         resp = self.client.get('/forums/42-test-category/')
         self.assertRedirects(resp, category.get_absolute_url(), 301)
 
     def test_deprecated_forum_url_redirect(self):
-        category = G(Category, id=42, title='Test category', slug='test-category')
-        forum = G(Forum, id=21, title='Test forum', slug='test-forum', category=category)
+        category = G(Category, id=42, title='Test category',
+                     slug='test-category')
+        forum = G(Forum, id=21, title='Test forum', slug='test-forum',
+                  category=category)
 
         resp = self.client.get('/forums/42-test-category/21-test-forum/')
         self.assertRedirects(resp, forum.get_absolute_url(), 301)
+
+    def test_deprecated_topic_url_redirect(self):
+        author = G(User, username='monique')
+        author_profile = G(Profile, user=author)
+
+        category = G(Category, id=42, title='Test category',
+                     slug='test-category')
+        forum = G(Forum, id=21, title='Test forum', slug='test-forum',
+                  category=category)
+
+        topic = G(Topic, id=112, title='Test topic', forum=forum,
+                  author=author, last_message=G(Post, topic_id=112,
+                                                author=author))
+
+        resp = self.client.get('/forums/sujet/112-test-topic')
+        self.assertRedirects(resp, topic.get_absolute_url(), 301)

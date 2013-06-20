@@ -370,7 +370,7 @@ def useful_post(request):
 # Deprecated URLs
 
 def deprecated_topic_redirect(request, topic_pk, topic_slug):
-    topic = get_object_or_404(Topic, pk=topik_pk)
+    topic = get_object_or_404(Topic, pk=topic_pk)
     return redirect(topic.get_absolute_url(), permanent=True)
 
 def deprecated_cat_details_redirect(request, cat_pk, cat_slug):
