@@ -21,28 +21,16 @@
 {% endblock %}
 
 {% block content %}
-    
-<div class="row">
-    <div class="large-12 columns">
-        <p>
-            Voici la liste des forums mis à votre disposition pour échanger avec le reste
-            de la communauté, rangés par thématiques.
-        </p>
-    </div>
-</div>
-    
+
 {% for category in categories %}
-<div class="row">
-    <div class="large-12 columns">
-        
+    <div class="row">
+        <div class="large-12 columns">
             <h2>
                 {{ category.title }}
             </h2>
+        </div>
     </div>
-</div>
-{% include "forum/forums_common.html" %}
+    {% include "forum/forums_common.html" %}
 {% endfor %}
-
-
 
 {% endblock %}
