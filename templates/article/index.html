@@ -8,7 +8,7 @@
     <h1>Articles</h1>
     <p>
         Les articles sont rédigés par la communauté ; ils permettent aussi bien de <strong>se tenir informé des dernières innovations</strong> du moment
-        que de <strong>découvrir de nouvelles notions</strong> liées aux différents domaines de l'informatique. . 
+        que de <strong>découvrir de nouvelles notions</strong> liées aux différents domaines de l'informatique. .
     </p>
 {% endblock %}
 
@@ -22,7 +22,7 @@
 
 {% block headline-actions %}
     <div class="button-group">
-        
+
         <a href="#" class="button secondary dropdown" data-dropdown="articles-drop-feeds">
             Flux
         </a><br />
@@ -30,25 +30,17 @@
             <li><a href="{% url article-feed-rss %}">RSS</a></li>
             <li><a href="{% url article-feed-atom %}">ATOM</a></li>
         </ul>
-        
+
         {% if user.is_authenticated %}
             <a href="{% url pdp.article.views.new %}" class="button">
                 Nouvel article
             </a>
         {% endif %}
-        
+
     </div>
 {% endblock %}
 
 {% block content %}
-    
-<div class="row">
-    <div class="large-12 columns">
-        <p>
-            Les articles sont rédigés par la communauté et permettent aussi bien de se tenir informé des dernières innovations du moment que de découvrir de nouveaux concepts liés aux différents domaines de l'informatique.
-        </p>
-    </div>
-</div>
 
 <div class="row">
     <div class="large-6 columns">
