@@ -29,6 +29,7 @@ def chapter_icon_path(instance, filename):
 
 
 class Tutorial(models.Model):
+
     '''A tutorial, large or small'''
     class Meta:
         verbose_name = 'Tutoriel'
@@ -37,7 +38,10 @@ class Tutorial(models.Model):
     title = models.CharField('Titre', max_length=80)
     description = models.CharField('Description', max_length=200)
     authors = models.ManyToManyField(User, verbose_name='Auteurs')
-    
+
+    introduction = models.TextField('Introduction', null=True, blank=True)
+    conclusion = models.TextField('Conclusion', null=True, blank=True)
+
     slug = models.SlugField()
 
     icon = models.ImageField(upload_to=tutorial_icon_path,
@@ -48,7 +52,7 @@ class Tutorial(models.Model):
     # than a field
     is_mini = models.BooleanField('Est un mini-tutoriel')
     is_visible = models.BooleanField('Est visible publiquement')
-    
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(Tutorial, self).save(*args, **kwargs)
@@ -70,10 +74,12 @@ class Tutorial(models.Model):
         '''Gets the chapter associated with the tutorial if it's small'''
         # We can use get since we know there'll only be one chapter
         return Chapter.objects.get(tutorial__pk=self.pk)
-    
+
+
 def get_last_tutorials():
     # TODO: Sort by publish date (or update?)
     return Tutorial.objects.all().filter(is_visible=True).order_by('title')[:3]
+
 
 class Part(models.Model):
 
@@ -91,11 +97,11 @@ class Part(models.Model):
 
     introduction = models.TextField('Introduction')
     conclusion = models.TextField('Conclusion')
-    
+
     slug = models.SlugField()
 
     # The list of chapters is shown between introduction and conclusion
-    
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(Part, self).save(*args, **kwargs)
@@ -145,12 +151,12 @@ class Chapter(models.Model):
 
     introduction = models.TextField('Introduction')
     conclusion = models.TextField('Conclusion')
-    
+
     slug = models.SlugField()
-    
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
-        super(Chapter, self).save(*args, **kwargs)   
+        super(Chapter, self).save(*args, **kwargs)
 
     def __unicode__(self):
         if self.tutorial:
@@ -167,7 +173,7 @@ class Chapter(models.Model):
 
         elif self.part:
             return self.part.get_absolute_url() + '%s/' % self.slug
-            
+
         else:
             return '/tutoriels/'
 
@@ -213,10 +219,9 @@ class Extract(models.Model):
     chapter = models.ForeignKey(Chapter, verbose_name='Chapitre parent')
     position_in_chapter = models.IntegerField('Position dans le chapitre')
     text = models.TextField('Texte')
-    
+
     def __unicode__(self):
         return u'<extrait \'%s\'>' % self.title
-    
 
     def get_absolute_url(self):
         return '%s#%s-%s' % (

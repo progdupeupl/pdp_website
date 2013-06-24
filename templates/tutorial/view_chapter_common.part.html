@@ -2,13 +2,14 @@
 {% load emarkdown %}
 
 {% with extracts=chapter.get_extracts %}
-
     <div class="row">
         <div class="large-12 columns">
-            {% if chapter.introduction %}
-                {{ chapter.introduction|emarkdown }}
-            {% else %}
-                <p>Aucune introduction.</p>
+            {% if not chapter.tutorial %}
+                {% if chapter.introduction %}
+                    {{ chapter.introduction|emarkdown }}
+                {% else %}
+                    <p>Aucune introduction.</p>
+                {% endif %}
             {% endif %}
 
             {% if extracts %}

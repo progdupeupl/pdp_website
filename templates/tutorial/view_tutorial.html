@@ -1,4 +1,5 @@
 {% extends "tutorial/base.html" %}
+{% load emarkdown %}
 
 {% block title %}
 {{ tutorial.title }}
@@ -71,6 +72,11 @@
 <div class="row">
     <div class="large-12 columns">
 
+        {% if tutorial.introduction %}
+            {{ tutorial.introduction|emarkdown }}
+        {% else %}
+            <p>Aucune introduction.</p>
+        {% endif %}
 
         {% if tutorial.is_mini %}
         {# Small tutorial #}
@@ -82,6 +88,7 @@
         {% else %}
         {# Large tutorial #}
 
+            <hr />
             {% if parts %}
                 {% for part in parts %}
                     <h2>
@@ -96,10 +103,17 @@
                     Il n'y a actuellement aucune partie dans ce tutoriel.
                 </p>
             {% endif %}
+            <hr />
 
         {% endif %}
-        {% endblock %}
+
+        {% if tutorial.conclusion %}
+            {{ tutorial.conclusion|emarkdown }}
+        {% else %}
+            <p>Aucune conclusion.</p>
+        {% endif %}
+
     </div>
 </div>
 
-
+{% endblock %}
