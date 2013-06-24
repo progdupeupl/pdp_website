@@ -139,7 +139,9 @@ def edit_tutorial(request):
     else:
         form = EditTutorialForm({
             'title': tutorial.title,
-            'description': tutorial.description
+            'description': tutorial.description,
+            'introduction': tutorial.introduction,
+            'conclusion': tutorial.conclusion
         })
 
     return render_template('tutorial/edit_tutorial.html', {
