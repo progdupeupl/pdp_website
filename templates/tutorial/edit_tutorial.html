@@ -24,7 +24,7 @@
     </div>
     <div class="large-6 columns">
         <h2>Auteurs</h2>
-        
+
         <form action="{% url pdp.tutorial.views.modify_tutorial %}" method="post">
             <div class="row collapse">
                 <div class="small-10 columns">
@@ -39,7 +39,7 @@
             <input type="hidden" name="tutorial" value="{{ tutorial.pk }}" />
             {% csrf_token %}
         </form>
-        
+
         <form action="{% url pdp.tutorial.views.modify_tutorial %}" method="post">
             <table>
                 <thead>
@@ -57,7 +57,7 @@
                                 </button>
                                 {% endif %}
                             </td>
-                        </tr>                    
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -65,7 +65,7 @@
             <input type="hidden" name="tutorial" value="{{ tutorial.pk }}" />
             {% csrf_token %}
         </form>
-        
+
     </div>
 </div>
 

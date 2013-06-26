@@ -131,12 +131,17 @@ def edit_tutorial(request):
             data = form.data
             tutorial.title = data['title']
             tutorial.description = data['description']
+            tutorial.introduction = data['introduction']
+            tutorial.conclusion = data['conclusion']
             tutorial.save()
+
             return redirect(tutorial.get_absolute_url())
     else:
         form = EditTutorialForm({
             'title': tutorial.title,
-            'description': tutorial.description
+            'description': tutorial.description,
+            'introduction': tutorial.introduction,
+            'conclusion': tutorial.conclusion
         })
 
     return render_template('tutorial/edit_tutorial.html', {
@@ -191,8 +196,8 @@ def modify_tutorial(request):
 
     raise Http404
 
-# Part
 
+# Part
 
 def view_part(request, tutorial_pk, tutorial_slug, part_slug):
     '''Display a part'''

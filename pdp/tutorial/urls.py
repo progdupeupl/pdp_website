@@ -15,11 +15,11 @@ urlpatterns = patterns('',
 # Viewing
 
     # Current URLs
-    
+
     url(r'^(?P<tutorial_pk>\d+)/(?P<tutorial_slug>.+)/' +
         r'(?P<part_slug>.+)/' +
         r'(?P<chapter_slug>.+)/$', views.view_chapter),
-   
+
     url(r'^(?P<tutorial_pk>\d+)/(?P<tutorial_slug>.+)/' +
     r'(?P<part_slug>.+)/$', views.view_part),
 
@@ -27,14 +27,14 @@ urlpatterns = patterns('',
         views.view_tutorial),
 
     url(r'^telecharger', views.download),
-    
+
     # Deprecated URLs
-    
+
     url(r'^voir/(?P<tutorial_pk>\d+)-(?P<tutorial_slug>.+)/' +
         r'(?P<part_pos>\d+)-(?P<part_slug>.+)/' +
         r'(?P<chapter_pos>\d+)-(?P<chapter_slug>.+)$',
         views.deprecated_view_chapter_redirect),
-    
+
     url(r'^voir/(?P<tutorial_pk>\d+)-(?P<tutorial_slug>.+)/' +
         r'(?P<part_pos>\d+)-(?P<part_slug>.+)/$',
         views.deprecated_view_part_redirect),

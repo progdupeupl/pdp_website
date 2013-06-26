@@ -51,13 +51,15 @@ def move(obj, new_pos, position_f, parent_f, children_fn):
 
 # Export-to-dict functions
 
-def export_chapter(chapter, export_title=True):
+def export_chapter(chapter, export_all=True):
     '''
     Export a chapter to a dict
     '''
     dct = OrderedDict()
-    if export_title:
+    if export_all:
         dct['title'] = chapter.title
+        dct['introduction'] = chapter.introduction
+        dct['conclusion'] = chapter.conclusion
     dct['extracts'] = []
 
     extracts = Extract.objects.filter(chapter=chapter)\
@@ -95,11 +97,13 @@ def export_tutorial(tutorial):
     dct['title'] = tutorial.title
     dct['description'] = tutorial.description
     dct['is_mini'] = tutorial.is_mini
-    
+    dct['introduction'] = tutorial.introduction
+    dct['conclusion'] = tutorial.conclusion
+
     if tutorial.is_mini:
         # We export the chapter without its empty title if mini tutorial
         chapter = Chapter.objects.get(tutorial=tutorial)
-        dct['chapter'] = export_chapter(chapter, export_title=False)
+        dct['chapter'] = export_chapter(chapter, export_all=False)
     else:
         dct['parts'] = []
         parts = Part.objects.filter(tutorial=tutorial)

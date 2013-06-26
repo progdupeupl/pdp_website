@@ -3,9 +3,10 @@
 from django import forms
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, Field, Div
+from crispy_forms.layout import Div
 
-from crispy_forms_foundation.layout import Layout, Fieldset, Submit, Field, ButtonHolder
+from crispy_forms_foundation.layout import Layout, Fieldset, Submit, Field, \
+    ButtonHolder
 
 
 class TutorialForm(forms.Form):
@@ -49,7 +50,15 @@ class EditTutorialForm(forms.Form):
         max_length=200
     )
 
-    icon = forms.ImageField(required=False)
+    introduction = forms.CharField(
+        required=False,
+        widget=forms.Textarea
+    )
+
+    conclusion = forms.CharField(
+        required=False,
+        widget=forms.Textarea
+    )
 
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
@@ -58,6 +67,8 @@ class EditTutorialForm(forms.Form):
         self.helper.layout = Layout(
             Field('title'),
             Field('description'),
+            Field('introduction'),
+            Field('conclusion'),
             Submit('submit', 'Valider')
         )
         super(EditTutorialForm, self).__init__(*args, **kwargs)
@@ -134,7 +145,9 @@ class ChapterForm(forms.Form):
             ButtonHolder(
                 Div(
                     Submit('submit', 'Ajouter'),
-                    Submit('submit_continue', 'Ajouter et continuer', css_class='secondary'),
+                    Submit(
+                        'submit_continue', 'Ajouter et continuer',
+                        css_class='secondary'),
                     css_class='button-group'
                 ),
             )
@@ -192,12 +205,14 @@ class ExtractForm(forms.Form):
             Field('text'),
             Div(
                 Submit('submit', 'Ajouter'),
-                Submit('submit_continue', 'Ajouter et continuer', css_class='secondary'),
+                Submit(
+                    'submit_continue', 'Ajouter et continuer',
+                    css_class='secondary'),
                 css_class='button-group'
             )
         )
         super(ExtractForm, self).__init__(*args, **kwargs)
-        
+
 
 class EditExtractForm(forms.Form):
     title = forms.CharField(
