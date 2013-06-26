@@ -85,14 +85,14 @@ def humane_date(date, conf={}):
     if not debug:
         debug_msg = ' '
     else:
-        debug_msg = "[debug(humane_date) today:%s date:%s conf:%s] " % \
+        debug_msg = "[debug(humane_date) today:{0} date:{1} conf:{2}] ".format \
             (today, date, conf)
 
     prefixe = "il y a" if date < today else "dans"
 
     def compte((str, n)):
         """Returns the requested unit, using plural if necessary"""
-        return "%d %s%s" % (n, str, 's' if n > 1 and str[-1] != 's' else '')
+        return "{0} {1}{2}".format(n, str, 's' if n > 1 and str[-1] != 's' else '')
 
     def presente(unite1, unite2, prefixe=prefixe + ' '):
         """Returns one or two of the given units, depending on precision"""
@@ -102,7 +102,7 @@ def humane_date(date, conf={}):
         elif unite1[1] == 0:
             result += compte(unite2)
         else:
-            result += "%s et %s" % (compte(unite1), compte(unite2))
+            result += "{0} et {1}".format(compte(unite1), compte(unite2))
         return result
 
     daydiff = (date.date() - today.date()).days
@@ -126,7 +126,7 @@ def humane_date(date, conf={}):
             heure_str = {0: 'minuit', 12: 'midi'}.get(heure[1], compte(heure))
         else:
             heure_str = presente(heure, ('minute', date.minute), prefixe='')
-        return "%s%s à %s" % (debug_msg, jour, heure_str)
+        return "{0}{1} à {2}".format(debug_msg, jour, heure_str)
     elif use_tz and full_after_week:
         return fulldate(date, today)
     elif abs(diff) < timedelta(days=31):
@@ -141,7 +141,7 @@ def test(tz=None):
     """humane_date tests"""
     def test_date(date, conf={}):
         pass
-        #print "%s  : %s" % (date, humane_date(date, conf))
+        #print "{0}  : {1}".format(date, humane_date(date, conf))
     #seconds
 
     def now(tz=None):

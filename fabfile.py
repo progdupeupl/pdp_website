@@ -4,7 +4,7 @@ TEST_APPS = ('article', 'tutorial', 'forum', 'member', 'utils', 'pages')
 
 
 def test():
-    local('python manage.py test %s' % ' '.join(TEST_APPS))
+    local('python manage.py test {0}'.format(' '.join(TEST_APPS)))
 
 
 try:

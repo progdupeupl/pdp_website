@@ -72,8 +72,7 @@ def download(request):
     data = json.dumps(dct, indent=4, ensure_ascii=False)
 
     response = HttpResponse(data, mimetype='application/json')
-    response['Content-Disposition'] = 'attachment; filename=%s.json' % \
-        tutorial.slug
+    response['Content-Disposition'] = 'attachment; filename={0}.json'.format(tutorial.slug)
 
     return response
 
@@ -165,7 +164,7 @@ def modify_tutorial(request):
 
     elif 'add_author' in request.POST:
         redirect_url = reverse(
-            'pdp.tutorial.views.edit_tutorial') + '?tutoriel=%s' % tutorial.pk
+            'pdp.tutorial.views.edit_tutorial') + '?tutoriel={0}'.format(tutorial.pk)
 
         author_username = request.POST['author']
         author = None
@@ -181,7 +180,7 @@ def modify_tutorial(request):
 
     elif 'remove_author' in request.POST:
         redirect_url = reverse(
-            'pdp.tutorial.views.edit_tutorial') + '?tutoriel=%s' % tutorial.pk
+            'pdp.tutorial.views.edit_tutorial') + '?tutoriel={0}'.format(tutorial.pk)
 
         if tutorial.authors.all().count() <= 1:
             raise Http404
@@ -397,8 +396,8 @@ def add_chapter(request):
                 if 'submit_continue' in request.POST:
                     form = ChapterForm()
                     messages.success(request,
-                                     u'Chapitre « %s » ajouté avec succès.' %
-                                     chapter.title)
+                                     u'Chapitre « {0} » ajouté avec succès.'.format( \
+                                     chapter.title))
                 else:
                     return redirect(chapter.get_absolute_url())
             else:
@@ -532,8 +531,8 @@ def add_extract(request):
             if 'submit_continue' in request.POST:
                 form = ExtractForm()
                 messages.success(
-                    request, u'Extrait « %s » ajouté avec succès.' %
-                    extract.title)
+                    request, u'Extrait « {0} » ajouté avec succès.'.format(
+                    extract.title))
             else:
                 return redirect(extract.get_absolute_url())
     else:

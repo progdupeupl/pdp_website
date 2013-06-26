@@ -29,7 +29,7 @@ class Category(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '/forums/%s/' % self.slug
+        return '/forums/{0}/'.format(self.slug)
 
     def get_forums(self):
         return Forum.objects.all()\
@@ -57,7 +57,7 @@ class Forum(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '/forums/%s/%s/' % (
+        return '/forums/{0}/{1}/'.format( \
             self.category.slug,
             self.slug,
         )
@@ -110,7 +110,7 @@ class Topic(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '/forums/sujet/%s/%s' % (self.pk, slugify(self.title))
+        return '/forums/sujet/{0}/{1}'.format(self.pk, slugify(self.title))
 
     def get_post_count(self):
         '''
@@ -211,12 +211,12 @@ class Post(models.Model):
 
     def __unicode__(self):
         '''Textual form of a post'''
-        return u'<Post pour "%s", #%s>' % (self.topic, self.pk)
+        return u'<Post pour "{0}", #{1}>'.format(self.topic, self.pk)
 
     def get_absolute_url(self):
         page = int(ceil(float(self.position_in_topic) / POSTS_PER_PAGE))
 
-        return '%s?page=%s#p%s' % (self.topic.get_absolute_url(), page, self.pk)
+        return '{0}?page={1}#p{2}'.format(self.topic.get_absolute_url(), page, self.pk)
 
 
 class TopicRead(models.Model):
@@ -233,7 +233,7 @@ class TopicRead(models.Model):
     user = models.ForeignKey(User)
 
     def __unicode__(self):
-        return u'<Sujet "%s" lu par %s, #%s>' % (self.topic,
+        return u'<Sujet "{0}" lu par {1}, #{2}>'.format(self.topic,
                                                 self.user,
                                                 self.post.pk)
 
@@ -252,7 +252,7 @@ class TopicFollowed(models.Model):
     user = models.ForeignKey(User)
 
     def __unicode__(self):
-        return u'<Sujet "%s" suivi par %s>' % (self.topic.title,
+        return u'<Sujet "{0}" suivi par {1}>'.format(self.topic.title,
                                                self.user.username)
 
 

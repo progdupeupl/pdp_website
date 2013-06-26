@@ -14,17 +14,17 @@ from pdp.utils import slugify
 
 
 def tutorial_icon_path(instance, filename):
-    return 'tutoriels/tutoriels/%s%s' % \
+    return 'tutoriels/tutoriels/{0}{1}'.format \
         (instance.pk, path.splitext(filename)[1])
 
 
 def part_icon_path(instance, filename):
-    return 'tutoriels/parties/%s%s' % \
+    return 'tutoriels/parties/{0}{1}'.format \
         (instance.pk, path.splitext(filename)[1])
 
 
 def chapter_icon_path(instance, filename):
-    return 'tutoriels/chapitres/%s%s' % \
+    return 'tutoriels/chapitres/{0}{1}'.format \
         (instance.pk, path.splitext(filename)[1])
 
 
@@ -107,7 +107,7 @@ class Part(models.Model):
         super(Part, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return '<Partie pour %s, %s>' % \
+        return '<Partie pour {0}, {1}>'.format\
             (self.tutorial.title, self.position_in_tutorial)
 
     def get_absolute_url(self):
@@ -160,9 +160,9 @@ class Chapter(models.Model):
 
     def __unicode__(self):
         if self.tutorial:
-            return u'<minituto \'%s\'>' % self.tutorial.title
+            return u'<minituto \'{0}\'>'.format(self.tutorial.title)
         elif self.part:
-            return u'<bigtuto \'%s\', \'%s\'>' % \
+            return u'<bigtuto \'{0}\', \'{1}\'>'.format \
                 (self.part.tutorial.title, self.title)
         else:
             return u'<orphelin>'
@@ -172,7 +172,7 @@ class Chapter(models.Model):
             return self.tutorial.get_absolute_url()
 
         elif self.part:
-            return self.part.get_absolute_url() + '%s/' % self.slug
+            return self.part.get_absolute_url() + '{0}/'.format(self.slug)
 
         else:
             return '/tutoriels/'
@@ -221,10 +221,10 @@ class Extract(models.Model):
     text = models.TextField('Texte')
 
     def __unicode__(self):
-        return u'<extrait \'%s\'>' % self.title
+        return u'<extrait \'{0}\'>'.format(self.title)
 
     def get_absolute_url(self):
-        return '%s#%s-%s' % (
+        return '{0}#{1}-{2}'.format( \
             self.chapter.get_absolute_url(),
             self.position_in_chapter,
             slugify(self.title)

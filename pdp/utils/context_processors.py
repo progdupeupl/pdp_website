@@ -17,6 +17,6 @@ def analytics(request):
 
 def versions(request):
     return {
-        'django_version': '%s.%s.%s' % django.VERSION[:3],
-        'python_version': '%s.%s.%s' % sys.version_info[:3]
+        'django_version': '{0}.{1}.{2}'.format(django.VERSION[0], django.VERSION[1], django.VERSION[2]),
+        'python_version': '{0}.{1}.{2}'.format(sys.version_info[0], sys.version_info[1], sys.version_info[2])
     }

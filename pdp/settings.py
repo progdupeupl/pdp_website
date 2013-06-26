@@ -200,7 +200,7 @@ AUTH_PROFILE_MODULE = 'member.Profile'
 LOGIN_URL = '/membres/connexion'
 
 ABSOLUTE_URL_OVERRIDES = {
-    'auth.user': lambda u: '/membres/voir/%s' % u.username
+    'auth.user': lambda u: '/membres/voir/{0}'.format(u.username)
 }
 
 # Load the production settings, overwrite the existing ones if needed
