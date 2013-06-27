@@ -26,7 +26,7 @@ class Article(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '/articles/%s/%s' % (self.pk, slugify(self.title))
+        return '/articles/{0}/{1}'.format(self.pk, slugify(self.title))
 
 
 def get_last_articles():

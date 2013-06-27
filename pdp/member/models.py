@@ -32,14 +32,14 @@ class Profile(models.Model):
 
     def get_absolute_url(self):
         '''Absolute URL to the profile page'''
-        return '/membres/voir/%s' % self.user.username
+        return '/membres/voir/{0}'.format(self.user.username)
 
     def get_avatar_url(self):
         '''Avatar URL (using custom URL or Gravatar)'''
         if self.avatar_url:
             return self.avatar_url
         else:
-            return 'http://gravatar.com/avatar/%s?d=identicon' % md5(self.user.email).hexdigest()
+            return 'http://gravatar.com/avatar/{0}?d=identicon'.format(md5(self.user.email).hexdigest())
 
     def get_post_count(self):
         '''Number of messages posted'''
