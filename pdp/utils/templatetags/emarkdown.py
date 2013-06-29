@@ -15,7 +15,7 @@ register = template.Library()
 @register.filter(needs_autoescape=False)
 def emarkdown(value):
     # Allowed output tags from user raw HTML input and markdown generation
-    allowed_tags = ['div', 'span', 'p', 'pre', 'hr', 'img',
+    allowed_tags = ['div', 'span', 'p', 'pre', 'hr', 'img', 'br',
                     'strong', 'em', 'i', 'b', 'code',
                     'a', 'abbr', 'blockquote',
                     'ul', 'ol', 'li',
