@@ -42,11 +42,14 @@
 @import "foundation/components/tooltips";
 @import "foundation/components/dropdown";
 
+/* Compass */
+
 @import "compass";
 
 /* And now our custom SCSS */
 
 @import "pygments";
+@import "fonts";
 
 @import "misc";
 @import "forums";
