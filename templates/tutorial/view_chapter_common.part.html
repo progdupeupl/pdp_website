@@ -82,6 +82,7 @@
 
     <hr />
 
+    {% if not chapter.tutorial %}
     <div class="row">
         <div class="large-12 columns">
             {% if chapter.conclusion %}
@@ -91,5 +92,6 @@
             {% endif %}
         </div>
     </div>
+    {% endif %}
 
 {% endwith %}
