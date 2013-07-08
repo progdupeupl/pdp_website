@@ -12,12 +12,18 @@
 
     {% block meta %}{% endblock %}
 
+
     <link rel="stylesheet" href="{% static "css/progdupeupl.css" %}" />
 
     <script src="{% static "js/vendor/custom.modernizr.js" %}"></script>
 
     <link rel="shortcut icon" type="image/png" href="{% static "img/favicon.png" %}">
 
+    {# RSS links #}
+    <link rel="alternate" type="application/rss+xml"
+          title="Articles" href="{% url article-feed-rss %}"/>
+    <link rel="alternate" type="application/rss+xml"
+          title="Tutoriels" href="{% url tutorial-feed-rss %}"/>
 </head>
 <body>
 
