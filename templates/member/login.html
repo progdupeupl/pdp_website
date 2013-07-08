@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block content %}
-    
+
 <div class="row">
     <div class="large-12 columns">
         {% if not user.is_authenticated %}
@@ -22,7 +22,7 @@
                 {{ error }}.
             </div>
             {% endif %}
-        
+
             <p>
                 Si vous n'avez pas de compte, vous pouvez <a href="{% url pdp.member.views.register_view %}" >vous inscrire</a>.
             </p>
@@ -54,6 +54,15 @@
                     <input type="password" name="password" id="id_password" maxlength="76" />
                 </div>
             </div>
+            <div class="row">
+                <div class="small-4 columns"></div>
+                <div class="small-8 columns">
+                    <label>
+                        <input type="checkbox" name="remember">
+                        Connexion automatique
+                    </label>
+                </div>
+            </div>
 
             <div class="row">
                 <div class="small-8 small-offset-4 columns">
@@ -65,7 +74,7 @@
                     </a>
                 </div>
             </div>
-    
+
             {% csrf_token %}
         </form>
     </div>

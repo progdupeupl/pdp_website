@@ -14,10 +14,11 @@ from django.template import RequestContext
 from pdp.utils.tokens import generate_token
 from pdp.utils import render_template
 
-from models import Profile
-from forms import LoginForm, ProfileForm, RegisterForm, ChangePasswordForm
+from .models import Profile
+from .forms import LoginForm, ProfileForm, RegisterForm, ChangePasswordForm
 
 from pdp.forum.models import Forum
+
 
 def index(request):
     '''Displays the list of registered users'''
@@ -89,6 +90,8 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 request.session['get_token'] = generate_token()
+                if not 'remember' in request.POST:
+                    request.session.set_expiry(0)
                 return redirect('/')
             else:
                 error = 'Les identifiants fournis ne sont pas valides'
@@ -130,16 +133,18 @@ def register_view(request):
         'form': form
     })
 
-#settings for public profile
+
+# settings for public profile
+
 @login_required
 def settings_profile(request):
-    #extra information about the current user
+    # extra information about the current user
     profile = Profile.objects.get(user=request.user)
 
     if request.method == 'POST':
         form = ProfileForm(request.user, request.POST)
         c = {
-            'form' : form,
+            'form': form,
         }
         if form.is_valid():
             profile.biography = form.data['biography']
@@ -153,46 +158,49 @@ def settings_profile(request):
             try:
                 profile.save()
             except:
-                messages.error(request,'Une erreur est survenue.')
+                messages.error(request, 'Une erreur est survenue.')
                 return redirect('/membres/parametres/profil')
 
-            messages.success(request,'Le profil a correctement été mis à jour.')
+            messages.success(
+                request, 'Le profil a correctement été mis à jour.')
             return redirect('/membres/parametres/profil')
         else:
-            return render_to_response('member/settings_profile.html',c,RequestContext(request))
+            return render_to_response('member/settings_profile.html', c, RequestContext(request))
     else:
-        form = ProfileForm(request.user,initial={
+        form = ProfileForm(request.user, initial={
             'biography': profile.biography,
             'site': profile.site,
             'avatar_url': profile.avatar_url,
             'show_email': profile.show_email}
         )
         c = {
-            'form' : form
+            'form': form
         }
-        return render_to_response('member/settings_profile.html',c,RequestContext(request))
+        return render_to_response('member/settings_profile.html', c, RequestContext(request))
+
 
 @login_required
 def settings_account(request):
     if request.method == 'POST':
-        form = ChangePasswordForm(request.user,request.POST)
+        form = ChangePasswordForm(request.user, request.POST)
         c = {
-            'form' : form,
+            'form': form,
         }
         if form.is_valid():
             try:
                 request.user.set_password(form.data['password_new'])
                 request.user.save()
-                messages.success(request,'Le mot de passe a bien été modifié.')
+                messages.success(
+                    request, 'Le mot de passe a bien été modifié.')
                 return redirect('/membres/parametres/profil')
             except:
-                messages.error(request,'Une erreur est survenue.')
+                messages.error(request, 'Une erreur est survenue.')
                 return redirect('/membres/parametres/profil')
         else:
-            return render_to_response('member/settings_account.html',c,RequestContext(request))
+            return render_to_response('member/settings_account.html', c, RequestContext(request))
     else:
         form = ChangePasswordForm(request.user)
         c = {
-            'form' : form,
+            'form': form,
         }
-        return render_to_response('member/settings_account.html',c,RequestContext(request))
+        return render_to_response('member/settings_account.html', c, RequestContext(request))
