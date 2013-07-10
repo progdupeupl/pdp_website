@@ -24,7 +24,12 @@ def index(request):
 
 def help_markdown(request):
     '''
-    Display a page with a markdown helper, used for compatibility if the user's
-    browser doesn't support AJAX page loading with jQuery
+    Display a page with a markdown helper
     '''
     return render_template('pages/help_markdown.html')
+
+def about(request):
+    '''
+    Display many informations about the website
+    '''
+    return render_template('pages/about.html')
