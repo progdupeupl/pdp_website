@@ -2,7 +2,7 @@
 
 from collections import OrderedDict
 
-from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
+from pdp.tutorial.models import Part, Chapter, Extract
 
 
 def move(obj, new_pos, position_f, parent_f, children_fn):
@@ -46,7 +46,7 @@ def move(obj, new_pos, position_f, parent_f, children_fn):
     # All objects have been updated except the current one we want to move, so
     # we can do it now
     setattr(obj, position_f, new_pos)
-    obj.save() # TODO: Let the user save the modified object himself
+    obj.save()  # TODO: Let the user save the modified object himself
 
 
 # Export-to-dict functions
@@ -63,7 +63,7 @@ def export_chapter(chapter, export_all=True):
     dct['extracts'] = []
 
     extracts = Extract.objects.filter(chapter=chapter)\
-            .order_by('position_in_chapter')
+        .order_by('position_in_chapter')
 
     for extract in extracts:
         extract_dct = OrderedDict()
@@ -82,7 +82,9 @@ def export_part(part):
     dct['title'] = part.title
     dct['chapters'] = []
 
-    chapters = Chapter.objects.filter(part=part)
+    chapters = Chapter.objects\
+        .filter(part=part)\
+        .order_by('position_in_part')
     for chapter in chapters:
         dct['chapters'].append(export_chapter(chapter))
 
@@ -97,6 +99,7 @@ def export_tutorial(tutorial):
     dct['title'] = tutorial.title
     dct['description'] = tutorial.description
     dct['is_mini'] = tutorial.is_mini
+    dct['authors'] = [a.username for a in tutorial.authors.all()]
     dct['introduction'] = tutorial.introduction
     dct['conclusion'] = tutorial.conclusion
 
@@ -106,7 +109,9 @@ def export_tutorial(tutorial):
         dct['chapter'] = export_chapter(chapter, export_all=False)
     else:
         dct['parts'] = []
-        parts = Part.objects.filter(tutorial=tutorial)
+        parts = Part.objects\
+            .filter(tutorial=tutorial)\
+            .order_by('position_in_tutorial')
         for part in parts:
             dct['parts'].append(export_part(part))
 
