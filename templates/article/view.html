@@ -29,7 +29,7 @@
                     Supprimer
                 </button>
             </div>
-        
+
             <input type="hidden" name="article" value="{{ article.pk }}" />
             {% csrf_token %}
         </form>
@@ -52,17 +52,21 @@
             et publié
             {{ article.pubdate|humane_date }}.
         </p>
-        
-        {{ article.text|emarkdown }}        
+
+        {{ article.text|emarkdown }}
     </div>
 </div>
 
 {% if article.is_visible %}
     {% include "article/view_pager.part.html" %}
 {% else %}
-    <p>
-        Cet article n'a pas encore été mis en ligne.
-    </p>
+<div class="row">
+    <div class="large-12 columns">
+        <p>
+            Cet article n'a pas encore été mis en ligne.
+        </p>
+    </div>
+</div>
 {% endif %}
 
 {% endblock %}
