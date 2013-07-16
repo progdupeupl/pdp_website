@@ -12,20 +12,49 @@
 {% block headline-actions %}
     {% if user in chapter.part.tutorial.authors.all or user in chapter.tutorial.authors.all %}
         <form action="{% url pdp.tutorial.views.modify_chapter %}" method="POST">
-            <div class="button-group">        
+            <div class="button-group">
                 <a href="/tutoriels/editer/chapitre?chapitre={{ chapter.pk }}" class="button">
                     Éditer
                 </a>
                 {% if chapter.part %}
-                    <a href="#" class="button secondary">
+                    <a href="#" class="button secondary" data-dropdown="chapter-{{ chapter.pk }}">
                         Déplacer
                     </a>
+                    <div id="chapter-{{ chapter.pk }}" class="f-dropdown content" data-dropdown-content>
+                        <select name="move_target">
+                        {% if chapter.position_in_part > 1 %}
+                            <option value="{{ chapter.position_in_part|add:"-1" }}">Monter</option>
+                        {% endif %}
+                        {% if chapter.position_in_part < chapter.part.get_chapters.count %}
+                            <option value="{{ chapter.position_in_part|add:"1" }}">Descendre</option>
+                        {% endif %}
+                            <option disabled>&mdash; Déplacer avant</option>
+                        {% for chapter_mv in chapter.part.get_chapters %}
+                            {% if chapter != chapter_mv and chapter_mv.position_in_part|add:"-1" != chapter.position_in_part %}
+                            <option value="{% if chapter_mv.position_in_part < chapter.position_in_part %}{{ chapter_mv.position_in_part }}{% else %}{{ chapter_mv.position_in_part|add:"-1" }}{% endif %}">
+                                    Chapitre {{ chapter_mv.position_in_part }} : {{ chapter_mv.title }}
+                            </option>
+                            {% endif %}
+                        {% endfor %}
+                        <option disabled>&mdash; Déplacer après</option>
+                        {% for chapter_mv in chapter.part.get_chapters %}
+                            {% if chapter != chapter_mv and chapter_mv.position_in_part|add:"1" != chapter.position_in_part %}
+                            <option value="{% if chapter_mv.position_in_part < chapter.position_in_part %}{{ chapter_mv.position_in_part|add:"1" }}{% else %}{{ chapter_mv.position_in_part }}{% endif %}">
+                                    Chapitre {{ chapter_mv.position_in_part }} : {{ chapter_mv.title }}
+                            </option>
+                            {% endif %}
+                        {% endfor %}
+                        </select>
+                        <button type="submit" name="move" class="button">
+                            Déplacer
+                        </button>
+                    </div>
                     <button type="submit" name="delete" class="button secondary">
                         Supprimer
                     </button>
                 {% endif %}
             </div>
-        
+
             <input type="hidden" name="chapter" value="{{ chapter.pk }}" />
             {% csrf_token %}
         </form>
