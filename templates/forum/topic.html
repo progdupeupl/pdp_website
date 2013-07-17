@@ -93,7 +93,7 @@
 
 
 {% for post in posts %}
-    <div class="post {% if forloop.first and nb > 1 %}before{% endif %}">
+<div class="post {% if forloop.first and nb > 1 %}before{% endif %} {% if post.is_useful %}useful{% endif %}">
         <div class="row post-head" id="p{{ post.id }}">
             <div class="large-2 columns">
                 <p>
@@ -107,7 +107,7 @@
                     {% if user.is_authenticated %}
                         <div class="button-group">
                             {% if topic.author == user and post.author != user %}
-                                <a href="/forums/message/utile?message={{ post.pk }}" class="button secondary small {% if post.is_useful %}btn-success{% endif %}">
+                                <a href="/forums/message/utile?message={{ post.pk }}" class="button small {% if not post.is_useful %}secondary{% else %}success{% endif %}">
                                     Cette réponse m'a aidé
                                 </a>
                             {% endif %}
@@ -139,7 +139,7 @@
                 </p>
             </div>
         </div>
-        <div class="row">
+        <div class="row post-content">
             <div class="large-2 columns hide-for-small">
                 {% with profile=post.author|profile %}
                     <img src="{{ profile.get_avatar_url }}" width="80" height="80" alt="Avatar" />

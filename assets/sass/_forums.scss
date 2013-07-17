@@ -80,9 +80,6 @@
 }
 
 .post-head {
-    margin-top: emCalc(10px);
-    margin-bottom: emCalc(10px);
-
     background-color: rgb(245, 245, 245);
     border-top: 1px solid rgb(221, 221, 221);
 
@@ -92,4 +89,13 @@
         padding: 0;
         margin: 0;
     }
+}
+
+.post-content {
+    padding-top: emCalc(10px);
+    padding-bottom: emCalc(10px);
+}
+
+.useful .post-content {
+    background-color: rgb(213, 236, 191);
 }
