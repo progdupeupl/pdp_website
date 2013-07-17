@@ -57,9 +57,38 @@
                         <a href="{% url pdp.tutorial.views.edit_extract %}?extrait={{ extract.pk }}" class="button">
                             Éditer
                         </a>
-                        <a href="#" class="button secondary">
+                        <a href="#" class="button secondary" data-dropdown="extract-{{ extract.pk }}">
                             Déplacer
                         </a>
+                        <div id="extract-{{ extract.pk }}" class="f-dropdown content" data-dropdown-content>
+                            <select name="move_target">
+                                {% if extract.position_in_chapter > 1 %}
+                                    <option value="{{ extract.position_in_chapter|add:"-1" }}">Monter</option>
+                                {% endif %}
+                                {% if extract.position_in_chapter < chapter.get_extracts.count %}
+                                    <option value="{{ extract.position_in_chapter|add:"1" }}">Descendre</option>
+                                {% endif %}
+                                    <option disabled>&mdash; Déplacer avant</option>
+                                {% for extract_mv in chapter.get_extracts %}
+                                    {% if extract != extract_mv and extract_mv.position_in_chapter|add:"-1" != extract.position_in_chapter %}
+                                    <option value="{% if extract_mv.position_chapter < extract.position_in_chapter %}{{ extract_mv.position_in_chapter }}{% else %}{{ extract_mv.position_in_chapter|add:"-1" }}{% endif %}">
+                                        Extrait {{ extract_mv.position_in_chapter }} : {{ extract_mv.title }}
+                                    </option>
+                                    {% endif %}
+                                {% endfor %}
+                                <option disabled>&mdash; Déplacer après</option>
+                                {% for extract_mv in chapter.get_extracts %}
+                                    {% if extract != extract_mv and extract_mv.position_in_chapter|add:"1" != extract.position_in_chapter %}
+                                    <option value="{% if extract_mv.position_chapter < extract.position_in_chapter %}{{ extract_mv.position_in_chapter|add:"1" }}{% else %}{{ extract_mv.position_in_chapter }}{% endif %}">
+                                        Extrait {{ extract_mv.position_in_chapter }} : {{ extract_mv.title }}
+                                    </option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <button type="submit" name="move" class="button">
+                                Déplacer
+                            </button>
+                        </div>
                         <button type="submit" name="delete" class="button secondary">
                             Supprimer
                         </button>
