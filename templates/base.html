@@ -110,7 +110,7 @@
                                                 {% endwith %}
                                             </li>
                                         {% endfor %}
-                                        {% if topics_read|length == 0 and topics_unread|length == 0 %}
+                                        {% if read_topics|length = 0 and unread_topics|length = 0 %}
                                             <li class="disabled">
                                                 <a href="javascript:;">Aucun sujet suivi</a>
                                             </li>
