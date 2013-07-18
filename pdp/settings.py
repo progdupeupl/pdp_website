@@ -154,6 +154,7 @@ INSTALLED_APPS = (
     'captcha',
     'email_obfuscator',
     'debug_toolbar',
+    'taggit',
 
     'pdp.member',
     'pdp.forum',
