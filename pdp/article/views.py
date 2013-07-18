@@ -58,6 +58,14 @@ def new(request):
             article.description = data['description']
             article.text = data['text']
             article.author = request.user
+            
+            #first save before tags because
+            #they need to know the id of the article
+            article.save()
+
+            list_tags = data['tags'].split(',')
+            for tag in list_tags:
+                article.tags.add(tag)
             article.save()
             return redirect(article.get_absolute_url())
     else:
@@ -90,13 +98,25 @@ def edit(request):
             article.title = data['title']
             article.description = data['description']
             article.text = data['text']
+
+            article.tags.clear()
+            list_tags = data['tags'].split(',')
+            for tag in list_tags:   
+                article.tags.add(tag)
+
             article.save()
             return redirect(article.get_absolute_url())
     else:
+        #initial value for tags input
+        list_tags = ''
+        for tag in article.tags.all():
+            list_tags += ','+tag.__str__()
+
         form = ArticleForm({
             'title': article.title,
             'description': article.description,
-            'text': article.text
+            'text': article.text,
+            'tags': list_tags,
         })
 
     return render_template('article/edit.html', {

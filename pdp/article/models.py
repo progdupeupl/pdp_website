@@ -3,6 +3,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from taggit.managers import TaggableManager
+
 from pdp.utils import slugify
 
 
@@ -19,6 +21,8 @@ class Article(models.Model):
 
     author = models.ForeignKey(User, verbose_name='Auteur')
     pubdate = models.DateTimeField('Date de création', auto_now_add=True)
+
+    tags = TaggableManager()
 
     is_visible = models.BooleanField('Est visible publiquement')
 

@@ -22,6 +22,12 @@ class ArticleForm(forms.Form):
         widget=forms.Textarea
     )
 
+    tags = forms.CharField(
+        label='Tags',
+        max_length=80,
+        required=False
+    )
+
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
@@ -31,6 +37,7 @@ class ArticleForm(forms.Form):
             Field('title', css_class='input-xxlarge'),
             Field('description', css_class='input-block-level'),
             Field('text', css_class='input-block-level'),
+            Field('tags'),
             Submit('submit', 'Valider'),
         )
         super(ArticleForm, self).__init__(*args, **kwargs)
