@@ -20,11 +20,10 @@
 
 {% block headline-actions %}
     {% if user.is_authenticated %}
-        <p>
-            <a href="/forums/sujet/nouveau?forum={{ forum.pk }}" class="button">
-                Nouveau sujet
-            </a>
-        </p>
+        <a href="/forums/sujet/nouveau?forum={{ forum.pk }}" class="button">
+            <i class="icon-plus"></i>
+            Nouveau sujet
+        </a>
     {% endif %}
 {% endblock %}
 

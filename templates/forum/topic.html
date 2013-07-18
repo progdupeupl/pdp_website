@@ -29,11 +29,13 @@
         <form action="{% url pdp.forum.views.edit %}" method="POST" class="topic-actions">
             <input type="hidden" name="topic" value="{{ topic.pk }}" />
             <div class="button-group">
-                <a href="/forums/sujet/nouveau?forum={{ topic.forum.pk }}" class="button">
+                <a href="/forums/sujet/nouveau?forum={{ topic.forum.pk }}" class="button small">
+                    <i class="icon-plus"></i>
                     Nouveau
                 </a>
                 {% if topic.author.pk == user.pk %}
-                <button type="submit" name="solved" class="button {% if topic.is_solved %}success{% else %}secondary{% endif %}">
+                <button type="submit" name="solved" class="button small {% if topic.is_solved %}success{% else %}secondary{% endif %}">
+                    <i class="icon-ok"></i>
                     {% if topic.is_solved %}
                         Résolu
                     {% else %}
@@ -41,8 +43,8 @@
                     {% endif %}
                 </button>
                 {% endif %}
-                <button class="button {% if not topic.is_followed %}secondary{% endif %}" type="submit" name="follow">
-                    <i class="{% if topic.is_followed %}icon-white{% endif %} icon-star"></i>
+                <button class="button small {% if not topic.is_followed %}secondary{% endif %}" type="submit" name="follow">
+                    <i class="icon-star"></i>
                     {% if topic.is_followed %}
                         Suivi
                     {% else %}
@@ -61,12 +63,19 @@
                 <div class="button-group">
                     {# Button to make the thread a post-it #}
                     <button type="submit" name="sticky"
-                        class="button {% if not topic.is_sticky %}secondary{% endif %}">
+                        class="button small {% if not topic.is_sticky %}secondary{% endif %}">
+                        <i class="icon-bookmark"></i>
                         Post-it
                     </button>
                     {# Button to lock the thread #}
-                    <button type="submit" name="lock" class="button {% if not topic.is_locked %}secondary{% endif %}">
-                        Verrouill{% if topic.is_locked %}é{% else %}er{% endif %}
+                    <button type="submit" name="lock" class="button small {% if not topic.is_locked %}secondary{% endif %}">
+                        {% if topic.is_locked %}
+                            <i class="icon-lock"></i>
+                            Verrouillé
+                        {% else %}
+                            <i class="icon-unlock"></i>
+                            Verrouiller
+                        {% endif %}
                     </button>
                 </div>
 
@@ -108,12 +117,14 @@
                         <div class="button-group">
                             {% if topic.author == user and post.author != user %}
                                 <a href="/forums/message/utile?message={{ post.pk }}" class="button small {% if not post.is_useful %}secondary{% else %}success{% endif %}">
+                                    <i class="icon-thumbs-up"></i>
                                     Cette réponse m'a aidé
                                 </a>
                             {% endif %}
 
                             {% if post.author == user %}
                                 <a href="/forums/message/editer?message={{ post.pk }}" class="button secondary small">
+                                    <i class="icon-pencil"></i>
                                     Éditer
                                 </a>
                             {% endif %}
@@ -121,6 +132,7 @@
                             {% if not topic.is_locked and not topic.antispam %}
                                 <a href="/forums/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.pk }}"
                                     class="button secondary small">
+                                    <i class="icon-quote-left"></i>
                                     Citer
                                 </a>
                             {% endif %}
@@ -169,10 +181,12 @@
 
             <div style="text-align: center;">
                 <button class="button btn-primary" type="submit" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
+                    <i class="icon-reply"></i>
                     Répondre
                 </button>
                 <button type="submit" name="more"
                     class="button secondary" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
+                    <i class="icon-ellipsis-horizontal"></i>
                     Plus d'options
                 </button>
             </div>
