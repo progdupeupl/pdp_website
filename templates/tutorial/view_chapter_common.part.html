@@ -34,6 +34,7 @@
     <div class="row">
         <div class="large-12 columns">
             <a href="/tutoriels/nouveau/extrait?chapitre={{ chapter.pk }}" class="button">
+                <i class="icon-plus"></i>
                 Ajouter
             </a>
         </div>
@@ -55,9 +56,11 @@
                 <form action="{% url pdp.tutorial.views.modify_extract %}" method="post">
                     <div class="button-group">
                         <a href="{% url pdp.tutorial.views.edit_extract %}?extrait={{ extract.pk }}" class="button">
+                            <i class="icon-pencil"></i>
                             Éditer
                         </a>
                         <a href="#" class="button secondary" data-dropdown="extract-{{ extract.pk }}">
+                            <i class="icon-move"></i>
                             Déplacer
                         </a>
                         <div id="extract-{{ extract.pk }}" class="f-dropdown content" data-dropdown-content>
@@ -90,6 +93,7 @@
                             </button>
                         </div>
                         <button type="submit" name="delete" class="button secondary">
+                            <i class="icon-remove"></i>
                             Supprimer
                         </button>
                     </div>

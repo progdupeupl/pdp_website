@@ -25,7 +25,10 @@ class="active"
 {% endblock %}
 
 {% block header %}
-    <h1>Bienvenue</h1>
+    <h1>
+        <i class="icon-home icon-large"></i>
+        Bienvenue
+    </h1>
     <p>
         Bienvenue sur Progdupeupl, <strong>une communauté de passionnés
         d'informatique</strong> et notamment de programmation. Ce site permet
@@ -97,9 +100,11 @@ class="active"
     <div class="large-4 columns">
         <div class="button-group">
             <a href="{% url pdp.article.views.index %}" class="button">
+                <i class="icon-arrow-right"></i>
                 Aller aux articles
             </a>
             <a href="#" class="button secondary dropdown" data-dropdown="articles-drop-feeds">
+                <i class="icon-rss"></i>
                 Flux
             </a><br />
             <ul id="articles-drop-feeds" class="f-dropdown">
@@ -111,9 +116,11 @@ class="active"
     <div class="large-4 columns">
         <div class="button-group">
             <a href="{% url pdp.tutorial.views.index %}" class="button">
+                <i class="icon-arrow-right"></i>
                 Aller aux tutoriels
             </a>
             <a href="#" class="button secondary dropdown" data-dropdown="tutorials-drop-feeds">
+                <i class="icon-rss"></i>
                 Flux
             </a><br />
             <ul id="tutorials-drop-feeds" class="f-dropdown">
@@ -125,6 +132,7 @@ class="active"
     <div class="large-4 columns">
         <div class="button-group full-width">
             <a href="{% url pdp.forum.views.index %}" class="button">
+                <i class="icon-arrow-right"></i>
                 Aller aux forums
             </a>
         </div>

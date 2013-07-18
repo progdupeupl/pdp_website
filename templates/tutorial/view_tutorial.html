@@ -23,15 +23,15 @@
                         {% url pdp.tutorial.views.add_part %}?tutoriel={{ tutorial.pk }}
                     {% else %}
                         {% url pdp.tutorial.views.add_extract %}?chapitre={{ tutorial.get_chapter.pk }}
-                    {% endif %}" class="button">
+                    {% endif %}" class="button small">
                     <i class="icon-plus"></i>
                     Ajouter
                 </a>
-                <a href="{% url pdp.tutorial.views.edit_tutorial %}?tutoriel={{ tutorial.pk }}" class="button">
+                <a href="{% url pdp.tutorial.views.edit_tutorial %}?tutoriel={{ tutorial.pk }}" class="button small">
                     <i class="icon-pencil"></i>
                     Éditer
                 </a>
-                <button type="submit" name="delete" class="button secondary">
+                <button type="submit" name="delete" class="button small secondary">
                     <i class="icon-remove"></i>
                     Supprimer
                 </button>
@@ -41,6 +41,7 @@
         </form>
     {% endif %}
     <a href="{% url pdp.tutorial.views.download %}?tutoriel={{ tutorial.pk }}" class="button">
+        <i class="icon-download"></i>
         Télécharger
     </a>
 {% endblock %}
