@@ -15,6 +15,9 @@
 
     <link rel="stylesheet" href="{% static "css/progdupeupl.css" %}" />
 
+    {# for additionnal css in some pages #}
+    {% block extracss %}{% endblock %}
+
     <script src="{% static "js/vendor/custom.modernizr.js" %}"></script>
 
     <link rel="shortcut icon" type="image/png" href="{% static "img/favicon.png" %}">
@@ -198,6 +201,8 @@
 
     <script src="{% static "js/vendor/jquery.js" %}"></script>
     <script src="{% static "js/foundation.min.js" %}"></script>
+    {# for addtionnal javascript in some pages #}
+    {% block extrajs %}{% endblock %}
 
     <script>
         $(document).foundation('topbar dropdown tooltip alerts', {
