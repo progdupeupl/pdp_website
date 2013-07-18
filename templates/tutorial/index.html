@@ -10,7 +10,10 @@
 {% endblock %}
 
 {% block header %}
-    <h1>Tutoriels</h1>
+    <h1>
+        <i class="icon-book icon-large"></i>
+        Tutoriels
+    </h1>
     <p>
         Les tutoriels vous permettent <strong>d'apprendre</strong> sur divers sujets axés autour de la programmation et de l'informatique.
     </p>
@@ -27,11 +30,13 @@
 {% block headline-actions %}
     <div class="button-group">
         <a href="#" class="button secondary dropdown" data-dropdown="tutorials-drop-feeds">
+            <i class="icon-rss"></i>
             Flux
         </a><br />
         {% include "tutorial/feeds.part.html" %}
         {% if user.is_authenticated %}
             <a href="/tutoriels/nouveau/tutoriel" class="button">
+                <i class="icon-plus"></i>
                 Nouveau tutoriel
             </a>
         {% endif %}
