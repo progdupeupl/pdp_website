@@ -182,6 +182,7 @@ def modify_tutorial(request):
         redirect_url = reverse(
             'pdp.tutorial.views.edit_tutorial') + '?tutoriel={0}'.format(tutorial.pk)
 
+        # Avoid orphan tutorials
         if tutorial.authors.all().count() <= 1:
             raise Http404
 
@@ -267,6 +268,7 @@ def modify_part(request):
     if 'move' in request.POST:
         new_pos = int(request.POST['move_target'])
         move(part, new_pos, 'position_in_tutorial', 'tutorial', 'get_parts')
+        part.save()
 
     elif 'delete' in request.POST:
         # Delete all chapters belonging to the part
@@ -604,6 +606,7 @@ def modify_extract(request):
         new_pos = int(request.POST['move_target'])
         move(extract, new_pos, 'position_in_chapter', 'chapter',
              'get_extracts')
+        extract.save()
 
         return redirect(extract.get_absolute_url())
 

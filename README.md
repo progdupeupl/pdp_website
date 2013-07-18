@@ -26,9 +26,14 @@ From the project's root, you will need to run the following commands:
     python manage.py migrate
 
 The CSS must be generated from the SASS sources, using the Makefile located in
-the `assets` directory. Finally, you will have to create a Profile instance for
+the `assets` directory.
+
+Once database created, you will have to create a Profile instance for
 your superuser account using the your credentials and the Django admin system
 aivaible on `/admin/`.
+
+If you want to start with example data, you can execute the following command
+after creating the database : `python manage.py loaddata data.json`.
 
 ## Copyright
 

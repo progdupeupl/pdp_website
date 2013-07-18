@@ -14,6 +14,8 @@ def move(obj, new_pos, position_f, parent_f, children_fn):
     parent field of the object (eg. 'chapter') and the children function's
     name to apply to parent (eg. 'get_extracts').
 
+    You will still have to save the object once modified.
+
     Example for extracts :
 
       move(extract, new_pos, 'position_in_chapter', 'chapter', 'get_extracts')
@@ -46,7 +48,6 @@ def move(obj, new_pos, position_f, parent_f, children_fn):
     # All objects have been updated except the current one we want to move, so
     # we can do it now
     setattr(obj, position_f, new_pos)
-    obj.save()  # TODO: Let the user save the modified object himself
 
 
 # Export-to-dict functions
