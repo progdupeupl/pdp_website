@@ -13,6 +13,8 @@ from django.template import RequestContext
 
 from pdp.utils.tokens import generate_token
 from pdp.utils import render_template
+from pdp.article.models import Article
+from pdp.tutorial.models import Tutorial
 
 from .models import Profile
 from .forms import LoginForm, ProfileForm, RegisterForm, ChangePasswordForm
@@ -200,3 +202,13 @@ def settings_account(request):
             'form': form,
         }
         return render_to_response('member/settings_account.html', c, RequestContext(request))
+
+@login_required
+def publications(request):
+    user_articles = Article.objects.filter(author=request.user)
+    user_tutorials = Tutorial.objects.filter(authors=request.user)
+    c = {
+        'user_articles': user_articles,
+        'user_tutorials': user_tutorials,
+    }
+    return render_to_response('member/publications.html', c, RequestContext(request))
