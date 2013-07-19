@@ -18,7 +18,7 @@ urlpatterns = patterns('',
 
     url(r'^(?P<tutorial_pk>\d+)/(?P<tutorial_slug>.+)/' +
         r'(?P<part_slug>.+)/' +
-        r'(?P<chapter_slug>.+)/$', views.view_chapter),
+        r'(?P<chapter_slug>.+)/$', views.view_chapter, name="view-chapter-url"),
 
     url(r'^(?P<tutorial_pk>\d+)/(?P<tutorial_slug>.+)/' +
     r'(?P<part_slug>.+)/$', views.view_part),
