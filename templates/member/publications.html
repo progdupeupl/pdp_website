@@ -44,22 +44,22 @@
         </div>
     </div>
 
-    {% for article in user_tutorials %}
-        {% if article.is_visible %}
+    {% for tuto in user_tutorials %}
+        {% if tuto.is_visible %}
             <div class="row article-publication-item published">
         {% else %}
             <div class="row article-publication-item">
         {% endif %}
             <div class="large-1 columns">
                 <div class="date-box">
-                    <span class="date-box-month">{{ article.pubdate|date:"F" }}</span>
-                    <span class="date-box-day">{{ article.pubdate|date:"d" }}</span>
-                    <span class="date-box-year">{{ article.pubdate|date:"Y" }}</span>
+                    <span class="date-box-month">{{ tuto.pubdate|date:"F" }}</span>
+                    <span class="date-box-day">{{ tuto.pubdate|date:"d" }}</span>
+                    <span class="date-box-year">{{ tuto.pubdate|date:"Y" }}</span>
                 </div>
             </div>
             <div class="large-11 columns">
-                <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
-                <p>{{ article.description }}</p> 
+                <a href="{{ tuto.get_absolute_url }}">{{ tuto.title }}</a>
+                <p>{{ tuto.description }}</p> 
             </div>
         </div>
     {% endfor %}

@@ -1,6 +1,7 @@
 # coding: utf-8
 
 from os import path
+import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -47,6 +48,7 @@ class Tutorial(models.Model):
     icon = models.ImageField(upload_to=tutorial_icon_path,
                              null=True, blank=True)
 
+    pubdate = models.DateTimeField('Date de création', auto_now_add=True,default=datetime.datetime.now())
     # We could distinguish large/small tutorials by looking at what chapters
     # are contained directly in a tutorial, but that'd be more complicated
     # than a field
