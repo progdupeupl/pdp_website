@@ -66,6 +66,9 @@ class Tutorial(models.Model):
         return reverse('pdp.tutorial.views.view_tutorial', args=[
             self.pk, slugify(self.title)
         ])
+    
+    def get_edit_url(self):
+        return '/articles/editer?article={0}'.format(self.pk)
 
     def get_parts(self):
         return Part.objects.all()\
