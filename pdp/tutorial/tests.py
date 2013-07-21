@@ -1,6 +1,8 @@
 # coding: utf-8
 
 from django.test import TestCase
+from django.core.urlresolvers import reverse
+
 from django_dynamic_fixture import G
 
 from pdp.tutorial.models import Tutorial, Part, Chapter, get_last_tutorials
@@ -74,6 +76,28 @@ class TutorialTests(TestCase):
         resp = self.client.get(part.get_absolute_url())
         self.assertEqual(200, resp.status_code)
 
+    # Commands as unlogged user
+
+    def test_url_create_tutorial_anon(self):
+        '''Testing creating a tutorial as anonymous'''
+        resp = self.client.get(reverse('pdp.tutorial.views.add_tutorial'))
+        self.assertEqual(302, resp.status_code)
+
+    def test_url_create_part_anon(self):
+        '''Testing creating a part as anonymous'''
+        tutorial = G(Tutorial, is_visible=True)
+        resp = self.client.get(reverse('pdp.tutorial.views.add_part'))
+        self.assertEqual(302, resp.status_code)
+
+    def test_url_create_chapter_anon(self):
+        '''Testing creating a chapter as anonymous'''
+        tutorial = G(Tutorial, is_visible=True, is_mini=False)
+        part = G(Part, tutorial=tutorial)
+        resp = self.client.get(
+            reverse('pdp.tutorial.views.add_chapter') +
+            '?partie={}'.format(part.pk))
+        self.assertEqual(302, resp.status_code)
+
     # Deprecated URL redirect tests
 
     def test_url_deprecated_tutorial(self):
@@ -87,4 +111,3 @@ class TutorialTests(TestCase):
                  position_in_tutorial=1)
         resp = self.client.get('/tutoriels/voir/42-test-tutorial/1-test-part/')
         self.assertRedirects(resp, part.get_absolute_url(), 301)
-
