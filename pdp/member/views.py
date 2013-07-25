@@ -205,8 +205,8 @@ def settings_account(request):
 
 @login_required
 def publications(request):
-    user_articles = Article.objects.filter(author=request.user)
-    user_tutorials = Tutorial.objects.filter(authors=request.user)
+    user_articles = Article.objects.filter(author=request.user).order_by('-pubdate')
+    user_tutorials = Tutorial.objects.filter(authors=request.user).order_by('-pubdate')
     c = {
         'user_articles': user_articles,
         'user_tutorials': user_tutorials,
