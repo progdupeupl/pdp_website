@@ -58,7 +58,8 @@ class="active"
 
         {% if last_articles %}
             {% for article in last_articles %}
-                {% include "article/article_item_common.part.html" %}
+                <a href="{{article.get_absolute_url }}">{{ article.title }}</a>
+                <p>{{ article.description }}</p>
             {% endfor %}
         {% else %}
             <p>Pas d'articles pour l'instant.</p>
@@ -74,7 +75,8 @@ class="active"
 
         {% if last_tutorials %}
             {% for tutorial in last_tutorials %}
-                {% include "tutorial/tutorial_item_common.part.html" %}
+                <a href="{{tutorial.get_absolute_url }}">{{ tutorial.title }}</a>
+                <p>{{ tutorial.description }}</p>
             {% endfor %}
         {% else %}
             <p>Aucun tutoriel actuellement.</p>
