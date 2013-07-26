@@ -1,5 +1,7 @@
 # coding: utf-8
 
+from datetime import datetime
+
 from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404
 
@@ -58,9 +60,13 @@ def new(request):
             article.description = data['description']
             article.text = data['text']
             article.author = request.user
-            
-            #first save before tags because
-            #they need to know the id of the article
+
+            # Since the article is not published yet, this value isn't
+            # important (will be changed on publish)
+            article.pubdate = datetime.now()
+
+            # First save before tags because they need to know the id of the
+            # article
             article.save()
 
             list_tags = data['tags'].split(',')
@@ -101,7 +107,7 @@ def edit(request):
 
             article.tags.clear()
             list_tags = data['tags'].split(',')
-            for tag in list_tags:   
+            for tag in list_tags:
                 article.tags.add(tag)
 
             article.save()

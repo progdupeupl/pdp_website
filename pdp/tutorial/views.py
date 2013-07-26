@@ -1,5 +1,7 @@
 # coding: utf-8
 
+from datetime import datetime
+
 from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404, HttpResponse
 from django.core.urlresolvers import reverse
@@ -89,7 +91,9 @@ def add_tutorial(request):
             tutorial.title = data['title']
             tutorial.description = data['description']
             tutorial.is_mini = 'is_mini' in data
+            tutorial.pubdate = datetime.now()
             tutorial.save()
+
             # We need to save the tutorial before changing its author list
             # since it's a many-to-many relationship
             tutorial.authors.add(request.user)
