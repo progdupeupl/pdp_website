@@ -32,6 +32,9 @@ class Article(models.Model):
     def get_absolute_url(self):
         return '/articles/{0}/{1}'.format(self.pk, slugify(self.title))
 
+    def get_edit_url(self):
+        return '/articles/editer?article={0}'.format(self.pk)
+
 
 def get_last_articles():
     return Article.objects.all()\

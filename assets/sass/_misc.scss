@@ -123,3 +123,37 @@ nav.top-bar {
     display: block;
     margin: 0 auto;
 }
+
+.article-publication-item{
+    padding-bottom: emCalc(5px);
+    padding-top: emCalc(10px);
+    margin-top: emCalc(5px);
+    margin-bottom: emCalc(5px);
+}
+
+.date-box {
+    background-color: rgb(204,204,204);
+    text-align : center;
+    padding-top: emCalc(5px);
+    padding-bottom: emCalc(5px);
+}
+
+.date-box-month {
+    font-size: emCalc(11px);
+    display: block;
+}
+
+.date-box-day {
+    font-weight: bold;
+    display: block;
+    font-size: emCalc(18px);
+}
+
+.date-box-year {
+    display: block;
+    font-size: emCalc(11px);
+}
+
+.published {
+    background-color: lighten(rgb(213, 236, 191), 10%);
+}
