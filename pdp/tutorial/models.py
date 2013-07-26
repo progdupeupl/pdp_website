@@ -83,8 +83,9 @@ class Tutorial(models.Model):
 
 
 def get_last_tutorials():
-    # TODO: Sort by publish date (or update?)
-    return Tutorial.objects.all().filter(is_visible=True).order_by('title')[:3]
+    return Tutorial.objects.all()\
+            .filter(is_visible=True)\
+            .order_by('-pubdate')[:3]
 
 
 class Part(models.Model):

@@ -19,7 +19,9 @@ from .forms import TutorialForm, EditTutorialForm, PartForm, ChapterForm, \
 
 def index(request):
     '''Display tutorials list'''
-    tutorials = Tutorial.objects.all().filter(is_visible=True)
+    tutorials = Tutorial.objects.all()\
+            .filter(is_visible=True)\
+            .order_by("-pubdate")
 
     if request.user.is_authenticated():
         user_tutorials = Tutorial.objects.filter(authors=request.user)

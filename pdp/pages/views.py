@@ -28,6 +28,7 @@ def help_markdown(request):
     '''
     return render_template('pages/help_markdown.html')
 
+
 def about(request):
     '''
     Display many informations about the website
