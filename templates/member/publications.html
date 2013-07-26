@@ -37,7 +37,10 @@
                     <p>{{ article.description }}</p>
                 </div>
                 <div class="large-1 columns">
-                    <a href="{{ article.get_edit_url }}"><i class="icon-edit"></i></a>
+                    <a href="{{ article.get_edit_url }}">
+                        <i class="icon-edit"></i>
+                        Éditer
+                    </a>
                 </div>
             </div>
         {% endfor %}
@@ -74,7 +77,10 @@
                     <p>{{ tuto.description }}</p>
                 </div>
                 <div class="large-1 columns">
-                    <a href="{% url pdp.tutorial.views.edit_tutorial %}?tutoriel={{ tuto.pk }}"><i class="icon-edit"></i></a>
+                    <a href="{% url pdp.tutorial.views.edit_tutorial %}?tutoriel={{ tuto.pk }}">
+                        <i class="icon-edit"></i>
+                        Éditer
+                    </a>
                 </div>
             </div>
         {% endfor %}
