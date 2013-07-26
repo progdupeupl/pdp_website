@@ -53,15 +53,13 @@
             {% for tuto in tutorials %}
                 <div class="row article-publication-item">
                     <div class="large-1 columns">
-                        <div class="date-box">
-                            <span class="date-box-month">{{ tuto.pubdate|date:"F" }}</span>
-                            <span class="date-box-day">{{ tuto.pubdate|date:"d" }}</span>
-                            <span class="date-box-year">{{ tuto.pubdate|date:"Y" }}</span>
-                        </div>
+                        {% with date=tuto.pubdate %}
+                            {% include "misc/datebox.part.html" %}
+                        {% endwith %}
                     </div>
                     <div class="large-11 columns">
                         <a href="{{ tuto.get_absolute_url }}">{{ tuto.title }}</a>
-                        <p>{{ tuto.description }}</p> 
+                        <p>{{ tuto.description }}</p>
                     </div>
                 </div>
             {% endfor %}

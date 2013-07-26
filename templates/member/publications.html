@@ -1,11 +1,11 @@
 {% extends "member/base.html" %}
 
 {% block title %}
-   Publications 
+   Publications
 {% endblock %}
 
 {% block headline %}
-    Publications 
+    Publications
 {% endblock %}
 
 {% block breadcrumb %}
@@ -27,14 +27,14 @@
             {% endif %}
                 <div class="large-1 columns">
                     <div class="date-box">
-                        <span class="date-box-month">{{ article.pubdate|date:"F" }}</span>
-                        <span class="date-box-day">{{ article.pubdate|date:"d" }}</span>
-                        <span class="date-box-year">{{ article.pubdate|date:"Y" }}</span>
+                        {% with date=article.pubdate %}
+                            {% include "misc/datebox.part.html" %}
+                        {% endwith %}
                     </div>
                 </div>
                 <div class="large-10 columns">
                     <a href="{{ article.get_absolute_url }}">{{ article.title }} </a>
-                    <p>{{ article.description }}</p> 
+                    <p>{{ article.description }}</p>
                 </div>
                 <div class="large-1 columns">
                     <a href="{{ article.get_edit_url }}"><i class="icon-edit"></i></a>
@@ -48,7 +48,7 @@
             </div>
         </div>
     {% endif %}
-    
+
     <div class="row">
         <div class="large-12 columns">
             <h3>Tutoriels</h3>
@@ -64,14 +64,14 @@
             {% endif %}
                 <div class="large-1 columns">
                     <div class="date-box">
-                        <span class="date-box-month">{{ tuto.pubdate|date:"F" }}</span>
-                        <span class="date-box-day">{{ tuto.pubdate|date:"d" }}</span>
-                        <span class="date-box-year">{{ tuto.pubdate|date:"Y" }}</span>
+                        {% with date=tuto.pubdate %}
+                            {% include "misc/datebox.part.html" %}
+                        {% endwith %}
                     </div>
                 </div>
                 <div class="large-10 columns">
                     <a href="{{ tuto.get_absolute_url }}">{{ tuto.title }}</a>
-                    <p>{{ tuto.description }}</p> 
+                    <p>{{ tuto.description }}</p>
                 </div>
                 <div class="large-1 columns">
                     <a href="{% url pdp.tutorial.views.edit_tutorial %}?tutoriel={{ tuto.pk }}"><i class="icon-edit"></i></a>
