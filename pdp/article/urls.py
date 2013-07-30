@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     url(r'^flux/rss/$', feeds.LastArticlesFeedRSS(), name='article-feed-rss'),
     url(r'^flux/atom/$', feeds.LastArticlesFeedATOM(),
         name='article-feed-atom'),
-    
+
     # TODO: Handle redirect
 
     url(r'^voir/(?P<article_pk>\d+)-(?P<article_slug>.+)$',
