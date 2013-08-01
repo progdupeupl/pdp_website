@@ -31,6 +31,19 @@
     <li class="current"><a href="#">Index</a></li>
 {% endblock %}
 
+{% block headline-actions %}
+    <div class="button-group">
+        <a href="#" class="button secondary dropdown" data-dropdown="posts-drop-feeds">
+            <i class="icon-rss"></i>
+            Flux
+        </a><br />
+        <ul id="posts-drop-feeds" class="f-dropdown">
+            <li><a href="{% url post-feed-rss %}">RSS</a></li>
+            <li><a href="{% url post-feed-atom %}">ATOM</a></li>
+        </ul>
+    </div>
+{% endblock %}
+
 {% block content %}
 
 {% for category in categories %}

@@ -1,6 +1,7 @@
 # coding: utf-8
 
 from os import path
+from datetime import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -47,6 +48,8 @@ class Tutorial(models.Model):
     icon = models.ImageField(upload_to=tutorial_icon_path,
                              null=True, blank=True)
 
+    pubdate = models.DateTimeField('Date de publication', blank=True)
+
     # We could distinguish large/small tutorials by looking at what chapters
     # are contained directly in a tutorial, but that'd be more complicated
     # than a field
@@ -65,6 +68,9 @@ class Tutorial(models.Model):
             self.pk, slugify(self.title)
         ])
 
+    def get_edit_url(self):
+        return '/articles/editer?article={0}'.format(self.pk)
+
     def get_parts(self):
         return Part.objects.all()\
             .filter(tutorial__pk=self.pk)\
@@ -77,8 +83,9 @@ class Tutorial(models.Model):
 
 
 def get_last_tutorials():
-    # TODO: Sort by publish date (or update?)
-    return Tutorial.objects.all().filter(is_visible=True).order_by('title')[:3]
+    return Tutorial.objects.all()\
+            .filter(is_visible=True)\
+            .order_by('-pubdate')[:3]
 
 
 class Part(models.Model):

@@ -3,8 +3,14 @@
 from django.conf.urls import patterns, url
 
 import views
+import feeds
 
 urlpatterns = patterns('',
+
+    # Feeds
+    url(r'^flux/rss/$', feeds.LastPostsFeedRSS(), name='post-feed-rss'),
+    url(r'^flux/atom/$', feeds.LastPostsFeedATOM(), name='post-feed-atom'),
+
     # Deprecated URLs, have to be checked before new ones to avoid conflict
     url(r'^sujet/(?P<topic_pk>\d+)-(?P<topic_slug>.+)$',
         views.deprecated_topic_redirect),
@@ -12,7 +18,6 @@ urlpatterns = patterns('',
         views.deprecated_details_redirect),
     url(r'^(?P<cat_pk>\d+)-(?P<cat_slug>.+)/$',
         views.deprecated_cat_details_redirect),
-
 
     # Viewing a thread
     url(r'^sujet/nouveau$', views.new),
@@ -23,9 +28,8 @@ urlpatterns = patterns('',
     url(r'^message/editer$', views.edit_post),
     url(r'^message/nouveau$', views.answer),
     url(r'^message/utile$', views.useful_post),
-    
+
     # Forum details
-    
     url(r'^(?P<cat_slug>.+)/(?P<forum_slug>.+)/$',
         views.details),
 
@@ -33,5 +37,5 @@ urlpatterns = patterns('',
     url(r'^(?P<cat_slug>.+)/$', views.cat_details),
 
     # Home
-    url(r'^$', views.index),  
+    url(r'^$', views.index),
 )

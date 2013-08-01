@@ -1,5 +1,7 @@
 # coding: utf-8
 
+from datetime import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -20,7 +22,7 @@ class Article(models.Model):
     text = models.TextField('Texte')
 
     author = models.ForeignKey(User, verbose_name='Auteur')
-    pubdate = models.DateTimeField('Date de création', auto_now_add=True)
+    pubdate = models.DateTimeField('Date de publication', blank=True)
 
     tags = TaggableManager()
 
@@ -31,6 +33,9 @@ class Article(models.Model):
 
     def get_absolute_url(self):
         return '/articles/{0}/{1}'.format(self.pk, slugify(self.title))
+
+    def get_edit_url(self):
+        return '/articles/editer?article={0}'.format(self.pk)
 
 
 def get_last_articles():

@@ -41,6 +41,8 @@ class="active"
 {# Content #}
 
 {% block content %}
+
+<!-- TODO: Use a (S)CSS separator rule instead of this empty one -->
 <div class="row">
     <div class="large-12 columns">
 
@@ -58,7 +60,8 @@ class="active"
 
         {% if last_articles %}
             {% for article in last_articles %}
-                {% include "article/article_item_common.part.html" %}
+                <a href="{{article.get_absolute_url }}">{{ article.title }}</a>
+                <p>{{ article.description }}</p>
             {% endfor %}
         {% else %}
             <p>Pas d'articles pour l'instant.</p>
@@ -74,7 +77,8 @@ class="active"
 
         {% if last_tutorials %}
             {% for tutorial in last_tutorials %}
-                {% include "tutorial/tutorial_item_common.part.html" %}
+                <a href="{{tutorial.get_absolute_url }}">{{ tutorial.title }}</a>
+                <p>{{ tutorial.description }}</p>
             {% endfor %}
         {% else %}
             <p>Aucun tutoriel actuellement.</p>
@@ -135,6 +139,14 @@ class="active"
                 <i class="icon-arrow-right"></i>
                 Aller aux forums
             </a>
+            <a href="#" class="button secondary dropdown" data-dropdown="posts-drop-feeds">
+                <i class="icon-rss"></i>
+                Flux
+            </a><br />
+            <ul id="posts-drop-feeds" class="f-dropdown">
+                <li><a href="{% url post-feed-rss %}">RSS</a></li>
+                <li><a href="{% url post-feed-atom %}">ATOM</a></li>
+            </ul>
         </div>
     </div>
 </div>
