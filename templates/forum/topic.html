@@ -26,7 +26,7 @@
 
 {% block headline-actions %}
     {% if user.is_authenticated %}
-        <form action="{% url pdp.forum.views.edit %}" method="POST" class="topic-actions">
+        <form action="{% url "pdp.forum.views.edit" %}" method="POST" class="topic-actions">
             <input type="hidden" name="topic" value="{{ topic.pk }}" />
             <div class="button-group">
                 <a href="/forums/sujet/nouveau?forum={{ topic.forum.pk }}" class="button small">
@@ -57,7 +57,7 @@
         </form>
 
         {% if user.is_staff %}
-            <form action="{% url pdp.forum.views.edit %}" method="POST" class="topic-actions">
+            <form action="{% url "pdp.forum.views.edit" %}" method="POST" class="topic-actions">
                 <input type="hidden" name="topic" value="{{ topic.pk }}" />
 
                 <div class="button-group">
@@ -169,7 +169,7 @@
 {% if user.is_authenticated %}
 <div class="row">
     <div class="large-8 large-offset-2 columns">
-        <form action="{% url pdp.forum.views.answer %}?sujet={{ topic.pk }}" method="POST">
+        <form action="{% url "pdp.forum.views.answer" %}?sujet={{ topic.pk }}" method="POST">
             <textarea name="text" rows="10" {% if topic.is_locked or topic.antispam %}disabled{% endif %}
                 placeholder="Votre message au format Markdown.">{% spaceless %}
                     {% if topic.is_locked %}

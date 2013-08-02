@@ -12,22 +12,27 @@ from captcha.fields import CaptchaField
 
 from pdp.member.models import Profile
 
+
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=30)
     password = forms.CharField(max_length=76, widget=forms.PasswordInput)
 
+
 class RegisterForm(forms.Form):
     email = forms.EmailField(label='Adresse email')
     username = forms.CharField(label='Nom d\'utilisateur', max_length=30)
-    password = forms.CharField(label='Mot de passe', max_length=76, widget=forms.PasswordInput)
-    password_confirm = forms.CharField(label='Confirmation', max_length=76, widget=forms.PasswordInput)
+    password = forms.CharField(
+        label='Mot de passe', max_length=76, widget=forms.PasswordInput
+    )
+    password_confirm = forms.CharField(
+        label='Confirmation', max_length=76, widget=forms.PasswordInput
+    )
     captcha = CaptchaField()
 
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
         self.helper.form_method = 'post'
-
 
         self.helper.layout = Layout(
             Fieldset(
@@ -48,7 +53,6 @@ class RegisterForm(forms.Form):
             )
         )
         super(RegisterForm, self).__init__(*args, **kwargs)
-
 
     def clean(self):
         cleaned_data = super(RegisterForm, self).clean()
@@ -76,19 +80,20 @@ class RegisterForm(forms.Form):
 
         return cleaned_data
 
+
 # update extra information about user
 class ProfileForm(forms.Form):
     biography = forms.CharField(
         label='Biographie',
         required=False,
         widget=forms.Textarea(
-            attrs={'placeholder':'Votre biographie au format Markdown.'}))
+            attrs={'placeholder': 'Votre biographie au format Markdown.'}))
     site = forms.CharField(
         label='Site internet',
         required=False,
         max_length=128,
         widget=forms.TextInput(
-            attrs={'placeholder':'Lien vers votre site internet personnel '
+            attrs={'placeholder': 'Lien vers votre site internet personnel '
                    '(ne pas oublier le http:// ou https:// devant).'}))
     show_email = forms.BooleanField(
         label='Afficher mon adresse mail publiquement',
@@ -107,7 +112,7 @@ class ProfileForm(forms.Form):
         self.user = user
         profile = Profile.objects.get(user=self.user)
 
-        #to get initial value form checkbox show email
+        # to get initial value form checkbox show email
         initial = kwargs.get('initial', {})
         value_checked = ''
         if 'show_email' in initial and initial['show_email']:
@@ -119,9 +124,9 @@ class ProfileForm(forms.Form):
                 Field('biography'),
                 Field('site'),
                 Field('avatar_url'),
-                #inline checkbox is not supported by crispy form
+                # inline checkbox is not supported by crispy form
                 HTML('<div id="div_id_show_email" class="ctrlHolder checkbox" style="padding-top:10px">\
-                <label for="id_show_email" > <input id="id_show_email" type="checkbox" class="checkboxinput" name="show_email" '+ value_checked +'/>\
+                <label for="id_show_email" > <input id="id_show_email" type="checkbox" class="checkboxinput" name="show_email" ' + value_checked + '/>\
                 Afficher mon adresse mail publiquement</label></div>'),
             ),
             Div(
@@ -132,10 +137,15 @@ class ProfileForm(forms.Form):
         super(ProfileForm, self).__init__(*args, **kwargs)
 
 # to update a password
+
+
 class ChangePasswordForm(forms.Form):
-    password_new = forms.CharField(label='Nouveau mot de passe ', max_length=76, widget=forms.PasswordInput)
-    password_old = forms.CharField(label='Mot de passe actuel ', max_length=76, widget=forms.PasswordInput)
-    password_confirm = forms.CharField(label='Confirmer le nouveau mot de passe ', max_length=76, widget=forms.PasswordInput)
+    password_new = forms.CharField(
+        label='Nouveau mot de passe ', max_length=76, widget=forms.PasswordInput)
+    password_old = forms.CharField(
+        label='Mot de passe actuel ', max_length=76, widget=forms.PasswordInput)
+    password_confirm = forms.CharField(
+        label='Confirmer le nouveau mot de passe ', max_length=76, widget=forms.PasswordInput)
 
     def __init__(self, user, *args, **kwargs):
         self.helper = FormHelper()
@@ -158,7 +168,6 @@ class ChangePasswordForm(forms.Form):
         )
         super(ChangePasswordForm, self).__init__(*args, **kwargs)
 
-
     def clean(self):
         cleaned_data = super(ChangePasswordForm, self).clean()
 
@@ -166,12 +175,14 @@ class ChangePasswordForm(forms.Form):
         password_new = cleaned_data.get('password_new')
         password_confirm = cleaned_data.get('password_confirm')
 
-
         # Check if the actual password is not empty
         if password_old:
-            user_exist = authenticate(username=self.user.username, password=password_old)
+            user_exist = authenticate(
+                username=self.user.username, password=password_old
+            )
             if not user_exist and password_old != "":
-                self._errors['password_old'] = self.error_class([u'Mot de passe incorrect.'])
+                self._errors['password_old'] = self.error_class(
+                    [u'Mot de passe incorrect.'])
                 if 'password_old' in cleaned_data:
                     del cleaned_data['password_old']
 
@@ -188,4 +199,3 @@ class ChangePasswordForm(forms.Form):
                 del cleaned_data['password_confirm']
 
         return cleaned_data
-

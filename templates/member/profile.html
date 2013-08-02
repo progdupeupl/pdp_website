@@ -18,7 +18,7 @@
 
 {% block headline-actions %}
     {% ifequal profile.user user %}
-        <a href="{% url pdp.member.views.settings_profile %}" class="button">
+        <a href="{% url "pdp.member.views.settings_profile" %}" class="button">
             <i class="icon-cog"></i>
             Paramètres
         </a>

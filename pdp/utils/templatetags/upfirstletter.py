@@ -4,6 +4,7 @@ from django import template
 
 register = template.Library()
 
+
 @register.filter()
 def upfirstletter(value):
     # This function uses value[0] instead of value[1] because value[0] seems

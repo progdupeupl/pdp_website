@@ -113,10 +113,10 @@ def edit(request):
             article.save()
             return redirect(article.get_absolute_url())
     else:
-        #initial value for tags input
+        # initial value for tags input
         list_tags = ''
         for tag in article.tags.all():
-            list_tags += ','+tag.__str__()
+            list_tags += ',' + tag.__str__()
 
         form = ArticleForm({
             'title': article.title,

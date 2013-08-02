@@ -18,7 +18,7 @@
 
 {% block headline-actions %}
     {% ifequal user article.author %}
-        <form action="{% url pdp.article.views.modify %}" method="POST">
+        <form action="{% url "pdp.article.views.modify" %}" method="POST">
             <div class="button-group">
                 <a href="/articles/editer?article={{ article.pk }}" class="button">
                     <i class="icon-pencil"></i>

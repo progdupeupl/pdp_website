@@ -203,6 +203,7 @@ def settings_account(request):
         }
         return render_to_response('member/settings_account.html', c, RequestContext(request))
 
+
 @login_required
 def publications(request):
     user_articles = Article.objects.filter(author=request.user).order_by('-pubdate')

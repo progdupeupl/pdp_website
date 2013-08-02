@@ -3,7 +3,6 @@
 from pytz import utc
 from datetime import datetime
 
-from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test.client import Client
 
@@ -12,7 +11,9 @@ from django_dynamic_fixture.decorators import skip_for_database, SQLITE3
 
 from pdp.article.models import Article, get_last_articles
 
+
 class ArticleTests(TestCase):
+
     def test_last_articles_zero(self):
         '''
         Tests that the last articles work if there are no visible articles.

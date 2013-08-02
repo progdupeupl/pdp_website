@@ -53,9 +53,9 @@
             </h2>
 
             {% if user in authors %}
-                <form action="{% url pdp.tutorial.views.modify_extract %}" method="post">
+                <form action="{% url "pdp.tutorial.views.modify_extract" %}" method="post">
                     <div class="button-group">
-                        <a href="{% url pdp.tutorial.views.edit_extract %}?extrait={{ extract.pk }}" class="button">
+                        <a href="{% url "pdp.tutorial.views.edit_extract" %}?extrait={{ extract.pk }}" class="button">
                             <i class="icon-pencil"></i>
                             Éditer
                         </a>
