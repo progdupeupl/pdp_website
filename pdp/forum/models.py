@@ -12,7 +12,8 @@ from django.template.defaultfilters import slugify
 from pdp.utils import get_current_user
 
 POSTS_PER_PAGE = 21
-SPAM_LIMIT_SECONDS = 60*15
+SPAM_LIMIT_SECONDS = 60 * 15
+
 
 class Category(models.Model):
     '''A category, containing forums'''
@@ -33,8 +34,8 @@ class Category(models.Model):
 
     def get_forums(self):
         return Forum.objects.all()\
-                .filter(category=self)\
-                .order_by('position_in_category')
+            .filter(category=self)\
+            .order_by('position_in_category')
 
 
 class Forum(models.Model):
@@ -49,7 +50,7 @@ class Forum(models.Model):
     category = models.ForeignKey(Category, verbose_name='Catégorie')
     position_in_category = models.IntegerField('Position dans la catégorie',
                                                null=True, blank=True)
-    
+
     slug = models.SlugField()
 
     def __unicode__(self):
@@ -57,7 +58,7 @@ class Forum(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '/forums/{0}/{1}/'.format( \
+        return '/forums/{0}/{1}/'.format(
             self.category.slug,
             self.slug,
         )
@@ -123,9 +124,9 @@ class Topic(models.Model):
         Gets the last answer in the thread, if any
         '''
         last_post = Post.objects.all()\
-                .filter(topic__pk=self.pk)\
-                .order_by('-pubdate')[0]
-        
+            .filter(topic__pk=self.pk)\
+            .order_by('-pubdate')[0]
+
         if last_post == self.first_post():
             return None
         else:
@@ -188,10 +189,9 @@ class Topic(models.Model):
                 return True
 
         return False
-    
+
     def never_read(self):
         return never_read(self)
-    
 
 
 class Post(models.Model):
@@ -234,8 +234,8 @@ class TopicRead(models.Model):
 
     def __unicode__(self):
         return u'<Sujet "{0}" lu par {1}, #{2}>'.format(self.topic,
-                                                self.user,
-                                                self.post.pk)
+                                                        self.user,
+                                                        self.post.pk)
 
 
 class TopicFollowed(models.Model):
@@ -253,7 +253,7 @@ class TopicFollowed(models.Model):
 
     def __unicode__(self):
         return u'<Sujet "{0}" suivi par {1}>'.format(self.topic.title,
-                                               self.user.username)
+                                                     self.user.username)
 
 
 def never_read(topic, user=None):
@@ -278,13 +278,14 @@ def mark_read(topic):
     t.save()
 
 
-
 def follow(topic):
     '''
     Toggle following of a topic for an user
     '''
     try:
-        existing = TopicFollowed.objects.get(topic=topic, user=get_current_user())
+        existing = TopicFollowed.objects.get(
+            topic=topic, user=get_current_user()
+        )
     except TopicFollowed.DoesNotExist:
         existing = None
 

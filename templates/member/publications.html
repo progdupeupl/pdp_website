@@ -77,7 +77,7 @@
                     <p>{{ tuto.description }}</p>
                 </div>
                 <div class="large-1 columns">
-                    <a href="{% url pdp.tutorial.views.edit_tutorial %}?tutoriel={{ tuto.pk }}">
+                    <a href="{% url "pdp.tutorial.views.edit_tutorial" %}?tutoriel={{ tuto.pk }}">
                         <i class="icon-edit"></i>
                         Éditer
                     </a>

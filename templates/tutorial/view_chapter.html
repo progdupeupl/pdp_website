@@ -11,7 +11,7 @@
 
 {% block headline-actions %}
     {% if user in chapter.part.tutorial.authors.all or user in chapter.tutorial.authors.all %}
-        <form action="{% url pdp.tutorial.views.modify_chapter %}" method="POST">
+        <form action="{% url "pdp.tutorial.views.modify_chapter" %}" method="POST">
             <div class="button-group">
                 <a href="/tutoriels/editer/chapitre?chapitre={{ chapter.pk }}" class="button">
                     <i class="icon-pencil"></i>

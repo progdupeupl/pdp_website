@@ -19,9 +19,9 @@ from .forms import TutorialForm, EditTutorialForm, PartForm, ChapterForm, \
 
 def index(request):
     '''Display tutorials list'''
-    tutorials = Tutorial.objects.all()\
-            .filter(is_visible=True)\
-            .order_by("-pubdate")
+    tutorials = Tutorial.objects.all() \
+        .filter(is_visible=True) \
+        .order_by("-pubdate")
 
     if request.user.is_authenticated():
         user_tutorials = Tutorial.objects.filter(authors=request.user)
@@ -403,9 +403,7 @@ def add_chapter(request):
 
                 if 'submit_continue' in request.POST:
                     form = ChapterForm()
-                    messages.success(request,
-                                     u'Chapitre « {0} » ajouté avec succès.'.format( \
-                                     chapter.title))
+                    messages.success(request, u'Chapitre « {0} » ajouté avec succès.'.format(chapter.title))
                 else:
                     return redirect(chapter.get_absolute_url())
             else:
@@ -539,8 +537,7 @@ def add_extract(request):
             if 'submit_continue' in request.POST:
                 form = ExtractForm()
                 messages.success(
-                    request, u'Extrait « {0} » ajouté avec succès.'.format(
-                    extract.title))
+                    request, u'Extrait « {0} » ajouté avec succès.'.format(extract.title))
             else:
                 return redirect(extract.get_absolute_url())
     else:

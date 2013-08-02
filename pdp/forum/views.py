@@ -289,7 +289,7 @@ def answer(request):
             for line in post_cite.text.splitlines():
                 text = text + '> ' + line + '\n'
 
-            text = u'**{0} a écrit :**\n{1}\n'.format( \
+            text = u'**{0} a écrit :**\n{1}\n'.format(
                 post_cite.author.username, text)
 
         return render_template('forum/answer.html', {

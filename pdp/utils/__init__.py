@@ -20,6 +20,7 @@ def get_current_request():
 
 
 class ThreadLocals(object):
+
     def process_request(self, request):
         _thread_locals.user = getattr(request, 'user', None)
         _thread_locals.request = request

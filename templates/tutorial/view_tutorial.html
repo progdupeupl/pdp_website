@@ -16,18 +16,18 @@
 
 {% block headline-actions %}
     {% if user.is_authenticated and user in tutorial.authors.all %}
-        <form action="{% url pdp.tutorial.views.modify_tutorial %}" method="post">
+        <form action="{% url "pdp.tutorial.views.modify_tutorial" %}" method="post">
             <div class="button-group">
                 <a href="
                     {% if not tutorial.is_mini %}
-                        {% url pdp.tutorial.views.add_part %}?tutoriel={{ tutorial.pk }}
+                        {% url "pdp.tutorial.views.add_part" %}?tutoriel={{ tutorial.pk }}
                     {% else %}
-                        {% url pdp.tutorial.views.add_extract %}?chapitre={{ tutorial.get_chapter.pk }}
+                        {% url "pdp.tutorial.views.add_extract" %}?chapitre={{ tutorial.get_chapter.pk }}
                     {% endif %}" class="button small">
                     <i class="icon-plus"></i>
                     Ajouter
                 </a>
-                <a href="{% url pdp.tutorial.views.edit_tutorial %}?tutoriel={{ tutorial.pk }}" class="button small">
+                <a href="{% url "pdp.tutorial.views.edit_tutorial" %}?tutoriel={{ tutorial.pk }}" class="button small">
                     <i class="icon-pencil"></i>
                     Éditer
                 </a>
@@ -40,7 +40,7 @@
             {% csrf_token %}
         </form>
     {% endif %}
-    <a href="{% url pdp.tutorial.views.download %}?tutoriel={{ tutorial.pk }}" class="button">
+    <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}" class="button">
         <i class="icon-download"></i>
         Télécharger
     </a>
@@ -93,7 +93,7 @@
             {% if parts %}
                 {% for part in parts %}
                     <h2>
-                        <a href="{% url view-part-url tutorial.pk tutorial.slug part.slug %}">
+                        <a href="{% url "view-part-url" tutorial.pk tutorial.slug part.slug %}">
                             Partie {{ part.position_in_tutorial }} : {{ part.title }}
                         </a>
                     </h2>

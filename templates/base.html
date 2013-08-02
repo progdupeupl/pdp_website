@@ -29,11 +29,11 @@
 
     {# RSS links #}
     <link rel="alternate" type="application/rss+xml"
-          title="Articles" href="{% url article-feed-rss %}"/>
+          title="Articles" href="{% url "article-feed-rss" %}"/>
     <link rel="alternate" type="application/rss+xml"
-          title="Tutoriels" href="{% url tutorial-feed-rss %}"/>
+          title="Tutoriels" href="{% url "tutorial-feed-rss" %}"/>
     <link rel="alternate" type="application/rss+xml"
-          title="Forum" href="{% url post-feed-rss %}"/>
+          title="Forum" href="{% url "post-feed-rss" %}"/>
 </head>
 <body>
 
@@ -52,25 +52,25 @@
 
             <ul class="left">
                 <li {% block menu_home %}{% endblock %}>
-                    <a href="{% url pdp.pages.views.home %}">
+                    <a href="{% url "pdp.pages.views.home" %}">
                         <i class="icon-home"></i>
                         Accueil
                     </a>
                 </li>
                 <li {% block menu_article %}{% endblock %}>
-                    <a href="{% url pdp.article.views.index %}">
+                    <a href="{% url "pdp.article.views.index" %}">
                         <i class="icon-file-text"></i>
                         Articles
                     </a>
                 </li>
                 <li {% block menu_tutorial %}{% endblock %}>
-                    <a href="{% url pdp.tutorial.views.index %}">
+                    <a href="{% url "pdp.tutorial.views.index" %}">
                         <i class="icon-book"></i>
                         Tutoriels
                     </a>
                 </li>
                 <li {% block menu_forum %}{% endblock %}>
-                    <a href="{% url pdp.forum.views.index %}">
+                    <a href="{% url "pdp.forum.views.index" %}">
                         <i class="icon-comments"></i>
                         Forums
                     </a>
@@ -135,17 +135,17 @@
                     {% endwith %}
                     <ul class="dropdown">
                         <li><a href="{{ user.get_absolute_url }}"><i class="icon-user"></i> Profil</a></li>
-                        <li><a href="{% url pdp.member.views.publications %}"><i class="icon-list"></i> Publications</a></li>
-                        <li><a href="{% url pdp.member.views.settings_profile %}"><i class="icon-cog"></i> Paramètres</a></li>
-                        <li><a href="{% url pdp.member.views.logout_view %}"><i class="icon-signout"></i> Se déconnecter</a></li>
+                        <li><a href="{% url "pdp.member.views.publications" %}"><i class="icon-list"></i> Publications</a></li>
+                        <li><a href="{% url "pdp.member.views.settings_profile" %}"><i class="icon-cog"></i> Paramètres</a></li>
+                        <li><a href="{% url "pdp.member.views.logout_view" %}"><i class="icon-signout"></i> Se déconnecter</a></li>
                     </ul>
                 </li>
                 {% else %}
                 <li>
-                    <a href="{% url pdp.member.views.register_view %}">S'inscrire</a>
+                    <a href="{% url "pdp.member.views.register_view" %}">S'inscrire</a>
                 </li>
                 <li>
-                    <a href="{% url pdp.member.views.login_view %}">Se connecter</a>
+                    <a href="{% url "pdp.member.views.login_view" %}">Se connecter</a>
                 </li>
                 {% endif %}
             </ul>
@@ -164,7 +164,7 @@
         <div class="large-12 columns">
             <ul class="breadcrumbs">
                 <li>
-                    <a href="{% url pdp.pages.views.home %}">Accueil</a>
+                    <a href="{% url "pdp.pages.views.home" %}">Accueil</a>
                 </li>
                 {% block breadcrumb_base %}{% endblock %}
                 {% block breadcrumb %}{% endblock %}
@@ -214,7 +214,7 @@
                 <li><a href="http://smoothirc.net/">SmoothIRC</a></li>
                 <li><a href="https://twitter.com/Progdupeupl">Twitter</a></li>
                 <li><a href="https://bitbucket.org/MicroJoe/progdupeupl">Bitbucket</a></li>
-                <li><a href="{% url pdp.pages.views.index %}">Plus…</a></li>
+                <li><a href="{% url "pdp.pages.views.index" %}">Plus…</a></li>
             </ul>
         </div>
     </div>

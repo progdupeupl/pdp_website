@@ -11,6 +11,7 @@ from pdp.article.models import Article
 
 
 class Profile(models.Model):
+
     '''Represents an user profile'''
     class Meta:
         verbose_name = 'Profil'
@@ -22,7 +23,9 @@ class Profile(models.Model):
     show_email = models.BooleanField('Afficher adresse mail publiquement',
                                      default=True)
 
-    avatar_url = models.CharField('URL de l\'avatar', max_length=128, null=True, blank=True)
+    avatar_url = models.CharField(
+        'URL de l\'avatar', max_length=128, null=True, blank=True
+    )
 
     biography = models.TextField('Biographie', blank=True)
 

@@ -1,7 +1,6 @@
 # coding: utf-8
 
 from os import path
-from datetime import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -83,9 +82,9 @@ class Tutorial(models.Model):
 
 
 def get_last_tutorials():
-    return Tutorial.objects.all()\
-            .filter(is_visible=True)\
-            .order_by('-pubdate')[:3]
+    return Tutorial.objects.all() \
+        .filter(is_visible=True) \
+        .order_by('-pubdate')[:3]
 
 
 class Part(models.Model):
@@ -231,7 +230,7 @@ class Extract(models.Model):
         return u'<extrait \'{0}\'>'.format(self.title)
 
     def get_absolute_url(self):
-        return '{0}#{1}-{2}'.format( \
+        return '{0}#{1}-{2}'.format(
             self.chapter.get_absolute_url(),
             self.position_in_chapter,
             slugify(self.title)
