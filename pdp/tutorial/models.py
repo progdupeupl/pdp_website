@@ -42,7 +42,7 @@ class Tutorial(models.Model):
     introduction = models.TextField('Introduction', null=True, blank=True)
     conclusion = models.TextField('Conclusion', null=True, blank=True)
 
-    slug = models.SlugField()
+    slug = models.SlugField(max_length=80)
 
     icon = models.ImageField(upload_to=tutorial_icon_path,
                              null=True, blank=True)
@@ -104,7 +104,7 @@ class Part(models.Model):
     introduction = models.TextField('Introduction')
     conclusion = models.TextField('Conclusion')
 
-    slug = models.SlugField()
+    slug = models.SlugField(max_length=80)
 
     # The list of chapters is shown between introduction and conclusion
 
@@ -158,7 +158,7 @@ class Chapter(models.Model):
     introduction = models.TextField('Introduction')
     conclusion = models.TextField('Conclusion')
 
-    slug = models.SlugField()
+    slug = models.SlugField(max_length=80)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
