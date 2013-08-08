@@ -23,8 +23,6 @@
     {# for additionnal css in some pages #}
     {% block extracss %}{% endblock %}
 
-    <script src="{% static "js/vendor/custom.modernizr.js" %}"></script>
-
     <link rel="shortcut icon" type="image/png" href="{% static "img/favicon.png" %}">
 
     {# RSS links #}
@@ -219,11 +217,17 @@
         </div>
     </div>
 
+    {# Javascript stuff start #}
+
+    <script src="{% static "js/vendor/custom.modernizr.js" %}"></script>
+
     <script src="{% static "js/vendor/jquery.js" %}"></script>
     <script src="{% static "js/foundation.min.js" %}"></script>
+
     {# for addtionnal javascript in some pages #}
     {% block extrajs %}{% endblock %}
 
+    {# Foundation #}
     <script>
         $(document).foundation('topbar dropdown tooltip alerts', {
             custom_back_text: true,
@@ -232,7 +236,6 @@
     </script>
 
     {# MathJax #}
-
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
             tex2jax: {
@@ -245,18 +248,17 @@
     <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     {# Google Analytics #}
-
     {% if GOOGLE_ANALYTICS_KEY %}
-    <script type="text/javascript">
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', '{{ GOOGLE_ANALYTICS_KEY }}']);
-        _gaq.push(['_trackPageview']);
-        (function() {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();
-    </script>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', '{{ GOOGLE_ANALYTICS_KEY }}']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+        </script>
     {% endif %}
 
     {% block additionnal-js %}{% endblock %}
