@@ -644,7 +644,7 @@ $crumb-slash: "/";
 
 // When the dropdown has custom content.
 
-// $f-dropdown-content-padding: emCalc(20px);
+$f-dropdown-content-padding: emCalc(10px);
 
 //
 // Flex Video Variables
@@ -1090,19 +1090,19 @@ $crumb-slash: "/";
 
 // Switch heights for our default classes
 
-// $switch-height-tny: 22px;
-// $switch-height-sml: 28px;
-// $switch-height-med: 36px;
-// $switch-height-lrg: 44px;
-// $switch-bottom-margin: emCalc(20px);
+$switch-height-tny: 16px;
+$switch-height-sml: 22px;
+$switch-height-med: 28px;
+$switch-height-lrg: 36px;
+$switch-bottom-margin: emCalc(10px);
 
 // Font sizes for our classes.
 
-// $switch-font-size-tny: 11px;
-// $switch-font-size-sml: 12px;
-// $switch-font-size-med: 14px;
-// $switch-font-size-lrg: 17px;
-// $switch-label-side-padding: 6px;
+$switch-font-size-tny: 10px;
+$switch-font-size-sml: 11px;
+$switch-font-size-med: 12px;
+$switch-font-size-lrg: 14px;
+$switch-label-side-padding: 6px;
 
 // Switch-paddle
 
