@@ -8,8 +8,14 @@ import feeds
 urlpatterns = patterns('',
 
     # Feeds
-    url(r'^flux/rss/$', feeds.LastPostsFeedRSS(), name='post-feed-rss'),
-    url(r'^flux/atom/$', feeds.LastPostsFeedATOM(), name='post-feed-atom'),
+    url(r'^flux/rss/$', views.deprecated_feed_messages_rss),
+    url(r'^flux/rss/$', views.deprecated_feed_messages_atom),
+
+    url(r'^flux/messages/rss/$', feeds.LastPostsFeedRSS(), name='post-feed-rss'),
+    url(r'^flux/messages/atom/$', feeds.LastPostsFeedATOM(), name='post-feed-atom'),
+
+    url(r'^flux/sujets/rss/$', feeds.LastTopicsFeedRSS(), name='topic-feed-rss'),
+    url(r'^flux/sujets/atom/$', feeds.LastTopicsFeedATOM(), name='topic-feed-atom'),
 
     # Deprecated URLs, have to be checked before new ones to avoid conflict
     url(r'^sujet/(?P<topic_pk>\d+)-(?P<topic_slug>.+)$',

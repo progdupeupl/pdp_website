@@ -383,3 +383,11 @@ def deprecated_cat_details_redirect(request, cat_pk, cat_slug):
 def deprecated_details_redirect(request, cat_slug, forum_pk, forum_slug):
     forum = get_object_or_404(Forum, pk=forum_pk)
     return redirect(forum.get_absolute_url(), permanent=True)
+
+
+def deprecated_feed_messages_rss(request):
+    return redirect('/forums/flux/messages/rss/', permanent=True)
+
+
+def deprecated_feed_messages_atom(request):
+    return redirect('/forums/flux/messages/atom/', permanent=True)
