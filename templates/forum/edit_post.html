@@ -16,7 +16,6 @@
 {% endblock %}
 
 {% block content %}
-    
 <div class="row">
     <div class="large-12 columns">
         <form action="#previsualisation" method="POST" class="form-horizontal">
@@ -49,19 +48,19 @@
                     </div>
                 </div>
             </fieldset>
-        
+
             <div style="text-align: center;">
                 <button type="submit" class="button">
                     Éditer
                 </button>
-        
+
                 <button type="submit" name="preview" class="button secondary">
                     Prévisualisation
                 </button>
-        
+
                 <a href="{{ post.get_absolute_url }}" class="button secondary">Annuler</a>
             </div>
-        
+
             {% csrf_token %}
         </form>
     </div>

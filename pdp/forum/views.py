@@ -4,6 +4,7 @@ from datetime import datetime
 
 from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
@@ -200,7 +201,7 @@ def edit(request):
         # Author actions
         if 'solved' in data:
             g_topic.is_solved = not g_topic.is_solved
-    if request.user.is_staff:
+    if request.user.has_perm('forum.change_topic'):
         # Staff actions
         if 'lock' in data:
             g_topic.is_locked = not g_topic.is_locked
@@ -315,8 +316,15 @@ def edit_post(request):
         g_topic = get_object_or_404(Topic, pk=post.topic.pk)
 
     # Making sure the user is allowed to do that
-    if post.author != request.user and not request.user.is_staff:
-        raise Http404
+    if post.author != request.user:
+        if not request.user.has_perm('forum.change_post'):
+            raise Http404
+        else:
+            messages.add_message(
+                request, messages.WARNING,
+                u'Vous éditez ce message en tant que modérateur (auteur : {}).'
+                u' Soyez encore plus prudent lors de l\'édition de celui-ci !'
+                .format(post.author.username))
 
     if request.method == 'POST':
 
