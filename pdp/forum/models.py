@@ -11,7 +11,9 @@ from django.template.defaultfilters import slugify
 
 from pdp.utils import get_current_user
 
+# TODO: Put these constants in settings.py file
 POSTS_PER_PAGE = 21
+TOPICS_PER_PAGE = 21
 SPAM_LIMIT_SECONDS = 60 * 15
 
 

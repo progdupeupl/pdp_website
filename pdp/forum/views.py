@@ -10,7 +10,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from pdp.utils import render_template, slugify
 
-from models import Category, Forum, Topic, Post, POSTS_PER_PAGE
+from models import Category, Forum, Topic, Post, POSTS_PER_PAGE, TOPICS_PER_PAGE
 from models import never_read, mark_read
 from models import follow
 from forms import TopicForm, PostForm
@@ -40,8 +40,23 @@ def details(request, cat_slug, forum_slug):
         .filter(forum__pk=forum.pk, is_sticky=False)\
         .order_by('-last_message__pubdate')
 
+    # Paginator
+    paginator = Paginator(topics, TOPICS_PER_PAGE)
+    page = request.GET.get('page')
+
+    try:
+        shown_topics = paginator.page(page)
+        page=int(page)
+    except PageNotAnInteger:
+        shown_topics = paginator.page(1)
+        page = 1
+    except EmptyPage:
+        shown_topics = paginator.page(paginator.num_pages)
+        page=paginator.num_pages
+
     return render_template('forum/details.html', {
-        'forum': forum, 'sticky_topics': sticky_topics, 'topics': topics
+        'forum': forum, 'sticky_topics': sticky_topics, 'topics': shown_topics,
+        'pages': range(1, paginator.num_pages + 1), 'nb': page
     })
 
 
