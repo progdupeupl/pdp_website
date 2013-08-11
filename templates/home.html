@@ -107,14 +107,7 @@ class="active"
                 <i class="icon-arrow-right"></i>
                 Aller aux articles
             </a>
-            <a href="#" class="button secondary dropdown" data-dropdown="articles-drop-feeds">
-                <i class="icon-rss"></i>
-                Flux
-            </a><br />
-            <ul id="articles-drop-feeds" class="f-dropdown">
-                <li><a href="{% url "article-feed-rss" %}">RSS</a></li>
-                <li><a href="{% url "article-feed-atom" %}">ATOM</a></li>
-            </ul>
+            {% include "article/feeds.part.html" %}
         </div>
     </div>
     <div class="large-4 columns">
@@ -123,14 +116,7 @@ class="active"
                 <i class="icon-arrow-right"></i>
                 Aller aux tutoriels
             </a>
-            <a href="#" class="button secondary dropdown" data-dropdown="tutorials-drop-feeds">
-                <i class="icon-rss"></i>
-                Flux
-            </a><br />
-            <ul id="tutorials-drop-feeds" class="f-dropdown">
-                <li><a href="{% url "tutorial-feed-rss" %}">RSS</a></li>
-                <li><a href="{% url "tutorial-feed-atom" %}">ATOM</a></li>
-            </ul>
+            {% include "tutorial/feeds.part.html" %}
         </div>
     </div>
     <div class="large-4 columns">
@@ -139,14 +125,7 @@ class="active"
                 <i class="icon-arrow-right"></i>
                 Aller aux forums
             </a>
-            <a href="#" class="button secondary dropdown" data-dropdown="posts-drop-feeds">
-                <i class="icon-rss"></i>
-                Flux
-            </a><br />
-            <ul id="posts-drop-feeds" class="f-dropdown">
-                <li><a href="{% url "post-feed-rss" %}">RSS</a></li>
-                <li><a href="{% url "post-feed-atom" %}">ATOM</a></li>
-            </ul>
+zsh:1: command not found: :q
         </div>
     </div>
 </div>
