@@ -1,6 +1,6 @@
 .gitignore
 .git/
-pdp/settings.py
+pdp/settings_prod.py
 
 *.pyc
 *.db

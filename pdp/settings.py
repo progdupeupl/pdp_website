@@ -91,6 +91,30 @@ STATICFILES_FINDERS = (
     #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
+STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
+
+# You will need yuglify to be installed
+PIPELINE_JS = {
+    'pdp': {
+        'source_filenames': (
+            'js/vendor/custom.modernizr.js',
+            'js/vendor/jquery.js',
+            'js/foundation.min.js',
+            'js/custom/ajax-csrf.js',
+        ),
+        'output_filename': 'js/pdp.js'
+    }
+}
+
+PIPELINE_CSS = {
+    'pdp': {
+        'source_filenames': (
+            'css/progdupeupl.css',
+        ),
+        'output_filename': 'css/pdp.css'
+    }
+}
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'n!01nl+318#x75_%le8#s0=-*ysw&amp;y49uc#t=*wvi(9hnyii0z'
 
@@ -156,6 +180,7 @@ INSTALLED_APPS = (
     'email_obfuscator',
     'debug_toolbar',
     'taggit',
+    'pipeline',
 
     'pdp.member',
     'pdp.forum',
@@ -202,7 +227,7 @@ AUTH_PROFILE_MODULE = 'member.Profile'
 LOGIN_URL = '/membres/connexion'
 
 ABSOLUTE_URL_OVERRIDES = {
-    'auth.user': lambda u: '/membres/voir/{0}'.format(u.username)
+    'auth.user': lambda u: '/membres/voir/{0}'.format(u.username.encode('utf-8'))
 }
 
 # Load the production settings, overwrite the existing ones if needed
