@@ -1,4 +1,4 @@
-# README
+# Progdupeupl
 
 Progdupeupl is a community of French programmers ; you can see the running
 version [here](http://progdupeu.pl/).
@@ -22,6 +22,7 @@ zurb-foundation`.
 
 From the project's root, you will need to run the following commands:
 
+    :::console
     python manage.py syncdb
     python manage.py migrate
 
