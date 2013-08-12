@@ -157,3 +157,8 @@ nav.top-bar {
 .published {
     background-color: lighten(rgb(213, 236, 191), 10%);
 }
+
+// No bold font for switches
+div.switch label {
+    font-weight: normal;
+}
