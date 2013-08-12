@@ -1,0 +1,27 @@
+<div class="row">
+    <div class="large-12 columns">
+        <div class="pagination-centered">
+            <ul class="pagination">
+                <li class="arrow {% ifequal nb 1 %}unavaible{% endifequal %}">
+                    <a href="{% ifnotequal nb 1 %}{{ topic.get_absolute_url }}?page={{ nb|add:"-1" }}{% else %}javascript:;{% endifnotequal %}">
+                        «
+                    </a>
+                </li>
+            
+                {% for page in pages %}
+                    <li class="{% ifequal page nb %}current{% endifequal %}">
+                        <a href="{% ifnotequal page nb %}{{ topic.get_absolute_url }}?page={{ page }}{% else %}javascript:;{% endifnotequal %}">
+                            {{ page }}
+                        </a>
+                    </li>
+                {% endfor %}
+                
+                <li class="arrow {% ifequal nb pages|last %}unavaible{% endifequal %}">
+                    <a href="{% ifnotequal nb pages|last %}{{ topic.get_absolute_url }}?page={{ nb|add:"1" }}{% else %}javascript:;{% endifnotequal %}">
+                        »
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
