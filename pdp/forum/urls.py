@@ -9,7 +9,7 @@ urlpatterns = patterns('',
 
     # Feeds
     url(r'^flux/rss/$', views.deprecated_feed_messages_rss),
-    url(r'^flux/rss/$', views.deprecated_feed_messages_atom),
+    url(r'^flux/atom/$', views.deprecated_feed_messages_atom),
 
     url(r'^flux/messages/rss/$', feeds.LastPostsFeedRSS(), name='post-feed-rss'),
     url(r'^flux/messages/atom/$', feeds.LastPostsFeedATOM(), name='post-feed-atom'),

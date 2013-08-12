@@ -69,3 +69,11 @@ class ForumTests(TestCase):
 
         resp = self.client.get('/forums/sujet/112-test-topic')
         self.assertRedirects(resp, topic.get_absolute_url(), 301)
+
+    def test_deprecated_feeds_redirect_rss(self):
+        resp = self.client.get('/forums/flux/rss/')
+        self.assertRedirects(resp, '/forums/flux/messages/rss/', 301)
+
+    def test_deprecated_feeds_redirect_atom(self):
+        resp = self.client.get('/forums/flux/atom/')
+        self.assertRedirects(resp, '/forums/flux/messages/atom/', 301)
