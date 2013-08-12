@@ -203,10 +203,10 @@ def edit(request):
     if request.user.is_staff:
         # Staff actions
         if 'lock' in data:
-            g_topic.is_locked = not g_topic.is_locked
-        elif 'sticky' in data:
-            g_topic.is_sticky = not g_topic.is_sticky
-        elif 'move' in data:
+            g_topic.is_locked = data['lock'] == 'true'
+        if 'sticky' in data:
+            g_topic.is_sticky = data['sticky'] == 'true'
+        if 'move' in data:
             try:
                 forum_pk = int(request.POST['move_target'])
             except KeyError:
