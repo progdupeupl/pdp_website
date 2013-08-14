@@ -163,53 +163,78 @@ def modify_tutorial(request):
     tutorial_pk = request.POST['tutorial']
     tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
 
-    if not request.user in tutorial.authors.all():
-        raise Http404
+    # Validator actions
+    if request.user.has_perm('tutorial.change_tutorial'):
+        if 'validate' in request.POST:
 
-    if 'delete' in request.POST:
-        tutorial.delete()
-        return redirect('/tutoriels/')
+            # We can't validate a non-pending tutorial
+            if not tutorial.is_pending:
+                raise Http404
 
-    elif 'pending' in request.POST:
-        if tutorial.is_pending:
-            raise Http404
+            tutorial.is_pending = False
+            tutorial.is_visible = True
+            tutorial.save()
 
-        tutorial.is_pending = True
-        tutorial.save()
-        return redirect(tutorial.get_absolute_url())
+            return redirect(tutorial.get_absolute_url())
 
-    elif 'add_author' in request.POST:
-        redirect_url = reverse('pdp.tutorial.views.edit_tutorial') + \
-            '?tutoriel={0}'.format(tutorial.pk)
+        if 'refuse' in request.POST:
+            if not tutorial.is_pending:
+                raise Http404
 
-        author_username = request.POST['author']
-        author = None
-        try:
-            author = User.objects.get(username=author_username)
-        except User.DoesNotExist:
+            tutorial.is_pending = False
+            tutorial.save()
+
+            return redirect(tutorial.get_absolute_url())
+
+    # User actions
+    if request.user in tutorial.authors.all():
+        if 'add_author' in request.POST:
+            redirect_url = reverse('pdp.tutorial.views.edit_tutorial') + \
+                '?tutoriel={0}'.format(tutorial.pk)
+
+            author_username = request.POST['author']
+            author = None
+            try:
+                author = User.objects.get(username=author_username)
+            except User.DoesNotExist:
+                return redirect(redirect_url)
+
+            tutorial.authors.add(author)
+            tutorial.save()
+
             return redirect(redirect_url)
 
-        tutorial.authors.add(author)
-        tutorial.save()
+        elif 'remove_author' in request.POST:
+            redirect_url = reverse('pdp.tutorial.views.edit_tutorial') + \
+                '?tutoriel={0}'.format(tutorial.pk)
 
-        return redirect(redirect_url)
+            # Avoid orphan tutorials
+            if tutorial.authors.all().count() <= 1:
+                raise Http404
 
-    elif 'remove_author' in request.POST:
-        redirect_url = reverse('pdp.tutorial.views.edit_tutorial') + \
-            '?tutoriel={0}'.format(tutorial.pk)
+            author_pk = request.POST['author']
+            author = get_object_or_404(User, pk=author_pk)
 
-        # Avoid orphan tutorials
-        if tutorial.authors.all().count() <= 1:
-            raise Http404
+            tutorial.authors.remove(author)
+            tutorial.save()
 
-        author_pk = request.POST['author']
-        author = get_object_or_404(User, pk=author_pk)
+            return redirect(redirect_url)
 
-        tutorial.authors.remove(author)
-        tutorial.save()
+        if 'delete' in request.POST:
+            tutorial.delete()
+            return redirect('/tutoriels/')
 
-        return redirect(redirect_url)
+        elif 'pending' in request.POST:
+            if tutorial.is_pending:
+                raise Http404
 
+            tutorial.is_pending = True
+            tutorial.save()
+            return redirect(tutorial.get_absolute_url())
+
+
+
+    # No action performed, raise 404
     raise Http404
 
 
