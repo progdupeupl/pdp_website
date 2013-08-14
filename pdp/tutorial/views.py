@@ -40,7 +40,9 @@ def view_tutorial(request, tutorial_pk, tutorial_slug):
     '''Display a tutorial'''
     tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
 
-    if not tutorial.is_visible and request.user not in tutorial.authors.all():
+    if not tutorial.is_visible \
+       and not request.user.has_perm('tutorial.change_tutorial') \
+       and request.user not in tutorial.authors.all():
         raise Http404
 
     # Make sure the URL is well-formed
@@ -76,7 +78,8 @@ def download(request):
     data = json.dumps(dct, indent=4, ensure_ascii=False)
 
     response = HttpResponse(data, mimetype='application/json')
-    response['Content-Disposition'] = 'attachment; filename={0}.json'.format(tutorial.slug)
+    response['Content-Disposition'] = 'attachment; filename={0}.json'\
+        .format(tutorial.slug)
 
     return response
 
@@ -169,8 +172,8 @@ def modify_tutorial(request):
         return redirect('/tutoriels/')
 
     elif 'add_author' in request.POST:
-        redirect_url = reverse(
-            'pdp.tutorial.views.edit_tutorial') + '?tutoriel={0}'.format(tutorial.pk)
+        redirect_url = reverse('pdp.tutorial.views.edit_tutorial') + \
+            '?tutoriel={0}'.format(tutorial.pk)
 
         author_username = request.POST['author']
         author = None
@@ -185,8 +188,8 @@ def modify_tutorial(request):
         return redirect(redirect_url)
 
     elif 'remove_author' in request.POST:
-        redirect_url = reverse(
-            'pdp.tutorial.views.edit_tutorial') + '?tutoriel={0}'.format(tutorial.pk)
+        redirect_url = reverse('pdp.tutorial.views.edit_tutorial') + \
+            '?tutoriel={0}'.format(tutorial.pk)
 
         # Avoid orphan tutorials
         if tutorial.authors.all().count() <= 1:
@@ -211,8 +214,9 @@ def view_part(request, tutorial_pk, tutorial_slug, part_slug):
                              slug=part_slug, tutorial__pk=tutorial_pk)
 
     tutorial = part.tutorial
-    if not tutorial.is_visible and not request.user in \
-            tutorial.authors.all():
+    if not tutorial.is_visible \
+       and not request.user.has_perm('tutorial.change_part') \
+       and not request.user in tutorial.authors.all():
         raise Http404
 
     # Make sure the URL is well-formed
@@ -339,7 +343,8 @@ def view_chapter(request, tutorial_pk, tutorial_slug, part_slug,
 
     tutorial = chapter.get_tutorial()
     if not tutorial.is_visible \
-            and not request.user in tutorial.authors.all():
+       and not request.user.has_perm('tutorial.modify_chapter') \
+       and not request.user in tutorial.authors.all():
         raise Http404
 
     if not tutorial_slug == slugify(tutorial.title)\
@@ -403,7 +408,9 @@ def add_chapter(request):
 
                 if 'submit_continue' in request.POST:
                     form = ChapterForm()
-                    messages.success(request, u'Chapitre « {0} » ajouté avec succès.'.format(chapter.title))
+                    messages.success(request,
+                                     u'Chapitre « {0} » ajouté avec succès.'
+                                     .format(chapter.title))
                 else:
                     return redirect(chapter.get_absolute_url())
             else:
@@ -537,7 +544,8 @@ def add_extract(request):
             if 'submit_continue' in request.POST:
                 form = ExtractForm()
                 messages.success(
-                    request, u'Extrait « {0} » ajouté avec succès.'.format(extract.title))
+                    request, u'Extrait « {0} » ajouté avec succès.'
+                    .format(extract.title))
             else:
                 return redirect(extract.get_absolute_url())
     else:
@@ -558,10 +566,10 @@ def edit_extract(request):
 
     extract = get_object_or_404(Extract, pk=extract_pk)
 
-    big = extract.chapter.part
-    if big and (not request.user in extract.chapter.part.tutorial.authors.all())\
-            or not big and (not request.user in
-                            extract.chapter.tutorial.authors.all()):
+    b = extract.chapter.part
+    if b and (not request.user in extract.chapter.part.tutorial.authors.all())\
+            or not b and (not request.user in
+                          extract.chapter.tutorial.authors.all()):
         raise Http404
 
     if request.method == 'POST':
@@ -599,8 +607,8 @@ def modify_extract(request):
         old_pos = extract.position_in_chapter
         for extract_c in extract.chapter.get_extracts():
             if old_pos <= extract_c.position_in_chapter:
-                extract_c.position_in_chapter = extract_c.position_in_chapter - \
-                    1
+                extract_c.position_in_chapter = extract_c.position_in_chapter \
+                    - 1
                 extract_c.save()
         extract.delete()
         return redirect(chapter.get_absolute_url())
@@ -623,7 +631,8 @@ def deprecated_view_tutorial_redirect(request, tutorial_pk, tutorial_slug):
     return redirect(tutorial.get_absolute_url(), permanent=True)
 
 
-def deprecated_view_part_redirect(request, tutorial_pk, tutorial_slug, part_pos, part_slug):
+def deprecated_view_part_redirect(request, tutorial_pk, tutorial_slug,
+                                  part_pos, part_slug):
     part = Part.objects.get(
         position_in_tutorial=part_pos, tutorial__pk=tutorial_pk)
     return redirect(part.get_absolute_url(), permanent=True)
