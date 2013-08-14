@@ -53,7 +53,9 @@ class Tutorial(models.Model):
     # are contained directly in a tutorial, but that'd be more complicated
     # than a field
     is_mini = models.BooleanField('Est un mini-tutoriel')
+
     is_visible = models.BooleanField('Est visible publiquement')
+    is_pending = models.BooleanField('Est en attente', default=False)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)

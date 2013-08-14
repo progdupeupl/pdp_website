@@ -23,14 +23,13 @@ def index(request):
         .filter(is_visible=True) \
         .order_by("-pubdate")
 
-    if request.user.is_authenticated():
-        user_tutorials = Tutorial.objects.filter(authors=request.user)
-    else:
-        user_tutorials = None
+    pending_tutorials = None
+    if request.user.has_perm('tutorial.change_tutorial'):
+        pending_tutorials = Tutorial.objects.filter(is_pending=True)
 
     return render_template('tutorial/index.html', {
         'tutorials': tutorials,
-        'user_tutorials': user_tutorials
+        'pending_tutorials': pending_tutorials
     })
 
 
