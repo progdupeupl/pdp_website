@@ -170,6 +170,14 @@ def modify_tutorial(request):
         tutorial.delete()
         return redirect('/tutoriels/')
 
+    elif 'pending' in request.POST:
+        if tutorial.is_pending:
+            raise Http404
+
+        tutorial.is_pending = True
+        tutorial.save()
+        return redirect(tutorial.get_absolute_url())
+
     elif 'add_author' in request.POST:
         redirect_url = reverse('pdp.tutorial.views.edit_tutorial') + \
             '?tutoriel={0}'.format(tutorial.pk)

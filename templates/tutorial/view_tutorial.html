@@ -44,6 +44,14 @@
                     </button>
                 </div>
             </div>
+            <button name="pending" class="button secondary expand {% if tutorial.is_pending %}disabled{% endif %}"
+                {% if tutorial.is_pending %}disabled{% endif %}>
+                {% if not tutorial.is_pending %}
+                    Demander la validation
+                {% else %}
+                    En attente de validation
+                {% endif %}
+            </button>
             <input type="hidden" name="tutorial" value="{{ tutorial.pk }}" />
             {% csrf_token %}
         </form>
