@@ -24,10 +24,18 @@
                     <i class="icon-pencil"></i>
                     Éditer
                 </a>
-                <button type="submit" name="delete" class="button secondary">
-                    <i class="icon-remove"></i>
+                <a href="#" class="button secondary" data-dropdown="delete-drop">
                     Supprimer
-                </button>
+                </a>
+                <div id="delete-drop" class="f-dropdown small content" data-dropdown-content>
+                    <p>
+                        Si vous supprimez cet article, il sera alors impossible de le modifier/consulter de nouveau.
+                    </p>
+                    <button type="submit" name="delete" class="button expand alert">
+                        <i class="icon-remove"></i>
+                        Confirmer la suppression
+                    </button>
+                </div>
             </div>
 
             <input type="hidden" name="article" value="{{ article.pk }}" />

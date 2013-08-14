@@ -31,10 +31,18 @@
                     <i class="icon-pencil"></i>
                     Éditer
                 </a>
-                <button type="submit" name="delete" class="button small secondary">
-                    <i class="icon-remove"></i>
+                <a href="#" class="button secondary small" data-dropdown="delete-drop">
                     Supprimer
-                </button>
+                </a>
+                <div id="delete-drop" class="f-dropdown content small" data-dropdown-content>
+                    <p>
+                        Si vous supprimez ce tutoriel, il sera alors impossible de le modifier/consulter de nouveau.
+                    </p>
+                    <button type="submit" name="delete" class="button expand alert">
+                        <i class="icon-remove"></i>
+                        Confirmer la suppression
+                    </button>
+                </div>
             </div>
             <input type="hidden" name="tutorial" value="{{ tutorial.pk }}" />
             {% csrf_token %}
