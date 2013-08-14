@@ -173,6 +173,7 @@ def modify_tutorial(request):
 
             tutorial.is_pending = False
             tutorial.is_visible = True
+            tutorial.pubdate = datetime.now()
             tutorial.save()
 
             return redirect(tutorial.get_absolute_url())
