@@ -162,3 +162,8 @@ nav.top-bar {
 div.switch label {
     font-weight: normal;
 }
+
+// Correct bad font size for lists
+li p {
+    font-size: emCalc(16px);
+}
