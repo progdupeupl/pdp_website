@@ -221,7 +221,7 @@ def modify_tutorial(request):
 
             return redirect(redirect_url)
 
-        if 'delete' in request.POST:
+        elif 'delete' in request.POST:
             tutorial.delete()
             return redirect('/tutoriels/')
 
@@ -232,8 +232,6 @@ def modify_tutorial(request):
             tutorial.is_pending = True
             tutorial.save()
             return redirect(tutorial.get_absolute_url())
-
-
 
     # No action performed, raise 404
     raise Http404
