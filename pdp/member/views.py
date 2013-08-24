@@ -28,6 +28,20 @@ def index(request):
     })
 
 
+@login_required
+def actions(request):
+    '''
+    Show avaible actions for current user, like a customized homepage.
+    This may be very temporary.
+    '''
+
+    # TODO: Seriously improve this page, and see if cannot be merged in
+    #       pdp.pages.views.home since it will be more coherent to give an
+    #       enhanced homepage for registered users
+
+    return render_template('member/actions.html')
+
+
 def details(request, user_name):
     '''Displays details about a profile'''
     usr = get_object_or_404(User, username=user_name)

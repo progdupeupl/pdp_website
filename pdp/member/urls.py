@@ -7,9 +7,13 @@ import views
 urlpatterns = patterns('',
     url(r'^voir/(?P<user_name>.+)$', views.details),
     url(r'^profil/editer$', views.edit_profile),
+
     url(r'^publications$', views.publications),
+    url(r'^actions$', views.actions),
+
     url(r'^parametres/profil$', views.settings_profile),
     url(r'^parametres/compte$', views.settings_account),
+
     url(r'^connexion$', views.login_view),
     url(r'^inscription$', views.register_view),
     url(r'^deconnexion/$', views.logout_view),
