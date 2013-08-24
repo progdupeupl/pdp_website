@@ -115,7 +115,7 @@ class Part(models.Model):
         super(Part, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return '<Partie pour {0}, {1}>'.format\
+        return u'<Partie pour {0}, {1}>'.format\
             (self.tutorial.title, self.position_in_tutorial)
 
     def get_absolute_url(self):
