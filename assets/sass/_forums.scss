@@ -91,6 +91,10 @@
     }
 }
 
+.post-nickname, .post-avatar {
+    text-align: center;
+}
+
 .post-content {
     padding-top: emCalc(10px);
     padding-bottom: emCalc(10px);
