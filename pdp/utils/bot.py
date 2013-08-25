@@ -10,14 +10,14 @@ def create_tutorial_topic(tutorial, bot_pk=1, forum_pk=1):
 
     # TODO: Use settings.py for bot_pk and forum_pk vars
 
-    md = '**{}**  \n{}\n\n[» Voir le tutoriel]({})'\
+    md = u'**{}**  \n{}\n\n[» Voir le tutoriel]({})'\
         .format(tutorial.title,
                 tutorial.description,
                 tutorial.get_absolute_url())
 
     topic = Topic(
-        title='[Tutoriel] {}'.format(tutorial.title),
-        subtitle=tutorial.description
+        title=u'[Tutoriel] {}'.format(tutorial.title),
+        subtitle=tutorial.description,
         author_id=bot_pk,
         pubdate=datetime.now(),
         forum_id=forum_pk)
