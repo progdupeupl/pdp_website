@@ -230,6 +230,12 @@ ABSOLUTE_URL_OVERRIDES = {
     'auth.user': lambda u: '/membres/voir/{0}'.format(u.username.encode('utf-8'))
 }
 
+# Bot settings
+BOT_ENABLED = False
+# BOT_USER_PK = 1
+# BOT_TUTORIAL_FORUM_PK = 1
+# BOT_ARTICLE_FORUM_PK = 2
+
 # Load the production settings, overwrite the existing ones if needed
 try:
     from settings_prod import *

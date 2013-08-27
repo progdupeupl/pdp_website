@@ -9,8 +9,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from pdp.utils import render_template, slugify
+from pdp.utils import render_template, slugify, bot
 from pdp.utils.tutorials import move, export_tutorial
+from pdp.settings import BOT_ENABLED
 
 from .models import Tutorial, Part, Chapter, Extract
 from .forms import TutorialForm, EditTutorialForm, PartForm, ChapterForm, \
@@ -175,6 +176,9 @@ def modify_tutorial(request):
             tutorial.is_visible = True
             tutorial.pubdate = datetime.now()
             tutorial.save()
+
+            if BOT_ENABLED:
+                bot.create_tutorial_topic(tutorial)
 
             return redirect(tutorial.get_absolute_url())
 
