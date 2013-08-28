@@ -14,14 +14,18 @@
     </div>
     <div class="forum-entry-count">
         <span class="label">
-            {{ forum.get_topic_count }}
+            <span title="Nombre de sujets dans le forum" data-tooltip class="has-tip tip-top">
+                {{ forum.get_topic_count }}
+            </span>
         </span>
         <span class="label secondary">
-            {{ forum.get_post_count }}
+            <span title="Nombre de messages dans le forum" data-tooltip class="has-tip">
+                {{ forum.get_post_count }}
+            </span>
         </span>
     </div>
     <div class="forum-entry-count">
-        
+
     </div>
     <div class="forum-entry-desc">
         <p>
@@ -47,5 +51,5 @@
         </p>
     </div>
 </div>
-    
+
 {% endfor %}
