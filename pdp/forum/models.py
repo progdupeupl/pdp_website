@@ -1,8 +1,6 @@
 # coding: utf-8
 
 from math import ceil
-from datetime import datetime
-import pytz
 
 from django.db import models
 from django.utils import timezone

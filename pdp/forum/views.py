@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from pdp.utils import render_template, slugify
+from pdp.utils.paginator import paginator_range
 
 from models import Category, Forum, Topic, Post, POSTS_PER_PAGE, TOPICS_PER_PAGE
 from models import never_read, mark_read
@@ -56,7 +57,7 @@ def details(request, cat_slug, forum_slug):
 
     return render_template('forum/details.html', {
         'forum': forum, 'sticky_topics': sticky_topics, 'topics': shown_topics,
-        'pages': range(1, paginator.num_pages + 1), 'nb': page
+        'pages': paginator_range(page, paginator.num_pages), 'nb': page
     })
 
 
@@ -123,7 +124,8 @@ def topic(request, topic_pk, topic_slug):
 
     return render_template('forum/topic.html', {
         'topic': g_topic, 'posts': res, 'categories': categories,
-        'pages': range(1, paginator.num_pages + 1), 'nb': page_nbr,
+        'pages': paginator_range(page_nbr, paginator.num_pages),
+        'nb': page_nbr,
         'last_post_pk': last_post_pk
     })
 

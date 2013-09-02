@@ -9,11 +9,17 @@
                 </li>
             
                 {% for page in pages %}
-                    <li class="{% ifequal page nb %}current{% endifequal %}">
-                        <a href="{% ifnotequal page nb %}{{ topic.get_absolute_url }}?page={{ page }}{% else %}javascript:;{% endifnotequal %}">
-                            {{ page }}
-                        </a>
-                    </li>
+                    {% if page %}
+                        <li class="{% ifequal page nb %}current{% endifequal %}">
+                            <a href="{% ifnotequal page nb %}{{ topic.get_absolute_url }}?page={{ page }}{% else %}javascript:;{% endifnotequal %}">
+                                {{ page }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="unavaible">
+                            …
+                        </li>
+                    {% endif %}
                 {% endfor %}
                 
                 <li class="arrow {% ifequal nb pages|last %}unavaible{% endifequal %}">

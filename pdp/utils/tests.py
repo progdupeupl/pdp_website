@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 
 from pdp.member.models import Profile
 
+from .paginator import paginator_range
+
 from .templatetags.profile import profile
 from .templatetags.interventions import interventions_topics
 
@@ -32,3 +34,24 @@ class TemplateTagsTests(TestCase):
 
         self.assertEqual(interventions_topics(user), {'unread': [],
                                                       'read': []})
+
+class PaginatorRangeTests(TestCase):
+    def test_one(self):
+        result = paginator_range(1, 1)
+        self.assertEqual(result, [1])
+
+    def test_small(self):
+        result = paginator_range(2, 3)
+        self.assertEqual(result, [1, 2, 3])
+
+    def test_big_start(self):
+        result = paginator_range(1, 10)
+        self.assertEqual(result, [1, 2, None, 10])
+
+    def test_big_middle(self):
+        result = paginator_range(5, 10)
+        self.assertEqual(result, [1, None, 4, 5, 6, None, 10])
+
+    def test_big_end(self):
+        result = paginator_range(10, 10)
+        self.assertEqual(result, [1, None, 9, 10])
