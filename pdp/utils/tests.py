@@ -14,6 +14,7 @@ from .templatetags.interventions import interventions_topics
 
 
 class TemplateTagsTests(TestCase):
+
     def test_profile_none(self):
         '''Test the output of profile templatetag if profile does not exist'''
         user = G(User)
@@ -35,7 +36,9 @@ class TemplateTagsTests(TestCase):
         self.assertEqual(interventions_topics(user), {'unread': [],
                                                       'read': []})
 
+
 class PaginatorRangeTests(TestCase):
+
     def test_one(self):
         result = paginator_range(1, 1)
         self.assertEqual(result, [1])
