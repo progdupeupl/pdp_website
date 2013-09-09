@@ -236,6 +236,9 @@ BOT_ENABLED = False
 # BOT_TUTORIAL_FORUM_PK = 1
 # BOT_ARTICLE_FORUM_PK = 2
 
+# Fileserve settings
+SERVE = False
+
 # Load the production settings, overwrite the existing ones if needed
 try:
     from settings_prod import *
