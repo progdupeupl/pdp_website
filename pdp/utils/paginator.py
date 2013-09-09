@@ -4,6 +4,11 @@
 def paginator_range(current, stop, start=1):
     assert(current <= stop)
 
+    # Basic case when no folding
+    if stop - start <= 4:
+        return range(start, stop + 1)
+
+    # Complex case when folding
     lst = []
     for i in range(start, stop + 1):
         # Bounds
