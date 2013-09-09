@@ -55,6 +55,10 @@ class PaginatorRangeTests(TestCase):
         result = paginator_range(1, 10)
         self.assertEqual(result, [1, 2, None, 10])
 
+    def test_big_start_limit(self):
+        result = paginator_range(3, 10)
+        self.assertEqual(result, [1, 2, 3, 4, None, 10])
+
     def test_big_middle(self):
         result = paginator_range(5, 10)
         self.assertEqual(result, [1, None, 4, 5, 6, None, 10])
@@ -62,3 +66,7 @@ class PaginatorRangeTests(TestCase):
     def test_big_end(self):
         result = paginator_range(10, 10)
         self.assertEqual(result, [1, None, 9, 10])
+
+    def test_big_end_limit(self):
+        result = paginator_range(7, 10)
+        self.assertEqual(result, [1, None, 6, 7, 8, 9, 10])
