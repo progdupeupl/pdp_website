@@ -53,15 +53,6 @@
             width: 100%;
             display: block;
         }
-
-        .has-tip {
-            border-bottom: none;
-            color: inherit;
-            &:hover {
-                border-bottom: none;
-                color: initial;
-            }
-        }
     }
 
     .forum-entry-desc {
