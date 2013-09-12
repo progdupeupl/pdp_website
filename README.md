@@ -40,4 +40,4 @@ after creating the database : `python manage.py loaddata data.json`.
 
 Progdupeupl is brought to you under GNU GPLv3 licence. For further informations
 read the COPYING file. This project use some code parts from
-[progmod](http://progmod.org) avaible under the MIT licence.
+[progmod](http://progmod.org) available under the MIT licence.
