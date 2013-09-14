@@ -20,10 +20,6 @@ class="active"
     bref : échanger de façon utile sur le monde de l'informatique." />
 {% endblock %}
 
-{% block headline %}
-    Bonjour o/
-{% endblock %}
-
 {% block header %}
     <h1>
         <i class="icon-home icon-large"></i>
@@ -42,21 +38,19 @@ class="active"
 
 {% block content %}
 
-<!-- TODO: Use a (S)CSS separator rule instead of this empty one -->
-<div class="row">
-    <div class="large-12 columns">
-
-    </div>
-</div>
-
 <div class="row">
     {# Articles #}
     <div class="large-4 columns">
-        <h2>
-            <a href="{% url "pdp.article.views.index" %}">
-                Articles
-            </a>
-        </h2>
+        <div class="home-app-title">
+            <div>
+                <img src="{% static "img/icons/article.png" %}" alt="Icône">
+            </div>
+            <h2>
+                <a href="{% url "pdp.article.views.index" %}">
+                    Articles
+                </a>
+            </h2>
+        </div>
 
         {% if last_articles %}
             {% for article in last_articles %}
@@ -69,11 +63,16 @@ class="active"
     </div>
 
     <div class="large-4 columns">
-        <h2>
-            <a href="{% url "pdp.tutorial.views.index" %}">
-                Tutoriels
-            </a>
-        </h2>
+        <div class="home-app-title">
+            <div>
+                <img src="{% static "img/icons/tutorial.png" %}" alt="Icône">
+            </div>
+            <h2>
+                <a href="{% url "pdp.tutorial.views.index" %}">
+                    Tutoriels
+                </a>
+            </h2>
+        </div>
 
         {% if last_tutorials %}
             {% for tutorial in last_tutorials %}
@@ -85,11 +84,16 @@ class="active"
         {% endif %}
     </div>
     <div class="large-4 columns">
-        <h2>
-            <a href="{% url "pdp.forum.views.index" %}">
-                Forums
-            </a>
-        </h2>
+        <div class="home-app-title">
+            <div>
+                <img src="{% static "img/icons/forum.png" %}" alt="Icône">
+            </div>
+            <h2>
+                <a href="{% url "pdp.forum.views.index" %}">
+                    Forums
+                </a>
+            </h2>
+        </div>
 
         {% if last_topics %}
             {% for topic in last_topics %}
