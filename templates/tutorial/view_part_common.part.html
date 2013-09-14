@@ -7,9 +7,35 @@
         {% with chapters=part.get_chapters %}
 
             {% if user in authors %}
-            <form action="{% url "pdp.tutorial.views.modify_part" %}" method="POST">
+            <form action="{% url "pdp.tutorial.views.modify_part" %}" method="POST" class="custom">
                 <input type="hidden" name="part" value="{{ part.pk }}" />
-
+                <div style="float: right;">
+                    <select name="move_target">
+                        <option selected>Déplacer</option>
+                    {% if part.position_in_tutorial > 1 %}
+                        <option value="{{ part.position_in_tutorial|add:"-1" }}">Monter</option>
+                    {% endif %}
+                    {% if part.position_in_tutorial < tutorial.get_parts.count %}
+                    <option value="{{ part.position_in_tutorial|add:"1" }}">Descendre</option>
+                    {% endif %}
+                        <option disabled>&mdash; Déplacer avant</option>
+                    {% for part_mv in part.tutorial.get_parts %}
+                        {% if part != part_mv and part_mv.position_in_tutorial|add:"-1" != part.position_in_tutorial %}
+                        <option value="{% if part_mv.position_in_tutorial < part.position_in_tutorial %}{{ part_mv.position_in_tutorial }}{% else %}{{ part_mv.position_in_tutorial|add:"-1" }}{% endif %}">
+                                Partie {{ part_mv.position_in_tutorial }} : {{ part_mv.title }}
+                        </option>
+                        {% endif %}
+                    {% endfor %}
+                    <option disabled>&mdash; Déplacer après</option>
+                    {% for part_mv in part.tutorial.get_parts %}
+                        {% if part != part_mv and part_mv.position_in_tutorial|add:"1" != part.position_in_tutorial %}
+                        <option value="{% if part_mv.position_in_tutorial < part.position_in_tutorial %}{{ part_mv.position_in_tutorial|add:"1" }}{% else %}{{ part_mv.position_in_tutorial }}{% endif %}">
+                                Partie {{ part_mv.position_in_tutorial }} : {{ part_mv.title }}
+                        </option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                </div> 
                 <div class="button-group">
                     <a href="/tutoriels/nouveau/chapitre?partie={{ part.pk }}" class="button">
                         Ajouter
@@ -17,38 +43,6 @@
                     <a href="/tutoriels/editer/partie?partie={{ part.pk }}" class="button">
                         Éditer
                     </a>
-                    <a href="#" class="button secondary" data-dropdown="part-{{ part.pk }}">
-                        Déplacer
-                    </a>
-                    <div id="part-{{ part.pk }}" class="f-dropdown content" data-dropdown-content>
-                        <select name="move_target">
-                        {% if part.position_in_tutorial > 1 %}
-                            <option value="{{ part.position_in_tutorial|add:"-1" }}">Monter</option>
-                        {% endif %}
-                        {% if part.position_in_tutorial < tutorial.get_parts.count %}
-                        <option value="{{ part.position_in_tutorial|add:"1" }}">Descendre</option>
-                        {% endif %}
-                            <option disabled>&mdash; Déplacer avant</option>
-                        {% for part_mv in part.tutorial.get_parts %}
-                            {% if part != part_mv and part_mv.position_in_tutorial|add:"-1" != part.position_in_tutorial %}
-                            <option value="{% if part_mv.position_in_tutorial < part.position_in_tutorial %}{{ part_mv.position_in_tutorial }}{% else %}{{ part_mv.position_in_tutorial|add:"-1" }}{% endif %}">
-                                    Partie {{ part_mv.position_in_tutorial }} : {{ part_mv.title }}
-                            </option>
-                            {% endif %}
-                        {% endfor %}
-                        <option disabled>&mdash; Déplacer après</option>
-                        {% for part_mv in part.tutorial.get_parts %}
-                            {% if part != part_mv and part_mv.position_in_tutorial|add:"1" != part.position_in_tutorial %}
-                            <option value="{% if part_mv.position_in_tutorial < part.position_in_tutorial %}{{ part_mv.position_in_tutorial|add:"1" }}{% else %}{{ part_mv.position_in_tutorial }}{% endif %}">
-                                    Partie {{ part_mv.position_in_tutorial }} : {{ part_mv.title }}
-                            </option>
-                            {% endif %}
-                        {% endfor %}
-                        </select>
-                        <button type="submit" name="move" class="button">
-                            Déplacer
-                        </button>
-                    </div>
 
                     <button type="submit" name="delete" class="button secondary">
                         Supprimer
