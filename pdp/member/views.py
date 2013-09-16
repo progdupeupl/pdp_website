@@ -113,6 +113,7 @@ def login_view(request):
         form = LoginForm()
     csrf_tk['error'] = error
     csrf_tk['form'] = form
+
     return render_template('member/login.html', csrf_tk)
 
 
@@ -220,8 +221,10 @@ def settings_account(request):
 
 @login_required
 def publications(request):
-    user_articles = Article.objects.filter(author=request.user).order_by('-pubdate')
-    user_tutorials = Tutorial.objects.filter(authors=request.user).order_by('-pubdate')
+    user_articles = Article.objects.filter(
+        author=request.user).order_by('-pubdate')
+    user_tutorials = Tutorial.objects.filter(
+        authors=request.user).order_by('-pubdate')
     c = {
         'user_articles': user_articles,
         'user_tutorials': user_tutorials,

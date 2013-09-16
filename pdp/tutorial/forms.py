@@ -129,18 +129,17 @@ class ChapterForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
-        self.helper.form_class = 'form-horizontal'
         self.helper.form_method = 'post'
 
         self.helper.layout = Layout(
             Fieldset(
                 u'Général',
-                Field('title', css_class='input-xxlarge'),
+                Field('title'),
             ),
             Fieldset(
                 u'Contenu',
-                Field('introduction', css_class='input-block-level'),
-                Field('conclusion', css_class='input-block-level')
+                Field('introduction'),
+                Field('conclusion')
             ),
             ButtonHolder(
                 Div(
@@ -168,14 +167,13 @@ class EmbdedChapterForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
-        self.helper.form_class = 'form-horizontal'
         self.helper.form_method = 'post'
 
         self.helper.layout = Layout(
             Fieldset(
                 u'Contenu',
-                Field('introduction', css_class='input-block-level'),
-                Field('conclusion', css_class='input-block-level')
+                Field('introduction'),
+                Field('conclusion')
             ),
             ButtonHolder(
                 Submit('submit', 'Valider')
