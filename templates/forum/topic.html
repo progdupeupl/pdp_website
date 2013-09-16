@@ -174,11 +174,35 @@
     </div>
 {% endfor %}
 
-{% include "forum/topic_pagination.part.html" %}
-
 {% if user.is_authenticated %}
-<div class="row">
-    <div class="large-8 large-offset-2 columns">
+<div class="row post-head">
+    <div class="large-2 columns post-nickname">
+        <p>
+            <a href="{{ user.get_absolute_url }}">
+                {{ user.username }}
+            </a>
+        </p>
+    </div>
+    <div class="large-10 columns">
+        <div class="right">
+            <div class="button-group">
+                <a href="#" class="button secondary small">
+                    Prévisualiser
+                </a>
+            </div>
+        </div>
+        <p>
+            Ajouter une réponse
+        </p>
+    </div>
+</div>
+<div class="row post-content">
+    <div class="large-2 columns hide-for-small post-avatar">
+        {% with profile=user|profile %}
+            <img src="{{ profile.get_avatar_url }}" width="80" height="80" alt="Avatar" />
+        {% endwith %}
+    </div>
+    <div class="large-10 columns">
         <form action="{% url "pdp.forum.views.answer" %}?sujet={{ topic.pk }}" method="POST">
             <textarea name="text" rows="10" {% if topic.is_locked or topic.antispam %}disabled{% endif %}
                 placeholder="Votre message au format Markdown.">{% spaceless %}
@@ -189,17 +213,15 @@
                     {% endif %}
                 {% endspaceless %}</textarea>
 
-            <div style="text-align: center;">
-                <button class="button btn-primary" type="submit" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
-                    <i class="icon-reply"></i>
-                    Répondre
-                </button>
-                <button type="submit" name="more"
-                    class="button secondary" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
-                    <i class="icon-ellipsis-horizontal"></i>
-                    Plus d'options
-                </button>
-            </div>
+            <button class="button btn-primary" type="submit" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
+                <i class="icon-reply"></i>
+                Répondre
+            </button>
+            <button type="submit" name="more"
+                class="button secondary" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
+                <i class="icon-ellipsis-horizontal"></i>
+                Plus d'options
+            </button>
 
             <input type="hidden" name="last_post" value="{{ last_post_pk }}" />
             {% csrf_token %}
@@ -207,6 +229,9 @@
     </div>
 </div>
 {% endif %}
+
+{% include "forum/topic_pagination.part.html" %}
+
 {% endblock %}
 
 {% block additionnal-js %}
