@@ -113,6 +113,15 @@ def login_view(request):
         form = LoginForm()
     csrf_tk['error'] = error
     csrf_tk['form'] = form
+
+    if not request.is_secure():
+        messages.info(
+            request,
+            u'Vous allez vous connecter de manière non sécurisée. Il est '
+            u'fortement conseillé de vous connecter en utilisant la '
+            u'version sécurisée du site.'
+            )
+
     return render_template('member/login.html', csrf_tk)
 
 
@@ -139,6 +148,14 @@ def register_view(request):
             return render_template('member/register_success.html')
         else:
             return render_template('member/register.html', {'form': form})
+
+    if not request.is_secure():
+        messages.info(
+            request,
+            u'Vous allez vous inscrire de manière non sécurisée. Il est '
+            u'fortement conseillé de remplir le formulaire d\'inscription '
+            u'en utilisant la version sécurisée du site.'
+            )
 
     form = RegisterForm()
     return render_template('member/register.html', {
@@ -220,8 +237,10 @@ def settings_account(request):
 
 @login_required
 def publications(request):
-    user_articles = Article.objects.filter(author=request.user).order_by('-pubdate')
-    user_tutorials = Tutorial.objects.filter(authors=request.user).order_by('-pubdate')
+    user_articles = Article.objects.filter(
+        author=request.user).order_by('-pubdate')
+    user_tutorials = Tutorial.objects.filter(
+        authors=request.user).order_by('-pubdate')
     c = {
         'user_articles': user_articles,
         'user_tutorials': user_tutorials,
