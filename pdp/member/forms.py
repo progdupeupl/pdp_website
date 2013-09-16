@@ -31,7 +31,6 @@ class RegisterForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
-        self.helper.form_class = 'form-horizontal'
         self.helper.form_method = 'post'
 
         self.helper.layout = Layout(
@@ -136,8 +135,8 @@ class ProfileForm(forms.Form):
         )
         super(ProfileForm, self).__init__(*args, **kwargs)
 
-# to update a password
 
+# to update a password
 
 class ChangePasswordForm(forms.Form):
     password_new = forms.CharField(
@@ -149,7 +148,6 @@ class ChangePasswordForm(forms.Form):
 
     def __init__(self, user, *args, **kwargs):
         self.helper = FormHelper()
-        self.helper.form_class = 'form-horizontal'
         self.helper.form_method = 'post'
 
         self.user = user

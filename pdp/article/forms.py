@@ -30,13 +30,12 @@ class ArticleForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
-        self.helper.form_class = 'form-horizontal'
         self.helper.form_method = 'post'
 
         self.helper.layout = Layout(
-            Field('title', css_class='input-xxlarge'),
-            Field('description', css_class='input-block-level'),
-            Field('text', css_class='input-block-level'),
+            Field('title'),
+            Field('description'),
+            Field('text'),
             Field('tags'),
             Submit('submit', 'Valider'),
         )
