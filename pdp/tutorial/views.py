@@ -311,7 +311,12 @@ def modify_part(request):
         raise Http404
 
     if 'move' in request.POST:
-        new_pos = int(request.POST['move_target'])
+        try:
+            new_pos = int(request.POST['move_target'])
+        # Invalid conversion, maybe the user played with the move button
+        except ValueError:
+            return redirect(part.tutorial.get_absolute_url())
+
         move(part, new_pos, 'position_in_tutorial', 'tutorial', 'get_parts')
         part.save()
 

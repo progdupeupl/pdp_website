@@ -9,8 +9,9 @@
             {% if user in authors %}
             <form action="{% url "pdp.tutorial.views.modify_part" %}" method="POST" class="custom">
                 <input type="hidden" name="part" value="{{ part.pk }}" />
+                <input type="hidden" name="move" value="" />
                 <div style="float: right;">
-                    <select name="move_target">
+                    <select name="move_target" class="select-autosubmit">
                         <option selected>Déplacer</option>
                     {% if part.position_in_tutorial > 1 %}
                         <option value="{{ part.position_in_tutorial|add:"-1" }}">Monter</option>
