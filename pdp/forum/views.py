@@ -336,13 +336,12 @@ def edit_post(request):
     if post.author != request.user:
         if not request.user.has_perm('forum.change_post'):
             raise Http404
-        else:
-            if request.method == 'GET':
-                messages.add_message(
-                    request, messages.WARNING,
-                    u'Vous éditez ce message en tant que modérateur (auteur : {}).'
-                    u' Soyez encore plus prudent lors de l\'édition de celui-ci !'
-                    .format(post.author.username))
+        elif request.method == 'GET':
+            messages.add_message(
+                request, messages.WARNING,
+                u'Vous éditez ce message en tant que modérateur (auteur : {}).'
+                u' Soyez encore plus prudent lors de l\'édition de celui-ci !'
+                .format(post.author.username))
 
     if request.method == 'POST':
 
