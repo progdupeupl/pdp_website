@@ -206,6 +206,11 @@ def edit(request):
     except KeyError:
         raise Http404
 
+    try:
+        page = int(request.POST['page'])
+    except KeyError:
+        page = 1
+
     data = request.POST
 
     g_topic = get_object_or_404(Topic, pk=topic_pk)
@@ -219,7 +224,8 @@ def edit(request):
         if 'solved' in data:
             g_topic.is_solved = not g_topic.is_solved
     if request.user.has_perm('forum.change_topic'):
-        # Staff actions
+        # Staff actions using AJAX
+        # TODO: Do not redirect on AJAX requests
         if 'lock' in data:
             g_topic.is_locked = data['lock'] == 'true'
         if 'sticky' in data:
@@ -234,7 +240,7 @@ def edit(request):
             g_topic.forum = forum
 
     g_topic.save()
-    return redirect(g_topic.get_absolute_url())
+    return redirect(u'{}?page={}'.format(g_topic.get_absolute_url(), page))
 
 
 @login_required
