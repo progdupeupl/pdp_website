@@ -37,6 +37,7 @@ urlpatterns = patterns('',
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-docs/', include('rest_framework_swagger.urls')),
     url(r'^oauth2/', include('provider.oauth2.urls', namespace='oauth2')),
+    url(r'^recherche/', include('haystack.urls'), name='haystack_search'),
 )
 
 if settings.SERVE:
