@@ -184,6 +184,7 @@ INSTALLED_APPS = (
     'provider',
     'provider.oauth2',
     'rest_framework_swagger',
+    'haystack',
 
     'pdp.member',
     'pdp.forum',
@@ -261,6 +262,13 @@ SWAGGER_SETTINGS = {
     "api_key": '', # An API key
     "is_authenticated": False,  # Set to True to enforce user authentication,
     "is_superuser": False,  # Set to True to enforce admin only access
+}
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh'),
+    },
 }
 
 AUTH_PROFILE_MODULE = 'member.Profile'
