@@ -25,63 +25,65 @@
                 </tr>
             </table>
             {% if query %}
-                <h3>Resultats</h3>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Sujet</th>
-                          <th width="10%">Posté par</th>
-                          <th width="15%">Quand</th>
-                          <th width="55%">Extrait</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for result in page.object_list %}
-                        
-                        <tr>
-                          <td>
-                            <a href="{{ result.object.topic.get_absolute_url }}">
-                                {{ result.object.topic.title }}
-                            </a>
-                            <p>{{ result.object.topic.subtitle }}</p>
+                {% if page.object_list %}
+                    <h3>Resultats</h3>
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>Sujet</th>
+                              <th width="10%">Posté par</th>
+                              <th width="15%">Quand</th>
+                              <th width="55%">Extrait</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for result in page.object_list %}
+                            
+                            <tr>
+                              <td>
+                                <a href="{{ result.object.topic.get_absolute_url }}">
+                                    {{ result.object.topic.title }}
+                                </a>
+                                <p>{{ result.object.topic.subtitle }}</p>
 
-                            <a href="{{ result.object.get_absolute_url }}">
-                                {{ result.object.title }}
-                            </a>
-                            <p>{{ result.object.description|truncatechars:80 }}</p>
-                          </td>
-                          <td>
-                            {% if result.object.topic %}
-                                <a href="{{ result.object.topic.author.get_absolute_url }}">{{ result.object.topic.author.username }}</a>
-                            {% elif result.object.chapter %}
-                                <a href="{{ result.object.chapter.tutorial.author.get_absolute_url }}">{{ result.object.chapter.tutorial.author.username }}</a>
-                            {% else %}
-                                <a href="{{ result.object.author.get_absolute_url }}">{{ result.object.author.username }}</a>
-                            {% endif %}
-                          </td>
-                          <td>
-                            {% if result.object.chapter %}
-                              <a href="{{ result.object.chapter.tutorial.author.get_absolute_url }}">{{ result.object.chapter.tutorial.pubdate|humane_date }}</a>
-                            {% else %}
-                              <a href="{{ result.object.get_absolute_url }}">{{ result.object.pubdate|humane_date }}</a>
-                            {% endif %}
-                          </td>
-                          <td>{{ result.object.text|truncatechars:200|emarkdown }}</td>
-                        </tr>
-                        {% empty %}
-                        <tr colspan="4" >Aucun résultat trouvé</tr>
-                        {% endfor %}
-                      </tbody>
-                    </table>
-                {% if page.has_previous or page.has_next %}
-                    <div>
-                        {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
-                        |
-                        {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+                                <a href="{{ result.object.get_absolute_url }}">
+                                    {{ result.object.title }}
+                                </a>
+                                <p>{{ result.object.description|truncatechars:80 }}</p>
+                              </td>
+                              <td>
+                                {% if result.object.topic %}
+                                    <a href="{{ result.object.topic.author.get_absolute_url }}">{{ result.object.topic.author.username }}</a>
+                                {% elif result.object.chapter %}
+                                    <a href="{{ result.object.chapter.tutorial.author.get_absolute_url }}">{{ result.object.chapter.tutorial.author.username }}</a>
+                                {% else %}
+                                    <a href="{{ result.object.author.get_absolute_url }}">{{ result.object.author.username }}</a>
+                                {% endif %}
+                              </td>
+                              <td>
+                                {% if result.object.chapter %}
+                                  <a href="{{ result.object.chapter.tutorial.author.get_absolute_url }}">{{ result.object.chapter.tutorial.pubdate|humane_date }}</a>
+                                {% else %}
+                                  <a href="{{ result.object.get_absolute_url }}">{{ result.object.pubdate|humane_date }}</a>
+                                {% endif %}
+                              </td>
+                              <td>{{ result.object.text|truncatechars:200|emarkdown }}</td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                    {% if page.has_previous or page.has_next %}
+                        <div>
+                            {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+                            |
+                            {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="panel">
+                        <p>Aucun résultat trouvé.</p>
                     </div>
                 {% endif %}
-            {% else %}
-                {# Show some example queries to run, maybe query syntax, something else? #}
             {% endif %}
         </form>
     </div>
