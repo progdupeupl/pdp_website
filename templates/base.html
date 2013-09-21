@@ -76,6 +76,7 @@
             </ul>
 
             <ul class="right">
+                
                 {% if user.is_authenticated %}
                     {% with topics=user|interventions_topics %}
                         {% with unread_topics=topics.unread %}
@@ -139,6 +140,9 @@
                     </ul>
                 </li>
                 {% else %}
+                <li>
+                    <a href="{% url "haystack_search" %}">Recherche</a>
+                </li>
                 <li>
                     <a href="{% url "pdp.member.views.register_view" %}">S'inscrire</a>
                 </li>
