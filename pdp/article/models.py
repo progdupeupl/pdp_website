@@ -19,7 +19,8 @@ class Article(models.Model):
 
     text = models.TextField('Texte')
 
-    author = models.ForeignKey(User, verbose_name='Auteur')
+    author = models.ForeignKey(User, verbose_name='Auteur',
+                                     related_name='articles')
     pubdate = models.DateTimeField('Date de publication', blank=True)
 
     tags = TaggableManager()
