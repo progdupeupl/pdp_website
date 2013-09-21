@@ -94,7 +94,8 @@ class Topic(models.Model):
     subtitle = models.CharField('Sous-titre', max_length=200)
 
     forum = models.ForeignKey(Forum, verbose_name='Forum')
-    author = models.ForeignKey(User, verbose_name='Auteur')
+    author = models.ForeignKey(User, verbose_name='Auteur',
+                                     related_name='topics')
     last_message = models.ForeignKey('Post', null=True,
                                      related_name='last_message',
                                      verbose_name='Dernier message')
@@ -199,7 +200,8 @@ class Post(models.Model):
     A forum post written by an user.
     '''
     topic = models.ForeignKey(Topic, verbose_name='Sujet')
-    author = models.ForeignKey(User, verbose_name='Auteur')
+    author = models.ForeignKey(User, verbose_name='Auteur',
+                                     related_name='posts')
     text = models.TextField('Texte')
 
     pubdate = models.DateTimeField('Date de publication', auto_now_add=True)
@@ -230,7 +232,7 @@ class TopicRead(models.Model):
 
     topic = models.ForeignKey(Topic)
     post = models.ForeignKey(Post)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, related_name='topics_read')
 
     def __unicode__(self):
         return u'<Sujet "{0}" lu par {1}, #{2}>'.format(self.topic,
@@ -249,7 +251,7 @@ class TopicFollowed(models.Model):
         verbose_name_plural = 'Sujets suivis'
 
     topic = models.ForeignKey(Topic)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, related_name='topics_followed')
 
     def __unicode__(self):
         return u'<Sujet "{0}" suivi par {1}>'.format(self.topic.title,
