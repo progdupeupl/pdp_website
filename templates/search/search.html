@@ -1,9 +1,9 @@
-{% extends 'forum/base.html' %}
+{% extends 'base.html' %}
 {% load humane_date %}
 {% load emarkdown %}
 
 {% block title %}
-    Recherche {{ forum.title }}
+    Recherche
 {% endblock %}
 
 {% block breadcrumb %}
@@ -55,14 +55,14 @@
                                 {% if result.object.topic %}
                                     <a href="{{ result.object.topic.author.get_absolute_url }}">{{ result.object.topic.author.username }}</a>
                                 {% elif result.object.chapter %}
-                                    <a href="{{ result.object.chapter.tutorial.author.get_absolute_url }}">{{ result.object.chapter.tutorial.author.username }}</a>
+                                    <a href="{{ result.object.chapter.get_tutorial.author.get_absolute_url }}">{{ result.object.chapter.get_tutorial.author.username }}</a>
                                 {% else %}
                                     <a href="{{ result.object.author.get_absolute_url }}">{{ result.object.author.username }}</a>
                                 {% endif %}
                               </td>
                               <td>
                                 {% if result.object.chapter %}
-                                  <a href="{{ result.object.chapter.tutorial.author.get_absolute_url }}">{{ result.object.chapter.tutorial.pubdate|humane_date }}</a>
+                                  <a href="{{ result.object.chapter.get_tutorial.author.get_absolute_url }}">{{ result.object.chapter.get_tutorial.pubdate|humane_date }}</a>
                                 {% else %}
                                   <a href="{{ result.object.get_absolute_url }}">{{ result.object.pubdate|humane_date }}</a>
                                 {% endif %}

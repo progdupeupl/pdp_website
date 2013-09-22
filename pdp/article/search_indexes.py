@@ -1,4 +1,3 @@
-import datetime
 from haystack import indexes
 from pdp.article.models import Article
 
@@ -13,3 +12,8 @@ class ArticleIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return Article
+
+    def index_queryset(self, using=None):
+        '''Used when the entire index for model is updated.'''
+        return self.get_model().objects\
+            .filter(is_visible=True)
