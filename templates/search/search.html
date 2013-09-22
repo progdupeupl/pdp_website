@@ -6,14 +6,16 @@
     Recherche
 {% endblock %}
 
+{% block headline %}
+    Recherche
+{% endblock %}
+
 {% block breadcrumb %}
     <li class="current"><a href="javascript:;">Recherche</a></li>
 {% endblock %}
 
 {% block content %}
     <div class="row">
-        <h2>Recherche</h2>
-
         <form method="get" action=".">
             <table>
                 {{ form.as_table }}
