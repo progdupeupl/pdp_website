@@ -31,7 +31,6 @@
                           <thead>
                             <tr>
                               <th>Sujet</th>
-                              <th width="10%">Posté par</th>
                               <th width="15%">Quand</th>
                               <th width="55%">Extrait</th>
                             </tr>
@@ -49,20 +48,17 @@
                                 <a href="{{ result.object.get_absolute_url }}">
                                     {{ result.object.title }}
                                 </a>
-                                <p>{{ result.object.description|truncatechars:80 }}</p>
-                              </td>
-                              <td>
-                                {% if result.object.topic %}
-                                    <a href="{{ result.object.topic.author.get_absolute_url }}">{{ result.object.topic.author.username }}</a>
-                                {% elif result.object.chapter %}
-                                    <a href="{{ result.object.chapter.get_tutorial.author.get_absolute_url }}">{{ result.object.chapter.get_tutorial.author.username }}</a>
+                                {% if result.object.chapter %}
+                                    {% with tutorial=result.object.chapter.get_tutorial %}
+                                        <p>Dans <a href="{{ tutorial.get_absolute_url }}">{{ tutorial.title }}</a>.</p>
+                                    {% endwith %}
                                 {% else %}
-                                    <a href="{{ result.object.author.get_absolute_url }}">{{ result.object.author.username }}</a>
+                                    <p>{{ result.object.description|truncatechars:80 }}</p>
                                 {% endif %}
                               </td>
                               <td>
                                 {% if result.object.chapter %}
-                                  <a href="{{ result.object.chapter.get_tutorial.author.get_absolute_url }}">{{ result.object.chapter.get_tutorial.pubdate|humane_date }}</a>
+                                  <a href="{{ result.object.chapter.get_absolute_url }}">{{ result.object.chapter.get_tutorial.pubdate|humane_date }}</a>
                                 {% else %}
                                   <a href="{{ result.object.get_absolute_url }}">{{ result.object.pubdate|humane_date }}</a>
                                 {% endif %}
