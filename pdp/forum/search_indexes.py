@@ -1,14 +1,15 @@
 import datetime
 from haystack import indexes
-from pdp.forum.models import Post
+from pdp.forum.models import Topic
 
 
-class PostIndex(indexes.SearchIndex, indexes.Indexable):
+class TopicIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
+    title = indexes.CharField(model_attr='title')
+    subtitle = indexes.CharField(model_attr='subtitle')
     author = indexes.CharField(model_attr='author')
-    topic = indexes.CharField(model_attr='topic')
+    last_message = indexes.CharField(model_attr='last_message')
     pubdate = indexes.DateTimeField(model_attr='pubdate')
-    txt = indexes.CharField(model_attr='text')
 
     def get_model(self):
-        return Post
+        return Topic
