@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.shortcuts import redirect, get_object_or_404
 
+from django.db.models import Q
 from django.http import Http404
 from django.http import HttpResponse
 
@@ -281,7 +282,7 @@ class ArticleList(generics.ListCreateAPIView):
     """
     List all article, or create a new article.
     """
-    queryset = Article.objects.all()
+    queryset = Article.objects.all().filter(is_visible=True)
     serializer_class = ArticleSerializer
     filter_class = ArticleFilter
 
@@ -310,20 +311,12 @@ class ArticleDetail(generics.RetrieveUpdateDestroyAPIView):
     def pre_save(self, obj):
         obj.author = self.request.user
 
-class TutorialFilter(django_filters.FilterSet):
-    is_visible = django_filters.BooleanFilter()
-    is_pending = django_filters.BooleanFilter()
-    class Meta:
-        model = Tutorial
-        fields = ['is_visible', 'is_pending']
-
 class TutorialList(generics.ListCreateAPIView):
     """
     List all tutorial, or create a new tutorial.
     """
     queryset = Tutorial.objects.all()
     serializer_class = TutorialSerializer
-    filter_class = TutorialFilter
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -356,7 +349,7 @@ class PartList(generics.ListCreateAPIView):
     """
     List all part, or create a new part.
     """
-    queryset = Part.objects.all()
+    queryset = Part.objects.all().filter(tutorial__is_visible=True)
     serializer_class = PartSerializer
     filter_class = PartFilter
 
@@ -391,7 +384,7 @@ class ChapterList(generics.ListCreateAPIView):
     """
     List all chapter, or create a new chapter.
     """
-    queryset = Chapter.objects.all()
+    queryset = Chapter.objects.all().filter(Q(part__tutorial__is_visible=True)|Q(tutorial__is_visible=True))
     serializer_class = ChapterSerializer
     filter_class = ChapterFilter
 
@@ -426,7 +419,7 @@ class ExtractList(generics.ListCreateAPIView):
     """
     List all extract, or create a new extract.
     """
-    queryset = Extract.objects.all()
+    queryset = Extract.objects.all().filter(Q(chapter__part__tutorial__is_visible=True)|Q(chapter__tutorial__is_visible=True))
     serializer_class = ExtractSerializer
     filter_class = ExtractFilter
 
