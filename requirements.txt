@@ -1,3 +1,4 @@
+fabric
 django>=1.5,<1.6
 markdown>=2.1
 bleach
