@@ -1,0 +1,4 @@
+{{ object.title }}
+{{ object.subtitle }}
+{{ object.author.username }}
+{{ object.last_message.text }}
