@@ -1,3 +1,4 @@
+fabric
 django>=1.5,<1.6
 markdown>=2.1
 bleach
@@ -6,6 +7,7 @@ south
 pytz
 pil
 PyYAML
+Whoosh
 defusedxml
 django-dynamic-fixture
 django-crispy-forms
@@ -20,3 +22,4 @@ django-filter
 django-rest-swagger
 django-oauth2-provider
 django-guardian
+django-haystack
