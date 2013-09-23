@@ -30,7 +30,6 @@
                       <thead>
                         <tr>
                           <th>Sujet</th>
-                          <th width="10%">Posté par</th>
                           <th width="15%">Quand</th>
                           <th width="55%">Extrait</th>
                         </tr>
@@ -51,22 +50,19 @@
                             <p>{{ result.object.description|truncatechars:80 }}</p>
                           </td>
                           <td>
-                            {% if result.object.topic %}
-                                <a href="{{ result.object.topic.author.get_absolute_url }}">{{ result.object.topic.author.username }}</a>
-                            {% elif result.object.chapter %}
-                                <a href="{{ result.object.chapter.tutorial.author.get_absolute_url }}">{{ result.object.chapter.tutorial.author.username }}</a>
-                            {% else %}
-                                <a href="{{ result.object.author.get_absolute_url }}">{{ result.object.author.username }}</a>
-                            {% endif %}
-                          </td>
-                          <td>
                             {% if result.object.chapter %}
                               <a href="{{ result.object.chapter.tutorial.author.get_absolute_url }}">{{ result.object.chapter.tutorial.pubdate|humane_date }}</a>
                             {% else %}
                               <a href="{{ result.object.get_absolute_url }}">{{ result.object.pubdate|humane_date }}</a>
                             {% endif %}
                           </td>
-                          <td>{{ result.object.text|truncatechars:200|emarkdown }}</td>
+                          <td>
+                            {% if result.object.last_message %}
+                              {{ result.object.first_post.text|truncatechars:200|emarkdown }}
+                            {% else %}
+                              {{ result.object.text|truncatechars:200|emarkdown }}
+                            {% endif %}
+                          </td>
                         </tr>
                         {% empty %}
                         <tr colspan="4" >Aucun résultat trouvé</tr>
