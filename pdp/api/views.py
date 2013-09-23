@@ -282,7 +282,7 @@ class ArticleList(generics.ListCreateAPIView):
     """
     List all article, or create a new article.
     """
-    queryset = Article.objects.all()
+    queryset = Article.objects.all().filter(is_visible=True)
     serializer_class = ArticleSerializer
     filter_class = ArticleFilter
 
