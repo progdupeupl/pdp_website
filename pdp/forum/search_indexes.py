@@ -1,5 +1,5 @@
-import datetime
 from haystack import indexes
+
 from pdp.forum.models import Topic
 
 
