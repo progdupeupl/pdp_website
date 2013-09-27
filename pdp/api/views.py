@@ -36,9 +36,9 @@ class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-class CategoryList(generics.ListCreateAPIView):
+class CategoryList(generics.ListAPIView):
     """
-    List all category, or create a new category.
+    List all category
     """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -46,12 +46,10 @@ class CategoryList(generics.ListCreateAPIView):
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
 
-class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
+class CategoryDetail(generics.RetrieveAPIView):
     """
-    Retrieve, update or delete a Category.
+    Retrieve a Category.
     """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -59,20 +57,15 @@ class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
 
 class ForumFilter(django_filters.FilterSet):
     class Meta:
         model = Forum
         fields = ['category']
 
-class ForumList(generics.ListCreateAPIView):
+class ForumList(generics.ListAPIView):
     """
-    List all forum, or create a new forum.
+    List all forum.
     """
     queryset = Forum.objects.all()
     serializer_class = ForumSerializer
@@ -81,24 +74,16 @@ class ForumList(generics.ListCreateAPIView):
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
 
-class ForumDetail(generics.RetrieveUpdateDestroyAPIView):
+class ForumDetail(generics.RetrieveAPIView):
     """
-    Retrieve, update or delete a Forum.
+    Retrieve a Forum.
     """
     queryset = Forum.objects.all()
     serializer_class = ForumSerializer
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
 
 class TopicReadFilter(django_filters.FilterSet):
     class Meta:
@@ -154,7 +139,7 @@ class TopicFollowedList(generics.ListCreateAPIView):
     List all Topic followed, or create a new topic followed.
     """
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-    queryset = TopicRead.objects.all()
+    queryset = TopicFollowed.objects.all()
     serializer_class = TopicFollowedSerializer
     filter_class = TopicFollowedFilter
 
@@ -213,6 +198,14 @@ class TopicList(generics.ListCreateAPIView):
 
     def pre_save(self, obj):
         obj.author = self.request.user
+        lst= Post.objects.all().filter(topic=obj).order_by('-pubdate') 
+        if  len(lst) > 0:
+            obj.last_message = lst[0]
+
+    def post_save(self, obj, created=True):
+        # if i create a topic, i follow it
+        tf = TopicFollowed(topic=obj, user=self.request.user)
+        tf.save();
 
 class TopicDetail(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -234,6 +227,20 @@ class TopicDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def pre_save(self, obj):
         obj.author = self.request.user
+        lst= Post.objects.all().filter(topic=obj).order_by('-pubdate') 
+        if  len(lst) > 0:
+            obj.last_message = lst[0]
+    
+    def post_save(self, obj, created=True):
+        # if i create a topic, i follow it
+        tf = TopicFollowed(topic=obj, user=self.request.user)
+        tf.save();
+
+class PostFilter(django_filters.FilterSet):
+    position_in_topic = django_filters.NumberFilter()
+    class Meta:
+        model = Post
+        fields = ['author', 'topic', 'position_in_topic']
 
 class PostList(generics.ListCreateAPIView):
     """
@@ -242,6 +249,7 @@ class PostList(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    filter_class = PostFilter
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -251,6 +259,17 @@ class PostList(generics.ListCreateAPIView):
 
     def pre_save(self, obj):
         obj.author = self.request.user
+        if not obj.position_in_topic :
+            obj.position_in_topic = obj.topic.get_post_count()+1
+        else:
+            obj.update = datetime.now()        
+    
+    #update the last message after post
+    def post_save(self, obj, created=True):
+        if not obj.update :
+            tp=Topic.objects.all().get(pk=obj.topic.pk)
+            tp.last_message = obj
+            tp.save()
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -271,7 +290,19 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
         return self.destroy(request, *args, **kwargs)
 
     def pre_save(self, obj):
-        obj.author = self.request.user# Create your views here.
+        obj.author = self.request.user
+        if not obj.position_in_topic :
+            obj.position_in_topic = obj.topic.get_post_count()+1
+            
+        else:
+            obj.update = datetime.now()
+    
+    #update the last message after post
+    def post_save(self, obj, created=True):
+        if not obj.update :
+            tp=Topic.objects.all().get(pk=obj.topic.pk)
+            tp.last_message = obj
+            tp.save()
 
 class ArticleFilter(django_filters.FilterSet):
     class Meta:
@@ -296,7 +327,7 @@ class ArticleDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a Article.
     """
-    queryset = Article.objects.all()
+    queryset = Article.objects.all().filter(is_visible=True)
     serializer_class = ArticleSerializer
 
     def get(self, request, *args, **kwargs):
@@ -311,24 +342,40 @@ class ArticleDetail(generics.RetrieveUpdateDestroyAPIView):
     def pre_save(self, obj):
         obj.author = self.request.user
 
+class TutorialFilter(django_filters.FilterSet):
+    is_mini = django_filters.BooleanFilter()
+    class Meta:
+        model = Tutorial
+        fields = ['is_mini']
+        
 class TutorialList(generics.ListCreateAPIView):
     """
     List all tutorial, or create a new tutorial.
     """
-    queryset = Tutorial.objects.all()
+    queryset = Tutorial.objects.all().filter(is_visible=True)
     serializer_class = TutorialSerializer
+    filter_class = TutorialFilter
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
+    
+    def pre_save(self, obj):
+        if not obj.pubdate :
+            obj.pubdate = datetime.now()
+            obj.slug = slugify(obj.title)
+
+    def post_save(self, obj, created=True):
+        obj.authors.add(self.request.user)
+        
 
 class TutorialDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a Tutorial.
     """
-    queryset = Tutorial.objects.all()
+    queryset = Tutorial.objects.all().filter(is_visible=True)
     serializer_class = TutorialSerializer
 
     def get(self, request, *args, **kwargs):
@@ -340,10 +387,19 @@ class TutorialDetail(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
+    def pre_save(self, obj):
+        if not obj.pubdate :
+            obj.pubdate = datetime.now()
+            obj.slug = slugify(obj.title)
+
+    def post_save(self, obj, created=True):
+        obj.authors.add(self.request.user)
+
 class PartFilter(django_filters.FilterSet):
+    position_in_tutorial = django_filters.NumberFilter()
     class Meta:
         model = Part
-        fields = ['tutorial']
+        fields = ['tutorial', 'position_in_tutorial']
 
 class PartList(generics.ListCreateAPIView):
     """
@@ -359,11 +415,14 @@ class PartList(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
+    def pre_save(self, obj):
+        obj.slug = slugify(obj.title)
+
 class PartDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a Part.
     """
-    queryset = Part.objects.all()
+    queryset = Part.objects.all().filter(tutorial__is_visible=True)
     serializer_class = PartSerializer
 
     def get(self, request, *args, **kwargs):
@@ -375,10 +434,15 @@ class PartDetail(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
+    def pre_save(self, obj):
+        obj.slug = slugify(obj.title)
+
 class ChapterFilter(django_filters.FilterSet):
+    position_in_part = django_filters.NumberFilter()
+    position_in_tutorial = django_filters.NumberFilter()
     class Meta:
         model = Chapter
-        fields = ['part']
+        fields = ['part', 'tutorial', 'position_in_tutorial', 'position_in_part']
 
 class ChapterList(generics.ListCreateAPIView):
     """
@@ -394,11 +458,14 @@ class ChapterList(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
+    def pre_save(self, obj):
+        obj.slug = slugify(obj.title)
+
 class ChapterDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a Chapter.
     """
-    queryset = Chapter.objects.all()
+    queryset = Chapter.objects.all().filter(Q(part__tutorial__is_visible=True)|Q(tutorial__is_visible=True))
     serializer_class = ChapterSerializer
 
     def get(self, request, *args, **kwargs):
@@ -410,10 +477,14 @@ class ChapterDetail(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
+    def pre_save(self, obj):
+        obj.slug = slugify(obj.title)
+
 class ExtractFilter(django_filters.FilterSet):
+    position_in_chapter = django_filters.NumberFilter()
     class Meta:
         model = Extract
-        fields = ['chapter']
+        fields = ['chapter', 'position_in_chapter']
 
 class ExtractList(generics.ListCreateAPIView):
     """
@@ -433,7 +504,7 @@ class ExtractDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a Extract.
     """
-    queryset = Extract.objects.all()
+    queryset = Extract.objects.all().filter(Q(chapter__part__tutorial__is_visible=True)|Q(chapter__tutorial__is_visible=True))
     serializer_class = ExtractSerializer
 
     def get(self, request, *args, **kwargs):

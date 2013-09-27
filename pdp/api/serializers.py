@@ -7,11 +7,13 @@ from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    slug = serializers.Field()
     class Meta:
         model = Category
         fields = ('id', 'title', 'position', 'slug')
 
 class ForumSerializer(serializers.ModelSerializer):
+    slug = serializers.Field()
     class Meta:
         model = Forum
         fields = ('id', 'title', 'subtitle', 'category', 'position_in_category', 'slug')
@@ -30,15 +32,21 @@ class TopicFollowedSerializer(serializers.ModelSerializer):
 
 class TopicSerializer(serializers.ModelSerializer):
     author = serializers.Field(source='author.username')
+    is_locked = serializers.Field()
+    is_solved = serializers.Field()
+    is_sticky = serializers.Field()
+    last_message = serializers.Field()
     class Meta:
         model = Topic
         fields = ('id', 'title', 'subtitle', 'forum', 'author', 'last_message', 'pubdate', 'is_solved', 'is_locked', 'is_sticky')
 
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.Field(source='author.username')
+    update = serializers.Field()
+    position_in_topic = serializers.Field()
     class Meta:
         model = Post
-        fields = ('id', 'text', 'topic', 'author', 'pubdate', 'update', 'position_in_topic', 'is_useful')
+        fields = ('id', 'text', 'topic', 'author', 'pubdate', 'update', 'position_in_topic')
 
 class UserSerializer(serializers.ModelSerializer):
     topics = serializers.PrimaryKeyRelatedField(many=True, read_only='true')
@@ -57,19 +65,26 @@ class ArticleSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'description', 'text', 'author', 'pubdate', 'is_visible')
 
 class TutorialSerializer(serializers.ModelSerializer):
+    is_visible = serializers.Field()
+    is_pending = serializers.Field()
+    pubdate = serializers.Field()
+    slug = serializers.Field()
+    authors = serializers.Field()
     class Meta:
         model = Tutorial
-        fields = ('id', 'title', 'description', 'introduction', 'conclusion', 'slug', 'icon', 'pubdate', 'is_mini', 'is_visible', 'is_pending')
+        fields = ('id', 'title', 'description', 'authors', 'introduction', 'conclusion', 'slug', 'icon', 'pubdate', 'is_mini', 'is_visible', 'is_pending')
 
 class PartSerializer(serializers.ModelSerializer):
+    slug = serializers.Field()
     class Meta:
         model = Part
         fields = ('id', 'tutorial', 'position_in_tutorial', 'title', 'introduction', 'conclusion', 'slug')
 
 class ChapterSerializer(serializers.ModelSerializer):
+    slug = serializers.Field()
     class Meta:
         model = Chapter
-        fields = ('id', 'part', 'position_in_part', 'position_in_tutorial', 'tutorial', 'title', 'introduction', 'conclusion', 'slug')
+        fields = ('id', 'part', 'position_in_part', 'tutorial', 'position_in_tutorial', 'title', 'introduction', 'conclusion', 'slug')
 
 class ExtractSerializer(serializers.ModelSerializer):
     class Meta:

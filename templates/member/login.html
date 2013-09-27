@@ -43,7 +43,7 @@
                     <label class="right inline" for="id_username">Identifiant</label>
                 </div>
                 <div class="small-8 columns">
-                    <input type="text" name="username" id="id_username" maxlength="30" />
+                    <input type="text" name="username" id="id_username" maxlength="30" {% if form.username.value %}value="{{ form.username.value }}"{% endif %} />
                 </div>
             </div>
             <div class="row">

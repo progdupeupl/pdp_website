@@ -65,7 +65,13 @@
                                   <a href="{{ result.object.get_absolute_url }}">{{ result.object.pubdate|humane_date }}</a>
                                 {% endif %}
                               </td>
-                              <td>{{ result.object.text|truncatechars:200|emarkdown }}</td>
+                              <td>
+                                  {% if result.object.last_message %}
+                                      {{ result.object.first_post.text|truncatechars:200|emarkdown }}
+                                  {% else %}
+                                      {{ result.object.text|truncatechars:200|emarkdown }}
+                                  {% endif %}
+                              </td>
                             </tr>
                             {% endfor %}
                           </tbody>
