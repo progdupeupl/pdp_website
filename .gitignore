@@ -17,7 +17,7 @@ fabfile_local.py
 media/
 static/
 env/
-pdp/settings_prod.py
+pdp/whoosh/
 
 *.pyproj
 *.sln

@@ -45,6 +45,14 @@ nav.top-bar {
             background-color: darken($primary-color, 5%);
         }
     }
+    .name {
+        h1 { display: inline-block; }
+        a { padding: 0px 15px 0px 10px; }
+        img {
+            position: relative;
+            top: -2px;
+        }
+    }
 }
 
 /* Topbar gradient (but not for folded topbar) */

@@ -311,7 +311,12 @@ def modify_part(request):
         raise Http404
 
     if 'move' in request.POST:
-        new_pos = int(request.POST['move_target'])
+        try:
+            new_pos = int(request.POST['move_target'])
+        # Invalid conversion, maybe the user played with the move button
+        except ValueError:
+            return redirect(part.tutorial.get_absolute_url())
+
         move(part, new_pos, 'position_in_tutorial', 'tutorial', 'get_parts')
         part.save()
 
@@ -476,10 +481,17 @@ def modify_chapter(request):
         raise Http404
 
     if 'move' in data:
-        new_pos = int(request.POST['move_target'])
+        try:
+            new_pos = int(request.POST['move_target'])
+        # User misplayed with the move button
+        except ValueError:
+            return redirect(chapter.get_absolute_url())
+
         move(chapter, new_pos, 'position_in_part', 'part', 'get_chapters')
         chapter.update_position_in_tutorial()
         chapter.save()
+
+        messages.info(request, u'Le chapitre a bien été déplacé.')
 
     elif 'delete' in data:
         old_pos = chapter.position_in_part
@@ -497,7 +509,11 @@ def modify_chapter(request):
             tut_c.update_position_in_tutorial()
             tut_c.save()
 
-    return redirect(chapter.part.get_absolute_url())
+        messages.info(request, u'Le chapitre a bien été supprimé.')
+
+        return redirect(chapter.part.get_absolute_url())
+
+    return redirect(chapter.get_absolute_url())
 
 
 @login_required
@@ -594,6 +610,7 @@ def add_extract(request):
 @login_required
 def edit_extract(request):
     '''Edit extract'''
+
     try:
         extract_pk = request.GET['extrait']
     except KeyError:
@@ -629,7 +646,9 @@ def edit_extract(request):
 def modify_extract(request):
     if not request.method == 'POST':
         raise Http404
+
     data = request.POST
+
     try:
         extract_pk = request.POST['extract']
     except KeyError:
@@ -649,7 +668,12 @@ def modify_extract(request):
         return redirect(chapter.get_absolute_url())
 
     elif 'move' in data:
-        new_pos = int(request.POST['move_target'])
+        try:
+            new_pos = int(request.POST['move_target'])
+        # Error, the user misplayed with the move button
+        except ValueError:
+            return redirect(extract.get_absolute_url())
+
         move(extract, new_pos, 'position_in_chapter', 'chapter',
              'get_extracts')
         extract.save()

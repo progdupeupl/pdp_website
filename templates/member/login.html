@@ -18,7 +18,7 @@
     <div class="large-12 columns">
         {% if not user.is_authenticated %}
             {% if error %}
-            <div class="alert-box alert">
+            <div class="alert-box warning">
                 {{ error }}.
             </div>
             {% endif %}
@@ -43,7 +43,7 @@
                     <label class="right inline" for="id_username">Identifiant</label>
                 </div>
                 <div class="small-8 columns">
-                    <input type="text" name="username" id="id_username" maxlength="30" />
+                    <input type="text" name="username" id="id_username" maxlength="30" {% if form.username.value %}value="{{ form.username.value }}"{% endif %} />
                 </div>
             </div>
             <div class="row">

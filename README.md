@@ -20,16 +20,12 @@ zurb-foundation`.
 
 ## Deployment
 
-From the project's root, you will need to run the following commands:
+From the project's root, you will need to run the following command:
 
     :::console
-    python manage.py syncdb
-    python manage.py migrate
+    fab bootstrap
 
-The CSS must be generated from the SASS sources, using the Makefile located in
-the `assets` directory.
-
-Once database created, you will have to create a Profile instance for
+Once everything is synced, you will have to create a Profile instance for
 your superuser account using the your credentials and the Django admin system
 aivaible on `/admin/`.
 

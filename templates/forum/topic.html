@@ -28,6 +28,7 @@
     {% if user.is_authenticated %}
         <form action="{% url "pdp.forum.views.edit" %}" method="POST" class="topic-actions">
             <input type="hidden" name="topic" value="{{ topic.pk }}" />
+            <input type="hidden" name="page" value="{{ nb }}">
             <div class="button-group">
                 <a href="/forums/sujet/nouveau?forum={{ topic.forum.pk }}" class="button small">
                     <i class="icon-plus"></i>
