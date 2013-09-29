@@ -1,6 +1,6 @@
 {% load humane_date %}
 
-<div class="large-10 column">
+<div class="small-10 column">
 <a href="{{ topic.get_absolute_url }}">
     {{ topic.title }}
 </a>
@@ -8,6 +8,6 @@
     {{ topic.subtitle }}
 </p>
 </div>
-<div class="large-2 column">
+<div class="small-2 column">
 	    <a class="tiny button secondary radius expand" href="{{topic.get_last_answer.get_absolute_url}}">{{ topic.get_post_count }}</a>
 </div>
