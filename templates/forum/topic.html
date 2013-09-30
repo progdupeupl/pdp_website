@@ -179,7 +179,8 @@
 
 {% if user.is_authenticated %}
 <hr />
-<form action="{% url "pdp.forum.views.answer" %}?sujet={{ topic.pk }}" method="POST">
+<form action="{% url "pdp.forum.views.answer" %}?sujet={{ topic.pk }}"
+method="POST" id="submit_form">
     <div class="row">
         <div class="large-12 columns">
             <h3>Ajouter une réponse</h3>
@@ -223,5 +224,13 @@
             });
         </script>
     {% endif %}
+    <script>
+        $('#submit_form').submit(function(e){
+            if (!$(this).find('textarea').val()) {
+                alert('Votre message ne peut pas être vide.');
+                e.preventDefault();
+            }
+        })
+    </script>
 {% endblock %}
 
