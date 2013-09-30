@@ -23,3 +23,14 @@ def interventions_topics(user):
     read_topics_count = 5 - (len(topics_unread) if len(topics_unread) < 5 else 5)
     return {'unread': topics_unread,
             'read': topics_read[:read_topics_count]}
+
+@register.simple_tag(name='reads_topic')
+def reads_topic(topic, user):
+    if user.is_authenticated() :
+        if never_read (topic, user) :
+            return ''
+        else :
+            return 'secondary'
+    else :
+        return '';
+    
