@@ -26,7 +26,8 @@
 
 {% block headline-actions %}
     {% if user.is_authenticated %}
-        <form action="{% url "pdp.forum.views.edit" %}" method="POST" class="topic-actions">
+        <form action="{% url "pdp.forum.views.edit" %}" method="POST"
+        class="topic-actions" id="edit_form">
             <input type="hidden" name="topic" value="{{ topic.pk }}" />
             <input type="hidden" name="page" value="{{ nb }}">
             <div class="button-group">
@@ -35,7 +36,7 @@
                     Nouveau
                 </a>
                 {% if topic.author.pk == user.pk %}
-                <button type="submit" name="solved" class="button small {% if topic.is_solved %}success{% else %}secondary{% endif %}">
+                <button type="submit" name="solved" id="resolu_btn" class="button small {% if topic.is_solved %}success{% else %}secondary{% endif %}">
                     <i class="icon-ok"></i>
                     {% if topic.is_solved %}
                         Résolu
@@ -98,8 +99,7 @@
 
 {% block content %}
 
-{% if topic.is_solved %}
-<div class="row">
+<div class="row" id="resolu" {% if not topic.is_solved %}style="display: none;"{% endif %}>
     <div class="large-12 columns">
         <div class="alert-box success">
             <strong>Ce sujet est résolu</strong>, l'auteur de ce sujet a trouvé une
@@ -107,7 +107,6 @@
         </div>
     </div>
 </div>
-{% endif %}
 
 {% include "forum/topic_pagination.part.html" %}
 
@@ -178,9 +177,12 @@
 {% include "forum/topic_pagination.part.html" %}
 
 {% if user.is_authenticated %}
-<div class="row">
-    <div class="large-8 large-offset-2 columns">
-        <form action="{% url "pdp.forum.views.answer" %}?sujet={{ topic.pk }}" method="POST">
+<hr />
+<form action="{% url "pdp.forum.views.answer" %}?sujet={{ topic.pk }}"
+method="POST" id="submit_form">
+    <div class="row">
+        <div class="large-12 columns">
+            <h3>Ajouter une réponse</h3>
             <textarea name="text" rows="10" {% if topic.is_locked or topic.antispam %}disabled{% endif %}
                 placeholder="Votre message au format Markdown.">{% spaceless %}
                     {% if topic.is_locked %}
@@ -189,38 +191,64 @@
                         Vous ne pouvez pas encore poster dans ce sujet (protection antispam de 15 min).
                     {% endif %}
                 {% endspaceless %}</textarea>
-
-            <div style="text-align: center;">
-                <button class="button btn-primary" type="submit" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
-                    <i class="icon-reply"></i>
-                    Répondre
-                </button>
-                <button type="submit" name="more"
-                    class="button secondary" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
-                    <i class="icon-ellipsis-horizontal"></i>
-                    Plus d'options
-                </button>
-            </div>
-
-            <input type="hidden" name="last_post" value="{{ last_post_pk }}" />
-            {% csrf_token %}
-        </form>
+        </div>
+        <div class="large-8 large-centered columns" style="text-align: center;">
+            <button class="button btn-primary" type="submit" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
+                <i class="icon-reply"></i>
+                Répondre
+            </button>
+            <button type="submit" name="preview" class="button secondary" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
+                Prévisualiser
+            </button>
+        </div>
     </div>
-</div>
+    <input type="hidden" name="last_post" value="{{ last_post_pk }}" />
+    {% csrf_token %}
+</form>
 {% endif %}
+
 {% endblock %}
 
 {% block additionnal-js %}
-<script>
-    $('.topic-actions .validate').click(function() {
-        var lock = $('#lock-on').is(':checked');
-        var sticky = $('#sticky-on').is(':checked');
-        $.post('{% url "pdp.forum.views.edit" %}', {
-            topic: {{ topic.pk}},
-            lock: lock.toString(),
-            sticky: sticky.toString(),
+    {% if perms.forum.change_topic %}
+        <script>
+            $('.topic-actions .validate').click(function() {
+                var lock = $('#lock-on').is(':checked');
+                var sticky = $('#sticky-on').is(':checked');
+                $.post('{% url "pdp.forum.views.edit" %}', {
+                    topic: {{ topic.pk}},
+                    lock: lock.toString(),
+                    sticky: sticky.toString(),
+                })
+            });
+        </script>
+    {% endif %}
+    <script>
+        $('#submit_form').submit(function(e){
+            if (!$(this).find('textarea').val()) {
+                alert('Votre message ne peut pas être vide.');
+                e.preventDefault();
+            }
         })
-    });
-</script>
+        $('#edit_form').submit(function(e){
+            e.preventDefault();
+            $.post('{% url "pdp.forum.views.edit" %}', {
+                topic: {{ topic.pk }},
+                solved: '',
+                }, function(data){
+                    if (data.solved) {
+                        $('#resolu').fadeIn();
+                        $('#resolu_btn').removeClass('secondary');
+                        $('#resolu_btn').addClass('success');
+                        $('#resolu_btn').html('Résolu');
+                    } else {
+                        $('#resolu').fadeOut();
+                        $('#resolu_btn').removeClass('success');
+                        $('#resolu_btn').addClass('secondary');
+                        $('#resolu_btn').html('Résolu ?');
+                    }
+                }, 'json'); 
+        });
+    </script>
 {% endblock %}
 
