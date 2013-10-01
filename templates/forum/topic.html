@@ -26,7 +26,8 @@
 
 {% block headline-actions %}
     {% if user.is_authenticated %}
-        <form action="{% url "pdp.forum.views.edit" %}" method="POST" class="topic-actions">
+        <form action="{% url "pdp.forum.views.edit" %}" method="POST"
+        class="topic-actions" id="edit_form">
             <input type="hidden" name="topic" value="{{ topic.pk }}" />
             <input type="hidden" name="page" value="{{ nb }}">
             <div class="button-group">
@@ -35,7 +36,7 @@
                     Nouveau
                 </a>
                 {% if topic.author.pk == user.pk %}
-                <button type="submit" name="solved" class="button small {% if topic.is_solved %}success{% else %}secondary{% endif %}">
+                <button type="submit" name="solved" id="resolu_btn" class="button small {% if topic.is_solved %}success{% else %}secondary{% endif %}">
                     <i class="icon-ok"></i>
                     {% if topic.is_solved %}
                         Résolu
@@ -98,8 +99,7 @@
 
 {% block content %}
 
-{% if topic.is_solved %}
-<div class="row">
+<div class="row" id="resolu" {% if not topic.is_solved %}style="display: none;"{% endif %}>
     <div class="large-12 columns">
         <div class="alert-box success">
             <strong>Ce sujet est résolu</strong>, l'auteur de ce sujet a trouvé une
@@ -107,7 +107,6 @@
         </div>
     </div>
 </div>
-{% endif %}
 
 {% include "forum/topic_pagination.part.html" %}
 
@@ -231,6 +230,25 @@ method="POST" id="submit_form">
                 e.preventDefault();
             }
         })
+        $('#edit_form').submit(function(e){
+            e.preventDefault();
+            $.post('{% url "pdp.forum.views.edit" %}', {
+                topic: {{ topic.pk }},
+                solved: '',
+                }, function(data){
+                    if (data.solved) {
+                        $('#resolu').fadeIn();
+                        $('#resolu_btn').removeClass('secondary');
+                        $('#resolu_btn').addClass('success');
+                        $('#resolu_btn').html('Résolu');
+                    } else {
+                        $('#resolu').fadeOut();
+                        $('#resolu_btn').removeClass('success');
+                        $('#resolu_btn').addClass('secondary');
+                        $('#resolu_btn').html('Résolu ?');
+                    }
+                }, 'json'); 
+        });
     </script>
 {% endblock %}
 

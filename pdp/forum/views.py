@@ -3,7 +3,7 @@
 from datetime import datetime
 
 from django.shortcuts import redirect, get_object_or_404
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -240,7 +240,12 @@ def edit(request):
             g_topic.forum = forum
 
     g_topic.save()
-    return redirect(u'{}?page={}'.format(g_topic.get_absolute_url(), page))
+
+    if request.is_ajax():
+        return HttpResponse('{{"solved": {}}}'\
+                .format(1 if g_topic.is_solved else 0), 'json')
+    else:
+        return redirect(u'{}?page={}'.format(g_topic.get_absolute_url(), page))
 
 
 @login_required
