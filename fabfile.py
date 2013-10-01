@@ -20,7 +20,7 @@ def makeassets():
 
 
 def collectstatic():
-    local('python manage.py collectstatic --no-input')
+    local('python manage.py collectstatic --noinput')
 
 
 def test():
