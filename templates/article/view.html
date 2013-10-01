@@ -59,6 +59,11 @@
             {% endwith %}
             et publié
             {{ article.pubdate|humane_date }}.
+            <br />
+            Tags : 
+            {% for tag in article.tags.all %}
+                <a href="{% url "haystack_search" %}?q={{ tag.name }}&amp;models=article.article">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+            {% endfor %}
         </p>
 
         {{ article.text|emarkdown }}
