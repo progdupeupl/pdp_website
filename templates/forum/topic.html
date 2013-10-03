@@ -183,7 +183,8 @@ method="POST" id="submit_form">
     <div class="row">
         <div class="large-12 columns">
             <h3>Ajouter une réponse</h3>
-            <textarea name="text" rows="10" {% if topic.is_locked or topic.antispam %}disabled{% endif %}
+            {% include "misc/editor.part.html" %}
+            <textarea id='id_text' name="text" rows="10" {% if topic.is_locked or topic.antispam %}disabled{% endif %}
                 placeholder="Votre message au format Markdown.">{% spaceless %}
                     {% if topic.is_locked %}
                         Ce sujet est verrouillé.
