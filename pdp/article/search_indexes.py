@@ -9,9 +9,13 @@ class ArticleIndex(indexes.SearchIndex, indexes.Indexable):
     description = indexes.CharField(model_attr='description')
     pubdate = indexes.DateTimeField(model_attr='pubdate')
     txt = indexes.CharField(model_attr='text')
+    tags = indexes.MultiValueField()
 
     def get_model(self):
         return Article
+
+    def prepare_tags(self, obj):
+        return [tag.name for tag in obj.tags.all()]
 
     def index_queryset(self, using=None):
         '''Used when the entire index for model is updated.'''

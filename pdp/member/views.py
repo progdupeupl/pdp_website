@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 from django.core.context_processors import csrf
+from django.core.urlresolvers import reverse
 from django.template import RequestContext
 
 from pdp.utils.tokens import generate_token
@@ -104,7 +105,7 @@ def login_view(request):
                 request.session['get_token'] = generate_token()
                 if not 'remember' in request.POST:
                     request.session.set_expiry(0)
-                return redirect('/')
+                return redirect(reverse('pdp.pages.views.home'))
             else:
                 error = 'Les identifiants fournis ne sont pas valides'
         else:
@@ -121,7 +122,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     request.session.clear()
-    return redirect('/')
+    return redirect(reverse('pdp.pages.views.home'))
 
 
 def register_view(request):

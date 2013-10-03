@@ -2,7 +2,12 @@
 
 from django.conf.urls import patterns, include, url
 from django.contrib.auth.models import User, Group
+
+from haystack.views import SearchView
+from haystack.forms import ModelSearchForm
+
 from rest_framework import viewsets, routers
+
 from django.contrib import admin
 admin.autodiscover()
 
@@ -37,7 +42,11 @@ urlpatterns = patterns('',
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-docs/', include('rest_framework_swagger.urls')),
     url(r'^oauth2/', include('provider.oauth2.urls', namespace='oauth2')),
-    url(r'^recherche/', include('haystack.urls'), name='haystack_search'),
+
+    url(r'^recherche/', SearchView(
+            template='search/search.html',
+            form_class=ModelSearchForm),
+        name='haystack_search'),
 )
 
 if settings.SERVE:
