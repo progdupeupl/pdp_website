@@ -101,6 +101,7 @@ PIPELINE_JS = {
             'js/vendor/jquery.js',
             'js/foundation.min.js',
             'js/custom/ajax-csrf.js',
+            'js/custom/editor.js',
         ),
         'output_filename': 'js/pdp.js'
     }
