@@ -284,6 +284,7 @@ def follow(topic):
     '''
     Toggle following of a topic for an user
     '''
+    ret = None
     try:
         existing = TopicFollowed.objects.get(
             topic=topic, user=get_current_user()
@@ -298,9 +299,12 @@ def follow(topic):
             user=get_current_user()
         )
         t.save()
+        ret = True
     else:
         # If user is already following the topic, we make him don't anymore
         existing.delete()
+        ret = False
+    return ret
 
 
 def get_last_topics():

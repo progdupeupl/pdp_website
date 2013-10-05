@@ -45,7 +45,7 @@
                     {% endif %}
                 </button>
                 {% endif %}
-                <button class="button small {% if not topic.is_followed %}secondary{% endif %}" type="submit" name="follow">
+                <button class="button small {% if not topic.is_followed %}secondary{% endif %}" type="submit" name="follow" id="follow_btn">
                     <i class="icon-star"></i>
                     {% if topic.is_followed %}
                         Suivi
@@ -227,28 +227,47 @@ method="POST" id="submit_form">
         </script>
     {% endif %}
     <script>
+        /* anwser check */
         $('#submit_form').submit(function(e){
             if (!$(this).find('textarea').val()) {
                 alert('Votre message ne peut pas être vide.');
                 e.preventDefault();
             }
         })
+        /* on button press, store it */
+        $('#edit_form button[type="submit"]').on('click', function() {
+            $('#edit_form').data('button', this.name);    
+        });
+        /* on submit */
         $('#edit_form').submit(function(e){
             e.preventDefault();
-            $.post('{% url "pdp.forum.views.edit" %}', {
-                topic: {{ topic.pk }},
-                solved: '',
-                }, function(data){
-                    if (data.solved) {
-                        $('#resolu').fadeIn();
-                        $('#resolu_btn').removeClass('secondary');
-                        $('#resolu_btn').addClass('success');
-                        $('#resolu_btn').html('Résolu');
-                    } else {
-                        $('#resolu').fadeOut();
-                        $('#resolu_btn').removeClass('success');
-                        $('#resolu_btn').addClass('secondary');
-                        $('#resolu_btn').html('Résolu ?');
+            /* build data */
+            var button = $(this).data('button');
+            var data = { topic: {{ topic.pk }}};
+            data[button] = 'true';
+            /* post data */
+            $.post('{% url "pdp.forum.views.edit" %}', data, function(data){
+                    if ('solved' in data) {
+                        if (data.solved) {
+                            $('#resolu').fadeIn();
+                            $('#resolu_btn').removeClass('secondary');
+                            $('#resolu_btn').addClass('success');
+                            $('#resolu_btn').html('Résolu');
+                        } else {
+                            $('#resolu').fadeOut();
+                            $('#resolu_btn').removeClass('success');
+                            $('#resolu_btn').addClass('secondary');
+                            $('#resolu_btn').html('Résolu ?');
+                        }
+                    }
+                    if ('follow' in data) {
+                        if (data.follow) {
+                            $('#follow_btn').removeClass('secondary');
+                            $('#follow_btn').html('Suivi');
+                        } else {
+                            $('#follow_btn').addClass('secondary');
+                            $('#follow_btn').html('Suivre');
+                        }
                     }
                 }, 'json'); 
         });
