@@ -1,0 +1,37 @@
+{% extends "gallery/base.html" %}
+
+{% block title %}
+    Nouvelle Gallerie
+{% endblock %}
+
+{% block headline %}
+    Nouvelle Gallerie
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="current"><a href="javascript:;">Nouvelle Gallerie</a></li>
+{% endblock %}
+
+{% block content %}
+	<div class="row">
+    <div class="large-12 columns">
+        <form action="{% url "pdp.gallery.views.new_gallery" %}" method="POST">
+            <input type="text" placeholder="Titre" name="title" class="input-xxlarge" value="" /><br />
+            <input type="text" placeholder="Sous-titre" name="subtitle" class="input-xxlarge" value="" /><br />
+
+            <div style="text-align: center;">
+                <button type="submit" class="button">
+                    <i class="icon-plus icon-white"></i>
+                    Créer
+                </button>
+
+                <a href="{% url "pdp.gallery.views.gallery_list" %}" class="button secondary">
+                    retour
+                </a>
+            </div>
+            {% csrf_token %}
+        </form>
+    </div>
+</div>
+
+{% endblock %}
