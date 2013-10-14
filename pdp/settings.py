@@ -102,6 +102,7 @@ PIPELINE_JS = {
             'js/foundation.min.js',
             'js/custom/ajax-csrf.js',
             'js/custom/editor.js',
+            'js/custom/section.js',
         ),
         'output_filename': 'js/pdp.js'
     }
@@ -193,6 +194,7 @@ INSTALLED_APPS = (
     'pdp.pages',
     'pdp.tutorial',
     'pdp.article',
+    'pdp.gallery',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -287,6 +289,9 @@ BOT_ARTICLE_FORUM_PK = 2
 
 # Fileserve settings
 SERVE = False
+
+#Max Size Image Upload in bytes 
+IMAGE_MAX_SIZE = 1024*1024
 
 # Load the production settings, overwrite the existing ones if needed
 try:
