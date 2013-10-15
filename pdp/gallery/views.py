@@ -2,20 +2,21 @@
 
 # The max size in bytes
 
-import os
 from django.conf import settings
 from datetime import datetime
-from django.shortcuts import render_to_response, redirect, get_object_or_404
-from django.template import RequestContext
-from django.http import HttpResponseRedirect, Http404, HttpResponse
+from django.shortcuts import redirect, get_object_or_404
+from django.http import Http404
 from django.core.urlresolvers import reverse
-from pdp.utils import render_template, slugify
-from django.contrib.auth.models import User
 
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+
+from pdp.utils import render_template, slugify
 from pdp.gallery.models import UserGallery, Image, Gallery
 from pdp.gallery.forms import ImageForm, GalleryForm, UserGalleryForm
 
 
+@login_required
 def gallery_list(request):
     '''
     Display the gallery list with all their images
@@ -27,6 +28,7 @@ def gallery_list(request):
     })
 
 
+@login_required
 def gallery_details(request, gal_pk, gal_slug):
     '''
     Gallery details
@@ -41,6 +43,7 @@ def gallery_details(request, gal_pk, gal_slug):
     })
 
 
+@login_required
 def new_gallery(request):
     '''
     Creates a new gallery
@@ -76,6 +79,7 @@ def new_gallery(request):
         })
 
 
+@login_required
 def share_gallery(request, gal_pk):
     '''
     Share gallery with users
@@ -105,8 +109,8 @@ def share_gallery(request, gal_pk):
         })
 
 
+@login_required
 def del_gallery(request):
-
     if request.method == 'POST':
         liste = request.POST.getlist('items')
         for i in liste:
@@ -116,6 +120,7 @@ def del_gallery(request):
     return gallery_list(request)
 
 
+@login_required
 def del_image(request, gal_pk):
 
     gal = get_object_or_404(Gallery, pk=gal_pk)
@@ -126,6 +131,7 @@ def del_image(request, gal_pk):
     return redirect(gal.get_absolute_url())
 
 
+@login_required
 def edit_image(request, gal_pk, img_pk):
     '''
     Creates a new image
@@ -156,6 +162,7 @@ def edit_image(request, gal_pk, img_pk):
         })
 
 
+@login_required
 def new_image(request, gal_pk):
     '''
     Creates a new image
@@ -164,7 +171,8 @@ def new_image(request, gal_pk):
 
     if request.method == 'POST':
         form = ImageForm(request.POST, request.FILES)
-        if form.is_valid() and request.FILES['physical'].size < settings.IMAGE_MAX_SIZE:
+        if form.is_valid() \
+           and request.FILES['physical'].size < settings.IMAGE_MAX_SIZE:
             img = Image()
             img.physical = request.FILES['physical']
             img.gallery = gal
