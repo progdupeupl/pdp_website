@@ -6,7 +6,6 @@ from django.conf import settings
 from datetime import datetime
 from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404
-from django.core.urlresolvers import reverse
 
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -38,7 +37,7 @@ def gallery_details(request, gal_pk, gal_slug):
     images = gal.get_images()
 
     return render_template('gallery/gallery_details.html', {
-        'gallerie': gal,
+        'gallery': gal,
         'images': images
     })
 
@@ -105,7 +104,7 @@ def share_gallery(request, gal_pk):
         form = UserGalleryForm()  # A empty, unbound form
         return render_template('gallery/share_gallery.html', {
             'form': form,
-            'gallerie': gal
+            'gallery': gal
         })
 
 
@@ -157,7 +156,7 @@ def edit_image(request, gal_pk, img_pk):
         form = ImageForm()  # A empty, unbound form
         return render_template('gallery/edit_image.html', {
             'form': form,
-            'gallerie': gal,
+            'gallery': gal,
             'image': img
         })
 
@@ -192,5 +191,5 @@ def new_image(request, gal_pk):
         form = ImageForm()  # A empty, unbound form
         return render_template('gallery/new_image.html', {
             'form': form,
-            'gallerie': gal
+            'gallery': gal
         })

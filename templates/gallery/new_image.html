@@ -9,14 +9,14 @@
 {% endblock %}
 
 {% block breadcrumb %}
-    <li><a href="{{ gallerie.get_absolute_url }}">{{ gallerie.title }}</a></li>
+    <li><a href="{{ gallery.get_absolute_url }}">{{ gallery.title }}</a></li>
     <li class="current"><a href="javascript:;">Nouvelle image</a></li>
 {% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="large-12 columns">
-        <form action="{% url "pdp.gallery.views.new_image" gallerie.pk %}" method="POST" enctype="multipart/form-data">
+        <form action="{% url "pdp.gallery.views.new_image" gallery.pk %}" method="POST" enctype="multipart/form-data">
             <input type="file" id="id_physical" name="physical" onchange="load_field()"/><br />
             <input type="text" id="id_titre" placeholder="Titre" name="title" /><br />
             <input type="text" placeholder="Légende" name="legend" /><br />
@@ -27,7 +27,7 @@
                     Créer
                 </button>
 
-                <a href="{{ gallerie.get_absolute_url }}" class="button secondary">
+                <a href="{{ gallery.get_absolute_url }}" class="button secondary">
                     Retour
                 </a>
             </div>

@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block headline %}
-    Partager : {{ gallerie.title }}
+    Partager : {{ gallery.title }}
 {% endblock %}
 
 {% block breadcrumb %}
@@ -15,7 +15,7 @@
 {% block content %}
 	<div class="row">
     <div class="large-6 columns large-centered">
-        <form action='{% url "pdp.gallery.views.share_gallery" gallerie.pk %}' method="POST">
+        <form action='{% url "pdp.gallery.views.share_gallery" gallery.pk %}' method="POST">
             
             <label for="mode">Mode d'accès</label>
             <select id="mode" name="mode" class="large">

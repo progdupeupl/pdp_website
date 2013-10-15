@@ -5,6 +5,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.dispatch import receiver
+from django.core.urlresolvers import reverse
 
 
 def image_path(instance, filename):
@@ -65,7 +66,7 @@ class Image(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '{0}/{1}/{2}/{3}/{4}'.format(settings.MEDIA_URL, self.physical)
+        return '{0}/{1}'.format(settings.MEDIA_URL, self.physical)
 
     def get_extension(self):
         return os.path.splitext(self.nom_physique)[1]
@@ -101,7 +102,8 @@ class Gallery(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '/gallerie/{0}/{1}'.format(self.pk, self.slug)
+        return reverse('pdp.gallery.views.gallery_details',
+                       args=[self.pk, self.slug])
 
     def get_users(self):
         return UserGallery.objects.all()\
