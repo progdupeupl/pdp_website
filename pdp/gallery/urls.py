@@ -7,7 +7,7 @@ import views
 urlpatterns = patterns('',
      # Viewing a gallery
     url(r'^nouveau$', views.new_gallery),
-    url(r'^share/(?P<gal_pk>\d+)$', views.share_gallery),
+    url(r'^partager/(?P<gal_pk>\d+)$', views.share_gallery),
     url(r'^sup$', views.del_gallery),
     url(r'^(?P<gal_pk>\d+)/(?P<gal_slug>.+)', views.gallery_details),
     url(r'^$', views.gallery_list),

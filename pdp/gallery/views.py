@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#The max size in bytes
+# The max size in bytes
 
 import os
 from django.conf import settings
@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 from pdp.gallery.models import UserGallery, Image, Gallery
 from pdp.gallery.forms import ImageForm, GalleryForm, UserGalleryForm
 
+
 def gallery_list(request):
     '''
     Display the gallery list with all their images
@@ -25,18 +26,20 @@ def gallery_list(request):
         'galleries': galleries
     })
 
+
 def gallery_details(request, gal_pk, gal_slug):
     '''
     Gallery details
     '''
-    
+
     gal = get_object_or_404(Gallery, pk=gal_pk)
-    images = gal.get_images();
+    images = gal.get_images()
 
     return render_template('gallery/gallery_details.html', {
         'gallerie': gal,
         'images': images
     })
+
 
 def new_gallery(request):
     '''
@@ -72,6 +75,7 @@ def new_gallery(request):
             'form': form
         })
 
+
 def share_gallery(request, gal_pk):
     '''
     Share gallery with users
@@ -81,7 +85,7 @@ def share_gallery(request, gal_pk):
         u = get_object_or_404(User, username=request.POST['user'])
         form = UserGalleryForm(request.POST)
         if form.is_valid():
-            ug= UserGallery()
+            ug = UserGallery()
             ug.user = u
             ug.gallery = gal
             ug.mode = request.POST['mode']
@@ -94,17 +98,17 @@ def share_gallery(request, gal_pk):
             # TODO: add errors to the form and return it
             raise Http404
     else:
-        form = UserGalleryForm() # A empty, unbound form
+        form = UserGalleryForm()  # A empty, unbound form
         return render_template('gallery/share_gallery.html', {
             'form': form,
-            'gallerie' : gal
+            'gallerie': gal
         })
 
 
 def del_gallery(request):
-    
+
     if request.method == 'POST':
-        liste=request.POST.getlist('items')
+        liste = request.POST.getlist('items')
         for i in liste:
             del_image(request, i)
         UserGallery.objects.filter(gallery__pk__in=liste).delete()
@@ -113,13 +117,14 @@ def del_gallery(request):
 
 
 def del_image(request, gal_pk):
-    
+
     gal = get_object_or_404(Gallery, pk=gal_pk)
     if request.method == 'POST':
-        liste=request.POST.getlist('items')           
+        liste = request.POST.getlist('items')
         Image.objects.filter(pk__in=liste).delete()
         return redirect(gal.get_absolute_url())
     return redirect(gal.get_absolute_url())
+
 
 def edit_image(request, gal_pk, img_pk):
     '''
@@ -127,14 +132,14 @@ def edit_image(request, gal_pk, img_pk):
     '''
     gal = get_object_or_404(Gallery, pk=gal_pk)
     img = get_object_or_404(Image, pk=img_pk)
-    
+
     if request.method == 'POST':
         form = ImageForm(request.POST)
         if form.is_valid():
             img.title = request.POST['title']
             img.legend = request.POST['legend']
             img.update = datetime.now()
-            
+
             img.save()
 
             # Redirect to the document list after POST
@@ -143,19 +148,20 @@ def edit_image(request, gal_pk, img_pk):
             # TODO: add errors to the form and return it
             raise Http404
     else:
-        form = ImageForm() # A empty, unbound form
+        form = ImageForm()  # A empty, unbound form
         return render_template('gallery/edit_image.html', {
             'form': form,
-            'gallerie' : gal,
-            'image' : img
+            'gallerie': gal,
+            'image': img
         })
+
 
 def new_image(request, gal_pk):
     '''
     Creates a new image
     '''
     gal = get_object_or_404(Gallery, pk=gal_pk)
-    
+
     if request.method == 'POST':
         form = ImageForm(request.POST, request.FILES)
         if form.is_valid() and request.FILES['physical'].size < settings.IMAGE_MAX_SIZE:
@@ -166,7 +172,7 @@ def new_image(request, gal_pk):
             img.slug = slugify(request.FILES['physical'])
             img.legend = request.POST['legend']
             img.pubdate = datetime.now()
-            
+
             img.save()
 
             # Redirect to the document list after POST
@@ -175,9 +181,8 @@ def new_image(request, gal_pk):
             # TODO: add errors to the form and return it
             raise Http404
     else:
-        form = ImageForm() # A empty, unbound form
+        form = ImageForm()  # A empty, unbound form
         return render_template('gallery/new_image.html', {
             'form': form,
-            'gallerie' : gal
+            'gallerie': gal
         })
-    

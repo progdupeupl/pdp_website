@@ -1,36 +1,25 @@
 {% extends "gallery/base.html" %}
 
 {% block title %}
-    Nouvelle Image
+    Nouvelle image
 {% endblock %}
 
 {% block headline %}
-    Nouvelle Image
+    Nouvelle image
 {% endblock %}
 
 {% block breadcrumb %}
     <li><a href="{{ gallerie.get_absolute_url }}">{{ gallerie.title }}</a></li>
-    <li class="current"><a href="javascript:;">Nouvelle Image</a></li>
+    <li class="current"><a href="javascript:;">Nouvelle image</a></li>
 {% endblock %}
 
-
-
 {% block content %}
-    <script type="text/javascript" language="javascript">
-    function load_field() {
-        var ph=document.getElementById("id_physical");
-        var tab=ph.value.split('\\');
-        var lib=tab[tab.length-1];
-
-        document.getElementById("id_titre").value=lib;
-    }
-    </script>
-	<div class="row">
+<div class="row">
     <div class="large-12 columns">
         <form action="{% url "pdp.gallery.views.new_image" gallerie.pk %}" method="POST" enctype="multipart/form-data">
             <input type="file" id="id_physical" name="physical" onchange="load_field()"/><br />
-            <input type="text" id="id_titre" placeholder="Titre" name="title" class="input-xxlarge" /><br />
-            <input type="text" placeholder="Légende" name="legend" class="input-xxlarge" /><br />
+            <input type="text" id="id_titre" placeholder="Titre" name="title" /><br />
+            <input type="text" placeholder="Légende" name="legend" /><br />
 
             <div style="text-align: center;">
                 <button type="submit" class="button">
@@ -39,7 +28,7 @@
                 </button>
 
                 <a href="{{ gallerie.get_absolute_url }}" class="button secondary">
-                    retour
+                    Retour
                 </a>
             </div>
             {% csrf_token %}
@@ -47,4 +36,17 @@
     </div>
 </div>
 
+{% endblock %}
+{% block additionnal-js %}
+    <script>
+        function load_field() {
+            var ph=document.getElementById("id_physical");
+            var tab=ph.value.split('\\');
+            var lib=tab[tab.length-1];
+
+            if($('#id_titre').val() == '') {
+                $('#id_titre').val(lib);
+            }
+        }
+    </script>
 {% endblock %}
