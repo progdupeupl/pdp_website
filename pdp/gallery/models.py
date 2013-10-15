@@ -15,11 +15,11 @@ def image_path(instance, filename):
 
 class UserGallery(models.Model):
     class Meta:
-        verbose_name = "Galleries de l'utilisateur"
-        verbose_name_plural = "Galleries de l'utilisateur"
+        verbose_name = "Galeries de l'utilisateur"
+        verbose_name_plural = "Galeries de l'utilisateur"
 
     user = models.ForeignKey(User, verbose_name=('Membre'))
-    gallery = models.ForeignKey('Gallery', verbose_name=('Gallerie'))
+    gallery = models.ForeignKey('Gallery', verbose_name=('Galerie'))
     MODE_CHOICES = (
         ('R', 'Lecture'),
         ('W', 'Ecriture')
@@ -28,7 +28,7 @@ class UserGallery(models.Model):
 
     def __unicode__(self):
         '''Textual form of an User Gallery'''
-        return u'Gallerie "{0}" envoye par {1}'.format(self.gallery,
+        return u'Galerie "{0}" envoye par {1}'.format(self.gallery,
                                                        self.user)
 
     def is_write(self):
@@ -52,7 +52,7 @@ class Image(models.Model):
         verbose_name = "Image"
         verbose_name_plural = "Images"
 
-    gallery = models.ForeignKey('Gallery', verbose_name=('Gallerie'))
+    gallery = models.ForeignKey('Gallery', verbose_name=('Galerie'))
     title = models.CharField('Titre', max_length=80)
     slug = models.SlugField(max_length=80)
     physical = models.ImageField(upload_to=image_path)
@@ -87,8 +87,8 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
 class Gallery(models.Model):
 
     class Meta:
-        verbose_name = "Gallerie"
-        verbose_name_plural = "Galleries"
+        verbose_name = "Galerie"
+        verbose_name_plural = "Galeries"
 
     title = models.CharField('Titre', max_length=80)
     subtitle = models.CharField('Sous titre', max_length=200)

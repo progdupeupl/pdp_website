@@ -34,7 +34,7 @@ urlpatterns = patterns('',
     url(r'^membres/', include('pdp.member.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^pages/', include('pdp.pages.urls')),
-    url(r'^gallerie/', include('pdp.gallery.urls')),
+    url(r'^galerie/', include('pdp.gallery.urls')),
     url(r'^api/', include('pdp.api.urls')),
 
     url(r'^captcha/', include('captcha.urls')),

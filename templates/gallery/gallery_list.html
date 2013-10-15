@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block headline %}
-    Galleries
+    Galeries
 {% endblock %}
 
 {% block breadcrumb %}
@@ -13,22 +13,16 @@
 {% endblock %}
 
 {% block content %}
-<form id="form" name="form" method="POST" action="{% url "pdp.gallery.views.del_gallery" %}">
+<form id="form" name="form" method="POST" action="{% url "pdp.gallery.views.modify_gallery" %}">
 <div class="row">
     <div class="small-12 columns">
         <div class="small-3 columns">
-            <a href="{% url "pdp.gallery.views.new_gallery" %}" class="button">Nouvelle gallerie</a>
+            <a href="{% url "pdp.gallery.views.new_gallery" %}" class="button">Nouvelle galerie</a>
         </div>
         <div class="small-2 columns">
-            <a href="#" data-dropdown="acts" class="button dropdown secondary">Actions</a><br>
-            <ul id="acts" class="f-dropdown">
-                <li>
-                    <a href="javascript:document.form.submit();">
-                        <i class="fi-trash size-18"></i>
-                        Supprimer
-                    </a>
-                </li>
-            </ul>
+            <button type="submit" name="delete_multi" class="button secondary">
+                Supprimer
+            </button>
         </div>
     </div>
 </div>
@@ -44,17 +38,9 @@
                         <div class="small-1 columns">
                             <p>
                             {% if gallery.is_write %}
-                                <input id="items" name="items" type="checkbox" value="{{ gallery.gallery.pk }}" />
+                                <input name="items" type="checkbox" value="{{ gallery.gallery.pk }}" />
                             {% endif %}
                             </p>
-                        </div>
-                        <div class="small-3 columns">
-                            {% if gallery.is_write %}
-                                <a class="button radius" href='{% url "pdp.gallery.views.share_gallery" gallery.pk %}'>
-                                    <i class="fi-share size-18"></i>
-                                    Partager
-                                </a>
-                            {% endif %}
                         </div>
                     </div>
                     <p>
@@ -67,7 +53,9 @@
                             {% else %}
                                 <li class="fix-height">
                             {% endif %}
-                                    <a href="{{ img.physical.url }}"><img src="{{ img.physical.url }}" style="max-width:180px ;max-height:180px" data-caption="{{ img.legend }}" /></a>
+                                    <a href="{{ img.physical.url }}">
+                                        <img alt="" src="{{ img.physical.url }}" style="max-width:180px ;max-height:180px" data-caption="{{ img.legend }}" />
+                                    </a>
                                 </li>
                         {% endfor %}
                     </ul>
