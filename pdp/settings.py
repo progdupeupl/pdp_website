@@ -287,11 +287,11 @@ BOT_USER_PK = 1
 BOT_TUTORIAL_FORUM_PK = 1
 BOT_ARTICLE_FORUM_PK = 2
 
-# Fileserve settings
+# Django fileserve settings (set to True for local dev version only)
 SERVE = False
 
-#Max Size Image Upload in bytes 
-IMAGE_MAX_SIZE = 1024*1024
+# Max size image upload (in bytes)
+IMAGE_MAX_SIZE = 1024*512
 
 # Load the production settings, overwrite the existing ones if needed
 try:
