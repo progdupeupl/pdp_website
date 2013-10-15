@@ -67,20 +67,20 @@
                 </a>
                 <div id="staff-dropdown" class="f-dropdown content" data-dropdown-content>
                     <div class="switch">
-                        <input id="lock-off" name="lock" type="radio" {% if not topic.is_locked %}checked="checked"{% endif %}></input>
+                        <input id="lock-off" name="lock" type="radio" {% if not topic.is_locked %}checked="checked"{% endif %}>
                         <label for="lock-off" onclick="">Verouiller</label>
 
-                        <input id="lock-on" name="lock" type="radio" {% if topic.is_locked %}checked="checked"{% endif %}></input>
+                        <input id="lock-on" name="lock" type="radio" {% if topic.is_locked %}checked="checked"{% endif %}>
                         <label for="lock-on" onclick="">Verouillé</label>
 
                         <span></span>
                     </div>
 
                     <div class="switch">
-                        <input id="sticky-off" name="sticky" type="radio" {% if not topic.is_sticky %}checked="checked"{% endif %}></input>
+                        <input id="sticky-off" name="sticky" type="radio" {% if not topic.is_sticky %}checked="checked"{% endif %}>
                         <label for="sticky-off" onclick="">Post-it</label>
 
-                        <input id="sticky-on" name="sticky" type="radio" {% if topic.is_sticky %}checked="checked"{% endif %}></input>
+                        <input id="sticky-on" name="sticky" type="radio" {% if topic.is_sticky %}checked="checked"{% endif %}>
                         <label for="sticky-on" onclick="">Post-it</label>
 
                         <span></span>
