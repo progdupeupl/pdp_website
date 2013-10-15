@@ -23,11 +23,8 @@
         <p>
             Membres partageant cette gallerie :
             {% for u in gallerie.get_users %}
-                {% with profile=u.user|profile %}
-                    <a href="{{ member.get_absolute_url }}" class="member-item">
-                        <img src="{{ profile.get_avatar_url }}" width="16" height="16" alt="Avatar" />
-                        {{ u.user.username }} 
-                    </a>
+                {% with member=u.user %}
+                    {% include "member/member_item_common.part.html" %}
                     (<i class="fi-{{ u.mode|mode }} size-18"></i>)
                 {% endwith %}
             {% endfor %}
