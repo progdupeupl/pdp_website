@@ -1,5 +1,8 @@
 # coding: utf-8
+
 import os
+import uuid
+import string
 
 from django.db import models
 from django.conf import settings
@@ -10,7 +13,9 @@ from django.core.urlresolvers import reverse
 
 def image_path(instance, filename):
     '''Return path to an image'''
-    return os.path.join('gallery', str(instance.gallery.pk), filename)
+    ext = filename.split('.')[-1]
+    filename = u'{}.{}'.format(str(uuid.uuid4()), string.lower(ext))
+    return os.path.join('gallerie', str(instance.gallery.pk), filename)
 
 
 class UserGallery(models.Model):
@@ -29,7 +34,7 @@ class UserGallery(models.Model):
     def __unicode__(self):
         '''Textual form of an User Gallery'''
         return u'Galerie "{0}" envoye par {1}'.format(self.gallery,
-                                                       self.user)
+                                                      self.user)
 
     def is_write(self):
         return self.mode == 'W'
