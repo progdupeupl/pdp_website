@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import json
 from datetime import datetime
 
 from django.shortcuts import redirect, get_object_or_404
@@ -212,17 +213,19 @@ def edit(request):
         page = 1
 
     data = request.POST
+    resp = {}
 
     g_topic = get_object_or_404(Topic, pk=topic_pk)
 
     if request.user.is_authenticated():
         # User actions
         if 'follow' in data:
-            follow(g_topic)
+            resp['follow'] = follow(g_topic)
     if request.user == g_topic.author:
         # Author actions
         if 'solved' in data:
             g_topic.is_solved = not g_topic.is_solved
+            resp['solved'] = g_topic.is_solved
     if request.user.has_perm('forum.change_topic'):
         # Staff actions using AJAX
         # TODO: Do not redirect on AJAX requests
@@ -242,8 +245,7 @@ def edit(request):
     g_topic.save()
 
     if request.is_ajax():
-        return HttpResponse('{{"solved": {}}}'\
-                .format(1 if g_topic.is_solved else 0), 'json')
+        return HttpResponse(json.dumps(resp))
     else:
         return redirect(u'{}?page={}'.format(g_topic.get_absolute_url(), page))
 

@@ -2,74 +2,97 @@
 {% load profile %}
 
 {% block title %}
-    Détails de gallerie
+    {{ gallery.title }}
 {% endblock %}
 
 {% block headline %}
-    Gallerie : {{ gallerie.title }}
+    {{ gallery.title }}
+{% endblock %}
+
+{% block headline-sub %}
+    {{ gallery.subtitle }}
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="current"><a href="javascript:;">{{ gallerie.title }}</a></li>
+    <li class="current"><a href="javascript:;">{{ gallery.title }}</a></li>
 {% endblock %}
 
 {% block content %}
-	<div class="row">
-		<div class="large-12 columns">
-				<h5>
-					Membres partageant cette gallérie :
-					{% for u in gallerie.get_users %}
-						{% with profile=u.user|profile %}
-							<a href="{{ member.get_absolute_url }}" class="member-item">
-							    <img src="{{ profile.get_avatar_url }}" width="16" height="16" alt="Avatar" />
-							    {{ u.user.username }} 
-							</a>
-							(<i class="fi-{{ u.mode|mode }} size-18"></i>)
-						{% endwith %}
-					{% endfor %}
-				</h5>
-					
-				<h4>{{ gallerie.subtitle }}</h4>
-				<hr>
-				<div class="panel large-12 columns">
-					<form id="form" name="form" method="POST" action="{% url "pdp.gallery.views.del_image" gallerie.pk %}" >
-					<div class="row">
-						<div class="large-7 columns">	
-							<h3>Images</h3>
-						</div>
-						<div class="large-3 columns">
-							<a href="{% url "pdp.gallery.views.new_image" gallerie.pk %}" class="button">Ajouter une image</a>
-						</div>
-						<div class="large-2 columns">
-							<a href="#" data-dropdown="acts" class="button dropdown secondary">Actions</a><br>
-							<ul id="acts" class="f-dropdown">
-							  <li><a href="javascript:document.form.submit();">Supprimer</a></li>
-							</ul>
-						</div>
-					</div>
-					<table>
-					  <thead>
-					    <tr>
-					      <th width="50"></th>
-					      <th width="200">Image</th>
-					      <th>Titre</th>
-					    </tr>
-					  </thead>
-					  <tbody>
-					  	{% for img in gallerie.get_images %}
-					  	<tr>
-					      <td><input id="items" name="items" type="checkbox" value="{{ img.pk }}" /></td>
-					      <td><div><a href="{% url "pdp.gallery.views.edit_image" gallerie.pk img.pk %}"><img src="{{ img.physical.url }}" style="max-width:180px ;max-height:180px" data-caption="{{ img.title }}" /></a></img></td>
-					      <td><a href="{% url "pdp.gallery.views.edit_image" gallerie.pk img.pk %}">{{ img.title }}</a></td>
-					    </tr>
-                        {% endfor %}
-					  </tbody>
-					</table>
-					{% csrf_token %}
-					</form>
-				</div>
-		</div>
-	</div>
+<div class="row">
+    <div class="large-12 columns">
+        <p>
+            Membres partageant cette galerie :
+            {% for u in gallery.get_users %}
+                {% with member=u.user %}
+                    {% include "member/member_item_common.part.html" %}
+                    (<i class="fi-{{ u.mode|mode }} size-18"></i>)
+                {% endwith %}
+            {% endfor %}
+        </p>
+        {% if gallery_mode.is_write %}
+        <form action="{% url "pdp.gallery.views.modify_gallery" %}"
+            method="post">
+            <input type="text" name="user" placeholder="Nom de l'utilisateur">
+            <button name="adduser" class="button secondary">
+                Ajouter un membre
+            </button>
+            {% csrf_token %}
+        </form>
+        {% endif %}
+    </div>
+</div>
+<div class="row">
+    <div class="large-12 columns">
+        <form id="form" name="form" method="POST" action="{% url "pdp.gallery.views.modify_image" %}">
+            <input type="hidden" name="gallery" value="{{ gallery.pk }}">
+            <div class="row">
+                <div class="large-8 columns">   
+                    <h3>Images</h3>
+                </div>
+                <div class="large-4 columns">
+                    <div class="right">
+                        <a href="{% url "pdp.gallery.views.new_image" gallery.pk %}" class="button">
+                            Ajouter une image
+                        </a>
+                        <button name="delete_multi" class="button secondary">
+                            Supprimer
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <table>
+                <thead>
+                   <tr>
+                       <th style="width: 3%;"></th>
+                       <th style="width: 180px;">Image</th>
+                       <th style="width: 72%;">Titre</th>
+                   </tr>
+                </thead>
+                <tbody>
+                    {% for img in gallery.get_images %}
+                        <tr>
+                            <td>
+                                <input name="items" type="checkbox" value="{{ img.pk }}" />
+                            </td>
+                            <td>
+                                <div>
+                                    <a href="{% url "pdp.gallery.views.edit_image" gallery.pk img.pk %}">
+                                        <img src="{{ img.physical.url }}" style="max-width:180px ;max-height:180px" data-caption="{{ img.title }}"
+                                             alt="{{ img.title }}" />
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="{% url "pdp.gallery.views.edit_image" gallery.pk img.pk %}">{{ img.title }}</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% csrf_token %}
+        </form>
+    </div>
+</div>
 
 
 {% endblock %}
