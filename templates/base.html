@@ -171,7 +171,7 @@
         </div>
     </header>
 
-    <div class="row">
+    <div class="row hide-for-small">
         <div class="large-12 columns">
             <ul class="breadcrumbs">
                 <li>
@@ -185,7 +185,12 @@
 
     <div class="row">
         <div class="large-8 columns">
-            <h1>{% block headline %}{% endblock %}</h1>
+            <h1>
+                {% block headline %}{% endblock %}<br />
+                <small>
+                    {% block headline-sub %}{% endblock %}
+                </small>
+            </h1>
         </div>
         <div class="large-4 columns">
             <div class="headline-actions right">
@@ -194,23 +199,18 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="large-12 columns">
-            <h1>
-                <small>
-                    {% block headline-sub %}{% endblock %}
-                </small>
-            </h1>
-            {% if messages %}
-                {% for message in messages %}
-                    <div data-alert class="alert-box {{ message.tags }}">
-                        <span>{{ message }}</span>
-                        <a href="#" class="close">&times;</a>
-                    </div>
-                {% endfor %}
-            {% endif %}
+    {% if messages %}
+        <div class="row">
+            <div class="large-12 columns">
+                    {% for message in messages %}
+                        <div data-alert class="alert-box {{ message.tags }}">
+                            <span>{{ message }}</span>
+                            <a href="#" class="close">&times;</a>
+                        </div>
+                    {% endfor %}
+            </div>
         </div>
-    </div>
+    {% endif %}
 
     {% block content %}{% endblock %}
 
