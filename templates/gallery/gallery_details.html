@@ -33,6 +33,7 @@
         <form action="{% url "pdp.gallery.views.modify_gallery" %}"
             method="post">
             <input type="text" name="user" placeholder="Nom de l'utilisateur">
+            <input type="hidden" name="gallery" value={{ gallery.pk }}>
             <button name="adduser" class="button secondary">
                 Ajouter un membre
             </button>
