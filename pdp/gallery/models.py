@@ -15,7 +15,7 @@ def image_path(instance, filename):
     '''Return path to an image'''
     ext = filename.split('.')[-1]
     filename = u'{}.{}'.format(str(uuid.uuid4()), string.lower(ext))
-    return os.path.join('gallerie', str(instance.gallery.pk), filename)
+    return os.path.join('galleries', str(instance.gallery.pk), filename)
 
 
 class UserGallery(models.Model):
