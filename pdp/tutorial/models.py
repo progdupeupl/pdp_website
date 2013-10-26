@@ -86,7 +86,7 @@ class Tutorial(models.Model):
 def get_last_tutorials():
     return Tutorial.objects.all() \
         .filter(is_visible=True) \
-        .order_by('-pubdate')[:3]
+        .order_by('-pubdate')[:5]
 
 
 class Part(models.Model):

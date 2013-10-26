@@ -40,7 +40,7 @@ class Article(models.Model):
 def get_last_articles():
     return Article.objects.all()\
         .filter(is_visible=True)\
-        .order_by('-pubdate')[:3]
+        .order_by('-pubdate')[:5]
 
 
 def get_prev_article(g_article):
