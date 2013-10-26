@@ -67,7 +67,10 @@ def topic(request, topic_pk, topic_slug):
 
     # TODO: Clean that up
     g_topic = get_object_or_404(PrivateTopic, pk=topic_pk)
-
+    
+    if not g_topic.author == request.user and not request.user in list(g_topic.participants.all()):
+         raise Http404
+    
     # Check link
     if not topic_slug == slugify(g_topic.title):
         return redirect(g_topic.get_absolute_url())
