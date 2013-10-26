@@ -29,7 +29,12 @@
 
 <div class="row">
     <div class="large-2 columns">
-        <img src="{{ profile.get_avatar_url }}" alt="Avatar" width="80" height="80" class="th"/>
+            <p>
+            <img src="{{ profile.get_avatar_url }}" alt="Avatar" width="80" height="80" class="th"/>
+            </p>
+            <p>
+            <a href="{% url "pdp.mp.views.new"%}?username={{ usr.username }}" class="fi-mail button">Message privé</a>
+        </p>
     </div>
     <div class="large-10 columns">
         <p>
