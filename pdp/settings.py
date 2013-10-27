@@ -105,7 +105,7 @@ PIPELINE_JS = {
             'js/custom/section.js',
         ),
         'output_filename': 'js/pdp.js'
-    }
+    },
 }
 
 PIPELINE_CSS = {
@@ -137,6 +137,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'pdp.utils.ThreadLocals',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'pipeline.middleware.MinifyHTMLMiddleware',
 )
 
 ROOT_URLCONF = 'pdp.urls'
