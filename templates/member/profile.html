@@ -101,11 +101,11 @@
             <tbody>
                 <tr>
                     <td>Sujets créés</td>
-                    <td>{{ profile.get_topic_count }}</td>
+                    <td><a href="{% url "pdp.forum.views.find_topic" usr.username %}">{{ profile.get_topic_count }}</a></td>
                 </tr>
                 <tr>
                     <td>Messages postés</td>
-                    <td>{{ profile.get_post_count }}</td>
+                    <td><a href="{% url "pdp.forum.views.find_post" usr.username %}">{{ profile.get_post_count }}</a></td>
                 </tr>
             </tbody>
         </table>
