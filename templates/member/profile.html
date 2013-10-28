@@ -29,7 +29,12 @@
 
 <div class="row">
     <div class="large-2 columns">
-        <img src="{{ profile.get_avatar_url }}" alt="Avatar" width="80" height="80" class="th"/>
+            <p>
+            <img src="{{ profile.get_avatar_url }}" alt="Avatar" width="80" height="80" class="th"/>
+            </p>
+            <p>
+            <a href="{% url "pdp.mp.views.new"%}?username={{ usr.username }}" class="fi-mail button">Message privé</a>
+        </p>
     </div>
     <div class="large-10 columns">
         <p>
@@ -96,11 +101,11 @@
             <tbody>
                 <tr>
                     <td>Sujets créés</td>
-                    <td>{{ profile.get_topic_count }}</td>
+                    <td><a href="{% url "pdp.forum.views.find_topic" usr.username %}">{{ profile.get_topic_count }}</a></td>
                 </tr>
                 <tr>
                     <td>Messages postés</td>
-                    <td>{{ profile.get_post_count }}</td>
+                    <td><a href="{% url "pdp.forum.views.find_post" usr.username %}">{{ profile.get_post_count }}</a></td>
                 </tr>
             </tbody>
         </table>

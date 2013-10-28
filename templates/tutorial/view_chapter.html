@@ -6,6 +6,9 @@
 {% endblock %}
 
 {% block headline %}
+{% if chapter.thumbnail %}
+<img src="{{chapter.thumbnail.url }}"/>
+{% endif %}
 {{ chapter.title }}
 {% endblock %}
 
