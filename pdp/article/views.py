@@ -6,6 +6,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from pdp.utils import render_template, slugify
 
@@ -150,6 +152,15 @@ def modify(request):
 
     return redirect(article.get_absolute_url())
 
+def find_article(request, name):
+    u = get_object_or_404(User, username=name)
+    articles=Article.objects.all().filter(author=u)\
+                          .order_by('-pubdate')
+    # Paginator
+    
+    return render_template('article/find_article.html', {
+        'articles': articles, 'usr':u,
+    })
 
 # Deprecated URLs
 
