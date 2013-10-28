@@ -14,6 +14,10 @@ class TutorialForm(forms.Form):
         label='Titre',
         max_length=80
     )
+    
+    image = forms.ImageField(
+        label='Selectionnez une image', 
+        required=False)
 
     description = forms.CharField(
         max_length=200
@@ -34,6 +38,7 @@ class TutorialForm(forms.Form):
         self.helper.layout = Layout(
             Field('title'),
             Field('description'),
+            Field('image'),
             'is_mini',
             Submit('submit', 'Valider')
         )
@@ -49,6 +54,11 @@ class EditTutorialForm(forms.Form):
     description = forms.CharField(
         max_length=200
     )
+    
+    image = forms.ImageField(
+        label='Selectionnez une image', 
+        required=False)
+
 
     introduction = forms.CharField(
         required=False,
@@ -67,6 +77,7 @@ class EditTutorialForm(forms.Form):
         self.helper.layout = Layout(
             Field('title'),
             Field('description'),
+            Field('image'),
             Field('introduction'),
             Field('conclusion'),
             Submit('submit', 'Valider')
@@ -121,6 +132,10 @@ class ChapterForm(forms.Form):
         required=False,
         widget=forms.Textarea
     )
+    
+    image = forms.ImageField(
+        label='Selectionnez une image', 
+        required=False)
 
     conclusion = forms.CharField(
         required=False,
@@ -135,6 +150,7 @@ class ChapterForm(forms.Form):
             Fieldset(
                 u'Général',
                 Field('title'),
+                Field('image'),
             ),
             Fieldset(
                 u'Contenu',
@@ -160,6 +176,10 @@ class EmbdedChapterForm(forms.Form):
         widget=forms.Textarea
     )
 
+    image = forms.ImageField(
+        label='Selectionnez une image', 
+        required=False)
+
     conclusion = forms.CharField(
         required=False,
         widget=forms.Textarea
@@ -172,6 +192,7 @@ class EmbdedChapterForm(forms.Form):
         self.helper.layout = Layout(
             Fieldset(
                 u'Contenu',
+                Field('image'),
                 Field('introduction'),
                 Field('conclusion')
             ),

@@ -52,6 +52,12 @@
 
 <div class="row">
     <div class="large-12 columns">
+        <div class="large-1 columns hide-for-small">
+            {% if article.thumbnail %}
+            <img src="{{article.thumbnail.url }}"/>
+            {% endif %}
+        </div>
+        <div class="large-11 columns">
         <p>
             Rédigé par
             {% with member=article.author %}
@@ -65,7 +71,7 @@
                 <a href="{% url "haystack_search" %}?q={{ tag.name }}&amp;models=article.article">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
             {% endfor %}
         </p>
-
+        </div>
         {{ article.text|emarkdown }}
     </div>
 </div>
