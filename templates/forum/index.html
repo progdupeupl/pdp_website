@@ -39,15 +39,23 @@
 
 {% block content %}
 
-{% for category in categories %}
+{% if categories %}
+    {% for category in categories %}
+        <div class="row">
+            <div class="large-12 columns">
+                <h2>
+                    {{ category.title }}
+                </h2>
+            </div>
+        </div>
+        {% include "forum/forums_common.part.html" %}
+    {% endfor %}
+{% else %}
     <div class="row">
         <div class="large-12 columns">
-            <h2>
-                {{ category.title }}
-            </h2>
+            <p>Aucune catégorie.</p>
         </div>
     </div>
-    {% include "forum/forums_common.part.html" %}
-{% endfor %}
+{% endif %}
 
 {% endblock %}
