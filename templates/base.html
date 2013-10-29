@@ -91,8 +91,8 @@
                 {% if user.is_authenticated %}
                     {% with topics=user|interventions_privatetopics %}
                         {% with unread_topics=topics.unread %}
-                            <li class="{% block menu_mp %}{% endblock %} has-dropdown">
-                                <a href="{% url "pdp.mp.views.index" %}">
+                            <li class="{% block menu_messages %}{% endblock %} has-dropdown">
+                                <a href="{% url "pdp.messages.views.index" %}">
                                     {% if unread_topics|length > 0 %}
                                         <span class="label alert">{{ unread_topics|length }}</span>
                                     {% endif %}
@@ -128,7 +128,7 @@
                                         {% endfor %}
                                         {% if read_topics|length = 0 and unread_topics|length = 0 %}
                                             <li class="disabled">
-                                                <a href="{% url "pdp.mp.views.index" %}">Pas de message</a>
+                                                <a href="{% url "pdp.messages.views.index" %}">Pas de message</a>
                                             </li>
                                         {% endif %}
                                     {% endwith %}

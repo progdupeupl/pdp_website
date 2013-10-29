@@ -1,4 +1,4 @@
-{% extends "mp/base.html" %}
+{% extends "messages/base.html" %}
 {% load emarkdown %}
 {% load markup %}
 {% load humane_date %}
@@ -24,14 +24,13 @@
 
 {% block headline-actions %}
     {% if user.is_authenticated %}
-        <form action="{% url "pdp.mp.views.edit" %}" method="POST"
+        <form action="{% url "pdp.messages.views.edit" %}" method="POST"
         class="topic-actions" >
             <input type="hidden" name="privatetopic" value="{{ topic.pk }}" />
             <input type="hidden" name="page" value="{{ nb }}">
             <div class="button-group">
-                <a href="{% url "pdp.mp.views.new" %}" class="button small">
-                    <i class="fi-mail"></i>
-                    Nouvel MP
+                <a href="{% url "pdp.messages.views.new" %}" class="button small">
+                    Nouveau
                 </a>
                 {% if topic.author == user %}
                 <a href="#" data-dropdown="add-member"  data-options="is_hover:true" class="button small secondary">
@@ -64,7 +63,7 @@
         </p>
 
 </div>
-{% include "mp/topic_pagination.part.html" %}
+{% include "messages/topic_pagination.part.html" %}
 
 {% for post in posts %}
 <div class="post {% if forloop.first and nb > 1 %}before{% endif %} {% if post.is_useful %}useful{% endif %}">
@@ -81,15 +80,15 @@
                     {% if user.is_authenticated %}
                         <div class="button-group">
                             {% if post == topic.last_message %}
-                            {% if post.author == user or perms.mp.change_post %}
-                                <a href="/mp/message/editer?message={{ post.pk }}" class="button secondary small">
+                            {% if post.author == user or perms.messages.change_post %}
+                                <a href="/messages/message/editer?message={{ post.pk }}" class="button secondary small">
                                     <i class="icon-pencil"></i>
                                     Éditer
                                 </a>
                             {% endif %}
                             {% endif %}
                             {% if not topic.is_locked and not topic.antispam %}
-                                <a href="/mp/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.pk }}"
+                                <a href="/messages/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.pk }}"
                                     class="button secondary small">
                                     <i class="icon-quote-left"></i>
                                     Citer

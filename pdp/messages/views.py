@@ -22,7 +22,7 @@ def index(request):
     '''
     Display the all private topics
     '''
-    
+
     #delete actions
     if request.method == 'POST':
         if 'delete' in request.POST:
@@ -54,7 +54,7 @@ def index(request):
         shown_privatetopics = paginator.page(paginator.num_pages)
         page=paginator.num_pages
 
-    return render_template('mp/index.html', {
+    return render_template('messages/index.html', {
         'privatetopics': shown_privatetopics,
         'pages': paginator_range(page, paginator.num_pages), 'nb': page
     })
@@ -67,10 +67,10 @@ def topic(request, topic_pk, topic_slug):
 
     # TODO: Clean that up
     g_topic = get_object_or_404(PrivateTopic, pk=topic_pk)
-    
+
     if not g_topic.author == request.user and not request.user in list(g_topic.participants.all()):
          raise Http404
-    
+
     # Check link
     if not topic_slug == slugify(g_topic.title):
         return redirect(g_topic.get_absolute_url())
@@ -109,7 +109,7 @@ def topic(request, topic_pk, topic_slug):
     for post in posts:
         res.append(post)
 
-    return render_template('mp/topic.html', {
+    return render_template('messages/topic.html', {
         'topic': g_topic, 'posts': res,
         'pages': paginator_range(page_nbr, paginator.num_pages),
         'nb': page_nbr,
@@ -120,20 +120,20 @@ def topic(request, topic_pk, topic_slug):
 @login_required
 def new(request):
     '''
-    Creates a new private topic 
+    Creates a new private topic
     '''
-    
-    
+
+
     if request.method == 'POST':
         # If the client is using the "preview" button
         if 'preview' in request.POST:
-            return render_template('mp/new.html', {
+            return render_template('messages/new.html', {
                 'participants': request.POST['participants'],
                 'title': request.POST['title'],
                 'subtitle': request.POST['subtitle'],
                 'text': request.POST['text'],
             })
-                
+
         form = PrivateTopicForm(request.POST)
         if form.is_valid():
             data = form.data
@@ -144,7 +144,7 @@ def new(request):
             n_topic.pubdate = datetime.now()
             n_topic.author = request.user
             n_topic.save()
-            
+
             list_part = data['participants'].split(',')
             for part in list_part:
                 p=get_object_or_404(User, username=part)
@@ -175,10 +175,10 @@ def new(request):
             u=get_object_or_404(User, username=user)
         else :
             u=''
-        return render_template('mp/new.html', {
+        return render_template('messages/new.html', {
             'participants': u,
         })
-        
+
 @login_required
 def edit(request):
     '''
@@ -234,7 +234,7 @@ def answer(request):
 
         # Using the « preview button », the « more » button or new post
         if 'preview' in data or 'more' in data or newpost:
-            return render_template('mp/answer.html', {
+            return render_template('messages/answer.html', {
                 'text': data['text'], 'topic': g_topic, 'posts': posts,
                 'last_post_pk': last_post_pk, 'newpost': newpost
             })
@@ -274,7 +274,7 @@ def answer(request):
             text = u'**{0} a écrit :**\n{1}\n'.format(
                 post_cite.author.username, text)
 
-        return render_template('mp/answer.html', {
+        return render_template('messages/answer.html', {
             'topic': g_topic, 'text': text, 'posts': posts,
             'last_post_pk': last_post_pk
         })
@@ -291,19 +291,19 @@ def edit_post(request):
         raise Http404
 
     post = get_object_or_404(PrivatePost, pk=post_pk)
-    
+
     #Only edit last private post
     tp = get_object_or_404(PrivateTopic, pk=post.privatetopic.pk)
     last = get_object_or_404(PrivatePost, pk=tp.last_message.pk)
     if not  last.pk == post.pk :
         raise Http404
-    
+
     g_topic = None
     if post.position_in_topic == 1:
         g_topic = get_object_or_404(PrivateTopic, pk=post.privatetopic.pk)
 
-    
-    
+
+
     # Making sure the user is allowed to do that
     if post.author != request.user:
         if not request.user.has_perm('mp.change_post'):
@@ -322,7 +322,7 @@ def edit_post(request):
             if g_topic:
                 g_topic = Topic(title=request.POST['title'],
                                 subtitle=request.POST['subtitle'])
-            return render_template('mp/edit_post.html', {
+            return render_template('messages/edit_post.html', {
                 'post': post, 'topic': g_topic, 'text': request.POST['text'],
             })
 
@@ -340,6 +340,6 @@ def edit_post(request):
         return redirect(post.get_absolute_url())
 
     else:
-        return render_template('mp/edit_post.html', {
+        return render_template('messages/edit_post.html', {
             'post': post, 'topic': g_topic, 'text': post.text
         })
