@@ -3,23 +3,15 @@
 
 <div class="forum-entry">
     <div class="forum-entry-title
-    {% if user.is_authenticated %}
         {% if topic.never_read %}
             unread
-        {% endif %}
-    {% endif %}">
-        <input name="items" type="checkbox" value="{{ topic.pk }}" />
-        <a href="{{ topic.get_absolute_url }}">
-            {{ topic.title }}
-        </a>
+        {% endif %}">
         <p>
-            Participants : 
-        {% with member=topic.author %}
-            {% include "member/member_item_common.part.html" %}
-        {% endwith %}
-        {% for member in topic.participants.all %}
-            | {% include "member/member_item_common.part.html" %}
-        {% endfor %}
+            <input name="items" type="checkbox" value="{{ topic.pk }}" />
+            <a href="{{ topic.get_absolute_url }}">
+                {{ topic.title }}
+            </a><br />
+            {{ topic.subtitle }}
         </p>
     </div>
     <div class="forum-entry-count">

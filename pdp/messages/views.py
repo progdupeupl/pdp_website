@@ -21,6 +21,7 @@ from pdp.messages.models import never_privateread, mark_read
 from pdp.messages.forms import PrivateTopicForm, PrivatePostForm
 
 
+@login_required
 def index(request):
     '''
     Display the all private topics
@@ -63,6 +64,7 @@ def index(request):
     })
 
 
+@login_required
 def topic(request, topic_pk, topic_slug):
     '''
     Display a thread and its posts using a pager
