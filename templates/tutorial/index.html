@@ -49,13 +49,18 @@
             {% for tuto in tutorials %}
                 <div class="row article-publication-item">
                     <div class="large-1 columns">
+                        {% if tuto.thumbnail %}
+                            <img src="{{tuto.thumbnail.url }}"/>
+                        {% endif %}
+                    </div>
+                    <div class="large-10 columns">
+                        <a href="{{ tuto.get_absolute_url }}">{{ tuto.title }}</a>
+                        <p>{{ tuto.description }}</p>
+                    </div>
+                    <div class="large-1 columns">
                         {% with date=tuto.pubdate %}
                             {% include "misc/datebox.part.html" %}
                         {% endwith %}
-                    </div>
-                    <div class="large-11 columns">
-                        <a href="{{ tuto.get_absolute_url }}">{{ tuto.title }}</a>
-                        <p>{{ tuto.description }}</p>
                     </div>
                 </div>
             {% endfor %}

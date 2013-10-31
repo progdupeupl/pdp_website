@@ -133,7 +133,7 @@ def modify_gallery(request):
             ug = UserGallery()
             ug.user = u
             ug.gallery = gal
-            ug.mode = request.POST['mode']
+            ug.mode = 'W'
             ug.save()
 
 

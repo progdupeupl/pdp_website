@@ -1,0 +1,54 @@
+{% extends "messages/base.html" %}
+{% load humane_date %}
+
+{% block title %}
+    Liste des MP
+{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="Votre boîte à MP" />
+{% endblock %}
+
+{% block header %}
+    <h1>
+        Messages privés
+    </h1>
+    <p>
+        Les messages privés vous permettent de communiquer avec les autres
+        membres du site.
+    </p>
+{% endblock %}
+
+{% block headline %}
+   Liste des MPs
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="current"><a href="javascript:;">Index</a></li>
+{% endblock %}
+
+{% block headline-actions %}
+
+<form action="" method="POST" >    
+    <div class="button-group">
+        {% if user.is_authenticated %}
+        <a href="{% url "pdp.messages.views.new" %}" class="button">
+            Nouveau
+        </a>
+        {% endif %}
+        <button type="submit" name="delete" class="button secondary">Supprimer</button>
+    </div>
+    {% endblock %}
+
+    {% block content %}
+
+    <div class="forum-entries">
+        {% for topic in privatetopics %}
+            {% include "messages/details_row.part.html" %}
+        {% endfor %}
+    </div>
+    {% csrf_token %}
+</form>
+{% include "messages/details_pagination.part.html" %}
+
+{% endblock %}

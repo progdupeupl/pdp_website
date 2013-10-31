@@ -89,6 +89,53 @@
                     <a href="{% url "haystack_search" %}">Recherche</a>
                 </li>
                 {% if user.is_authenticated %}
+                    {% with topics=user|interventions_privatetopics %}
+                        {% with unread_topics=topics.unread %}
+                            <li class="{% block menu_messages %}{% endblock %} has-dropdown">
+                                <a href="{% url "pdp.messages.views.index" %}">
+                                    {% if unread_topics|length > 0 %}
+                                        <span class="label alert">{{ unread_topics|length }}</span>
+                                    {% endif %}
+                                    <i class="fi-mail"></i>
+                                </a>
+                                <ul class="dropdown">
+                                    {% with read_topics=topics.read %}
+                                        {# Unread topics #}
+                                        {% for topic in unread_topics %}
+                                            <li>
+                                                <a href="{{ topic.last_read_post.get_absolute_url }}">
+                                                    <span class="label">!</span>
+                                                    <strong>
+                                                        {{ topic.title }}
+                                                    </strong>
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                        {# Read topics #}
+                                        {% for topic in read_topics %}
+                                            <li>
+                                                {% with last_answer=topic.get_last_answer %}
+                                                    <a href="
+                                                        {% if last_answer %}
+                                                            {{ last_answer.get_absolute_url }}
+                                                        {% else %}
+                                                            {{ topic.first_post.get_absolute_url }}
+                                                        {% endif %}">
+                                                        {{ topic.title }}
+                                                    </a>
+                                                {% endwith %}
+                                            </li>
+                                        {% endfor %}
+                                        {% if read_topics|length = 0 and unread_topics|length = 0 %}
+                                            <li class="disabled">
+                                                <a href="{% url "pdp.messages.views.index" %}">Pas de message</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endwith %}
+                                </ul>
+                            </li>
+                        {% endwith %}
+                    {% endwith %}
                     {% with topics=user|interventions_topics %}
                         {% with unread_topics=topics.unread %}
                             <li class="has-dropdown">
@@ -96,7 +143,7 @@
                                     {% if unread_topics|length > 0 %}
                                         <span class="label alert">{{ unread_topics|length }}</span>
                                     {% endif %}
-                                    Sujets suivis
+                                    <i class="fi-star"></i>
                                 </a>
                                 <ul class="dropdown">
                                     {% with read_topics=topics.read %}
@@ -131,11 +178,11 @@
                                                 <a href="javascript:;">Aucun sujet suivi</a>
                                             </li>
                                         {% endif %}
-                                {% endwith %}
-                            {% endwith %}
+                                    {% endwith %}
+                                </ul>
+                            </li>
                         {% endwith %}
-                    </ul>
-                </li>
+                    {% endwith %}
                 <li class="has-dropdown">
                     {% with profile=user|profile %}
                         <a href="{% url "pdp.member.views.actions" %}">

@@ -309,6 +309,6 @@ def follow(topic):
 
 def get_last_topics():
     '''
-    Returns the 3 very last topics
+    Returns the 5 very last topics
     '''
-    return Topic.objects.all().order_by('-pubdate')[:3]
+    return Topic.objects.all().order_by('-last_message__pubdate')[:5]
