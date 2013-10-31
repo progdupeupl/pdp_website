@@ -55,15 +55,20 @@ class="active"
 
         {% if last_articles %}
             {% for article in last_articles %}
-                <p>
+                {# TODO: use a custom css class for this kind of elements #}
                 {% if article.thumbnail %}
-                    <span style="float: left; margin: 5px;">
-                        <img src="{{article.thumbnail.url }}" alt="Icône" class="hide-for-small"/>
-                    </span>
+                <div class="row collapse">
+                        <div class="small-2 columns hide-for-small">
+                            <img src="{{article.thumbnail.url }}" alt="Icône" />
+                        </div>
+                    <div class="small-10 columns" style="padding-left: 5px;">
+                    {% endif %}
+                        <a href="{{article.get_absolute_url }}">{{ article.title }}</a><br />
+                        <p>{{ article.description }}</p>
+                    {% if article.thumbnail %}
+                    </div>
+                </div>
                 {% endif %}
-                    <a href="{{article.get_absolute_url }}">{{ article.title }}</a><br />
-                    {{ article.description }}
-                </p>
             {% endfor %}
         {% else %}
             <p>Pas d'articles pour l'instant.</p>
@@ -81,17 +86,20 @@ class="active"
 
         {% if last_tutorials %}
             {% for tutorial in last_tutorials %}
+                {# TODO: use a custom css class for this kind of elements #}
+                {% if tutorial.thumbnail %}
                 <div class="row collapse">
                     <div class="small-2 column hide-for-small">
-                        {% if tutorial.thumbnail %}
-                        <img src="{{ tutorial.thumbnail.url }}"/>
-                        {% endif %}
+                        <img src="{{ tutorial.thumbnail.url }}" alt="Icône"/>
                     </div>
-                    <div class="small-10 column">
+                    <div class="small-10 column" style="padding-left: 5px;">
+                    {% endif %}
                         <a href="{{ tutorial.get_absolute_url }}">{{ tutorial.title }}</a>
                         <p>{{ tutorial.description }}</p>
+                    {% if tutorial.thumbnail %}
                     </div>
                 </div>
+                {% endif %}
             {% endfor %}
         {% else %}
             <p>Aucun tutoriel actuellement.</p>
