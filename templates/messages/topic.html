@@ -122,11 +122,11 @@
     </div>
 {% endfor %}
 
-{% include "mp/topic_pagination.part.html" %}
+{% include "messages/topic_pagination.part.html" %}
 
 {% if user.is_authenticated %}
 <hr />
-<form action="{% url "pdp.mp.views.answer" %}?sujet={{ topic.pk }}"
+<form action="{% url "pdp.messages.views.answer" %}?sujet={{ topic.pk }}"
 method="POST" id="submit_form">
     <div class="row">
         <div class="large-12 columns">

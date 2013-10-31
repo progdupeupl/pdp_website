@@ -6,6 +6,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
+from django.core.urlresolvers import reverse
 
 from pdp.utils import get_current_user
 
@@ -17,6 +18,7 @@ SPAM_LIMIT_PARTICIPANT = 2
 
 
 class PrivateTopic(models.Model):
+
     '''Topic private, containing private posts'''
     class Meta:
         verbose_name = 'Message privé'
@@ -26,9 +28,9 @@ class PrivateTopic(models.Model):
     subtitle = models.CharField('Sous-titre', max_length=200)
 
     author = models.ForeignKey(User, verbose_name='Auteur',
-                                     related_name='author')
+                               related_name='author')
     participants = models.ManyToManyField(User, verbose_name='Participants',
-                                     related_name='participants')
+                                          related_name='participants')
     last_message = models.ForeignKey('PrivatePost', null=True,
                                      related_name='last_message',
                                      verbose_name='Dernier message')
@@ -41,7 +43,10 @@ class PrivateTopic(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '/mp/{0}/{1}'.format(self.pk, slugify(self.title))
+        return reverse("pdp.messages.views.topic", kwargs={
+            'topic_pk': self.pk,
+            'topic_slug': slugify(self.title),
+        })
 
     def get_post_count(self):
         '''
@@ -76,13 +81,13 @@ class PrivateTopic(models.Model):
         '''
         try:
             post = PrivateTopicRead.objects\
-            .select_related()\
-            .filter(privatetopic=self, user=get_current_user())
-            if len(post)==0:
+                .select_related()\
+                .filter(privatetopic=self, user=get_current_user())
+            if len(post) == 0:
                 return self.first_post()
-            else: 
-                return post.latest('privatepost__pubdate').privatepost 
-        
+            else:
+                return post.latest('privatepost__pubdate').privatepost
+
         except PrivatePost.DoesNotExist:
             return self.first_post()
 
@@ -112,16 +117,17 @@ class PrivateTopic(models.Model):
 
     def never_read(self):
         return never_privateread(self)
-    
 
 
 class PrivatePost(models.Model):
+
     '''
     A private post written by an user.
     '''
-    privatetopic = models.ForeignKey(PrivateTopic, verbose_name='Message privé')
+    privatetopic = models.ForeignKey(
+        PrivateTopic, verbose_name='Message privé')
     author = models.ForeignKey(User, verbose_name='Auteur',
-                                     related_name='privateposts')
+                               related_name='privateposts')
     text = models.TextField('Texte')
 
     pubdate = models.DateTimeField('Date de publication', auto_now_add=True)
@@ -140,6 +146,7 @@ class PrivatePost(models.Model):
 
 
 class PrivateTopicRead(models.Model):
+
     '''
     Small model which keeps track of the user viewing private topics. It remembers the
     topic he looked and what was the last private Post at this time.
@@ -156,7 +163,8 @@ class PrivateTopicRead(models.Model):
         return u'<Sujet "{0}" lu par {1}, #{2}>'.format(self.privatetopic,
                                                         self.user,
                                                         self.privatepost.pk)
-    
+
+
 def never_privateread(privatetopic, user=None):
     '''
     Check if a private topic has been read by an user since it last post was added.
@@ -173,7 +181,8 @@ def mark_read(privatetopic):
     '''
     Mark a private topic as read for the user
     '''
-    PrivateTopicRead.objects.filter(privatetopic=privatetopic, user=get_current_user()).delete()
+    PrivateTopicRead.objects.filter(
+        privatetopic=privatetopic, user=get_current_user()).delete()
     t = PrivateTopicRead(
         privatepost=privatetopic.last_message, privatetopic=privatetopic, user=get_current_user())
     t.save()

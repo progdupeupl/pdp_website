@@ -27,15 +27,15 @@
             <div style="text-align: center;">
                 <button type="submit" class="button">
                     <i class="icon-plus icon-white"></i>
-                    Nouvel MP
+                    Envoyer
                 </button>
 
                 <button type="submit" name="preview" class="button secondary">
                     Prévisualisation
                 </button>
 
-                <a href="{{ forum.get_absolute_url }}" class="button secondary">
-                    Retour
+                <a href="{% url "pdp.messages.views.index" %}" class="button secondary">
+                    Annuler
                 </a>
             </div>
 
