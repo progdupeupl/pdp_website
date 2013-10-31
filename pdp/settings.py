@@ -144,7 +144,6 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'pdp.utils.ThreadLocals',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'pipeline.middleware.MinifyHTMLMiddleware',
 )
 
 ROOT_URLCONF = 'pdp.urls'
