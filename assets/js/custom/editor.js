@@ -1,3 +1,4 @@
+/* disabled for accessibility reasons
 function tabulation(){
 	var textareas = document.getElementsByTagName("textarea");
 	for(var i = 0, t = textareas.length; i < t; i++){
@@ -40,6 +41,7 @@ function tabulation(){
 	}
 }
 tabulation();
+*/
 
 var textar="id_description";
 var charriot = String.fromCharCode(13);
@@ -116,8 +118,7 @@ function code(id_text)
 	var code = prompt('Quel est le langage (c, c++, java, python, php, html, ...) ?', '');
 	var charriot = String.fromCharCode(13);
 	style_encadre(id_text, LF+"```"+code+charriot, charriot+"```"+LF);
-}
-
+} 
 function codeline(id_text)
 {
 	style_encadre(id_text, "`", "`");

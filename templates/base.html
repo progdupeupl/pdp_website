@@ -278,7 +278,8 @@
     </div>
 
     {# Javascript stuff start #}
-    {% compressed_js "pdp" %}
+    {% compressed_js "base" %}
+    {% compressed_js "custom" %}
 
     {# for addtionnal javascript in some pages #}
     {% block extrajs %}{% endblock %}

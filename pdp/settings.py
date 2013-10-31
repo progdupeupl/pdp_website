@@ -95,16 +95,21 @@ STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
 
 # You will need yuglify to be installed
 PIPELINE_JS = {
-    'pdp': {
+    'base': {
         'source_filenames': (
             'js/vendor/custom.modernizr.js',
             'js/vendor/jquery.js',
             'js/foundation.min.js',
+        ),
+        'output_filename': 'js/base.js'
+    },
+    'custom': {
+        'source_filenames': {
             'js/custom/ajax-csrf.js',
             'js/custom/editor.js',
             'js/custom/section.js',
-        ),
-        'output_filename': 'js/pdp.js'
+        },
+        'output_filename': 'js/custom.js'
     },
 }
 
@@ -116,6 +121,8 @@ PIPELINE_CSS = {
         'output_filename': 'css/pdp.css'
     }
 }
+
+PIPELINE_DISABLE_WRAPPER = True
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'n!01nl+318#x75_%le8#s0=-*ysw&amp;y49uc#t=*wvi(9hnyii0z'
