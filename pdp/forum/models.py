@@ -150,7 +150,7 @@ class Topic(models.Model):
                 .select_related()\
                 .filter(topic=self, user=get_current_user())\
                 .latest('post__pubdate').post
-        except Post.DoesNotExist:
+        except TopicRead.DoesNotExist:
             return self.first_post()
 
     def is_followed(self, user=None):
