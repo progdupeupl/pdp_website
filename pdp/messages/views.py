@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 
 from django.shortcuts import redirect, get_object_or_404
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -13,9 +13,10 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from pdp.utils import render_template, slugify
 from pdp.utils.paginator import paginator_range
 
-from models import PrivateTopic, PrivatePost, POSTS_PER_PAGE, TOPICS_PER_PAGE
-from models import never_privateread, mark_read
-from forms import PrivateTopicForm, PrivatePostForm
+from pdp.messages.models import PrivateTopic, PrivatePost
+from pdp.messages.models import POSTS_PER_PAGE, TOPICS_PER_PAGE
+from pdp.messages.models import never_privateread, mark_read
+from pdp.messages.forms import PrivateTopicForm, PrivatePostForm
 
 
 def index(request):
@@ -23,21 +24,21 @@ def index(request):
     Display the all private topics
     '''
 
-    #delete actions
+    # delete actions
     if request.method == 'POST':
         if 'delete' in request.POST:
             liste = request.POST.getlist('items')
-            topics=PrivateTopic.objects.filter(pk__in=liste).all()
+            topics = PrivateTopic.objects.filter(pk__in=liste).all()
             for topic in topics:
                 if request.user == topic.author:
-                    topic.author=topic.participants.all()[0]
+                    topic.author = topic.participants.all()[0]
                     topic.participants.remove(topic.participants.all()[0])
-                else :
+                else:
                     topic.participants.remove(request.user)
                 topic.save()
 
     privatetopics = PrivateTopic.objects.all()\
-        .filter(Q(participants__in=[request.user])|Q(author=request.user))\
+        .filter(Q(participants__in=[request.user]) | Q(author=request.user))\
         .distinct().order_by('-last_message__pubdate')
 
     # Paginator
@@ -46,13 +47,13 @@ def index(request):
 
     try:
         shown_privatetopics = paginator.page(page)
-        page=int(page)
+        page = int(page)
     except PageNotAnInteger:
         shown_privatetopics = paginator.page(1)
         page = 1
     except EmptyPage:
         shown_privatetopics = paginator.page(paginator.num_pages)
-        page=paginator.num_pages
+        page = paginator.num_pages
 
     return render_template('messages/index.html', {
         'privatetopics': shown_privatetopics,
@@ -68,8 +69,9 @@ def topic(request, topic_pk, topic_slug):
     # TODO: Clean that up
     g_topic = get_object_or_404(PrivateTopic, pk=topic_pk)
 
-    if not g_topic.author == request.user and not request.user in list(g_topic.participants.all()):
-         raise Http404
+    if not g_topic.author == request.user \
+       and not request.user in list(g_topic.participants.all()):
+        raise Http404
 
     # Check link
     if not topic_slug == slugify(g_topic.title):
@@ -80,7 +82,7 @@ def topic(request, topic_pk, topic_slug):
             mark_read(g_topic)
 
     posts = PrivatePost.objects.all().filter(privatetopic__pk=g_topic.pk)\
-                              .order_by('position_in_topic')
+        .order_by('position_in_topic')
 
     last_post_pk = g_topic.last_message.pk
 
@@ -123,7 +125,6 @@ def new(request):
     Creates a new private topic
     '''
 
-
     if request.method == 'POST':
         # If the client is using the "preview" button
         if 'preview' in request.POST:
@@ -147,7 +148,7 @@ def new(request):
 
             list_part = data['participants'].split(',')
             for part in list_part:
-                p=get_object_or_404(User, username=part)
+                p = get_object_or_404(User, username=part)
                 n_topic.participants.add(p)
             n_topic.save()
 
@@ -170,14 +171,16 @@ def new(request):
             raise Http404
     else:
         form = PrivateTopicForm()
-        if 'username' in request.GET:
-            user = request.GET['username']
-            u=get_object_or_404(User, username=user)
-        else :
-            u=''
+
+        u = None
+        if 'destinataire' in request.GET:
+            user_pk = request.GET['destinataire']
+            u = get_object_or_404(User, pk=user_pk)
+
         return render_template('messages/new.html', {
             'participants': u,
         })
+
 
 @login_required
 def edit(request):
@@ -197,12 +200,10 @@ def edit(request):
     except KeyError:
         page = 1
 
-    data = request.POST
-
     g_topic = get_object_or_404(PrivateTopic, pk=topic_pk)
 
-    if request.POST['username'] :
-        u=get_object_or_404(User, username=request.POST['username'])
+    if request.POST['username']:
+        u = get_object_or_404(User, username=request.POST['username'])
         g_topic.participants.add(u)
         g_topic.save()
 
@@ -220,7 +221,8 @@ def answer(request):
         raise Http404
 
     g_topic = get_object_or_404(PrivateTopic, pk=topic_pk)
-    posts = PrivatePost.objects.filter(privatetopic=g_topic).order_by('-pubdate')[:3]
+    posts = PrivatePost.objects.filter(
+        privatetopic=g_topic).order_by('-pubdate')[:3]
     last_post_pk = g_topic.last_message.pk
 
     # Check that the user isn't spamming
@@ -266,7 +268,7 @@ def answer(request):
         # Using the quote button
         if 'cite' in request.GET:
             post_cite_pk = request.GET['cite']
-            post_cite = Post.objects.get(pk=post_cite_pk)
+            post_cite = PrivatePost.objects.get(pk=post_cite_pk)
 
             for line in post_cite.text.splitlines():
                 text = text + '> ' + line + '\n'
@@ -292,17 +294,15 @@ def edit_post(request):
 
     post = get_object_or_404(PrivatePost, pk=post_pk)
 
-    #Only edit last private post
+    # Only edit last private post
     tp = get_object_or_404(PrivateTopic, pk=post.privatetopic.pk)
     last = get_object_or_404(PrivatePost, pk=tp.last_message.pk)
-    if not  last.pk == post.pk :
+    if not last.pk == post.pk:
         raise Http404
 
     g_topic = None
     if post.position_in_topic == 1:
         g_topic = get_object_or_404(PrivateTopic, pk=post.privatetopic.pk)
-
-
 
     # Making sure the user is allowed to do that
     if post.author != request.user:
@@ -320,8 +320,8 @@ def edit_post(request):
         # Using the preview button
         if 'preview' in request.POST:
             if g_topic:
-                g_topic = Topic(title=request.POST['title'],
-                                subtitle=request.POST['subtitle'])
+                g_topic = PrivateTopic(title=request.POST['title'],
+                                       subtitle=request.POST['subtitle'])
             return render_template('messages/edit_post.html', {
                 'post': post, 'topic': g_topic, 'text': request.POST['text'],
             })

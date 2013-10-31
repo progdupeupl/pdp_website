@@ -17,23 +17,26 @@
 {% endblock %}
 
 {% block headline-actions %}
-    {% ifequal profile.user user %}
-        <a href="{% url "pdp.member.views.settings_profile" %}" class="button">
-            <i class="icon-cog"></i>
-            Paramètres
-        </a>
-    {% endifequal %}
+    {% if user.is_authenticated %}
+        {% ifequal profile.user user %}
+            <a href="{% url "pdp.member.views.settings_profile" %}" class="button">
+                <i class="icon-cog"></i>
+                Paramètres
+            </a>
+        {% else %}
+            <a class="button secondary" href="{% url "pdp.messages.views.new"%}?destinataire={{ usr.id }}">
+                Envoyer un message
+            </a>
+        {% endifequal %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
 
 <div class="row">
     <div class="large-2 columns">
-            <p>
+        <p>
             <img src="{{ profile.get_avatar_url }}" alt="Avatar" width="80" height="80" class="th"/>
-            </p>
-            <p>
-            <a href="{% url "pdp.messages.views.new"%}?username={{ usr.username }}" class="fi-mail button">Message privé</a>
         </p>
     </div>
     <div class="large-10 columns">
