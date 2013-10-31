@@ -6,6 +6,11 @@
 {% endblock %}
 
 {% block headline %}
+    {% if tutorial.thumbnail %}
+        <span>
+            <img src="{{tutorial.thumbnail.url }}" class="hide-for-small"/>
+        </span>
+    {% endif %}
     {{ tutorial.title }}<br />
     <small>{{ tutorial.description }}</small>
 {% endblock %}
@@ -73,12 +78,6 @@
 
 <div class="row">
     <div class="large-12 columns">
-        <div class="large-1 columns hide-for-small">
-            {% if tutorial.thumbnail %}
-            <img src="{{tutorial.thumbnail.url }}"/>
-            {% endif %}
-        </div>
-        <div class="large-11 columns">
         <p>
             Tutoriel
             {% if not tutorial.is_mini %}
@@ -96,7 +95,6 @@
                 {% include "member/member_item_common.part.html" %}
             {% endfor %}.
         </p>
-    </div>
     </div>
 </div>
 

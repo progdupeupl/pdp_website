@@ -2,7 +2,6 @@
 
 from os import path
 import os
-import uuid
 import string
 
 from django.db import models
@@ -22,25 +21,34 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 IMAGE_MAX_WIDTH = 64
 IMAGE_MAX_HEIGHT = 64
 
+
 def image_path(instance, filename):
     '''Return path to an image'''
     ext = filename.split('.')[-1]
-    filename = u'{}.{}'.format(str(uuid.uuid4()), string.lower(ext))
+    filename = u'original.{}'.format(string.lower(ext))
     return os.path.join('tutorials', str(instance.pk), filename)
 
+
+def thumbnail_path(instance, filename):
+    '''Return path to an thumbnail'''
+    ext = filename.split('.')[-1]
+    filename = u'thumb.{}'.format(string.lower(ext))
+    return os.path.join('tutorials', str(instance.pk), filename)
+
+
 def tutorial_icon_path(instance, filename):
-    return 'tutoriels/tutoriels/{0}{1}'.format \
-        (instance.pk, path.splitext(filename)[1])
+    return u'tutoriels/tutoriels/{0}{1}'\
+             .format(instance.pk, path.splitext(filename)[1])
 
 
 def part_icon_path(instance, filename):
-    return 'tutoriels/parties/{0}{1}'.format \
-        (instance.pk, path.splitext(filename)[1])
+    return u'tutoriels/parties/{0}{1}'\
+             .format(instance.pk, path.splitext(filename)[1])
 
 
 def chapter_icon_path(instance, filename):
-    return 'tutoriels/chapitres/{0}{1}'.format \
-        (instance.pk, path.splitext(filename)[1])
+    return 'tutoriels/chapitres/{0}{1}'\
+            .format(instance.pk, path.splitext(filename)[1])
 
 
 def has_changed(instance, field, manager='objects'):
@@ -53,9 +61,10 @@ def has_changed(instance, field, manager='objects'):
     old = getattr(manager.get(pk=instance.pk), field)
     return not getattr(instance, field) == old
 
-class Tutorial(models.Model):
 
+class Tutorial(models.Model):
     '''A tutorial, large or small'''
+
     class Meta:
         verbose_name = 'Tutoriel'
         verbose_name_plural = 'Tutoriels'
@@ -63,17 +72,14 @@ class Tutorial(models.Model):
     title = models.CharField('Titre', max_length=80)
     description = models.CharField('Description', max_length=200)
     authors = models.ManyToManyField(User, verbose_name='Auteurs')
-    
+
     image = models.ImageField(upload_to=image_path, blank=True, null=True)
-    thumbnail = models.ImageField(upload_to=image_path, blank=True, null=True)
+    thumbnail = models.ImageField(upload_to=thumbnail_path, blank=True, null=True)
 
     introduction = models.TextField('Introduction', null=True, blank=True)
     conclusion = models.TextField('Conclusion', null=True, blank=True)
 
     slug = models.SlugField(max_length=80)
-
-    icon = models.ImageField(upload_to=tutorial_icon_path,
-                             null=True, blank=True)
 
     pubdate = models.DateTimeField('Date de publication', blank=True)
 
@@ -105,34 +111,34 @@ class Tutorial(models.Model):
         '''Gets the chapter associated with the tutorial if it's small'''
         # We can use get since we know there'll only be one chapter
         return Chapter.objects.get(tutorial__pk=self.pk)
-    
-    def save(self, force_update=False, force_insert=False, thumb_size=(IMAGE_MAX_HEIGHT,IMAGE_MAX_WIDTH)):
+
+    def save(self, force_update=False, force_insert=False, thumb_size=(IMAGE_MAX_HEIGHT, IMAGE_MAX_WIDTH)):
         self.slug = slugify(self.title)
-        
-        if has_changed(self, 'image') and self.image :
+
+        if has_changed(self, 'image') and self.image:
             # TODO : delete old image
-            
+
             image = Image.open(self.image)
-            
+
             if image.mode not in ('L', 'RGB'):
                 image = image.convert('RGB')
-            
+
             image.thumbnail(thumb_size, Image.ANTIALIAS)
-            
+
             # save the thumbnail to memory
             temp_handle = StringIO()
             image.save(temp_handle, 'png')
-            temp_handle.seek(0) # rewind the file
-            
+            temp_handle.seek(0)  # rewind the file
+
             # save to the thumbnail field
             suf = SimpleUploadedFile(os.path.split(self.image.name)[-1],
                                      temp_handle.read(),
                                      content_type='image/png')
-            self.thumbnail.save(suf.name+'.png', suf, save=False)
-        
+            self.thumbnail.save(u'{}.png'.format(suf.name), suf, save=False)
+
             # save the image object
             super(Tutorial, self).save(force_update, force_insert)
-        else :
+        else:
             super(Tutorial, self).save()
 
 
@@ -168,8 +174,8 @@ class Part(models.Model):
         super(Part, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return u'<Partie pour {0}, {1}>'.format\
-            (self.tutorial.title, self.position_in_tutorial)
+        return u'<Partie pour {0}, {1}>'\
+                .format(self.tutorial.title, self.position_in_tutorial)
 
     def get_absolute_url(self):
         return reverse('pdp.tutorial.views.view_part', args=[
@@ -221,8 +227,8 @@ class Chapter(models.Model):
         if self.tutorial:
             return u'<minituto \'{0}\'>'.format(self.tutorial.title)
         elif self.part:
-            return u'<bigtuto \'{0}\', \'{1}\'>'.format \
-                (self.part.tutorial.title, self.title)
+            return u'<bigtuto \'{0}\', \'{1}\'>'\
+                    .format(self.part.tutorial.title, self.title)
         else:
             return u'<orphelin>'
 
@@ -265,34 +271,34 @@ class Chapter(models.Model):
                     if chapter.position_in_part < self.position_in_part:
                         position += 1
         self.position_in_tutorial = position
-        
-    def save(self, force_update=False, force_insert=False, thumb_size=(IMAGE_MAX_HEIGHT,IMAGE_MAX_WIDTH)):
+
+    def save(self, force_update=False, force_insert=False, thumb_size=(IMAGE_MAX_HEIGHT, IMAGE_MAX_WIDTH)):
         self.slug = slugify(self.title)
-        
-        if has_changed(self, 'image') and self.image :
+
+        if has_changed(self, 'image') and self.image:
             # TODO : delete old image
-            
+
             image = Image.open(self.image)
-            
+
             if image.mode not in ('L', 'RGB'):
                 image = image.convert('RGB')
-            
+
             image.thumbnail(thumb_size, Image.ANTIALIAS)
-            
+
             # save the thumbnail to memory
             temp_handle = StringIO()
             image.save(temp_handle, 'png')
-            temp_handle.seek(0) # rewind the file
-            
+            temp_handle.seek(0)  # rewind the file
+
             # save to the thumbnail field
             suf = SimpleUploadedFile(os.path.split(self.image.name)[-1],
                                      temp_handle.read(),
                                      content_type='image/png')
             self.thumbnail.save(suf.name+'.png', suf, save=False)
-        
+
             # save the image object
             super(Chapter, self).save(force_update, force_insert)
-        else :
+        else:
             super(Chapter, self).save()
 
 

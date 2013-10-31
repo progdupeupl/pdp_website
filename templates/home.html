@@ -55,19 +55,15 @@ class="active"
 
         {% if last_articles %}
             {% for article in last_articles %}
-            <div class="large-12">
-                <div class="large-3 column hide-for-small">
-                    {% if article.thumbnail %}
-                    <img src="{{article.thumbnail.url }}"/>
-                    {% endif %}
-                </div>
-                <div class="large-9 column">
-                    <a href="{{article.get_absolute_url }}">{{ article.title }}</a>
-                </div>
-                <div class="large-12 column">
-                    <p>{{ article.description }}</p>
-                </div>
-            </div>
+                <p>
+                {% if article.thumbnail %}
+                    <span style="float: left; margin: 5px;">
+                        <img src="{{article.thumbnail.url }}" alt="Icône" class="hide-for-small"/>
+                    </span>
+                {% endif %}
+                    <a href="{{article.get_absolute_url }}">{{ article.title }}</a><br />
+                    {{ article.description }}
+                </p>
             {% endfor %}
         {% else %}
             <p>Pas d'articles pour l'instant.</p>
@@ -76,7 +72,7 @@ class="active"
 
     <div class="large-4 columns">
         <div class="home-app-title">
-            <h2 >
+            <h2>
                 <a href="{% url "pdp.tutorial.views.index" %}">
                     Tutoriels
                 </a>
@@ -85,16 +81,14 @@ class="active"
 
         {% if last_tutorials %}
             {% for tutorial in last_tutorials %}
-                <div class="large-12">
-                    <div class="large-3 column hide-for-small">
+                <div class="row collapse">
+                    <div class="small-2 column hide-for-small">
                         {% if tutorial.thumbnail %}
-                        <img src="{{tutorial.thumbnail.url }}"/>
+                        <img src="{{ tutorial.thumbnail.url }}"/>
                         {% endif %}
                     </div>
-                    <div class="large-9 column">
-                        <a href="{{tutorial.get_absolute_url }}">{{ tutorial.title }}</a>
-                    </div>
-                    <div class="large-12 column">
+                    <div class="small-10 column">
+                        <a href="{{ tutorial.get_absolute_url }}">{{ tutorial.title }}</a>
                         <p>{{ tutorial.description }}</p>
                     </div>
                 </div>
@@ -105,7 +99,7 @@ class="active"
     </div>
     <div class="large-4 columns">
         <div class="home-app-title">
-            <h2  >
+            <h2>
                 <a href="{% url "pdp.forum.views.index" %}">
                     Forums
                 </a>
