@@ -96,7 +96,7 @@
                                     {% if unread_topics|length > 0 %}
                                         <span class="label alert">{{ unread_topics|length }}</span>
                                     {% endif %}
-                                    <i class="fi-mail"></i>
+                                    Messages
                                 </a>
                                 <ul class="dropdown">
                                     {% with read_topics=topics.read %}
@@ -143,7 +143,7 @@
                                     {% if unread_topics|length > 0 %}
                                         <span class="label alert">{{ unread_topics|length }}</span>
                                     {% endif %}
-                                    <i class="fi-star"></i>
+                                    Sujets suivis
                                 </a>
                                 <ul class="dropdown">
                                     {% with read_topics=topics.read %}
