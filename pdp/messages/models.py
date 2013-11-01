@@ -52,7 +52,9 @@ class PrivateTopic(models.Model):
         '''
         Return the number of private posts in the private topic
         '''
-        return PrivatePost.objects.all().filter(privatetopic__pk=self.pk).count()
+        return PrivatePost.objects.all()\
+            .filter(privatetopic__pk=self.pk)\
+            .count()
 
     def get_last_answer(self):
         '''
@@ -107,7 +109,8 @@ class PrivateTopic(models.Model):
             .filter(author=user)\
             .order_by('-pubdate')
 
-        if last_user_privateposts and last_user_privateposts[0] == self.get_last_answer():
+        if last_user_privateposts \
+           and last_user_privateposts[0] == self.get_last_answer():
             last_user_privatepost = last_user_privateposts[0]
             t = timezone.now() - last_user_privatepost.pubdate
             if t.total_seconds() < SPAM_LIMIT_SECONDS:
@@ -142,14 +145,15 @@ class PrivatePost(models.Model):
     def get_absolute_url(self):
         page = int(ceil(float(self.position_in_topic) / POSTS_PER_PAGE))
 
-        return '{0}?page={1}#p{2}'.format(self.privatetopic.get_absolute_url(), page, self.pk)
+        return '{0}?page={1}#p{2}'\
+            .format(self.privatetopic.get_absolute_url(), page, self.pk)
 
 
 class PrivateTopicRead(models.Model):
-
     '''
-    Small model which keeps track of the user viewing private topics. It remembers the
-    topic he looked and what was the last private Post at this time.
+    Small model which keeps track of the user viewing private topics. It
+    remembers the topic he looked and what was the last private Post at this
+    time.
     '''
     class Meta:
         verbose_name = 'Message privé lu'
@@ -167,13 +171,15 @@ class PrivateTopicRead(models.Model):
 
 def never_privateread(privatetopic, user=None):
     '''
-    Check if a private topic has been read by an user since it last post was added.
+    Check if a private topic has been read by an user since it last post was
+    added.
     '''
     if user is None:
         user = get_current_user()
 
     return PrivateTopicRead.objects\
-        .filter(privatepost=privatetopic.last_message, privatetopic=privatetopic, user=user)\
+        .filter(privatepost=privatetopic.last_message,
+                privatetopic=privatetopic, user=user)\
         .count() == 0
 
 
@@ -184,7 +190,8 @@ def mark_read(privatetopic):
     PrivateTopicRead.objects.filter(
         privatetopic=privatetopic, user=get_current_user()).delete()
     t = PrivateTopicRead(
-        privatepost=privatetopic.last_message, privatetopic=privatetopic, user=get_current_user())
+        privatepost=privatetopic.last_message, privatetopic=privatetopic,
+        user=get_current_user())
     t.save()
 
 

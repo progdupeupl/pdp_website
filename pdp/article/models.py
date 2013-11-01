@@ -1,11 +1,9 @@
 # coding: utf-8
 
 import os
-import uuid
 import string
 from django.db import models
 from django.contrib.auth.models import User
-from django.conf import settings
 
 from taggit.managers import TaggableManager
 
@@ -65,7 +63,8 @@ class Article(models.Model):
     def get_edit_url(self):
         return '/articles/editer?article={0}'.format(self.pk)
 
-    def save(self, force_update=False, force_insert=False, thumb_size=(IMAGE_MAX_HEIGHT, IMAGE_MAX_WIDTH)):
+    def save(self, force_update=False, force_insert=False,
+             thumb_size=(IMAGE_MAX_HEIGHT, IMAGE_MAX_WIDTH)):
 
         if has_changed(self, 'image') and self.image:
             # TODO : delete old image
@@ -86,7 +85,7 @@ class Article(models.Model):
             suf = SimpleUploadedFile(os.path.split(self.image.name)[-1],
                                      temp_handle.read(),
                                      content_type='image/png')
-            self.thumbnail.save(suf.name+'.png', suf, save=False)
+            self.thumbnail.save('{}.png'.format(suf.name), suf, save=False)
 
             # save the image object
             super(Article, self).save(force_update, force_insert)

@@ -73,7 +73,9 @@ class Forum(models.Model):
     def get_last_message(self):
         '''Gets the last message on the forum, if there are any'''
         try:
-            return Post.objects.all().filter(topic__forum__pk=self.pk).order_by('-pubdate')[0]
+            return Post.objects.all()\
+                .filter(topic__forum__pk=self.pk)\
+                .order_by('-pubdate')[0]
         except IndexError:
             return None
 
@@ -95,7 +97,7 @@ class Topic(models.Model):
 
     forum = models.ForeignKey(Forum, verbose_name='Forum')
     author = models.ForeignKey(User, verbose_name='Auteur',
-                                     related_name='topics')
+                               related_name='topics')
     last_message = models.ForeignKey('Post', null=True,
                                      related_name='last_message',
                                      verbose_name='Dernier message')
@@ -201,7 +203,7 @@ class Post(models.Model):
     '''
     topic = models.ForeignKey(Topic, verbose_name='Sujet')
     author = models.ForeignKey(User, verbose_name='Auteur',
-                                     related_name='posts')
+                               related_name='posts')
     text = models.TextField('Texte')
 
     pubdate = models.DateTimeField('Date de publication', auto_now_add=True)
@@ -218,7 +220,8 @@ class Post(models.Model):
     def get_absolute_url(self):
         page = int(ceil(float(self.position_in_topic) / POSTS_PER_PAGE))
 
-        return '{0}?page={1}#p{2}'.format(self.topic.get_absolute_url(), page, self.pk)
+        return '{0}?page={1}#p{2}'\
+            .format(self.topic.get_absolute_url(), page, self.pk)
 
 
 class TopicRead(models.Model):

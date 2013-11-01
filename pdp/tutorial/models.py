@@ -38,17 +38,17 @@ def thumbnail_path(instance, filename):
 
 def tutorial_icon_path(instance, filename):
     return u'tutoriels/tutoriels/{0}{1}'\
-             .format(instance.pk, path.splitext(filename)[1])
+        .format(instance.pk, path.splitext(filename)[1])
 
 
 def part_icon_path(instance, filename):
     return u'tutoriels/parties/{0}{1}'\
-             .format(instance.pk, path.splitext(filename)[1])
+        .format(instance.pk, path.splitext(filename)[1])
 
 
 def chapter_icon_path(instance, filename):
     return 'tutoriels/chapitres/{0}{1}'\
-            .format(instance.pk, path.splitext(filename)[1])
+        .format(instance.pk, path.splitext(filename)[1])
 
 
 def has_changed(instance, field, manager='objects'):
@@ -74,7 +74,8 @@ class Tutorial(models.Model):
     authors = models.ManyToManyField(User, verbose_name='Auteurs')
 
     image = models.ImageField(upload_to=image_path, blank=True, null=True)
-    thumbnail = models.ImageField(upload_to=thumbnail_path, blank=True, null=True)
+    thumbnail = models.ImageField(upload_to=thumbnail_path,
+                                  blank=True, null=True)
 
     introduction = models.TextField('Introduction', null=True, blank=True)
     conclusion = models.TextField('Conclusion', null=True, blank=True)
@@ -112,7 +113,8 @@ class Tutorial(models.Model):
         # We can use get since we know there'll only be one chapter
         return Chapter.objects.get(tutorial__pk=self.pk)
 
-    def save(self, force_update=False, force_insert=False, thumb_size=(IMAGE_MAX_HEIGHT, IMAGE_MAX_WIDTH)):
+    def save(self, force_update=False, force_insert=False,
+             thumb_size=(IMAGE_MAX_HEIGHT, IMAGE_MAX_WIDTH)):
         self.slug = slugify(self.title)
 
         if has_changed(self, 'image') and self.image:
@@ -175,7 +177,7 @@ class Part(models.Model):
 
     def __unicode__(self):
         return u'<Partie pour {0}, {1}>'\
-                .format(self.tutorial.title, self.position_in_tutorial)
+            .format(self.tutorial.title, self.position_in_tutorial)
 
     def get_absolute_url(self):
         return reverse('pdp.tutorial.views.view_part', args=[
@@ -228,7 +230,7 @@ class Chapter(models.Model):
             return u'<minituto \'{0}\'>'.format(self.tutorial.title)
         elif self.part:
             return u'<bigtuto \'{0}\', \'{1}\'>'\
-                    .format(self.part.tutorial.title, self.title)
+                .format(self.part.tutorial.title, self.title)
         else:
             return u'<orphelin>'
 
@@ -272,7 +274,8 @@ class Chapter(models.Model):
                         position += 1
         self.position_in_tutorial = position
 
-    def save(self, force_update=False, force_insert=False, thumb_size=(IMAGE_MAX_HEIGHT, IMAGE_MAX_WIDTH)):
+    def save(self, force_update=False, force_insert=False,
+             thumb_size=(IMAGE_MAX_HEIGHT, IMAGE_MAX_WIDTH)):
         self.slug = slugify(self.title)
 
         if has_changed(self, 'image') and self.image:
@@ -294,7 +297,7 @@ class Chapter(models.Model):
             suf = SimpleUploadedFile(os.path.split(self.image.name)[-1],
                                      temp_handle.read(),
                                      content_type='image/png')
-            self.thumbnail.save(suf.name+'.png', suf, save=False)
+            self.thumbnail.save('{}.png'.format(suf.name), suf, save=False)
 
             # save the image object
             super(Chapter, self).save(force_update, force_insert)
