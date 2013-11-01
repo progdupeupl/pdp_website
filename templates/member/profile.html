@@ -66,7 +66,7 @@
                 </tr>
                 <tr>
                     <td>En ligne</td>
-                    <td>{{ profile.get_visible_articles.count }}</td>
+                    <td><a href="{% url "pdp.article.views.find_article" usr.username %}">{{ profile.get_visible_articles.count }}</a></td>
                 </tr>
             </tbody>
             <tfoot>
@@ -87,7 +87,7 @@
                 </tr>
                 <tr>
                     <td>En ligne</td>
-                    <td>{{ profile.get_visible_tutorials.count }}</td>
+                    <td><a href="{% url "pdp.tutorial.views.find_tuto" usr.username %}">{{ profile.get_visible_tutorials.count }}</a></td>
                 </tr>
             </tbody>
             <tfoot>
