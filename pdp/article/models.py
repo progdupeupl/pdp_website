@@ -48,9 +48,10 @@ class Article(models.Model):
 
     tags = TaggableManager()
 
-    image = models.ImageField(upload_to=image_path, blank=True, null=True)
-    thumbnail = models.ImageField(
-        upload_to=thumbnail_path, blank=True, null=True)
+    image = models.ImageField(upload_to=image_path,
+                              blank=True, null=True, default=None)
+    thumbnail = models.ImageField(upload_to=thumbnail_path,
+                                  blank=True, null=True, default=None)
 
     is_visible = models.BooleanField('Est visible publiquement')
 

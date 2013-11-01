@@ -73,9 +73,10 @@ class Tutorial(models.Model):
     description = models.CharField('Description', max_length=200)
     authors = models.ManyToManyField(User, verbose_name='Auteurs')
 
-    image = models.ImageField(upload_to=image_path, blank=True, null=True)
+    image = models.ImageField(upload_to=image_path,
+                              blank=True, null=True, default=None)
     thumbnail = models.ImageField(upload_to=thumbnail_path,
-                                  blank=True, null=True)
+                                  blank=True, null=True, default=None)
 
     introduction = models.TextField('Introduction', null=True, blank=True)
     conclusion = models.TextField('Conclusion', null=True, blank=True)
