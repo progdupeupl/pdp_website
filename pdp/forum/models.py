@@ -45,7 +45,7 @@ class Forum(models.Model):
         verbose_name_plural = 'Forums'
 
     title = models.CharField('Titre', max_length=80)
-    subtitle = models.CharField('Sous-titre', max_length=200)
+    subtitle = models.CharField('Sous-titre', max_length=200, blank=True)
 
     category = models.ForeignKey(Category, verbose_name='Catégorie')
     position_in_category = models.IntegerField('Position dans la catégorie',
@@ -93,7 +93,7 @@ class Topic(models.Model):
         verbose_name_plural = 'Sujets'
 
     title = models.CharField('Titre', max_length=80)
-    subtitle = models.CharField('Sous-titre', max_length=200)
+    subtitle = models.CharField('Sous-titre', max_length=200, blank=True)
 
     forum = models.ForeignKey(Forum, verbose_name='Forum')
     author = models.ForeignKey(User, verbose_name='Auteur',

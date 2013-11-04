@@ -25,13 +25,13 @@ class PrivateTopic(models.Model):
         verbose_name_plural = 'Messages privés'
 
     title = models.CharField('Titre', max_length=80)
-    subtitle = models.CharField('Sous-titre', max_length=200)
+    subtitle = models.CharField('Sous-titre', max_length=200, blank=True)
 
     author = models.ForeignKey(User, verbose_name='Auteur',
                                related_name='author')
     participants = models.ManyToManyField(User, verbose_name='Participants',
                                           related_name='participants')
-    last_message = models.ForeignKey('PrivatePost', null=True,
+    last_message = models.ForeignKey('PrivatePost', null=True, blank=True,
                                      related_name='last_message',
                                      verbose_name='Dernier message')
     pubdate = models.DateTimeField('Date de création', auto_now_add=True)

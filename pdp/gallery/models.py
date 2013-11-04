@@ -96,7 +96,7 @@ class Gallery(models.Model):
         verbose_name_plural = "Galeries"
 
     title = models.CharField('Titre', max_length=80)
-    subtitle = models.CharField('Sous titre', max_length=200)
+    subtitle = models.CharField('Sous titre', max_length=200, blank=True)
     slug = models.SlugField(max_length=80)
     pubdate = models.DateTimeField('Date de création', auto_now_add=True)
     update = models.DateTimeField(
