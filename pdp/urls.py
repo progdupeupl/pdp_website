@@ -1,6 +1,7 @@
 # coding: utf-8
 
 from django.conf.urls import patterns, include, url
+from django.conf.urls.static import static
 from django.contrib.auth.models import User, Group
 
 from haystack.views import SearchView
@@ -30,9 +31,11 @@ urlpatterns = patterns('',
     url(r'^articles/', include('pdp.article.urls')),
     url(r'^tutoriels/', include('pdp.tutorial.urls')),
     url(r'^forums/', include('pdp.forum.urls')),
+    url(r'^messages/', include('pdp.messages.urls')),
     url(r'^membres/', include('pdp.member.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^pages/', include('pdp.pages.urls')),
+    url(r'^galerie/', include('pdp.gallery.urls')),
     url(r'^api/', include('pdp.api.urls')),
 
     url(r'^captcha/', include('captcha.urls')),
@@ -47,7 +50,7 @@ urlpatterns = patterns('',
             template='search/search.html',
             form_class=ModelSearchForm),
         name='haystack_search'),
-)
+)+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.SERVE:
     urlpatterns += patterns('',

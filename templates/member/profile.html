@@ -17,19 +17,27 @@
 {% endblock %}
 
 {% block headline-actions %}
-    {% ifequal profile.user user %}
-        <a href="{% url "pdp.member.views.settings_profile" %}" class="button">
-            <i class="icon-cog"></i>
-            Paramètres
-        </a>
-    {% endifequal %}
+    {% if user.is_authenticated %}
+        {% ifequal profile.user user %}
+            <a href="{% url "pdp.member.views.settings_profile" %}" class="button">
+                <i class="icon-cog"></i>
+                Paramètres
+            </a>
+        {% else %}
+            <a class="button secondary" href="{% url "pdp.messages.views.new"%}?destinataire={{ usr.id }}">
+                Envoyer un message
+            </a>
+        {% endifequal %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
 
 <div class="row">
     <div class="large-2 columns">
-        <img src="{{ profile.get_avatar_url }}" alt="Avatar" width="80" height="80" class="th"/>
+        <p>
+            <img src="{{ profile.get_avatar_url }}" alt="Avatar" width="80" height="80" class="th"/>
+        </p>
     </div>
     <div class="large-10 columns">
         <p>
@@ -58,7 +66,7 @@
                 </tr>
                 <tr>
                     <td>En ligne</td>
-                    <td>{{ profile.get_visible_articles.count }}</td>
+                    <td><a href="{% url "pdp.article.views.find_article" usr.username %}">{{ profile.get_visible_articles.count }}</a></td>
                 </tr>
             </tbody>
             <tfoot>
@@ -79,7 +87,7 @@
                 </tr>
                 <tr>
                     <td>En ligne</td>
-                    <td>{{ profile.get_visible_tutorials.count }}</td>
+                    <td><a href="{% url "pdp.tutorial.views.find_tuto" usr.username %}">{{ profile.get_visible_tutorials.count }}</a></td>
                 </tr>
             </tbody>
             <tfoot>
@@ -96,11 +104,11 @@
             <tbody>
                 <tr>
                     <td>Sujets créés</td>
-                    <td>{{ profile.get_topic_count }}</td>
+                    <td><a href="{% url "pdp.forum.views.find_topic" usr.username %}">{{ profile.get_topic_count }}</a></td>
                 </tr>
                 <tr>
                     <td>Messages postés</td>
-                    <td>{{ profile.get_post_count }}</td>
+                    <td><a href="{% url "pdp.forum.views.find_post" usr.username %}">{{ profile.get_post_count }}</a></td>
                 </tr>
             </tbody>
         </table>

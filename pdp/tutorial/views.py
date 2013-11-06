@@ -97,6 +97,8 @@ def add_tutorial(request):
             tutorial.description = data['description']
             tutorial.is_mini = 'is_mini' in data
             tutorial.pubdate = datetime.now()
+            if 'image' in request.FILES :
+                tutorial.image = request.FILES['image']
             tutorial.save()
 
             # We need to save the tutorial before changing its author list
@@ -134,13 +136,15 @@ def edit_tutorial(request):
         raise Http404
 
     if request.method == 'POST':
-        form = EditTutorialForm(request.POST)
+        form = EditTutorialForm(request.POST, request.FILES)
         if form.is_valid():
             data = form.data
             tutorial.title = data['title']
             tutorial.description = data['description']
             tutorial.introduction = data['introduction']
             tutorial.conclusion = data['conclusion']
+            if 'image' in request.FILES :
+                tutorial.image = request.FILES['image']
             tutorial.save()
 
             return redirect(tutorial.get_absolute_url())
@@ -425,7 +429,7 @@ def add_chapter(request):
         raise Http404
 
     if request.method == 'POST':
-        form = ChapterForm(request.POST)
+        form = ChapterForm(request.POST, request.FILES)
         if form.is_valid():
             data = form.data
 
@@ -444,6 +448,8 @@ def add_chapter(request):
                 chapter.part = part
                 chapter.position_in_part = part.get_chapters().count() + 1
                 chapter.update_position_in_tutorial()
+                if 'image' in request.FILES :
+                    chapter.image = request.FILES['image']
                 chapter.save()
 
                 if 'submit_continue' in request.POST:
@@ -537,9 +543,9 @@ def edit_chapter(request):
     if request.method == 'POST':
 
         if chapter.part:
-            form = ChapterForm(request.POST)
+            form = ChapterForm(request.POST, request.FILES)
         else:
-            form = EmbdedChapterForm(request.POST)
+            form = EmbdedChapterForm(request.POST, request.FILES)
 
         if form.is_valid():
             data = form.data
@@ -547,6 +553,8 @@ def edit_chapter(request):
                 chapter.title = data['title']
             chapter.introduction = data['introduction']
             chapter.conclusion = data['conclusion']
+            if 'image' in request.FILES :
+                    chapter.image = request.FILES['image']
             chapter.save()
             return redirect(chapter.get_absolute_url())
     else:
@@ -682,6 +690,15 @@ def modify_extract(request):
 
     raise Http404
 
+def find_tuto(request, name):
+    u = get_object_or_404(User, username=name)
+    tutos=Tutorial.objects.all().filter(authors__in=[u])\
+                          .order_by('-pubdate')
+    # Paginator
+    
+    return render_template('tutorial/find_tutorial.html', {
+        'tutos': tutos, 'usr':u,
+    })
 
 # Handling deprecated links
 

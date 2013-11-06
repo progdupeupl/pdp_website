@@ -1,11 +1,13 @@
 # coding: utf-8
 
+import json
 from datetime import datetime
 
 from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404, HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from pdp.utils import render_template, slugify
@@ -212,17 +214,19 @@ def edit(request):
         page = 1
 
     data = request.POST
+    resp = {}
 
     g_topic = get_object_or_404(Topic, pk=topic_pk)
 
     if request.user.is_authenticated():
         # User actions
         if 'follow' in data:
-            follow(g_topic)
+            resp['follow'] = follow(g_topic)
     if request.user == g_topic.author:
         # Author actions
         if 'solved' in data:
             g_topic.is_solved = not g_topic.is_solved
+            resp['solved'] = g_topic.is_solved
     if request.user.has_perm('forum.change_topic'):
         # Staff actions using AJAX
         # TODO: Do not redirect on AJAX requests
@@ -242,8 +246,7 @@ def edit(request):
     g_topic.save()
 
     if request.is_ajax():
-        return HttpResponse('{{"solved": {}}}'\
-                .format(1 if g_topic.is_solved else 0), 'json')
+        return HttpResponse(json.dumps(resp))
     else:
         return redirect(u'{}?page={}'.format(g_topic.get_absolute_url(), page))
 
@@ -403,6 +406,53 @@ def useful_post(request):
 
     return redirect(post.get_absolute_url())
 
+def find_topic(request, name):
+
+    u = get_object_or_404(User, username=name)
+    topics=Topic.objects.all().filter(author=u)\
+                          .order_by('-pubdate')
+                              
+    # Paginator
+    paginator = Paginator(topics, TOPICS_PER_PAGE)
+    page = request.GET.get('page')
+
+    try:
+        shown_topics = paginator.page(page)
+        page=int(page)
+    except PageNotAnInteger:
+        shown_topics = paginator.page(1)
+        page = 1
+    except EmptyPage:
+        shown_topics = paginator.page(paginator.num_pages)
+        page=paginator.num_pages
+    
+    return render_template('forum/find_topic.html', {
+        'topics': shown_topics, 'usr':u,
+        'pages': paginator_range(page, paginator.num_pages), 'nb': page
+    })
+
+def find_post(request, name):
+    u = get_object_or_404(User, username=name)
+    posts=Post.objects.all().filter(author=u)\
+                          .order_by('-pubdate')
+    # Paginator
+    paginator = Paginator(posts, POSTS_PER_PAGE)
+    page = request.GET.get('page')
+
+    try:
+        shown_posts = paginator.page(page)
+        page=int(page)
+    except PageNotAnInteger:
+        shown_posts = paginator.page(1)
+        page = 1
+    except EmptyPage:
+        shown_posts = paginator.page(paginator.num_pages)
+        page=paginator.num_pages
+    
+    return render_template('forum/find_post.html', {
+        'posts': shown_posts, 'usr':u,
+        'pages': paginator_range(page, paginator.num_pages), 'nb': page
+    })
 
 # Deprecated URLs
 

@@ -21,6 +21,10 @@ class ArticleForm(forms.Form):
         required=False,
         widget=forms.Textarea
     )
+    
+    image = forms.ImageField(
+        label='Selectionnez une image', 
+        required=False)
 
     tags = forms.CharField(
         label='Tags',
@@ -36,6 +40,7 @@ class ArticleForm(forms.Form):
             Field('title'),
             Field('description'),
             Field('text'),
+            Field('image'),
             Field('tags'),
             Submit('submit', 'Valider'),
         )

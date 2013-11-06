@@ -45,7 +45,7 @@ class Forum(models.Model):
         verbose_name_plural = 'Forums'
 
     title = models.CharField('Titre', max_length=80)
-    subtitle = models.CharField('Sous-titre', max_length=200)
+    subtitle = models.CharField('Sous-titre', max_length=200, blank=True)
 
     category = models.ForeignKey(Category, verbose_name='Catégorie')
     position_in_category = models.IntegerField('Position dans la catégorie',
@@ -73,7 +73,9 @@ class Forum(models.Model):
     def get_last_message(self):
         '''Gets the last message on the forum, if there are any'''
         try:
-            return Post.objects.all().filter(topic__forum__pk=self.pk).order_by('-pubdate')[0]
+            return Post.objects.all()\
+                .filter(topic__forum__pk=self.pk)\
+                .order_by('-pubdate')[0]
         except IndexError:
             return None
 
@@ -91,11 +93,11 @@ class Topic(models.Model):
         verbose_name_plural = 'Sujets'
 
     title = models.CharField('Titre', max_length=80)
-    subtitle = models.CharField('Sous-titre', max_length=200)
+    subtitle = models.CharField('Sous-titre', max_length=200, blank=True)
 
     forum = models.ForeignKey(Forum, verbose_name='Forum')
     author = models.ForeignKey(User, verbose_name='Auteur',
-                                     related_name='topics')
+                               related_name='topics')
     last_message = models.ForeignKey('Post', null=True,
                                      related_name='last_message',
                                      verbose_name='Dernier message')
@@ -150,7 +152,7 @@ class Topic(models.Model):
                 .select_related()\
                 .filter(topic=self, user=get_current_user())\
                 .latest('post__pubdate').post
-        except Post.DoesNotExist:
+        except TopicRead.DoesNotExist:
             return self.first_post()
 
     def is_followed(self, user=None):
@@ -201,7 +203,7 @@ class Post(models.Model):
     '''
     topic = models.ForeignKey(Topic, verbose_name='Sujet')
     author = models.ForeignKey(User, verbose_name='Auteur',
-                                     related_name='posts')
+                               related_name='posts')
     text = models.TextField('Texte')
 
     pubdate = models.DateTimeField('Date de publication', auto_now_add=True)
@@ -218,7 +220,8 @@ class Post(models.Model):
     def get_absolute_url(self):
         page = int(ceil(float(self.position_in_topic) / POSTS_PER_PAGE))
 
-        return '{0}?page={1}#p{2}'.format(self.topic.get_absolute_url(), page, self.pk)
+        return '{0}?page={1}#p{2}'\
+            .format(self.topic.get_absolute_url(), page, self.pk)
 
 
 class TopicRead(models.Model):
@@ -284,6 +287,7 @@ def follow(topic):
     '''
     Toggle following of a topic for an user
     '''
+    ret = None
     try:
         existing = TopicFollowed.objects.get(
             topic=topic, user=get_current_user()
@@ -298,13 +302,16 @@ def follow(topic):
             user=get_current_user()
         )
         t.save()
+        ret = True
     else:
         # If user is already following the topic, we make him don't anymore
         existing.delete()
+        ret = False
+    return ret
 
 
 def get_last_topics():
     '''
-    Returns the 3 very last topics
+    Returns the 5 very last topics
     '''
-    return Topic.objects.all().order_by('-pubdate')[:3]
+    return Topic.objects.all().order_by('-last_message__pubdate')[:5]

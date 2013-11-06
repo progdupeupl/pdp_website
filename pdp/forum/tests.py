@@ -6,10 +6,10 @@ from django.contrib.auth.models import User
 from django_dynamic_fixture import G
 
 from pdp.member.models import Profile
-from .models import Category, Forum, Topic, Post
+from pdp.forum.models import Category, Forum, Topic, Post
 
 
-class ForumTests(TestCase):
+class ForumIntegrationTests(TestCase):
 
     # Current URL tests
 
@@ -38,6 +38,9 @@ class ForumTests(TestCase):
 
     # Deprecated URL redirect tests
 
+
+class ForumDeprecatedIntegrationTests(TestCase):
+
     def test_deprecated_category_url_redirect(self):
         category = G(Category, id=42, title='Test category',
                      slug='test-category')
@@ -56,7 +59,7 @@ class ForumTests(TestCase):
 
     def test_deprecated_topic_url_redirect(self):
         author = G(User, username='monique')
-        author_profile = G(Profile, user=author)
+        G(Profile, user=author)
 
         category = G(Category, id=42, title='Test category',
                      slug='test-category')

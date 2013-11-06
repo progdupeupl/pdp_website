@@ -15,7 +15,7 @@ urlpatterns = patterns('',
 # Viewing
 
     # Current URLs
-
+    url(r'^voir/(?P<name>.+)$', views.find_tuto),
     url(r'^(?P<tutorial_pk>\d+)/(?P<tutorial_slug>.+)/' +
         r'(?P<part_slug>.+)/' +
         r'(?P<chapter_slug>.+)/$', views.view_chapter, name="view-chapter-url"),

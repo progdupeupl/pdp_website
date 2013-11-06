@@ -8,6 +8,11 @@
 {% endblock %}
 
 {% block headline %}
+    {% if article.thumbnail %}
+        <span>
+            <img src="{{ article.thumbnail.url }}" alt="Icône" class="hide-for-small"/>
+        </span>
+    {% endif %}
     <a href="{{ article.get_absolute_url }}">{{ article.title }}</a><br />
     <small>{{ article.description }}</small>
 {% endblock %}
@@ -65,7 +70,10 @@
                 <a href="{% url "haystack_search" %}?q={{ tag.name }}&amp;models=article.article">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
             {% endfor %}
         </p>
-
+    </div>
+</div>
+<div class="row">
+    <div class="large-12 columns">
         {{ article.text|emarkdown }}
     </div>
 </div>

@@ -6,7 +6,7 @@ version [here](http://progdupeu.pl/).
 ## Naming conventions
 
 Everything in the code should be in english (vars, funcs, methods, docstrings,
-comments) though some parts may - of course - be in French. PEP-8 is good too.
+comments) though some parts may − of course − be in French. PEP-8 is good too.
 
 ## Dependencies
 
@@ -18,6 +18,9 @@ need to install [Compass](http://compass-style.org) and [Zurb
 Foundation](http://foundation.zurb.com/)' ruby gems using `gem install compass
 zurb-foundation`.
 
+Finally, if you want to navigate in `debug = False` mode then you will need to
+have `yuglify` on your system in order to compress CSS and JS sheets.
+
 ## Deployment
 
 From the project's root, you will need to run the following command:
@@ -28,9 +31,6 @@ From the project's root, you will need to run the following command:
 Once everything is synced, you will have to create a Profile instance for
 your superuser account using the your credentials and the Django admin system
 aivaible on `/admin/`.
-
-If you want to start with example data, you can execute the following command
-after creating the database : `python manage.py loaddata data.json`.
 
 ## Copyright
 

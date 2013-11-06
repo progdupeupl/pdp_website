@@ -55,15 +55,20 @@
                 {% for article in articles %}
                 <div class="row article-publication-item">
                     <div class="large-1 columns">
+                        {% if article.thumbnail %}
+                            <img src="{{article.thumbnail.url }}"/>
+                        {% endif %}
+                    </div>
+                    <div class="large-10 columns">
+                        <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+                        <p>{{ article.description }}</p>
+                    </div>
+                    <div class="large-1 columns">
                         <div class="date-box">
                             {% with date=article.pubdate %}
                                 {% include "misc/datebox.part.html" %}
                             {% endwith %}
                         </div>
-                    </div>
-                    <div class="large-11 columns">
-                        <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
-                        <p>{{ article.description }}</p>
                     </div>
                 </div>
                 {% endfor %}
