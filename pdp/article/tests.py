@@ -72,3 +72,13 @@ class ArticleIntegrationTests(TestCase):
         article = G(Article, is_visible=True)
         self.assertEqual(200,
                          client.get(article.get_absolute_url()).status_code)
+
+class FeedsIntegrationTests(TestCase):
+
+    def test_articles_feed_rss(self):
+        resp = self.client.get('/articles/flux/rss/')
+        self.assertEqual(resp.status_code, 200)
+
+    def test_articles_feed_atom(self):
+        resp = self.client.get('/articles/flux/atom/')
+        self.assertEqual(resp.status_code, 200)
