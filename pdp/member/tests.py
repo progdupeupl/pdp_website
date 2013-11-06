@@ -48,7 +48,7 @@ class MemberIntegrationTests(TestCase):
 class AuthenticatedMemberIntegrationTests(TestCase):
 
     def setUp(self):
-        # Rreate user
+        # Create user
         self.user = G(User, username='test')
         self.user.set_password('test')
         self.user.save()
@@ -74,4 +74,3 @@ class AuthenticatedMemberIntegrationTests(TestCase):
     def test_actions(self):
         resp = self.client.get(reverse('pdp.member.views.actions'))
         self.assertEqual(resp.status_code, 200)
-
