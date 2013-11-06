@@ -1,6 +1,7 @@
 # coding: utf-8
 
 from pytz import utc
+
 from datetime import datetime
 
 from django.test import TestCase
@@ -12,16 +13,15 @@ from django_dynamic_fixture.decorators import skip_for_database, SQLITE3
 from pdp.article.models import Article, get_last_articles
 
 
-class ArticleTests(TestCase):
+class GetLastArticlesTests(TestCase):
+    '''Tests for the get_last_article function.'''
 
     def test_last_articles_zero(self):
         '''
         Tests that the last articles work if there are no visible articles.
         '''
         self.assertEqual(0, len(get_last_articles()))
-
-        article = G(Article, is_visible=False)
-        article  # to avoid unsused variable warning
+        G(Article, is_visible=False)
         self.assertEqual(0, len(get_last_articles()))
 
     def test_last_articles_one(self):
@@ -43,15 +43,15 @@ class ArticleTests(TestCase):
         for n, val in enumerate(last):
             self.assertEqual(val, articles[n])
 
-    # URLs
 
+class ArticleIntegrationTests(TestCase):
     def test_url_index(self):
-        '''Tests viewing the index page of articles'''
+        '''Tests viewing the index page of articles.'''
         client = Client()
         self.assertEqual(200, client.get('/articles/').status_code)
 
     def test_url_new(self):
-        '''Tests adding a new article as anonymous'''
+        '''Tests adding a new article as anonymous.'''
         client = Client()
         self.assertEqual(302, client.get('/articles/nouveau').status_code)
 
@@ -60,14 +60,14 @@ class ArticleTests(TestCase):
         # self.assertEqual(200, client.get('/articles/nouveau').status_code)
 
     def test_url_view_invisible(self):
-        '''Testing viewing an invisible article as anonymous'''
+        '''Testing viewing an invisible article as anonymous.'''
         client = Client()
         article = G(Article, is_visible=False)
         self.assertEqual(404,
                          client.get(article.get_absolute_url()).status_code)
 
     def test_url_view_visible(self):
-        '''Testing viewing a visible article as anonymous'''
+        '''Testing viewing a visible article as anonymous.'''
         client = Client()
         article = G(Article, is_visible=True)
         self.assertEqual(200,

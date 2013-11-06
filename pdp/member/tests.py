@@ -8,14 +8,15 @@ from django_dynamic_fixture import G
 
 from models import Profile
 
-class SimpleTest(TestCase):
+
+class MemberIntegrationTests(TestCase):
     def test_index(self):
         resp = self.client.get(reverse('pdp.member.views.index'))
         self.assertEqual(resp.status_code, 200)
 
     def test_details(self):
         user = G(User, username='toto')
-        profile = G(Profile, user=user)
+        G(Profile, user=user)
 
         resp = self.client.get(reverse('pdp.member.views.details',
                                args=[user.username]))
@@ -34,11 +35,11 @@ class SimpleTest(TestCase):
         user.set_password('test')
         user.save()
 
-        profile = G(Profile, user=user)
+        G(Profile, user=user)
 
-        resp = self.client.post(reverse('pdp.member.views.login_view'),
-                                {'username': 'test',
-                                 'password': 'test'})
+        self.client.post(reverse('pdp.member.views.login_view'),
+                         {'username': 'test',
+                          'password': 'test'})
 
         self.assertEqual(self.client.session['_auth_user_id'], user.pk)
 
@@ -47,7 +48,7 @@ class SimpleTest(TestCase):
         user.set_password('test')
         user.save()
 
-        profile = G(Profile, user=user)
+        G(Profile, user=user)
 
         self.client.login(username='test', password='test')
 

@@ -1,44 +1,43 @@
 # coding: utf-8
 
-from django.test import TestCase
-from django_dynamic_fixture import G
+import unittest
 
 from django.contrib.auth.models import User
+from django_dynamic_fixture import G
 
 from pdp.member.models import Profile
 
-from .paginator import paginator_range
+from pdp.utils.templatetags.profile import profile
+from pdp.utils.templatetags.interventions import interventions_topics
 
-from .templatetags.profile import profile
-from .templatetags.interventions import interventions_topics
+from pdp.utils.paginator import paginator_range
 
 
-class TemplateTagsTests(TestCase):
+class TemplateTagsTests(unittest.TestCase):
+    '''Test for the custom template tags about users.'''
+    def setUp(self):
+        self.user = G(User)
 
     def test_profile_none(self):
         '''Test the output of profile templatetag if profile does not exist'''
-        user = G(User)
-        self.assertEqual(None, profile(user))
+        self.assertEqual(None, profile(self.user))
 
     def test_profile_existing(self):
         '''Test the output of profile templatetag if profile does exist'''
-        user = G(User)
-        p = G(Profile, user=user)
-        self.assertEqual(p, profile(user))
+        p = G(Profile, user=self.user)
+        self.assertEqual(p, profile(self.user))
 
     def test_interventions_none(self):
         '''
         Test both intervention_topics_count and interventions_topics
         templatetags when no topic should match.
         '''
-        user = G(User)
-
-        self.assertEqual(interventions_topics(user), {'unread': [],
-                                                      'read': []})
+        self.assertEqual(interventions_topics(self.user), {'unread': [],
+                                                           'read': []})
 
 
-class PaginatorRangeTests(TestCase):
-
+class PaginatorRangeTests(unittest.TestCase):
+    '''Tests for the paginator_range function.'''
     def test_one(self):
         result = paginator_range(1, 1)
         self.assertEqual(result, [1])
