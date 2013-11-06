@@ -11,8 +11,6 @@ from pdp.forum.models import Category, Forum, Topic, Post
 
 class ForumIntegrationTests(TestCase):
 
-    # Current URL tests
-
     def test_index_url(self):
         '''
         Tests if the index URL of the forum application ('/forums/') is ok.
@@ -20,58 +18,86 @@ class ForumIntegrationTests(TestCase):
         resp = self.client.get('/forums/')
         self.assertEqual(resp.status_code, 200)
 
+
+class ForumCategoryIntegrationTests(TestCase):
+
+    def setUp(self):
+        self.category = G(Category, id=42, title='Test category',
+                          slug='test-category')
+
     def test_category_url(self):
-        category = G(Category, id=42, title='Test category',
-                     slug='test-category')
-
-        resp = self.client.get(category.get_absolute_url())
+        resp = self.client.get(self.category.get_absolute_url())
         self.assertEqual(resp.status_code, 200)
-
-    def test_forum_url(self):
-        category = G(Category, id=42, title='Test category',
-                     slug='test-category')
-        forum = G(Forum, id=21, title='Test forum', slug='test-forum',
-                  category=category)
-
-        resp = self.client.get(forum.get_absolute_url())
-        self.assertEqual(resp.status_code, 200)
-
-    # Deprecated URL redirect tests
-
-
-class ForumDeprecatedIntegrationTests(TestCase):
 
     def test_deprecated_category_url_redirect(self):
-        category = G(Category, id=42, title='Test category',
-                     slug='test-category')
-
         resp = self.client.get('/forums/42-test-category/')
-        self.assertRedirects(resp, category.get_absolute_url(), 301)
+        self.assertRedirects(resp, self.category.get_absolute_url(), 301)
+
+
+class ForumForumIntegrationTests(TestCase):
+
+    def setUp(self):
+        self.category = G(Category, id=42, title='Test category',
+                          slug='test-category')
+        self.forum = G(Forum, id=21, title='Test forum', slug='test-forum',
+                       category=self.category)
+
+    def test_forum_url(self):
+        resp = self.client.get(self.forum.get_absolute_url())
+        self.assertEqual(resp.status_code, 200)
 
     def test_deprecated_forum_url_redirect(self):
-        category = G(Category, id=42, title='Test category',
-                     slug='test-category')
-        forum = G(Forum, id=21, title='Test forum', slug='test-forum',
-                  category=category)
-
         resp = self.client.get('/forums/42-test-category/21-test-forum/')
-        self.assertRedirects(resp, forum.get_absolute_url(), 301)
+        self.assertRedirects(resp, self.forum.get_absolute_url(), 301)
+
+
+def ForumTopicIntegrationTests(TestCase):
+
+    def setUp(self):
+        # Author
+        self.author = G(User, username='test')
+        self.author_profile = G(Profile, user=self.user)
+
+        # Forum and category
+        self.category = G(Category, id=42, title='Test category',
+                          slug='test-category')
+        self.forum = G(Forum, id=21, title='Test forum', slug='test-forum',
+                       category=self.category)
+
+        # Topic
+        self.topic = G(Topic, id=112, title='Test subject',
+                       slug='test-subject', forum=self.forum,
+                       author=self.author)
+
+        # Post
+        self.post = G(Post, author=self.author, text='Test')
+
+    def test_topic_url(self):
+        resp = self.client.get(self.topic.get_absolute_url())
+        self.assertEqual(resp.status_code, 200)
 
     def test_deprecated_topic_url_redirect(self):
-        author = G(User, username='monique')
-        G(Profile, user=author)
-
-        category = G(Category, id=42, title='Test category',
-                     slug='test-category')
-        forum = G(Forum, id=21, title='Test forum', slug='test-forum',
-                  category=category)
-
-        topic = G(Topic, id=112, title='Test topic', forum=forum,
-                  author=author, last_message=G(Post, topic_id=112,
-                                                author=author))
-
         resp = self.client.get('/forums/sujet/112-test-topic')
-        self.assertRedirects(resp, topic.get_absolute_url(), 301)
+        self.assertRedirects(resp, self.topic.get_absolute_url(), 301)
+
+
+class FeedsIntegrationTests(TestCase):
+
+    def test_messages_feed_rss(self):
+        resp = self.client.get('/forums/flux/messages/rss/')
+        self.assertEquals(resp.status_code, 200)
+
+    def test_messages_feed_atom(self):
+        resp = self.client.get('/forums/flux/messages/atom/')
+        self.assertEquals(resp.status_code, 200)
+
+    def test_topics_feed_rss(self):
+        resp = self.client.get('/forums/flux/sujets/rss/')
+        self.assertEquals(resp.status_code, 200)
+
+    def test_topics_feed_atom(self):
+        resp = self.client.get('/forums/flux/sujets/atom/')
+        self.assertEquals(resp.status_code, 200)
 
     def test_deprecated_feeds_redirect_rss(self):
         resp = self.client.get('/forums/flux/rss/')
