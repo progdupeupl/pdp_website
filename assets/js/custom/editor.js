@@ -1,47 +1,202 @@
-/* disabled for accessibility reasons
-function tabulation(){
+
+if (typeof String.prototype.startsWith != 'function') {
+	String.prototype.startsWith = function (str) {
+		return this.indexOf(str) == 0;
+	};
+}
+
+
+
+/*
+function setFocusToSubmitButton() {
+	var submit_button = document.getElementById("id_submit_button");
+	submit_button.focus();
+}
+*/
+
+var indentString = "    ";
+
+
+/*
+function getSelectedLines(lines, selectionStart, selectionEnd) {
+
+	var selectedLines = [];
+	var lineStart = 0, lineEnd;
+
+	for (var i = 0; i < lines.length; i++) {
+		var line = lines[i];
+		lineEnd = lineStart + line.length;
+		if (lineStart <= selectionEnd && lineEnd >= selectionStart) {
+			selectedLines.push(line);
+		}
+		lineStart = lineEnd + 1; // 1 is the line feed character
+	}
+
+	return selectedLines;
+}
+*/
+
+
+
+/* Returns an object which contains the selection bounds */
+function getLineSelection(lines, selectionStart, selectionEnd) {
+
+	var selection = {
+		start: -1,
+		end: -1,
+	};
+
+	var lineStart = 0, lineEnd;
+
+	for (var i = 0; i < lines.length; i++) {
+		var line = lines[i];
+		lineEnd = lineStart + line.length;
+		if (lineStart <= selectionEnd && lineEnd >= selectionStart) {
+			if (selection.start == -1) {
+				selection.start = i;
+			}
+		} else {
+			if (selection.start != -1) {
+				selection.end = i - 1;
+				return selection;
+			}
+		}
+
+		lineStart = lineEnd + 1; // 1 is the line feed character
+	}
+
+	if (selection.start == -1)
+		throw "Error";
+
+	selection.end = lines.length - 1;
+	return selection;
+}
+
+
+
+function isLineSelected(lineIndex, lineSelection) {
+	return lineSelection.start <= lineIndex && lineSelection.end >= lineIndex;
+}
+
+
+
+function indentLines(lines) {
+
+	var newLines = [];
+
+	for (var i = 0; i < lines.length; i++) {
+		newLines.push(indentString + lines[i] + "\n");
+	}
+
+	return newLines;
+}
+
+
+
+function indentLineSelection(lines, lineSelection) {
+
+	var newLines = [];
+	var addedCharCount = 0;
+
+	for (var i = 0; i < lines.length; i++) {
+		var newLine = lines[i];
+		if (isLineSelected(i, lineSelection)) {
+			newLine = indentString + newLine;
+			addedCharCount += indentString.length;
+		}
+		newLines.push(newLine);
+	}
+
+	return {
+		lines: newLines,
+		addedCharCount: addedCharCount,
+	};
+}
+
+
+/*
+function dedentLines(textArea) {
+
+	var lines = textArea.split("\n");
+	var r = "";
+
+	for (var i = 0; i < lines.length; i++) {
+		var line = lines[i];
+		if (line.startsWith(indentString)) {
+			line = line.substring(indentString.length, line.length);
+		} else if (line.startsWith(" ") || line.startsWith("\t")) {
+			line = line.substring(1, line.length);
+		}
+		r += indentString + line + "\n";
+	}
+
+	return r;
+}*/
+
+
+
+function textAreaTabPressed(textArea) {
+
+	var scroll = this.scrollTop;
+
+	if(window.ActiveXObject) {
+
+		// TODO
+		return true;
+
+	} else {
+
+		if(textArea.selectionStart == textArea.selectionEnd) {
+			// Nothing is selected, nothing to indent. Just set the focus to the submit button
+			return true;
+		}
+
+		var oldSelectionStart = textArea.selectionStart;
+		var oldSelectionEnd = textArea.selectionEnd;
+
+		var	lines = textArea.value.split("\n");
+		var lineSelection = getLineSelection(lines, textArea.selectionStart, textArea.selectionEnd);
+		var res = indentLineSelection(lines, lineSelection);
+		var newLines = res.lines;
+		var addedCharCount = res.addedCharCount;
+
+		var newText = newLines.join("\n");
+
+		textArea.value = newText;
+
+		textArea.setSelectionRange(oldSelectionStart, oldSelectionEnd + addedCharCount);
+
+		return false;
+	}
+
+	textArea.focus();
+	textArea.scrollTop = scroll;
+
+	// Annule l'action de la touche "tabulation". (Empêche de sélectionner le lien suivant)
+	return false;
+}
+
+
+
+/* Adds observers on any text area */
+function addTabObservers() {
+
 	var textareas = document.getElementsByTagName("textarea");
+
 	for(var i = 0, t = textareas.length; i < t; i++){
-		textareas[i].onkeydown = function(e){
-			var tab = (e || window.event).keyCode == 9;
 
-			if(tab){ // Si la touche tab est enfoncée
-				var scroll = this.scrollTop;
-				var tabString = "    ";
-				
-				if(window.ActiveXObject){
-					var textR = document.selection.createRange();
-					var selection = textR.text; // On récupère le texte de la sélection
-					// On modifie la sélection de manière à ce qu'il y ai la tabulation devant.
-					textR.text = tabString + selection;
-					// On déplace la sélection du nombre de caractères de la sélection vers la gauche.
-					textR.moveStart("character",-selection.length);
-					textR.moveEnd("character", 0);
-					// On sélectionne le tout
-					textR.select();
-				}
-				else {
-					var beforeSelection = this.value.substring(0, this.selectionStart);
-					var selection = this.value.substring(this.selectionStart, this.selectionEnd);
-					var afterSelection = this.value.substring(this.selectionEnd);
-										
-					// On modifie le contenu du textarea
-					this.value = beforeSelection + tabString + selection + afterSelection;
-
-					// On modifie la sélection
-					this.setSelectionRange(beforeSelection.length + tabString.length, beforeSelection.length + tabString.length + selection.length);
-				}
-
-				this.focus(); // Met le focus sur le textarea
-				this.scrollTop = scroll;
-				// Annule l'action de la touche "tabulation". (Empêche de sélectionner le lien suivant)
-				return false;
+		textareas[i].onkeydown = function(e) {
+			var isTabDown = (e || window.event).keyCode == 9;
+			if (isTabDown) {
+				return textAreaTabPressed(this);
 			}
 		};
 	}
 }
-tabulation();
-*/
+
+addTabObservers();
+
+
 
 var textar="id_description";
 var charriot = String.fromCharCode(13);
@@ -127,7 +282,7 @@ function codeline(id_text)
 function style_encadre(id_text, strdeb, strfin) {
 	var textarea = document.getElementById(id_text);
 	var scroll = textarea.scrollTop;
-	
+
 	if(window.ActiveXObject){
 		var textR = document.selection.createRange();
 		var selection = textR.text; // On récupère le texte de la sélection
