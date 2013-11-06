@@ -91,8 +91,8 @@ class TutorialIntegrationTests(TestCase):
         tutorial = G(Tutorial, is_visible=True, is_mini=False)
         part = G(Part, tutorial=tutorial)
         resp = self.client.get(
-            ''.join(reverse('pdp.tutorial.views.add_chapter'),
-                    '?partie={}'.format(part.pk)))
+            ''.join((reverse('pdp.tutorial.views.add_chapter'),
+                    '?partie={}'.format(part.pk))))
         self.assertEqual(302, resp.status_code)
 
 
@@ -110,3 +110,13 @@ class DeprecatedTutorialIntegrationTest(TestCase):
                  position_in_tutorial=1)
         resp = self.client.get('/tutoriels/voir/42-test-tutorial/1-test-part/')
         self.assertRedirects(resp, part.get_absolute_url(), 301)
+
+class FeedsIntegrationTests(TestCase):
+
+    def test_tutorials_feed_rss(self):
+        resp = self.client.get('/tutoriels/flux/rss/')
+        self.assertEqual(resp.status_code, 200)
+
+    def test_tutorials_feed_atom(self):
+        resp = self.client.get('/tutoriels/flux/atom/')
+        self.assertEqual(resp.status_code, 200)
