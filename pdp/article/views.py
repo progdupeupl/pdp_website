@@ -3,16 +3,17 @@
 from datetime import datetime
 
 from django.shortcuts import get_object_or_404, redirect
+from django.core.urlresolvers import reverse
 from django.http import Http404
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from pdp.utils import render_template, slugify
 
 from .models import Article, get_prev_article, get_next_article
-from .forms import ArticleForm
+from .forms import NewArticleForm, EditArticleForm
+
 
 def index(request):
     '''Displayy articles list'''
@@ -52,16 +53,15 @@ def view(request, article_pk, article_slug):
 def new(request):
     '''Create a new article'''
     if request.method == 'POST':
-        form = ArticleForm(request.POST, request.FILES)
+        form = NewArticleForm(request.POST, request.FILES)
         if form.is_valid():
             data = form.data
 
             article = Article()
             article.title = data['title']
             article.description = data['description']
-            article.text = data['text']
             article.author = request.user
-            if 'image' in request.FILES :
+            if 'image' in request.FILES:
                 article.image = request.FILES['image']
 
             # Since the article is not published yet, this value isn't
@@ -76,9 +76,10 @@ def new(request):
             for tag in list_tags:
                 article.tags.add(tag)
             article.save()
-            return redirect(article.get_absolute_url())
+            return redirect(''.join((reverse('pdp.article.views.edit'),
+                            '?article={}'.format(article.pk))))
     else:
-        form = ArticleForm()
+        form = NewArticleForm()
 
     return render_template('article/new.html', {
         'form': form
@@ -100,7 +101,7 @@ def edit(request):
         raise Http404
 
     if request.method == 'POST':
-        form = ArticleForm(request.POST, request.FILES)
+        form = EditArticleForm(request.POST, request.FILES)
         if form.is_valid():
             data = form.data
 
@@ -123,7 +124,7 @@ def edit(request):
         for tag in article.tags.all():
             list_tags += ',' + tag.__str__()
 
-        form = ArticleForm({
+        form = EditArticleForm({
             'title': article.title,
             'description': article.description,
             'text': article.text,
@@ -152,15 +153,17 @@ def modify(request):
 
     return redirect(article.get_absolute_url())
 
+
 def find_article(request, name):
     u = get_object_or_404(User, username=name)
-    articles=Article.objects.all().filter(author=u)\
-                          .order_by('-pubdate')
+    articles = Article.objects.all().filter(author=u)\
+        .order_by('-pubdate')
     # Paginator
-    
+
     return render_template('article/find_article.html', {
-        'articles': articles, 'usr':u,
+        'articles': articles, 'usr': u,
     })
+
 
 # Deprecated URLs
 
