@@ -1,11 +1,14 @@
 # coding: utf-8
 
 from django.test import TestCase
+
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 
 from django_dynamic_fixture import G
 
 from pdp.tutorial.models import Tutorial, Part, get_last_tutorials
+from pdp.member.models import Profile
 
 
 class GetLastTutorialsTests(TestCase):
@@ -110,6 +113,25 @@ class DeprecatedTutorialIntegrationTest(TestCase):
                  position_in_tutorial=1)
         resp = self.client.get('/tutoriels/voir/42-test-tutorial/1-test-part/')
         self.assertRedirects(resp, part.get_absolute_url(), 301)
+
+
+class AuthenticatedTutorialIntegrationTests(TestCase):
+    def setUp(self):
+        # Create user
+        self.user = G(User, username='test')
+        self.user.set_password('test')
+        self.user.save()
+
+        # Create profile
+        self.profile = G(Profile, user=self.user)
+
+        # Authenticate user
+        self.client.login(username='test', password='test')
+
+    def test_url_add_tutorial(self):
+        resp = self.client.get(reverse('pdp.tutorial.views.add_tutorial'))
+        self.assertEquals(resp.status_code, 200)
+
 
 class FeedsIntegrationTests(TestCase):
 
