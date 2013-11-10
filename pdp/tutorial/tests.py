@@ -1,11 +1,14 @@
 # coding: utf-8
 
 from django.test import TestCase
+
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 
 from django_dynamic_fixture import G
 
 from pdp.tutorial.models import Tutorial, Part, get_last_tutorials
+from pdp.member.models import Profile
 
 
 class GetLastTutorialsTests(TestCase):
@@ -91,8 +94,8 @@ class TutorialIntegrationTests(TestCase):
         tutorial = G(Tutorial, is_visible=True, is_mini=False)
         part = G(Part, tutorial=tutorial)
         resp = self.client.get(
-            ''.join(reverse('pdp.tutorial.views.add_chapter'),
-                    '?partie={}'.format(part.pk)))
+            ''.join((reverse('pdp.tutorial.views.add_chapter'),
+                    '?partie={}'.format(part.pk))))
         self.assertEqual(302, resp.status_code)
 
 
@@ -110,3 +113,32 @@ class DeprecatedTutorialIntegrationTest(TestCase):
                  position_in_tutorial=1)
         resp = self.client.get('/tutoriels/voir/42-test-tutorial/1-test-part/')
         self.assertRedirects(resp, part.get_absolute_url(), 301)
+
+
+class AuthenticatedTutorialIntegrationTests(TestCase):
+    def setUp(self):
+        # Create user
+        self.user = G(User, username='test')
+        self.user.set_password('test')
+        self.user.save()
+
+        # Create profile
+        self.profile = G(Profile, user=self.user)
+
+        # Authenticate user
+        self.client.login(username='test', password='test')
+
+    def test_url_add_tutorial(self):
+        resp = self.client.get(reverse('pdp.tutorial.views.add_tutorial'))
+        self.assertEquals(resp.status_code, 200)
+
+
+class FeedsIntegrationTests(TestCase):
+
+    def test_tutorials_feed_rss(self):
+        resp = self.client.get('/tutoriels/flux/rss/')
+        self.assertEqual(resp.status_code, 200)
+
+    def test_tutorials_feed_atom(self):
+        resp = self.client.get('/tutoriels/flux/atom/')
+        self.assertEqual(resp.status_code, 200)

@@ -97,7 +97,7 @@ def add_tutorial(request):
             tutorial.description = data['description']
             tutorial.is_mini = 'is_mini' in data
             tutorial.pubdate = datetime.now()
-            if 'image' in request.FILES :
+            if 'image' in request.FILES:
                 tutorial.image = request.FILES['image']
             tutorial.save()
 
@@ -143,7 +143,7 @@ def edit_tutorial(request):
             tutorial.description = data['description']
             tutorial.introduction = data['introduction']
             tutorial.conclusion = data['conclusion']
-            if 'image' in request.FILES :
+            if 'image' in request.FILES:
                 tutorial.image = request.FILES['image']
             tutorial.save()
 
@@ -448,7 +448,7 @@ def add_chapter(request):
                 chapter.part = part
                 chapter.position_in_part = part.get_chapters().count() + 1
                 chapter.update_position_in_tutorial()
-                if 'image' in request.FILES :
+                if 'image' in request.FILES:
                     chapter.image = request.FILES['image']
                 chapter.save()
 
@@ -553,7 +553,7 @@ def edit_chapter(request):
                 chapter.title = data['title']
             chapter.introduction = data['introduction']
             chapter.conclusion = data['conclusion']
-            if 'image' in request.FILES :
+            if 'image' in request.FILES:
                     chapter.image = request.FILES['image']
             chapter.save()
             return redirect(chapter.get_absolute_url())
@@ -690,15 +690,19 @@ def modify_extract(request):
 
     raise Http404
 
+
 def find_tuto(request, name):
     u = get_object_or_404(User, username=name)
-    tutos=Tutorial.objects.all().filter(authors__in=[u])\
-                          .order_by('-pubdate')
+    tutos = Tutorial.objects.all()\
+        .filter(authors__in=[u])\
+        .order_by('-pubdate')
+
     # Paginator
-    
+
     return render_template('tutorial/find_tutorial.html', {
-        'tutos': tutos, 'usr':u,
+        'tutos': tutos, 'usr': u,
     })
+
 
 # Handling deprecated links
 
