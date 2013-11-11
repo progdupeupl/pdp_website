@@ -95,6 +95,16 @@ Once everything is synced, you will have to create a Profile instance for
 your superuser account using the your credentials and the Django admin system
 aivaible on `/admin/`.
 
+You can then create run a test server on your local machine:
+
+    :::console
+    python manage.py runserver
+
+The test instance should be available at
+[http://localhost:8000](http://localhost:800). It will automatically
+update its behavior if you edit the code of the project. Enjoy, and
+send us lots of good patches!
+
 ## Copyright
 
 Progdupeupl is brought to you under GNU GPLv3 licence. For further informations
