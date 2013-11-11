@@ -3,10 +3,16 @@
 Progdupeupl is a community of French programmers ; you can see the running
 version [here](http://progdupeu.pl/).
 
-## Naming conventions
+## Language convention
 
-Everything in the code should be in english (vars, funcs, methods, docstrings,
-comments) though some parts may − of course − be in French. PEP-8 is good too.
+The site being in French, user-interface strings are in french --
+there is no localization yet. However, to let others reuse our code,
+everything in the code should be in english (vars, funcs, methods,
+docstrings, comments), and we'd rather interact in english for
+development (bug reports, pull requests, etc.).
+
+As for other style matters in the code, the [PEP-8 Style
+Guide](http://www.python.org/dev/peps/pep-0008/) is a good base.
 
 ## Dependencies
 
