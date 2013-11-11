@@ -93,7 +93,11 @@ STATICFILES_FINDERS = (
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
 
-# You will need yuglify to be installed
+# You need to have yuglify installed, except for DEBUG builds
+if DEBUG:
+    PIPELINE_JS_COMPRESSOR = None
+    PIPELINE_CSS_COMPRESSOR = None
+
 PIPELINE_JS = {
     'base': {
         'source_filenames': (
