@@ -99,6 +99,37 @@ class TutorialIntegrationTests(TestCase):
         self.assertEqual(302, resp.status_code)
 
 
+class TutorialSearchIntegrationTests(TestCase):
+    def setUp(self):
+        self.user = G(User, username='test')
+        self.profile = G(Profile, user=self.user)
+
+    def test_url_search_none(self):
+        resp = self.client.get(
+            reverse('pdp.tutorial.views.find_tutorial',
+                    args=[self.user.username]))
+
+        self.assertEquals(resp.status_code, 200)
+
+    def test_url_search_invisible(self):
+        G(Tutorial, is_visible=False, author=self.user)
+
+        resp = self.client.get(
+            reverse('pdp.tutorial.views.find_tutorial',
+                    args=[self.user.username]))
+
+        self.assertEquals(resp.status_code, 200)
+
+    def test_url_search_visible(self):
+        G(Tutorial, is_visible=True, author=self.user)
+
+        resp = self.client.get(
+            reverse('pdp.tutorial.views.find_tutorial',
+                    args=[self.user.username]))
+
+        self.assertEquals(resp.status_code, 200)
+
+
 class DeprecatedTutorialIntegrationTest(TestCase):
     '''Test the correct redirect on deprecated URLs.'''
 
