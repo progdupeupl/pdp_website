@@ -156,9 +156,11 @@ def modify(request):
 
 def find_article(request, name):
     u = get_object_or_404(User, username=name)
-    articles = Article.objects.all().filter(author=u)\
+
+    articles = Article.objects.all()\
+        .filter(author=u)\
+        .filter(is_visible=True)\
         .order_by('-pubdate')
-    # Paginator
 
     return render_template('article/find_article.html', {
         'articles': articles, 'usr': u,

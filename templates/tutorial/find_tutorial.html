@@ -34,7 +34,9 @@
             <tr>
                 <td>
                     <div>
-                        <img src="{{ tuto.thumbnail.url }}" />
+                        {% if tuto.thumbnail %}
+                            <img src="{{ tuto.thumbnail.url }}" />
+                        {% endif %}
                         <a href="{{ tuto.get_absolute_url }}">{{ tuto.title }} </a> 
                         {% if tuto.description %} <p> {{ tuto.description }} </p> {% endif %}
                     </div>
