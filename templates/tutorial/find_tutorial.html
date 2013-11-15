@@ -15,7 +15,7 @@
     {% with profile=usr|profile %}
         <li ><a href="{{ profile.get_absolute_url }}">{{ usr.username }}</a></li>
     {% endwith %}
-    <li ><a href="{% url "pdp.tutorial.views.find_tuto" usr.username %}">Tutoriels rédigés</a></li>
+    <li ><a href="{% url "pdp.tutorial.views.find_tutorial" usr.username %}">Tutoriels rédigés</a></li>
     <li class="current"><a href="#">Recherche</a></li>
 {% endblock %}
 
@@ -34,7 +34,9 @@
             <tr>
                 <td>
                     <div>
-                        <img src="{{ tuto.thumbnail.url }}" />
+                        {% if tuto.thumbnail %}
+                            <img src="{{ tuto.thumbnail.url }}" />
+                        {% endif %}
                         <a href="{{ tuto.get_absolute_url }}">{{ tuto.title }} </a> 
                         {% if tuto.description %} <p> {{ tuto.description }} </p> {% endif %}
                     </div>

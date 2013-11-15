@@ -10,7 +10,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.core.urlresolvers import reverse
 
 from pdp.utils import render_template, slugify
 from pdp.utils.paginator import paginator_range
@@ -169,20 +168,15 @@ def new(request):
             n_topic.save()
 
             return redirect(n_topic.get_absolute_url())
-        else:
-            # TODO: add errors to the form and return it
-            raise Http404
     else:
         form = PrivateTopicForm()
 
-        u = u''
         if 'destinataire' in request.GET:
             user_pk = request.GET['destinataire']
             u = get_object_or_404(User, pk=user_pk)
+            form.destinataires = u.username
 
-        return render_template('messages/new.html', {
-            'participants': u,
-        })
+    return render_template('messages/new.html', {'form': form})
 
 
 @login_required

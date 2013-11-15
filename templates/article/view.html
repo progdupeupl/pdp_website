@@ -68,6 +68,8 @@
             Tags : 
             {% for tag in article.tags.all %}
                 <a href="{% url "haystack_search" %}?q={{ tag.name }}&amp;models=article.article">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+            {% empty %}
+                aucun
             {% endfor %}
         </p>
     </div>
@@ -83,9 +85,11 @@
 {% else %}
 <div class="row">
     <div class="large-12 columns">
-        <p>
-            Cet article n'a pas encore été mis en ligne.
-        </p>
+        <div class="panel">
+            <p>
+                Cet article n'a pas encore été mis en ligne.
+            </p>
+        </div>
     </div>
 </div>
 {% endif %}

@@ -78,6 +78,37 @@ class ArticleIntegrationTests(TestCase):
                          client.get(article.get_absolute_url()).status_code)
 
 
+class ArticleSearchIntegrationTests(TestCase):
+    def setUp(self):
+        self.user = G(User, username='test')
+        self.profile = G(Profile, user=self.user)
+
+    def test_url_search_none(self):
+        resp = self.client.get(
+            reverse('pdp.article.views.find_article',
+                    args=[self.user.username]))
+
+        self.assertEquals(resp.status_code, 200)
+
+    def test_url_search_invisible(self):
+        G(Article, is_visible=False, author=self.user)
+
+        resp = self.client.get(
+            reverse('pdp.article.views.find_article',
+                    args=[self.user.username]))
+
+        self.assertEquals(resp.status_code, 200)
+
+    def test_url_search_visible(self):
+        G(Article, is_visible=True, author=self.user)
+
+        resp = self.client.get(
+            reverse('pdp.article.views.find_article',
+                    args=[self.user.username]))
+
+        self.assertEquals(resp.status_code, 200)
+
+
 class AuthenticatedArticleIntegrationTests(TestCase):
     def setUp(self):
         # Create user

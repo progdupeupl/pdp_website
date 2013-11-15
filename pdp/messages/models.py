@@ -60,9 +60,13 @@ class PrivateTopic(models.Model):
         '''
         Gets the last answer in the thread, if any
         '''
-        last_post = PrivatePost.objects.all()\
-            .filter(privatetopic__pk=self.pk)\
-            .order_by('-pubdate')[0]
+
+        try:
+            last_post = PrivatePost.objects.all()\
+                .filter(privatetopic__pk=self.pk)\
+                .order_by('-pubdate')[0]
+        except IndexError:
+            return None
 
         if last_post == self.first_post():
             return None

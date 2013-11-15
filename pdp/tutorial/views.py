@@ -691,13 +691,13 @@ def modify_extract(request):
     raise Http404
 
 
-def find_tuto(request, name):
+def find_tutorial(request, name):
     u = get_object_or_404(User, username=name)
+
     tutos = Tutorial.objects.all()\
         .filter(authors__in=[u])\
+        .filter(is_visible=True)\
         .order_by('-pubdate')
-
-    # Paginator
 
     return render_template('tutorial/find_tutorial.html', {
         'tutos': tutos, 'usr': u,
