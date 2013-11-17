@@ -1,4 +1,5 @@
 
+/* Adds an useful `startsWith` function to the `String` prototype */
 if (typeof String.prototype.startsWith != 'function') {
 	String.prototype.startsWith = function (str) {
 		return this.indexOf(str) == 0;
@@ -15,26 +16,6 @@ function setFocusToSubmitButton() {
 */
 
 var indentString = "    ";
-
-
-/*
-function getSelectedLines(lines, selectionStart, selectionEnd) {
-
-	var selectedLines = [];
-	var lineStart = 0, lineEnd;
-
-	for (var i = 0; i < lines.length; i++) {
-		var line = lines[i];
-		lineEnd = lineStart + line.length;
-		if (lineStart <= selectionEnd && lineEnd >= selectionStart) {
-			selectedLines.push(line);
-		}
-		lineStart = lineEnd + 1; // 1 is the line feed character
-	}
-
-	return selectedLines;
-}
-*/
 
 
 
@@ -80,19 +61,16 @@ function isLineSelected(lineIndex, lineSelection) {
 
 
 
-function indentLines(lines) {
-
-	var newLines = [];
-
-	for (var i = 0; i < lines.length; i++) {
-		newLines.push(indentString + lines[i] + "\n");
-	}
-
-	return newLines;
-}
-
-
-
+/* Returns an object which contains :
+ *
+ *		lines: An array of the modified lines
+ *
+ *		addedCharCount: The number of added characters (negative if characters
+ *			have been removed)
+ *
+ *		addedCharCountFirstLine: The number of added characters to the first
+ *			line of the selection (can be negative too).
+ */
 function indentLineSelection(lines, lineSelection) {
 
 	var newLines = [];
@@ -110,32 +88,59 @@ function indentLineSelection(lines, lineSelection) {
 	return {
 		lines: newLines,
 		addedCharCount: addedCharCount,
+		addedCharCountFirstLine: indentString.length,
 	};
 }
 
 
-/*
-function dedentLines(textArea) {
 
-	var lines = textArea.split("\n");
-	var r = "";
+/* Returns an object which contains :
+ *
+ *		lines: An array of the modified lines
+ *
+ *		addedCharCount: The number of added characters (negative if characters
+ *			have been removed)
+ *
+ *		addedCharCountFirstLine: The number of added characters to the first
+ *			line of the selection (can be negative too).
+ */
+function dedentLineSelection(lines, lineSelection) {
+
+	var newLines = [];
+	var addedCharCount = 0;
+	var addedCharCountFirstLine = null
 
 	for (var i = 0; i < lines.length; i++) {
-		var line = lines[i];
-		if (line.startsWith(indentString)) {
-			line = line.substring(indentString.length, line.length);
-		} else if (line.startsWith(" ") || line.startsWith("\t")) {
-			line = line.substring(1, line.length);
+		var newLine = lines[i];
+		if (isLineSelected(i, lineSelection)) {
+
+			var indentSize = 0;
+
+			if (newLine.startsWith(indentString)) {
+				indentSize = indentString.length
+			} else if (newLine.startsWith(" ") || newLine.startsWith("\t")) {
+				indentSize = 1
+			}
+
+			if (addedCharCountFirstLine === null) {
+				addedCharCountFirstLine = -indentSize;
+			}
+			newLine = newLine.substring(indentSize, newLine.length);
+			addedCharCount -= indentSize;
 		}
-		r += indentString + line + "\n";
+		newLines.push(newLine);
 	}
 
-	return r;
-}*/
+	return {
+		lines: newLines,
+		addedCharCount: addedCharCount,
+		addedCharCountFirstLine: addedCharCountFirstLine,
+	};
+}
 
 
 
-function textAreaTabPressed(textArea) {
+function textAreaTabPressed(textArea, event) {
 
 	var scroll = this.scrollTop;
 
@@ -147,7 +152,8 @@ function textAreaTabPressed(textArea) {
 	} else {
 
 		if(textArea.selectionStart == textArea.selectionEnd) {
-			// Nothing is selected, nothing to indent. Just set the focus to the submit button
+			// Nothing is selected, nothing to indent. Just set the focus to
+			// the submit button
 			return true;
 		}
 
@@ -156,24 +162,31 @@ function textAreaTabPressed(textArea) {
 
 		var	lines = textArea.value.split("\n");
 		var lineSelection = getLineSelection(lines, textArea.selectionStart, textArea.selectionEnd);
-		var res = indentLineSelection(lines, lineSelection);
+
+		var res = event.shiftKey ?
+				dedentLineSelection(lines, lineSelection)
+				: indentLineSelection(lines, lineSelection);
+
 		var newLines = res.lines;
 		var addedCharCount = res.addedCharCount;
+		var addedCharCountFirstLine = res.addedCharCountFirstLine
 
 		var newText = newLines.join("\n");
 
 		textArea.value = newText;
 
-		textArea.setSelectionRange(oldSelectionStart, oldSelectionEnd + addedCharCount);
+		textArea.setSelectionRange(
+				oldSelectionStart + addedCharCountFirstLine,
+				oldSelectionEnd + addedCharCount);
 
+		//textArea.focus();
+		//textArea.scrollTop = scroll;
+
+		// Cancel the action of the tabulator key, avoid to set the focus to
+		// the next focusable element.
 		return false;
 	}
 
-	textArea.focus();
-	textArea.scrollTop = scroll;
-
-	// Annule l'action de la touche "tabulation". (Empêche de sélectionner le lien suivant)
-	return false;
 }
 
 
@@ -185,10 +198,10 @@ function addTabObservers() {
 
 	for(var i = 0, t = textareas.length; i < t; i++){
 
-		textareas[i].onkeydown = function(e) {
-			var isTabDown = (e || window.event).keyCode == 9;
+		textareas[i].onkeydown = function(event) {
+			var isTabDown = (event || window.event).keyCode == 9;
 			if (isTabDown) {
-				return textAreaTabPressed(this);
+				return textAreaTabPressed(this, event || window.event);
 			}
 		};
 	}
