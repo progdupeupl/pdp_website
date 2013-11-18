@@ -1,6 +1,3 @@
-/* Note: This script should be tested in Internet Explorer 9. */
-
-
 /* Adds an useful `startsWith` function to the `String` prototype if it does
  * not exists yet.
  */
