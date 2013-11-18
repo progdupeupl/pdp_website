@@ -1,5 +1,9 @@
+/* Note: This script should be tested in Internet Explorer 9. */
 
-/* Adds an useful `startsWith` function to the `String` prototype */
+
+/* Adds an useful `startsWith` function to the `String` prototype if it does
+ * not exists yet.
+ */
 if (typeof String.prototype.startsWith != 'function') {
 	String.prototype.startsWith = function (str) {
 		return this.indexOf(str) == 0;
@@ -8,18 +12,19 @@ if (typeof String.prototype.startsWith != 'function') {
 
 
 
-/*
-function setFocusToSubmitButton() {
-	var submit_button = document.getElementById("id_submit_button");
-	submit_button.focus();
-}
-*/
-
 var indentString = "    ";
 
 
 
-/* Returns an object which contains the selection bounds */
+/* Returns an object which contains the selection bounds.
+ *
+ * lines: An array of the lines.
+ *
+ * selectionStart: The index of the first character in the selection from the
+ * beginning of the first line
+ *
+ * selectionEnd: The index of the last character in the selection
+ */
 function getLineSelection(lines, selectionStart, selectionEnd) {
 
 	var selection = {
@@ -27,23 +32,35 @@ function getLineSelection(lines, selectionStart, selectionEnd) {
 		end: -1,
 	};
 
-	var lineStart = 0, lineEnd;
+	// The index of the first character of the current line
+	var lineStartIndex = 0;
+	// The index of the last character of the current line
+	var lineEndIndex;
 
 	for (var i = 0; i < lines.length; i++) {
+
 		var line = lines[i];
-		lineEnd = lineStart + line.length;
-		if (lineStart <= selectionEnd && lineEnd >= selectionStart) {
+		lineEndIndex = lineStartIndex + line.length;
+
+		if (lineStartIndex <= selectionEnd
+				&& lineEndIndex >= selectionStart) {
+
+			// We are in the selection, set up `selection.start` if -1
 			if (selection.start == -1) {
 				selection.start = i;
 			}
+
 		} else {
+
 			if (selection.start != -1) {
+				// We have exited the selection
 				selection.end = i - 1;
 				return selection;
 			}
+
 		}
 
-		lineStart = lineEnd + 1; // 1 is the line feed character
+		lineStartIndex = lineEndIndex + 1; // 1 is the line feed character size
 	}
 
 	if (selection.start == -1)
@@ -61,7 +78,24 @@ function isLineSelected(lineIndex, lineSelection) {
 
 
 
-/* Returns an object which contains :
+function createSimpleIndenter(indentString) {
+	var indenter = function() {
+		return indentString;
+	};
+	return indenter;
+}
+
+
+
+/*
+ * lines: An array of the lines
+ *
+ * lineSelection: An object which contains the selection bounds, returned by
+ * `getLineSelection`
+ *
+ * indenter: A function which returns the string added to shift right.
+ *
+ * Returns an object which contains :
  *
  *		lines: An array of the modified lines
  *
@@ -71,14 +105,19 @@ function isLineSelected(lineIndex, lineSelection) {
  *		addedCharCountFirstLine: The number of added characters to the first
  *			line of the selection (can be negative too).
  */
-function indentLineSelection(lines, lineSelection) {
+function shiftRightLineSelection(lines, lineSelection, indenter) {
 
 	var newLines = [];
 	var addedCharCount = 0;
+	var firstLineIndent = null;
 
 	for (var i = 0; i < lines.length; i++) {
 		var newLine = lines[i];
 		if (isLineSelected(i, lineSelection)) {
+			var indentString = indenter();
+			if (firstLineIndent === null) {
+				firstLineIndent = indentString;
+			}
 			newLine = indentString + newLine;
 			addedCharCount += indentString.length;
 		}
@@ -88,13 +127,20 @@ function indentLineSelection(lines, lineSelection) {
 	return {
 		lines: newLines,
 		addedCharCount: addedCharCount,
-		addedCharCountFirstLine: indentString.length,
+		addedCharCountFirstLine: firstLineIndent.length,
 	};
 }
 
 
 
-/* Returns an object which contains :
+/*
+ * lines: An array of the lines
+ *
+ * lineSelection: An object which contains the selection bounds, returned by
+ * `getLineSelection`
+ *
+ *
+ * Returns an object which contains :
  *
  *		lines: An array of the modified lines
  *
@@ -104,7 +150,7 @@ function indentLineSelection(lines, lineSelection) {
  *		addedCharCountFirstLine: The number of added characters to the first
  *			line of the selection (can be negative too).
  */
-function dedentLineSelection(lines, lineSelection) {
+function shiftLeftLineSelection(lines, lineSelection) {
 
 	var newLines = [];
 	var addedCharCount = 0;
@@ -144,54 +190,49 @@ function textAreaTabPressed(textArea, event) {
 
 	var scroll = this.scrollTop;
 
-	if(window.ActiveXObject) {
-
-		// TODO
+	if(textArea.selectionStart == textArea.selectionEnd) {
+		// Nothing is selected, nothing to indent. Just set the focus to
+		// the submit button
 		return true;
-
-	} else {
-
-		if(textArea.selectionStart == textArea.selectionEnd) {
-			// Nothing is selected, nothing to indent. Just set the focus to
-			// the submit button
-			return true;
-		}
-
-		var oldSelectionStart = textArea.selectionStart;
-		var oldSelectionEnd = textArea.selectionEnd;
-
-		var	lines = textArea.value.split("\n");
-		var lineSelection = getLineSelection(lines, textArea.selectionStart, textArea.selectionEnd);
-
-		var res = event.shiftKey ?
-				dedentLineSelection(lines, lineSelection)
-				: indentLineSelection(lines, lineSelection);
-
-		var newLines = res.lines;
-		var addedCharCount = res.addedCharCount;
-		var addedCharCountFirstLine = res.addedCharCountFirstLine
-
-		var newText = newLines.join("\n");
-
-		textArea.value = newText;
-
-		textArea.setSelectionRange(
-				oldSelectionStart + addedCharCountFirstLine,
-				oldSelectionEnd + addedCharCount);
-
-		//textArea.focus();
-		//textArea.scrollTop = scroll;
-
-		// Cancel the action of the tabulator key, avoid to set the focus to
-		// the next focusable element.
-		return false;
 	}
+
+	var oldSelectionStart = textArea.selectionStart;
+	var oldSelectionEnd = textArea.selectionEnd;
+
+	var	lines = textArea.value.split("\n");
+	var lineSelection = getLineSelection(lines,
+	        textArea.selectionStart, textArea.selectionEnd);
+
+	var indenter = createSimpleIndenter(indentString);
+
+	var res = event.shiftKey ?
+			shiftLeftLineSelection(lines, lineSelection)
+			: shiftRightLineSelection(lines, lineSelection, indenter);
+
+	var newLines = res.lines;
+	var addedCharCount = res.addedCharCount;
+	var addedCharCountFirstLine = res.addedCharCountFirstLine
+
+	var newText = newLines.join("\n");
+
+	textArea.value = newText;
+
+	textArea.setSelectionRange(
+			oldSelectionStart + addedCharCountFirstLine,
+			oldSelectionEnd + addedCharCount);
+
+	//textArea.focus();
+	//textArea.scrollTop = scroll;
+
+	// Cancel the action of the tabulator key, avoid to set the focus to
+	// the next focusable element.
+	return false;
 
 }
 
 
 
-/* Adds observers on any text area */
+/* Adds observers on each text area */
 function addTabObservers() {
 
 	var textareas = document.getElementsByTagName("textarea");
@@ -211,186 +252,161 @@ addTabObservers();
 
 
 
-var textar="id_description";
-var charriot = String.fromCharCode(13);
-var LF = String.fromCharCode(10);
+//var textar="id_description";
 
-function bold(id_text)
-{
-	style_encadre(id_text, "**", "**");
+function bold(textAreaId) {
+	surroundSelection(textAreaId, "**", "**");
 }
 
-function italic(id_text)
-{
-	style_encadre(id_text, "*", "*");
+function italic(textAreaId) {
+	surroundSelection(textAreaId, "*", "*");
 }
 
-function h1(id_text)
-{
-	style_encadre(id_text, "# ", " #");
+
+function h1(textAreaId) {
+	surroundSelection(textAreaId, "# ", " #");
 }
 
-function h2(id_text)
-{
-	style_encadre(id_text, "## ", " ##");
+function h2(textAreaId) {
+	surroundSelection(textAreaId, "## ", " ##");
 }
 
-function h3(id_text)
-{
-	style_encadre(id_text, "### ", " ###");
+function h3(textAreaId) {
+	surroundSelection(textAreaId, "### ", " ###");
 }
 
-function link(id_text)
-{
-	var lien = prompt('Saisissez l\'adresse de votre lien', 'http://');
-	style_encadre(id_text, "[", "]("+lien+")");
+
+function link(textAreaId) {
+	var url = prompt('Saisissez l’adresse du lien :', 'http://');
+	if (! url)
+		return;
+	surroundSelection(textAreaId, "[", "](" + url + ")");
 }
 
-function secret(id_text)
-{
-	style_encadre(id_text, LF+"[secret]{"+charriot, charriot+"}"+LF);
+function secret(textAreaId) {
+	surroundSelection(textAreaId, "\n[secret]{\n", "\n}\n");
 }
 
-function image(id_text)
-{
-	var url = prompt('Saisissez l\'url de l\'image', 'http://');
-	style_encadre(id_text, "![", "]("+url+")");
+function image(textAreaId) {
+	var url = prompt('Saisissez l’URL de l’image :', 'http://');
+	if (! url)
+		return;
+	surroundSelection(textAreaId, "![", "](" + url + ")");
 }
 
-function bulletlist(id_text)
-{
-	style_precede(id_text, LF, LF, " - ");
+
+function bulletList(textAreaId) {
+	shiftRightAndSurroundSelection(textAreaId, createSimpleIndenter(" - "),
+			'\n', '\n');
 }
 
-function numericlist(id_text)
-{
-	style_precede(id_text, LF, LF, " 1. ",true);
-}
-
-function citation(id_text)
-{
-	var auteur = prompt('Qui est l\'auteur de la citation ?', '');
-	
-	if(auteur.trim().length==0)
-	{
-		style_precede(id_text, LF, LF, "> ");
+function numericList(textAreaId) {
+	var index = 1;
+	var indenter = function() {
+		return ' ' + (index++) + '. ';
 	}
-	else
-	{
-		style_precede(id_text, LF+"**"+auteur+" a écrit : **"+LF, LF, "> ");
-	}
+	shiftRightAndSurroundSelection(textAreaId, indenter, '\n', '\n');
 }
 
-function code(id_text)
-{
-	var code = prompt('Quel est le langage (c, c++, java, python, php, html, ...) ?', '');
-	var charriot = String.fromCharCode(13);
-	style_encadre(id_text, LF+"```"+code+charriot, charriot+"```"+LF);
-} 
-function codeline(id_text)
-{
-	style_encadre(id_text, "`", "`");
-}
 
-function style_encadre(id_text, strdeb, strfin) {
-	var textarea = document.getElementById(id_text);
-	var scroll = textarea.scrollTop;
+function quote(textAreaId) {
 
-	if(window.ActiveXObject){
-		var textR = document.selection.createRange();
-		var selection = textR.text; // On récupère le texte de la sélection
-		// On modifie la sélection et on rajoute le texte qu'il faut.
-		textR.text = strdeb + selection + strfin;
-		// On déplace la sélection du nombre de caractères de la sélection vers la gauche.
-		textR.moveStart("character",-selection.length+strfin.length);
-		textR.moveEnd("character", strfin.length);
-		// On sélectionne le tout
-		textR.select();
-	}
-	else {
-		var beforeSelection = textarea.value.substring(0, textarea.selectionStart);
-		var selection = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
-		var afterSelection = textarea.value.substring(textarea.selectionEnd);
-							
-		// On modifie le contenu du textarea
-		textarea.value = beforeSelection + strdeb + selection + strfin + afterSelection;
+	var author = prompt('Saisissez l’auteur de la citation :\n' +
+			'Laissez vide pour créer une citation anonyme.', '');
 
-		// On modifie la sélection
-		textarea.setSelectionRange(beforeSelection.length + strdeb.length, beforeSelection.length + strdeb.length + selection.length);
-	}
+	var indenter = createSimpleIndenter("> ");
 
-	textarea.focus(); // Met le focus sur le textarea
-	textarea.scrollTop = scroll;
-}
-
-function style_precede(id_text, deb, fin, str, numeric) {
-	var textarea = document.getElementById(id_text);
-	var scroll = textarea.scrollTop;
-	var numeric=numeric||false;
-
-	if(window.ActiveXObject){
-		var textR = document.selection.createRange();
-		var selection = textR.text; // On récupère le texte de la sélection
-		// On modifie la sélection et on rajoute le texte qu'il faut.
-		
-		var destin=str;
-		
-		for(var i=0;i<selection.length;i++)
-		{
-			var cpt=1;
-			if(selection.charAt(i)==charriot || selection.charAt(i)==LF) 
-				{
-					if(numeric) {
-						cpt=parseInt(cpt)+1;
-						destin=destin+selection.charAt(i)+cpt+". ";
-					}
-					else
-					{
-						destin=destin+selection.charAt(i)+str;
-					}
-				}
-			else destin=destin+selection.charAt(i)
+	if (author) {
+		author = author.trim();
+		if (author.length != 0) {
+			shiftRightAndSurroundSelection(textAreaId, indenter,
+					'\n**' + author + ' a écrit :**\n', '\n');
+			return;
 		}
-		
-		textR.text = deb + destin + fin;
-		
-		// On déplace la sélection du nombre de caractères de la sélection vers la gauche.
-		// textR.moveStart("character",-selection.length);
-		// textR.moveEnd("character", strfin.length);
-		// On sélectionne le tout
-		// textR.select();
-	}
-	else {
-		var beforeSelection = textarea.value.substring(0, textarea.selectionStart);
-		var selection = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
-		var afterSelection = textarea.value.substring(textarea.selectionEnd);
-		
-		var destin=str;
-		var cpt=1;
-
-		for(var i=0;i<selection.length;i++)
-		{
-			if(selection.charAt(i)==charriot || selection.charAt(i)==LF) 
-				{
-					if(numeric) {
-						cpt=parseInt(cpt)+1;
-						destin=destin+selection.charAt(i)+" "+cpt+". ";
-					}
-					else
-					{
-						destin=destin+selection.charAt(i)+str;
-					}
-				}
-			else destin=destin+selection.charAt(i)
-		}
-		
-		// On modifie le contenu du textarea
-		textarea.value = beforeSelection + deb + destin + fin + afterSelection;
-
-		// On modifie la sélection
-		textarea.setSelectionRange(beforeSelection.length + deb.length, beforeSelection.length + deb.length + destin.length);
 	}
 
-	textarea.focus(); // Met le focus sur le textarea
-	textarea.scrollTop = scroll;
+	shiftRightAndSurroundSelection(textAreaId, indenter, '\n', '\n');
 }
+
+
+function code(textAreaId) {
+
+	var code = prompt('Entrez le nom du langage ' +
+	        '(c, c++, java, python, php, html, ...) :', '');
+
+	if (! code)
+		code = '';
+	surroundSelection(textAreaId,
+			'\n```' + code.trim().toLowerCase() + '\n',
+			'\n```\n');
+}
+
+
+function inlineCode(textAreaId) {
+	surroundSelection(textAreaId, '`', '`');
+}
+
+
+
+/* Surrounds the selection between `prefix` and `suffix`.
+ * textAreaId: The id of the text area HTML element.
+ */
+function surroundSelection(textAreaId, prefix, suffix) {
+
+	var textArea = document.getElementById(textAreaId);
+	var scroll = textArea.scrollTop;
+
+	var beforeSelection = textArea.value.substring(0, textArea.selectionStart);
+	var selection = textArea.value.substring(
+	        textArea.selectionStart, textArea.selectionEnd);
+	var afterSelection = textArea.value.substring(textArea.selectionEnd);
+
+	textArea.value = beforeSelection + prefix + selection + suffix + afterSelection;
+
+	textArea.setSelectionRange(
+			beforeSelection.length + prefix.length,
+			beforeSelection.length + prefix.length + selection.length);
+
+	// textArea.focus();
+	// textArea.scrollTop = scroll;
+}
+
+
+
+/* Surrounds the selection between `prefix` and `suffix`.
+ * textAreaId: The id of the text area HTML element.
+ * indenter: A function which returns the string added to shift right.
+ */
+function shiftRightAndSurroundSelection(textAreaId, indenter, prefix, suffix) {
+
+	surroundSelection(textAreaId, prefix, suffix);
+
+	var textArea = document.getElementById(textAreaId);
+	var scrollTop = textArea.scrollTop;
+
+	var oldSelectionStart = textArea.selectionStart;
+	var oldSelectionEnd = textArea.selectionEnd;
+
+	var	lines = textArea.value.split("\n");
+	var lineSelection = getLineSelection(lines,
+			textArea.selectionStart, textArea.selectionEnd);
+
+	var res = shiftRightLineSelection(lines, lineSelection, indenter);
+
+	var newLines = res.lines;
+	var addedCharCount = res.addedCharCount;
+	var addedCharCountFirstLine = res.addedCharCountFirstLine
+
+	var newText = newLines.join("\n");
+	textArea.value = newText;
+
+	textArea.setSelectionRange(
+			oldSelectionStart + addedCharCountFirstLine,
+			oldSelectionEnd + addedCharCount);
+
+	//textArea.focus();
+	//textArea.scrollTop = scroll;
+
+	return true;
+}
+
