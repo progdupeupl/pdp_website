@@ -58,12 +58,12 @@ class="active"
                 {# TODO: use a custom css class for this kind of elements #}
                 {% if article.thumbnail %}
                 <div class="row collapse">
-                        <div class="small-2 columns hide-for-small">
-                            <img src="{{article.thumbnail.url }}" alt="Icône" />
+                        <div class="small-2 columns">
+                            <img src="{{ article.thumbnail.url }}" alt="Icône" />
                         </div>
                     <div class="small-10 columns" style="padding-left: 5px;">
                     {% endif %}
-                        <a href="{{article.get_absolute_url }}">{{ article.title }}</a><br />
+                        <a href="{{ article.get_absolute_url }}">{{ article.title }}</a><br />
                         <p>{{ article.description }}</p>
                     {% if article.thumbnail %}
                     </div>
@@ -89,7 +89,7 @@ class="active"
                 {# TODO: use a custom css class for this kind of elements #}
                 {% if tutorial.thumbnail %}
                 <div class="row collapse">
-                    <div class="small-2 column hide-for-small">
+                    <div class="small-2 column">
                         <img src="{{ tutorial.thumbnail.url }}" alt="Icône"/>
                     </div>
                     <div class="small-10 column" style="padding-left: 5px;">
