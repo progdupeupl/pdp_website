@@ -294,6 +294,9 @@ ABSOLUTE_URL_OVERRIDES = {
     'auth.user': lambda u: '/membres/voir/{0}'.format(u.username.encode('utf-8'))
 }
 
+CRISPY_FAIL_SILENTLY = not DEBUG
+CRISPY_TEMPLATE_PACK = 'foundation'
+
 # Bot settings
 BOT_ENABLED = False
 BOT_USER_PK = 1
