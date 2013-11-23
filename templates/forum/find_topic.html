@@ -4,18 +4,18 @@
 {% load emarkdown %}
 
 {% block title %}
-    Sujets crées par {{ usr.username }}
+    Sujets créés par {{ usr.username }}
 {% endblock %}
 
 {% block headline %}
-    Sujets crées par "{{ usr.username }}""
+    Sujets créés par {{ usr.username }}
 {% endblock %}
 
 {% block breadcrumb %}
     {% with profile=usr|profile %}
         <li ><a href="{{ profile.get_absolute_url }}">{{ usr.username }}</a></li>
     {% endwith %}
-    <li ><a href="{% url "pdp.forum.views.find_topic" usr.username %}">Sujets crées</a></li>
+    <li ><a href="{% url "pdp.forum.views.find_topic" usr.username %}">Sujets créés</a></li>
     <li class="current"><a href="#">Recherche</a></li>
 {% endblock %}
 
