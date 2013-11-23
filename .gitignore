@@ -16,7 +16,7 @@ assets/css/*
 fabfile_local.py
 media/
 static/
-env/
+venv/
 pdp/whoosh/
 
 *.pyproj

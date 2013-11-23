@@ -96,7 +96,7 @@ All the python dependencies for PDP are listed in the file `requirements.txt`
 in the source repository. From the PDP directory, simply run
 
     :::console
-    pip install --user -r requirements.txt
+    pip install -r requirements.txt
 
 (This will install the full Django framework and a few separate modules, so it
 may take some time.)
