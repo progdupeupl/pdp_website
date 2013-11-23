@@ -48,16 +48,16 @@
             <div class="tutorial-items">
             {% for tuto in tutorials %}
                 <div class="row article-publication-item">
-                    <div class="large-1 columns">
+                    <div class="large-1 small-2 columns">
                         {% if tuto.thumbnail %}
                             <img src="{{tuto.thumbnail.url }}"/>
                         {% endif %}
                     </div>
-                    <div class="large-10 columns">
+                    <div class="large-10 small-10 columns">
                         <a href="{{ tuto.get_absolute_url }}">{{ tuto.title }}</a>
                         <p>{{ tuto.description }}</p>
                     </div>
-                    <div class="large-1 columns">
+                    <div class="large-1 columns hide-for-small">
                         {% with date=tuto.pubdate %}
                             {% include "misc/datebox.part.html" %}
                         {% endwith %}

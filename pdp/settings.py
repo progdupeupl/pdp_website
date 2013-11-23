@@ -174,6 +174,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
     # Custom context processors
     'pdp.utils.context_processors.versions',
+    'pdp.utils.context_processors.git_version',
 )
 
 INSTALLED_APPS = (
@@ -292,6 +293,9 @@ LOGIN_URL = '/membres/connexion'
 ABSOLUTE_URL_OVERRIDES = {
     'auth.user': lambda u: '/membres/voir/{0}'.format(u.username.encode('utf-8'))
 }
+
+CRISPY_FAIL_SILENTLY = not DEBUG
+CRISPY_TEMPLATE_PACK = 'foundation'
 
 # Bot settings
 BOT_ENABLED = False
