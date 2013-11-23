@@ -6,9 +6,43 @@ from crispy_forms.helper import FormHelper
 from crispy_forms_foundation.layout import Layout, Submit, Field
 
 
-class ArticleForm(forms.Form):
+class NewArticleForm(forms.Form):
     title = forms.CharField(
-        label='Titre',
+        label=u'Titre',
+        max_length=80
+    )
+
+    description = forms.CharField(
+        max_length=200
+    )
+
+    image = forms.ImageField(
+        label=u'Icône',
+        required=False)
+
+    tags = forms.CharField(
+        label=u'Tags (séparés par une virgule)',
+        max_length=80,
+        required=False
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+
+        self.helper.layout = Layout(
+            Field('title'),
+            Field('description'),
+            Field('image'),
+            Field('tags'),
+            Submit('submit', u'Créer l’article'),
+        )
+        super(NewArticleForm, self).__init__(*args, **kwargs)
+
+
+class EditArticleForm(forms.Form):
+    title = forms.CharField(
+        label=u'Titre',
         max_length=80
     )
 
@@ -17,27 +51,31 @@ class ArticleForm(forms.Form):
     )
 
     text = forms.CharField(
-        label='Texte',
+        label=u'Texte',
         required=False,
         widget=forms.Textarea
     )
 
+    image = forms.ImageField(
+        label=u'Icône',
+        required=False)
+
     tags = forms.CharField(
-        label='Tags',
+        label=u'Tags (séparés par une virgule)',
         max_length=80,
         required=False
     )
 
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
-        self.helper.form_class = 'form-horizontal'
         self.helper.form_method = 'post'
 
         self.helper.layout = Layout(
-            Field('title', css_class='input-xxlarge'),
-            Field('description', css_class='input-block-level'),
-            Field('text', css_class='input-block-level'),
+            Field('title'),
+            Field('description'),
+            Field('text'),
+            Field('image'),
             Field('tags'),
-            Submit('submit', 'Valider'),
+            Submit('submit', u'Enregistrer les modifications'),
         )
-        super(ArticleForm, self).__init__(*args, **kwargs)
+        super(EditArticleForm, self).__init__(*args, **kwargs)

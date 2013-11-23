@@ -1,5 +1,4 @@
 {% extends "forum/base.html" %}
-
 {% block title %}
     Répondre au sujet
 {% endblock %}
@@ -16,7 +15,7 @@
     <li><a href="{{ topic.forum.category.get_absolute_url }}">{{ topic.forum.category.title }}</a></li>
     <li><a href="{{ topic.forum.get_absolute_url }}">{{ topic.forum.title }}</a></li>
     <li><a href="{{ topic.get_absolute_url }}">{{ topic.title }}</a></li>
-    <li class="current"><a href="#">Répondre au sujet</a></li>
+    <li class="current"><a href="javascript:;">Répondre au sujet</a></li>
 {% endblock %}
 
 {% block content %}
@@ -31,6 +30,8 @@
     </div>
 </div>
 {% endif %}
+
+{% include "misc/editor.part.html" %}
 
 <div class="row">
     <div class="large-12 columns">

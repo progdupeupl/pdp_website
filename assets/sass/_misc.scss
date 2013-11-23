@@ -13,8 +13,6 @@ h1, h2 {
     }
 }
 
-p { text-align: justify; }
-
 ul, ol {
     margin-left: emCalc(40px);
 }
@@ -45,6 +43,14 @@ nav.top-bar {
 
         a:hover {
             background-color: darken($primary-color, 5%);
+        }
+    }
+    .name {
+        h1 { display: inline-block; }
+        a { padding: 0px 15px 0px 10px; }
+        img {
+            position: relative;
+            top: -2px;
         }
     }
 }
@@ -78,6 +84,10 @@ nav.top-bar {
 
 .headline-actions {
     margin-top: emCalc(24px);
+
+    @media #{$small} {
+        float: right;
+    }
 }
 
 .footer {
@@ -156,4 +166,14 @@ nav.top-bar {
 
 .published {
     background-color: lighten(rgb(213, 236, 191), 10%);
+}
+
+// No bold font for switches
+div.switch label {
+    font-weight: normal;
+}
+
+// Correct bad font size for lists
+li p {
+    font-size: emCalc(16px);
 }

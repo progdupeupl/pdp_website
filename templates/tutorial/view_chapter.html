@@ -6,6 +6,9 @@
 {% endblock %}
 
 {% block headline %}
+{% if chapter.thumbnail %}
+<img src="{{chapter.thumbnail.url }}"/>
+{% endif %}
 {{ chapter.title }}
 {% endblock %}
 
@@ -18,12 +21,21 @@
                     Éditer
                 </a>
                 {% if chapter.part %}
-                    <a href="#" class="button secondary" data-dropdown="chapter-{{ chapter.pk }}">
-                        <i class="icon-move"></i>
-                        Déplacer
-                    </a>
-                    <div id="chapter-{{ chapter.pk }}" class="f-dropdown content" data-dropdown-content>
-                        <select name="move_target">
+                <button type="submit" name="delete" class="button secondary">
+                    <i class="icon-remove"></i>
+                    Supprimer
+                </button>
+                {% endif %}
+           </div>
+           
+            <input type="hidden" name="chapter" value="{{ chapter.pk }}" />
+            {% csrf_token %}
+        </form>
+        {% if chapter.part %}
+            <form action="{% url "pdp.tutorial.views.modify_chapter" %}" method="POST" class="custom">
+                    <div>
+                        <select name="move_target" class="select-autosubmit">
+                            <option>Déplacer</option>
                         {% if chapter.position_in_part > 1 %}
                             <option value="{{ chapter.position_in_part|add:"-1" }}">Monter</option>
                         {% endif %}
@@ -47,20 +59,18 @@
                             {% endif %}
                         {% endfor %}
                         </select>
-                        <button type="submit" name="move" class="button">
-                            Déplacer
-                        </button>
+                        <noscript>
+                            <button type="submit" class="button">
+                                Déplacer
+                            </button>
+                        </noscript>
                     </div>
-                    <button type="submit" name="delete" class="button secondary">
-                        <i class="icon-remove"></i>
-                        Supprimer
-                    </button>
-                {% endif %}
-            </div>
 
-            <input type="hidden" name="chapter" value="{{ chapter.pk }}" />
-            {% csrf_token %}
-        </form>
+                <input type="hidden" name="move" value="" />
+                <input type="hidden" name="chapter" value="{{ chapter.pk }}" />
+                {% csrf_token %}
+            </form>
+        {% endif %}
     {% endif %}
 {% endblock %}
 

@@ -9,11 +9,24 @@
                 </li>
             
                 {% for page in pages %}
-                    <li class="{% ifequal page nb %}current{% endifequal %}">
-                        <a href="{% ifnotequal page nb %}{{ topic.get_absolute_url }}?page={{ page }}{% else %}javascript:;{% endifnotequal %}">
-                            {{ page }}
-                        </a>
-                    </li>
+                    {% if page %}
+                        <li class="{% ifequal page nb %}current{% endifequal %}">
+                            <a href="{% ifnotequal page nb %}{{ topic.get_absolute_url }}?page={{ page }}{% else %}javascript:;{% endifnotequal %}">
+                                {{ page }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="#" data-dropdown="pagin-{{position}}">…</a>
+                            <ul id="pagin-{{position}}" class="f-dropdown content" data-dropdown-content>
+							  <li>
+							  <form method="get">
+							  	<input type="text" placeholder="Page" name="page" class="small" />
+							  </form>
+							  </li>
+							</ul>
+                        </li>
+                    {% endif %}
                 {% endfor %}
                 
                 <li class="arrow {% ifequal nb pages|last %}unavaible{% endifequal %}">

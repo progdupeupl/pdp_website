@@ -1,15 +1,20 @@
 # coding: utf-8
 
+import json
 from datetime import datetime
 
 from django.shortcuts import redirect, get_object_or_404
-from django.http import Http404
+from django.http import Http404, HttpResponse
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from pdp.utils import render_template, slugify
+from pdp.utils.paginator import paginator_range
 
-from models import Category, Forum, Topic, Post, POSTS_PER_PAGE
+from models import Category, Forum, Topic, Post
+from models import POSTS_PER_PAGE, TOPICS_PER_PAGE
 from models import never_read, mark_read
 from models import follow
 from forms import TopicForm, PostForm
@@ -39,8 +44,23 @@ def details(request, cat_slug, forum_slug):
         .filter(forum__pk=forum.pk, is_sticky=False)\
         .order_by('-last_message__pubdate')
 
+    # Paginator
+    paginator = Paginator(topics, TOPICS_PER_PAGE)
+    page = request.GET.get('page')
+
+    try:
+        shown_topics = paginator.page(page)
+        page = int(page)
+    except PageNotAnInteger:
+        shown_topics = paginator.page(1)
+        page = 1
+    except EmptyPage:
+        shown_topics = paginator.page(paginator.num_pages)
+        page = paginator.num_pages
+
     return render_template('forum/details.html', {
-        'forum': forum, 'sticky_topics': sticky_topics, 'topics': topics
+        'forum': forum, 'sticky_topics': sticky_topics, 'topics': shown_topics,
+        'pages': paginator_range(page, paginator.num_pages), 'nb': page
     })
 
 
@@ -107,7 +127,8 @@ def topic(request, topic_pk, topic_slug):
 
     return render_template('forum/topic.html', {
         'topic': g_topic, 'posts': res, 'categories': categories,
-        'pages': range(1, paginator.num_pages + 1), 'nb': page_nbr,
+        'pages': paginator_range(page_nbr, paginator.num_pages),
+        'nb': page_nbr,
         'last_post_pk': last_post_pk
     })
 
@@ -188,25 +209,33 @@ def edit(request):
     except KeyError:
         raise Http404
 
+    try:
+        page = int(request.POST['page'])
+    except KeyError:
+        page = 1
+
     data = request.POST
+    resp = {}
 
     g_topic = get_object_or_404(Topic, pk=topic_pk)
 
     if request.user.is_authenticated():
         # User actions
         if 'follow' in data:
-            follow(g_topic)
+            resp['follow'] = follow(g_topic)
     if request.user == g_topic.author:
         # Author actions
         if 'solved' in data:
             g_topic.is_solved = not g_topic.is_solved
-    if request.user.is_staff:
-        # Staff actions
+            resp['solved'] = g_topic.is_solved
+    if request.user.has_perm('forum.change_topic'):
+        # Staff actions using AJAX
+        # TODO: Do not redirect on AJAX requests
         if 'lock' in data:
-            g_topic.is_locked = not g_topic.is_locked
-        elif 'sticky' in data:
-            g_topic.is_sticky = not g_topic.is_sticky
-        elif 'move' in data:
+            g_topic.is_locked = data['lock'] == 'true'
+        if 'sticky' in data:
+            g_topic.is_sticky = data['sticky'] == 'true'
+        if 'move' in data:
             try:
                 forum_pk = int(request.POST['move_target'])
             except KeyError:
@@ -216,7 +245,11 @@ def edit(request):
             g_topic.forum = forum
 
     g_topic.save()
-    return redirect(g_topic.get_absolute_url())
+
+    if request.is_ajax():
+        return HttpResponse(json.dumps(resp))
+    else:
+        return redirect(u'{}?page={}'.format(g_topic.get_absolute_url(), page))
 
 
 @login_required
@@ -315,8 +348,15 @@ def edit_post(request):
         g_topic = get_object_or_404(Topic, pk=post.topic.pk)
 
     # Making sure the user is allowed to do that
-    if post.author != request.user and not request.user.is_staff:
-        raise Http404
+    if post.author != request.user:
+        if not request.user.has_perm('forum.change_post'):
+            raise Http404
+        elif request.method == 'GET':
+            messages.add_message(
+                request, messages.WARNING,
+                u'Vous éditez ce message en tant que modérateur (auteur : {}).'
+                u' Soyez encore plus prudent lors de l\'édition de celui-ci !'
+                .format(post.author.username))
 
     if request.method == 'POST':
 
@@ -368,6 +408,58 @@ def useful_post(request):
     return redirect(post.get_absolute_url())
 
 
+def find_topic(request, name):
+
+    u = get_object_or_404(User, username=name)
+
+    topics = Topic.objects.all().filter(author=u)\
+                          .order_by('-pubdate')
+
+    # Paginator
+    paginator = Paginator(topics, TOPICS_PER_PAGE)
+    page = request.GET.get('page')
+
+    try:
+        shown_topics = paginator.page(page)
+        page = int(page)
+    except PageNotAnInteger:
+        shown_topics = paginator.page(1)
+        page = 1
+    except EmptyPage:
+        shown_topics = paginator.page(paginator.num_pages)
+        page = paginator.num_pages
+
+    return render_template('forum/find_topic.html', {
+        'topics': shown_topics, 'usr': u,
+        'pages': paginator_range(page, paginator.num_pages), 'nb': page
+    })
+
+
+def find_post(request, name):
+    u = get_object_or_404(User, username=name)
+
+    posts = Post.objects.all().filter(author=u)\
+        .order_by('-pubdate')
+
+    paginator = Paginator(posts, POSTS_PER_PAGE)
+    page = request.GET.get('page')
+
+    try:
+        shown_posts = paginator.page(page)
+        page = int(page)
+    except PageNotAnInteger:
+        shown_posts = paginator.page(1)
+        page = 1
+    except EmptyPage:
+        shown_posts = paginator.page(paginator.num_pages)
+        page = paginator.num_pages
+
+    return render_template('forum/find_post.html', {
+        'posts': shown_posts, 'usr': u,
+        'pages': paginator_range(page, paginator.num_pages), 'nb': page
+    })
+
+
 # Deprecated URLs
 
 def deprecated_topic_redirect(request, topic_pk, topic_slug):
@@ -383,3 +475,11 @@ def deprecated_cat_details_redirect(request, cat_pk, cat_slug):
 def deprecated_details_redirect(request, cat_slug, forum_pk, forum_slug):
     forum = get_object_or_404(Forum, pk=forum_pk)
     return redirect(forum.get_absolute_url(), permanent=True)
+
+
+def deprecated_feed_messages_rss(request):
+    return redirect('/forums/flux/messages/rss/', permanent=True)
+
+
+def deprecated_feed_messages_atom(request):
+    return redirect('/forums/flux/messages/atom/', permanent=True)

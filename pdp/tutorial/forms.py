@@ -14,6 +14,10 @@ class TutorialForm(forms.Form):
         label='Titre',
         max_length=80
     )
+    
+    image = forms.ImageField(
+        label='Selectionnez une image', 
+        required=False)
 
     description = forms.CharField(
         max_length=200
@@ -34,6 +38,7 @@ class TutorialForm(forms.Form):
         self.helper.layout = Layout(
             Field('title'),
             Field('description'),
+            Field('image'),
             'is_mini',
             Submit('submit', 'Valider')
         )
@@ -49,6 +54,11 @@ class EditTutorialForm(forms.Form):
     description = forms.CharField(
         max_length=200
     )
+    
+    image = forms.ImageField(
+        label='Selectionnez une image', 
+        required=False)
+
 
     introduction = forms.CharField(
         required=False,
@@ -67,6 +77,7 @@ class EditTutorialForm(forms.Form):
         self.helper.layout = Layout(
             Field('title'),
             Field('description'),
+            Field('image'),
             Field('introduction'),
             Field('conclusion'),
             Submit('submit', 'Valider')
@@ -121,6 +132,10 @@ class ChapterForm(forms.Form):
         required=False,
         widget=forms.Textarea
     )
+    
+    image = forms.ImageField(
+        label='Selectionnez une image', 
+        required=False)
 
     conclusion = forms.CharField(
         required=False,
@@ -129,18 +144,18 @@ class ChapterForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
-        self.helper.form_class = 'form-horizontal'
         self.helper.form_method = 'post'
 
         self.helper.layout = Layout(
             Fieldset(
                 u'Général',
-                Field('title', css_class='input-xxlarge'),
+                Field('title'),
+                Field('image'),
             ),
             Fieldset(
                 u'Contenu',
-                Field('introduction', css_class='input-block-level'),
-                Field('conclusion', css_class='input-block-level')
+                Field('introduction'),
+                Field('conclusion')
             ),
             ButtonHolder(
                 Div(
@@ -161,6 +176,10 @@ class EmbdedChapterForm(forms.Form):
         widget=forms.Textarea
     )
 
+    image = forms.ImageField(
+        label='Selectionnez une image', 
+        required=False)
+
     conclusion = forms.CharField(
         required=False,
         widget=forms.Textarea
@@ -168,14 +187,14 @@ class EmbdedChapterForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
-        self.helper.form_class = 'form-horizontal'
         self.helper.form_method = 'post'
 
         self.helper.layout = Layout(
             Fieldset(
                 u'Contenu',
-                Field('introduction', css_class='input-block-level'),
-                Field('conclusion', css_class='input-block-level')
+                Field('image'),
+                Field('introduction'),
+                Field('conclusion')
             ),
             ButtonHolder(
                 Submit('submit', 'Valider')

@@ -29,10 +29,6 @@
 
 {% block headline-actions %}
     <div class="button-group">
-        <a href="#" class="button secondary dropdown" data-dropdown="tutorials-drop-feeds">
-            <i class="icon-rss"></i>
-            Flux
-        </a><br />
         {% include "tutorial/feeds.part.html" %}
         {% if user.is_authenticated %}
             <a href="/tutoriels/nouveau/tutoriel" class="button">
@@ -52,14 +48,19 @@
             <div class="tutorial-items">
             {% for tuto in tutorials %}
                 <div class="row article-publication-item">
-                    <div class="large-1 columns">
+                    <div class="large-1 small-2 columns">
+                        {% if tuto.thumbnail %}
+                            <img src="{{tuto.thumbnail.url }}"/>
+                        {% endif %}
+                    </div>
+                    <div class="large-10 small-10 columns">
+                        <a href="{{ tuto.get_absolute_url }}">{{ tuto.title }}</a>
+                        <p>{{ tuto.description }}</p>
+                    </div>
+                    <div class="large-1 columns hide-for-small">
                         {% with date=tuto.pubdate %}
                             {% include "misc/datebox.part.html" %}
                         {% endwith %}
-                    </div>
-                    <div class="large-11 columns">
-                        <a href="{{ tuto.get_absolute_url }}">{{ tuto.title }}</a>
-                        <p>{{ tuto.description }}</p>
                     </div>
                 </div>
             {% endfor %}
@@ -69,5 +70,46 @@
         {% endif %}
     </div>
 </div>
+
+{% if perms.tutorial.change_tutorial %}
+<div class="row">
+    <div class="large-12 columns">
+        <h2>En attente de validation</h2>
+        {% if pending_tutorials %}
+            <div class="tutorial-items">
+                {% for tuto in pending_tutorials %}
+                    <div class="row article-publication-item">
+                        <div class="small-1 columns">
+                            {% with date=tuto.pubdate %}
+                                {% include "misc/datebox.part.html" %}
+                            {% endwith %}
+                        </div>
+                        <div class="small-8 columns">
+                            <a href="{{ tuto.get_absolute_url }}">{{ tuto.title }}</a>
+                            <p>{{ tuto.description }}</p>
+                        </div>
+                        <div class="small-3 columns">
+                            <form action="{% url "pdp.tutorial.views.modify_tutorial" %}" method="post">
+                                <div class="button-group even-2 expand">
+                                    <button type="submit" class="button" name="validate">
+                                        Valider
+                                    </button>
+                                    <button type="submit" class="button secondary" name="refuse">
+                                        Refuser
+                                    </button>
+                                </div>
+                                <input type="hidden" name="tutorial" value="{{ tuto.pk }}">
+                                {% csrf_token %}
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Aucun tutoriel en attente de validation.</p>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
 
 {% endblock %}

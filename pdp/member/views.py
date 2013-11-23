@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 from django.core.context_processors import csrf
+from django.core.urlresolvers import reverse
 from django.template import RequestContext
 
 from pdp.utils.tokens import generate_token
@@ -26,6 +27,20 @@ def index(request):
     return render_template('member/index.html', {
         'members': members
     })
+
+
+@login_required
+def actions(request):
+    '''
+    Show avaible actions for current user, like a customized homepage.
+    This may be very temporary.
+    '''
+
+    # TODO: Seriously improve this page, and see if cannot be merged in
+    #       pdp.pages.views.home since it will be more coherent to give an
+    #       enhanced homepage for registered users
+
+    return render_template('member/actions.html')
 
 
 def details(request, user_name):
@@ -90,7 +105,7 @@ def login_view(request):
                 request.session['get_token'] = generate_token()
                 if not 'remember' in request.POST:
                     request.session.set_expiry(0)
-                return redirect('/')
+                return redirect(reverse('pdp.pages.views.home'))
             else:
                 error = 'Les identifiants fournis ne sont pas valides'
         else:
@@ -99,6 +114,7 @@ def login_view(request):
         form = LoginForm()
     csrf_tk['error'] = error
     csrf_tk['form'] = form
+
     return render_template('member/login.html', csrf_tk)
 
 
@@ -106,7 +122,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     request.session.clear()
-    return redirect('/')
+    return redirect(reverse('pdp.pages.views.home'))
 
 
 def register_view(request):
@@ -206,8 +222,10 @@ def settings_account(request):
 
 @login_required
 def publications(request):
-    user_articles = Article.objects.filter(author=request.user).order_by('-pubdate')
-    user_tutorials = Tutorial.objects.filter(authors=request.user).order_by('-pubdate')
+    user_articles = Article.objects.filter(
+        author=request.user).order_by('-pubdate')
+    user_tutorials = Tutorial.objects.filter(
+        authors=request.user).order_by('-pubdate')
     c = {
         'user_articles': user_articles,
         'user_tutorials': user_tutorials,

@@ -12,16 +12,16 @@ class="active"
     Accueil
 {% endblock %}
 
+{% block headline %}
+    Quoi de neuf ?
+{% endblock %}
+
 {% block meta %}
     <meta name="description" content="Bienvenue sur Progdupeupl, une communauté
     de passionnés d'informatique et notamment de programmation. Ce site permet
     non seulement de se former à la programmation, mais également de discuter
     entre membres pour progresser, découvrir des astuces, partager, aider, en
     bref : échanger de façon utile sur le monde de l'informatique." />
-{% endblock %}
-
-{% block headline %}
-    Bonjour o/
 {% endblock %}
 
 {% block header %}
@@ -42,26 +42,33 @@ class="active"
 
 {% block content %}
 
-<!-- TODO: Use a (S)CSS separator rule instead of this empty one -->
-<div class="row">
-    <div class="large-12 columns">
-
-    </div>
-</div>
-
 <div class="row">
     {# Articles #}
     <div class="large-4 columns">
-        <h2>
-            <a href="{% url "pdp.article.views.index" %}">
-                Articles
-            </a>
-        </h2>
+        <div class="home-app-title">
+            <h2 >
+                <a href="{% url "pdp.article.views.index" %}">
+                    Articles
+                </a>
+            </h2>
+        </div>
 
         {% if last_articles %}
             {% for article in last_articles %}
-                <a href="{{article.get_absolute_url }}">{{ article.title }}</a>
-                <p>{{ article.description }}</p>
+                {# TODO: use a custom css class for this kind of elements #}
+                {% if article.thumbnail %}
+                <div class="row collapse">
+                        <div class="small-2 columns">
+                            <img src="{{ article.thumbnail.url }}" alt="Icône" />
+                        </div>
+                    <div class="small-10 columns" style="padding-left: 5px;">
+                    {% endif %}
+                        <a href="{{ article.get_absolute_url }}">{{ article.title }}</a><br />
+                        <p>{{ article.description }}</p>
+                    {% if article.thumbnail %}
+                    </div>
+                </div>
+                {% endif %}
             {% endfor %}
         {% else %}
             <p>Pas d'articles pour l'instant.</p>
@@ -69,27 +76,43 @@ class="active"
     </div>
 
     <div class="large-4 columns">
-        <h2>
-            <a href="{% url "pdp.tutorial.views.index" %}">
-                Tutoriels
-            </a>
-        </h2>
+        <div class="home-app-title">
+            <h2>
+                <a href="{% url "pdp.tutorial.views.index" %}">
+                    Tutoriels
+                </a>
+            </h2>
+        </div>
 
         {% if last_tutorials %}
             {% for tutorial in last_tutorials %}
-                <a href="{{tutorial.get_absolute_url }}">{{ tutorial.title }}</a>
-                <p>{{ tutorial.description }}</p>
+                {# TODO: use a custom css class for this kind of elements #}
+                {% if tutorial.thumbnail %}
+                <div class="row collapse">
+                    <div class="small-2 column">
+                        <img src="{{ tutorial.thumbnail.url }}" alt="Icône"/>
+                    </div>
+                    <div class="small-10 column" style="padding-left: 5px;">
+                    {% endif %}
+                        <a href="{{ tutorial.get_absolute_url }}">{{ tutorial.title }}</a>
+                        <p>{{ tutorial.description }}</p>
+                    {% if tutorial.thumbnail %}
+                    </div>
+                </div>
+                {% endif %}
             {% endfor %}
         {% else %}
             <p>Aucun tutoriel actuellement.</p>
         {% endif %}
     </div>
     <div class="large-4 columns">
-        <h2>
-            <a href="{% url "pdp.forum.views.index" %}">
-                Forums
-            </a>
-        </h2>
+        <div class="home-app-title">
+            <h2>
+                <a href="{% url "pdp.forum.views.index" %}">
+                    Forums
+                </a>
+            </h2>
+        </div>
 
         {% if last_topics %}
             {% for topic in last_topics %}
@@ -101,20 +124,55 @@ class="active"
     </div>
 </div>
 <div class="row hide-for-small">
+    <div class="small-4 columns">
+        <form id="search-article" name="search-article" type="GET" action="{% url "haystack_search" %}">
+            <div class="row collapse">
+                <div class="small-7 columns">
+                    <input type="hidden" name="models" value="article.article" />
+                  <input type="text" name="q" placeholder="Rechercher">
+                </div>
+                <div class="small-3 columns left">
+                  <button type="submit" class="button"><i class="fi-magnifying-glass size-12"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="large-4 columns">
+        <form id="search-tuto" name="search-tuto" type="GET" action="{% url "haystack_search" %}">
+            <div class="row collapse">
+                <div class="small-7 columns">
+                    <input type="hidden" name="models" value="tutorial.extract" />
+                  <input type="text" name="q" placeholder="Rechercher">
+                </div>
+                <div class="small-3 columns left">
+                  <button type="submit" class="button"><i class="fi-magnifying-glass size-12"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="large-4 columns">
+        <form id="search-forum" name="search-forum" type="GET" action="{% url "haystack_search" %}">
+            <div class="row collapse">
+                <div class="small-7 columns">
+                    <input type="hidden" name="models" value="forum.topic" />
+                  <input type="text" name="q" placeholder="Rechercher">
+                </div>
+                <div class="small-3 columns left">
+                  <button type="submit" class="button"><i class="fi-magnifying-glass size-12"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row hide-for-small">
     <div class="large-4 columns">
         <div class="button-group">
             <a href="{% url "pdp.article.views.index" %}" class="button">
                 <i class="icon-arrow-right"></i>
                 Aller aux articles
             </a>
-            <a href="#" class="button secondary dropdown" data-dropdown="articles-drop-feeds">
-                <i class="icon-rss"></i>
-                Flux
-            </a><br />
-            <ul id="articles-drop-feeds" class="f-dropdown">
-                <li><a href="{% url "article-feed-rss" %}">RSS</a></li>
-                <li><a href="{% url "article-feed-atom" %}">ATOM</a></li>
-            </ul>
+            {% include "article/feeds.part.html" %}
         </div>
     </div>
     <div class="large-4 columns">
@@ -123,14 +181,7 @@ class="active"
                 <i class="icon-arrow-right"></i>
                 Aller aux tutoriels
             </a>
-            <a href="#" class="button secondary dropdown" data-dropdown="tutorials-drop-feeds">
-                <i class="icon-rss"></i>
-                Flux
-            </a><br />
-            <ul id="tutorials-drop-feeds" class="f-dropdown">
-                <li><a href="{% url "tutorial-feed-rss" %}">RSS</a></li>
-                <li><a href="{% url "tutorial-feed-atom" %}">ATOM</a></li>
-            </ul>
+            {% include "tutorial/feeds.part.html" %}
         </div>
     </div>
     <div class="large-4 columns">
@@ -139,14 +190,7 @@ class="active"
                 <i class="icon-arrow-right"></i>
                 Aller aux forums
             </a>
-            <a href="#" class="button secondary dropdown" data-dropdown="posts-drop-feeds">
-                <i class="icon-rss"></i>
-                Flux
-            </a><br />
-            <ul id="posts-drop-feeds" class="f-dropdown">
-                <li><a href="{% url "post-feed-rss" %}">RSS</a></li>
-                <li><a href="{% url "post-feed-atom" %}">ATOM</a></li>
-            </ul>
+            {% include "forum/feeds.part.html" %}
         </div>
     </div>
 </div>

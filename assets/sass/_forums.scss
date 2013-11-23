@@ -85,9 +85,20 @@
 
     padding: 3px;
 
+    // For good centering, avoid left padding
+    @media #{$small} {
+        padding-left: 0;
+    }
+
     p {
         padding: 0;
         margin: 0;
+    }
+}
+
+.post-nickname, .post-avatar {
+    @media #{$small} {
+        text-align: center;
     }
 }
 

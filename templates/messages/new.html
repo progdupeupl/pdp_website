@@ -1,0 +1,38 @@
+{% extends "messages/base.html" %}
+{% load emarkdown %}
+{% load markup %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Nouveau message
+{% endblock %}
+
+{% block headline %}
+    Nouveau message
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="current"><a href="javascript:;">Nouveau message</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="large-12 columns">
+
+        {% crispy form %}
+
+    </div>
+</div>
+
+{% if form.text %}
+<div class="row">
+    <div class="large-12 columns">
+        <div class="panel">
+            <h5>Prévisualisation de votre message</h5>
+            {{ form.text.value|emarkdown }}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

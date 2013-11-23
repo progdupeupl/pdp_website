@@ -8,6 +8,11 @@
 {% endblock %}
 
 {% block headline %}
+    {% if article.thumbnail %}
+        <span>
+            <img src="{{ article.thumbnail.url }}" alt="Icône" class="hide-for-small"/>
+        </span>
+    {% endif %}
     <a href="{{ article.get_absolute_url }}">{{ article.title }}</a><br />
     <small>{{ article.description }}</small>
 {% endblock %}
@@ -24,10 +29,18 @@
                     <i class="icon-pencil"></i>
                     Éditer
                 </a>
-                <button type="submit" name="delete" class="button secondary">
-                    <i class="icon-remove"></i>
+                <a href="#" class="button secondary" data-dropdown="delete-drop">
                     Supprimer
-                </button>
+                </a>
+                <div id="delete-drop" class="f-dropdown small content" data-dropdown-content>
+                    <p>
+                        Si vous supprimez cet article, il sera alors impossible de le modifier/consulter de nouveau.
+                    </p>
+                    <button type="submit" name="delete" class="button expand alert">
+                        <i class="icon-remove"></i>
+                        Confirmer la suppression
+                    </button>
+                </div>
             </div>
 
             <input type="hidden" name="article" value="{{ article.pk }}" />
@@ -51,8 +64,18 @@
             {% endwith %}
             et publié
             {{ article.pubdate|humane_date }}.
+            <br />
+            Tags : 
+            {% for tag in article.tags.all %}
+                <a href="{% url "haystack_search" %}?q={{ tag.name }}&amp;models=article.article">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+            {% empty %}
+                aucun
+            {% endfor %}
         </p>
-
+    </div>
+</div>
+<div class="row">
+    <div class="large-12 columns">
         {{ article.text|emarkdown }}
     </div>
 </div>
@@ -62,9 +85,11 @@
 {% else %}
 <div class="row">
     <div class="large-12 columns">
-        <p>
-            Cet article n'a pas encore été mis en ligne.
-        </p>
+        <div class="panel">
+            <p>
+                Cet article n'a pas encore été mis en ligne.
+            </p>
+        </div>
     </div>
 </div>
 {% endif %}

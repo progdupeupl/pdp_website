@@ -1,45 +1,45 @@
 # coding: utf-8
 
 from django.test import TestCase
+
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 
 from django_dynamic_fixture import G
 
-from pdp.tutorial.models import Tutorial, Part, Chapter, get_last_tutorials
+from pdp.tutorial.models import Tutorial, Part, get_last_tutorials
+from pdp.member.models import Profile
 
 
-class TutorialTests(TestCase):
+class GetLastTutorialsTests(TestCase):
+    '''Tests for the get_last_tutorials function.'''
 
     def test_last_tutorials_zero(self):
-        '''
-        Tests that the last articles work if there are no visible articles.
-        '''
+        '''Tests if the get_last_tutorials work with no visible tutorial.'''
         self.assertEqual(0, len(get_last_tutorials()))
-
-        tutorial = G(Tutorial, is_visible=False)
-        tutorial  # to avoid unsused variable warning
+        G(Tutorial, is_visible=False)
         self.assertEqual(0, len(get_last_tutorials()))
 
     def test_last_tutorials_one(self):
-        '''Tests that the last articles work if there is only one.'''
-        article = G(Tutorial, is_visible=True)
+        '''Tests that get_last_tutorials work if there is only one.'''
+        tutorial = G(Tutorial, is_visible=True)
         self.assertEqual(1, len(get_last_tutorials()))
-        self.assertEqual(article, get_last_tutorials()[0])
+        self.assertEqual(tutorial, get_last_tutorials()[0])
 
-    def test_last_articles_many(self):
-        '''Tests that the last articles work correctly'''
-        articles = []
+    def test_last_tutorials_many(self):
+        '''Tests that the last tutorials works correctly.'''
+        tutorials = []
         for n in range(2000, 1900, -1):
-            a = G(Tutorial)
-            articles.append(a)
+            tutorial = G(Tutorial)
+            tutorials.append(tutorial)
 
         last = get_last_tutorials()
 
         for n, val in enumerate(last):
-            self.assertEqual(val, articles[n])
+            self.assertEqual(val, tutorials[n])
 
-    # Current URL tests
 
+class TutorialIntegrationTests(TestCase):
     def test_url_index(self):
         '''Tests viewing the index page of tutorials'''
         resp = self.client.get('/tutoriels/')
@@ -85,7 +85,7 @@ class TutorialTests(TestCase):
 
     def test_url_create_part_anon(self):
         '''Testing creating a part as anonymous'''
-        tutorial = G(Tutorial, is_visible=True)
+        G(Tutorial, is_visible=True)
         resp = self.client.get(reverse('pdp.tutorial.views.add_part'))
         self.assertEqual(302, resp.status_code)
 
@@ -94,11 +94,44 @@ class TutorialTests(TestCase):
         tutorial = G(Tutorial, is_visible=True, is_mini=False)
         part = G(Part, tutorial=tutorial)
         resp = self.client.get(
-            reverse('pdp.tutorial.views.add_chapter') +
-            '?partie={}'.format(part.pk))
+            ''.join((reverse('pdp.tutorial.views.add_chapter'),
+                    '?partie={}'.format(part.pk))))
         self.assertEqual(302, resp.status_code)
 
-    # Deprecated URL redirect tests
+
+class TutorialSearchIntegrationTests(TestCase):
+    def setUp(self):
+        self.user = G(User, username='test')
+        self.profile = G(Profile, user=self.user)
+
+    def test_url_search_none(self):
+        resp = self.client.get(
+            reverse('pdp.tutorial.views.find_tutorial',
+                    args=[self.user.username]))
+
+        self.assertEquals(resp.status_code, 200)
+
+    def test_url_search_invisible(self):
+        G(Tutorial, is_visible=False, author=self.user)
+
+        resp = self.client.get(
+            reverse('pdp.tutorial.views.find_tutorial',
+                    args=[self.user.username]))
+
+        self.assertEquals(resp.status_code, 200)
+
+    def test_url_search_visible(self):
+        G(Tutorial, is_visible=True, author=self.user)
+
+        resp = self.client.get(
+            reverse('pdp.tutorial.views.find_tutorial',
+                    args=[self.user.username]))
+
+        self.assertEquals(resp.status_code, 200)
+
+
+class DeprecatedTutorialIntegrationTest(TestCase):
+    '''Test the correct redirect on deprecated URLs.'''
 
     def test_url_deprecated_tutorial(self):
         tutorial = G(Tutorial, id=42, title='Test tutorial', is_visible=True)
@@ -111,3 +144,32 @@ class TutorialTests(TestCase):
                  position_in_tutorial=1)
         resp = self.client.get('/tutoriels/voir/42-test-tutorial/1-test-part/')
         self.assertRedirects(resp, part.get_absolute_url(), 301)
+
+
+class AuthenticatedTutorialIntegrationTests(TestCase):
+    def setUp(self):
+        # Create user
+        self.user = G(User, username='test')
+        self.user.set_password('test')
+        self.user.save()
+
+        # Create profile
+        self.profile = G(Profile, user=self.user)
+
+        # Authenticate user
+        self.client.login(username='test', password='test')
+
+    def test_url_add_tutorial(self):
+        resp = self.client.get(reverse('pdp.tutorial.views.add_tutorial'))
+        self.assertEquals(resp.status_code, 200)
+
+
+class FeedsIntegrationTests(TestCase):
+
+    def test_tutorials_feed_rss(self):
+        resp = self.client.get('/tutoriels/flux/rss/')
+        self.assertEqual(resp.status_code, 200)
+
+    def test_tutorials_feed_atom(self):
+        resp = self.client.get('/tutoriels/flux/atom/')
+        self.assertEqual(resp.status_code, 200)

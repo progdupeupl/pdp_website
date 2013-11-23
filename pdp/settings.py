@@ -91,6 +91,43 @@ STATICFILES_FINDERS = (
     #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
+STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
+
+# You need to have yuglify installed, except for DEBUG builds
+if DEBUG:
+    PIPELINE_JS_COMPRESSOR = None
+    PIPELINE_CSS_COMPRESSOR = None
+
+PIPELINE_JS = {
+    'base': {
+        'source_filenames': (
+            'js/vendor/custom.modernizr.js',
+            'js/vendor/jquery.js',
+            'js/foundation.min.js',
+        ),
+        'output_filename': 'js/base.js'
+    },
+    'custom': {
+        'source_filenames': {
+            'js/custom/ajax-csrf.js',
+            'js/custom/editor.js',
+            'js/custom/section.js',
+        },
+        'output_filename': 'js/custom.js'
+    },
+}
+
+PIPELINE_CSS = {
+    'pdp': {
+        'source_filenames': (
+            'css/progdupeupl.css',
+        ),
+        'output_filename': 'css/pdp.css'
+    }
+}
+
+PIPELINE_DISABLE_WRAPPER = True
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'n!01nl+318#x75_%le8#s0=-*ysw&amp;y49uc#t=*wvi(9hnyii0z'
 
@@ -136,8 +173,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
 
     # Custom context processors
-    'pdp.utils.context_processors.analytics',
     'pdp.utils.context_processors.versions',
+    'pdp.utils.context_processors.git_version',
 )
 
 INSTALLED_APPS = (
@@ -156,6 +193,12 @@ INSTALLED_APPS = (
     'email_obfuscator',
     'debug_toolbar',
     'taggit',
+    'pipeline',
+    'rest_framework',
+    'provider',
+    'provider.oauth2',
+    'rest_framework_swagger',
+    'haystack',
 
     'pdp.member',
     'pdp.forum',
@@ -163,6 +206,8 @@ INSTALLED_APPS = (
     'pdp.pages',
     'pdp.tutorial',
     'pdp.article',
+    'pdp.gallery',
+    'pdp.messages',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -198,12 +243,68 @@ LOGGING = {
     }
 }
 
+REST_FRAMEWORK = {
+
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.YAMLRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.XMLRenderer',
+    ),
+
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
+
+    'DEFAULT_MODEL_SERIALIZER_CLASS':
+        'rest_framework.serializers.HyperlinkedModelSerializer',
+
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
+
+SWAGGER_SETTINGS = {
+    "exclude_namespaces": [], # List URL namespaces to ignore
+    "api_version": '0.1',  # Specify your API's version
+    "api_path": "/",  # Specify the path to your API not a root level
+    "enabled_methods": [  # Specify which methods to enable in Swagger UI
+        'get',
+        'post',
+        'put',
+        'patch',
+        'delete'
+    ],
+    "api_key": '', # An API key
+    "is_authenticated": False,  # Set to True to enforce user authentication,
+    "is_superuser": False,  # Set to True to enforce admin only access
+}
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh'),
+    },
+}
+
 AUTH_PROFILE_MODULE = 'member.Profile'
 LOGIN_URL = '/membres/connexion'
 
 ABSOLUTE_URL_OVERRIDES = {
-    'auth.user': lambda u: '/membres/voir/{0}'.format(u.username)
+    'auth.user': lambda u: '/membres/voir/{0}'.format(u.username.encode('utf-8'))
 }
+
+# Bot settings
+BOT_ENABLED = False
+BOT_USER_PK = 1
+BOT_TUTORIAL_FORUM_PK = 1
+BOT_ARTICLE_FORUM_PK = 2
+
+# Django fileserve settings (set to True for local dev version only)
+SERVE = False
+
+# Max size image upload (in bytes)
+IMAGE_MAX_SIZE = 1024*512
 
 # Load the production settings, overwrite the existing ones if needed
 try:
