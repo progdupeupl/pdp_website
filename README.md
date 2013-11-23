@@ -52,7 +52,45 @@ optional, it is only needed if you want to run PDP in mode `debug = False`
     :::console
     sudo aptitude install npm
 
+### Virtual python environment (virtualenv)
+
+The `virtualenv` tool is designed to avoid problem with incompatible Python
+versions or conflicting package requirements between distinct projects. It
+allows to set up per-project local environments, setting a preferred version of
+Python, and installing dependencies locally. To install `virtualenv`, simply
+run
+
+    :::console
+    pip install --user virtualenv
+
+If you are in the `progdupeupl` directory, you can then create a local
+environment in a new subdirectory `venv`, asking it to use the `python2`
+executable; if the Python 2 interpreter is named differently on your system,
+eg. `python2.7` or `python`, you should change the name.
+
+    :::console
+    virtualenv --python=python2 --distribute venv
+
+Each time you want to work on PDP, you should go to the `progdupeupl` directory
+and "activate" this virtual environment. Once the environment is activated, all
+Python tools will use it; for example they will use the `python2` interpreter
+even if your operating system uses Python 3 by default. This will avoid you
+a lot of annoying version mismatches.
+
+    :::console
+    source venv/bin/activate
+
+Do this now before installing further Python dependencies.
+
+You can check that the environment has been activated correctly by printing the
+`$VIRTUAL_ENV` environment variable, and de-activate the environment to get back
+to your default Python system by just running the `deactivate` command.
+
 ### Libraries and tools (system-independent)
+
+Python dependencies are all listed in the file `requirements.txt` in the source
+repository. From the PDP directory, simply run
+
 
 All the python dependencies for PDP are listed in the file `requirements.txt`
 in the source repository. From the PDP directory, simply run
@@ -92,6 +130,10 @@ aivaible on `/admin/`.
 You can then create run a test server on your local machine:
 
     :::console
+    # activate the virtual environment (no need to repeat this in a given session)
+    source venv/bin/activate
+    #
+    # run the server
     python manage.py runserver
 
 The test instance should be available at
