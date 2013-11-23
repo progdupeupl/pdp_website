@@ -54,14 +54,14 @@ optional, it is only needed if you want to run PDP in mode `debug = False`
 
 ### Virtual python environment (virtualenv)
 
-To avoid problem with incompatible Python versions or conflicting package
-requirements between distinct projects, Python users use the `virtualenv`
-tool. It allows to set up per-project local environments, setting a preferred
-version of Python, and installing dependencies locally. To install
-`virtualenv`, simply run
+The `virtualenv` tool is designed to avoid problem with incompatible Python
+versions or conflicting package requirements between distinct projects. It
+allows to set up per-project local environments, setting a preferred version of
+Python, and installing dependencies locally. To install `virtualenv`, simply
+run
 
     :::console
-    pip install virtualenv
+    pip install --user virtualenv
 
 If you are in the `progdupeupl` directory, you can then create a local
 environment in a new subdirectory `venv`, asking it to use the `python2`
