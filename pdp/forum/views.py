@@ -463,8 +463,25 @@ def find_post(request, name):
 @login_required
 def followed_topics(request):
     followed_topics = request.user.get_profile().get_followed_topics()
-    return render_template("forum/followed_topics.html", {
-        'followed_topics': followed_topics,
+
+    # Paginator
+    paginator = Paginator(followed_topics, 2)
+    page = request.GET.get('page')
+
+    try:
+        shown_topics = paginator.page(page)
+        page = int(page)
+    except PageNotAnInteger:
+        shown_topics = paginator.page(1)
+        page = 1
+    except EmptyPage:
+        shown_topics = paginator.page(paginator.num_pages)
+        page = paginator.num_pages
+
+    return render_template('forum/followed_topics.html', {
+        'followed_topics': shown_topics,
+        'pages': paginator_range(page, paginator.num_pages),
+        'nb': page
     })
 
 

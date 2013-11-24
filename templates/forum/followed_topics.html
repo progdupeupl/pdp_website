@@ -16,4 +16,7 @@
     {% for topic in followed_topics %}
         {% include "forum/details_row.part.html" %}
     {% endfor %}
+    
+    {% include "misc/pagination.part.html" with position="bottom" %}
+
 {% endblock %}
