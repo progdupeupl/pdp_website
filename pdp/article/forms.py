@@ -3,7 +3,7 @@
 from django import forms
 
 from crispy_forms.helper import FormHelper
-from crispy_forms_foundation.layout import Layout, Submit, Field
+from crispy_forms_foundation.layout import Layout, Submit, Field, HTML
 
 
 class NewArticleForm(forms.Form):
@@ -73,6 +73,7 @@ class EditArticleForm(forms.Form):
         self.helper.layout = Layout(
             Field('title'),
             Field('description'),
+            HTML('{% include "misc/editor.part.html" %}'),
             Field('text'),
             Field('image'),
             Field('tags'),

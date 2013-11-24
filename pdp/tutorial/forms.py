@@ -6,7 +6,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div
 
 from crispy_forms_foundation.layout import Layout, Fieldset, Submit, Field, \
-    ButtonHolder
+    ButtonHolder, HTML
 
 
 class TutorialForm(forms.Form):
@@ -221,6 +221,7 @@ class ExtractForm(forms.Form):
 
         self.helper.layout = Layout(
             Field('title'),
+            HTML('{% include "misc/editor.part.html" %}'),
             Field('text'),
             Div(
                 Submit('submit', 'Ajouter'),
@@ -251,6 +252,7 @@ class EditExtractForm(forms.Form):
 
         self.helper.layout = Layout(
             Field('title'),
+            HTML('{% include "misc/editor.part.html" %}'),
             Field('text'),
             Submit('submit', 'Modifier'),
         )
