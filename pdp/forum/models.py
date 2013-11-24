@@ -13,6 +13,7 @@ from pdp.utils import get_current_user
 POSTS_PER_PAGE = 21
 TOPICS_PER_PAGE = 21
 SPAM_LIMIT_SECONDS = 60 * 15
+FOLLOWED_TOPICS_PER_PAGE = 21
 
 
 class Category(models.Model):

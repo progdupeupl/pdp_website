@@ -14,7 +14,7 @@ from pdp.utils import render_template, slugify
 from pdp.utils.paginator import paginator_range
 
 from models import Category, Forum, Topic, Post
-from models import POSTS_PER_PAGE, TOPICS_PER_PAGE
+from models import POSTS_PER_PAGE, TOPICS_PER_PAGE, FOLLOWED_TOPICS_PER_PAGE
 from models import never_read, mark_read
 from models import follow
 from forms import TopicForm, PostForm
@@ -465,7 +465,7 @@ def followed_topics(request):
     followed_topics = request.user.get_profile().get_followed_topics()
 
     # Paginator
-    paginator = Paginator(followed_topics, 2)
+    paginator = Paginator(followed_topics, FOLLOWED_TOPICS_PER_PAGE)
     page = request.GET.get('page')
 
     try:
