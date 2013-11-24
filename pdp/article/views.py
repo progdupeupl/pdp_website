@@ -16,7 +16,7 @@ from .forms import NewArticleForm, EditArticleForm
 
 
 def index(request):
-    '''Displayy articles list'''
+    '''Display articles list'''
     article = Article.objects.all()\
         .filter(is_visible=True)\
         .order_by('-pubdate')
@@ -74,7 +74,7 @@ def new(request):
 
             list_tags = data['tags'].split(',')
             for tag in list_tags:
-                article.tags.add(tag)
+                article.tags.add(tag.strip())
             article.save()
             return redirect(''.join((reverse('pdp.article.views.edit'),
                             '?article={}'.format(article.pk))))
@@ -114,15 +114,20 @@ def edit(request):
             article.tags.clear()
             list_tags = data['tags'].split(',')
             for tag in list_tags:
-                article.tags.add(tag)
+                article.tags.add(tag.strip())
 
             article.save()
             return redirect(article.get_absolute_url())
     else:
         # initial value for tags input
         list_tags = ''
+        first_tag = True
         for tag in article.tags.all():
-            list_tags += ',' + tag.__str__()
+            if first_tag:
+                first_tag = False
+            else:
+                list_tags += ', '
+            list_tags += tag.__str__()
 
         form = EditArticleForm({
             'title': article.title,

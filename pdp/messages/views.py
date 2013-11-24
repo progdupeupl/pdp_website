@@ -136,6 +136,7 @@ def new(request):
                 'title': request.POST['title'],
                 'subtitle': request.POST['subtitle'],
                 'text': request.POST['text'],
+                'form': PrivateTopicForm(request.POST),
             })
 
         form = PrivateTopicForm(request.POST)
