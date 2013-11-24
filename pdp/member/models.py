@@ -53,6 +53,11 @@ class Profile(models.Model):
         '''Number of threads created'''
         return Topic.objects.all().filter(author=self.user).count()
 
+    def get_followed_topics(self):
+        '''Followed topics'''
+        return Topic.objects.filter(topicfollowed__user=self.user)\
+          .order_by('-last_message__pubdate')
+
     # Tutorial
 
     def get_tutorials(self):

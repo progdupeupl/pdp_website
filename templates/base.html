@@ -139,7 +139,7 @@
                     {% with topics=user|interventions_topics %}
                         {% with unread_topics=topics.unread %}
                             <li class="has-dropdown">
-                                <a href="#">
+                            <a href="{% url "pdp.forum.views.followed_topics" %}">
                                     {% if unread_topics|length > 0 %}
                                         <span class="label alert">{{ unread_topics|length }}</span>
                                     {% endif %}

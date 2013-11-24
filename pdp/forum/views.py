@@ -460,6 +460,14 @@ def find_post(request, name):
     })
 
 
+@login_required
+def followed_topics(request):
+    followed_topics = request.user.get_profile().get_followed_topics()
+    return render_template("forum/followed_topics.html", {
+        'followed_topics': followed_topics,
+    })
+
+
 # Deprecated URLs
 
 def deprecated_topic_redirect(request, topic_pk, topic_slug):
