@@ -2,7 +2,8 @@ from os import path
 
 from fabric.api import local, lcd
 
-TEST_APPS = ('article', 'tutorial', 'forum', 'member', 'utils', 'pages')
+TEST_APPS = ('article', 'tutorial', 'forum', 'member', 'utils', 'pages',
+             'messages')
 ASSETS_DIR = path.join(path.dirname(__file__), 'assets/')
 
 

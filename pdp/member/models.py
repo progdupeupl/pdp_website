@@ -35,7 +35,7 @@ class Profile(models.Model):
 
     def get_absolute_url(self):
         '''Absolute URL to the profile page'''
-        return '/membres/voir/{0}'.format(self.user.username)
+        return u'/membres/voir/{0}'.format(self.user.username)
 
     def get_avatar_url(self):
         '''Avatar URL (using custom URL or Gravatar)'''

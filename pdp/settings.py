@@ -93,7 +93,11 @@ STATICFILES_FINDERS = (
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
 
-# You will need yuglify to be installed
+# You need to have yuglify installed, except for DEBUG builds
+if DEBUG:
+    PIPELINE_JS_COMPRESSOR = None
+    PIPELINE_CSS_COMPRESSOR = None
+
 PIPELINE_JS = {
     'base': {
         'source_filenames': (
@@ -170,9 +174,19 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
     # Custom context processors
     'pdp.utils.context_processors.versions',
+    'pdp.utils.context_processors.git_version',
 )
 
 INSTALLED_APPS = (
+    'pdp.member',
+    'pdp.forum',
+    'pdp.utils',
+    'pdp.pages',
+    'pdp.tutorial',
+    'pdp.article',
+    'pdp.gallery',
+    'pdp.messages',
+
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -195,14 +209,6 @@ INSTALLED_APPS = (
     'rest_framework_swagger',
     'haystack',
 
-    'pdp.member',
-    'pdp.forum',
-    'pdp.utils',
-    'pdp.pages',
-    'pdp.tutorial',
-    'pdp.article',
-    'pdp.gallery',
-    'pdp.messages',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -288,6 +294,9 @@ LOGIN_URL = '/membres/connexion'
 ABSOLUTE_URL_OVERRIDES = {
     'auth.user': lambda u: '/membres/voir/{0}'.format(u.username.encode('utf-8'))
 }
+
+CRISPY_FAIL_SILENTLY = not DEBUG
+CRISPY_TEMPLATE_PACK = 'foundation'
 
 # Bot settings
 BOT_ENABLED = False

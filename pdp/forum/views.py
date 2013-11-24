@@ -13,7 +13,8 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from pdp.utils import render_template, slugify
 from pdp.utils.paginator import paginator_range
 
-from models import Category, Forum, Topic, Post, POSTS_PER_PAGE, TOPICS_PER_PAGE
+from models import Category, Forum, Topic, Post
+from models import POSTS_PER_PAGE, TOPICS_PER_PAGE
 from models import never_read, mark_read
 from models import follow
 from forms import TopicForm, PostForm
@@ -49,13 +50,13 @@ def details(request, cat_slug, forum_slug):
 
     try:
         shown_topics = paginator.page(page)
-        page=int(page)
+        page = int(page)
     except PageNotAnInteger:
         shown_topics = paginator.page(1)
         page = 1
     except EmptyPage:
         shown_topics = paginator.page(paginator.num_pages)
-        page=paginator.num_pages
+        page = paginator.num_pages
 
     return render_template('forum/details.html', {
         'forum': forum, 'sticky_topics': sticky_topics, 'topics': shown_topics,
@@ -406,53 +407,58 @@ def useful_post(request):
 
     return redirect(post.get_absolute_url())
 
+
 def find_topic(request, name):
 
     u = get_object_or_404(User, username=name)
-    topics=Topic.objects.all().filter(author=u)\
+
+    topics = Topic.objects.all().filter(author=u)\
                           .order_by('-pubdate')
-                              
+
     # Paginator
     paginator = Paginator(topics, TOPICS_PER_PAGE)
     page = request.GET.get('page')
 
     try:
         shown_topics = paginator.page(page)
-        page=int(page)
+        page = int(page)
     except PageNotAnInteger:
         shown_topics = paginator.page(1)
         page = 1
     except EmptyPage:
         shown_topics = paginator.page(paginator.num_pages)
-        page=paginator.num_pages
-    
+        page = paginator.num_pages
+
     return render_template('forum/find_topic.html', {
-        'topics': shown_topics, 'usr':u,
+        'topics': shown_topics, 'usr': u,
         'pages': paginator_range(page, paginator.num_pages), 'nb': page
     })
 
+
 def find_post(request, name):
     u = get_object_or_404(User, username=name)
-    posts=Post.objects.all().filter(author=u)\
-                          .order_by('-pubdate')
-    # Paginator
+
+    posts = Post.objects.all().filter(author=u)\
+        .order_by('-pubdate')
+
     paginator = Paginator(posts, POSTS_PER_PAGE)
     page = request.GET.get('page')
 
     try:
         shown_posts = paginator.page(page)
-        page=int(page)
+        page = int(page)
     except PageNotAnInteger:
         shown_posts = paginator.page(1)
         page = 1
     except EmptyPage:
         shown_posts = paginator.page(paginator.num_pages)
-        page=paginator.num_pages
-    
+        page = paginator.num_pages
+
     return render_template('forum/find_post.html', {
-        'posts': shown_posts, 'usr':u,
+        'posts': shown_posts, 'usr': u,
         'pages': paginator_range(page, paginator.num_pages), 'nb': page
     })
+
 
 # Deprecated URLs
 

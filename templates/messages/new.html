@@ -1,6 +1,7 @@
 {% extends "messages/base.html" %}
 {% load emarkdown %}
 {% load markup %}
+{% load crispy_forms_tags %}
 
 {% block title %}
     Nouveau message
@@ -17,39 +18,20 @@
 {% block content %}
 <div class="row">
     <div class="large-12 columns">
-        <form action="" method="POST">
-            <input type="text" placeholder="Participants (séparés par une virgule)" name="participants" value="{{ participants }}" /><br />
-            <input type="text" placeholder="Titre" name="title" value="{{ title }}" /><br />
-            <input type="text" placeholder="Sous-titre" name="subtitle" value="{{ subtitle }}" /><br />
-            <textarea rows="20" name="text" id="id_text"
-                placeholder="Contenu de votre message au format Markdown.">{{ text }}</textarea>
 
-            <div style="text-align: center;">
-                <button type="submit" class="button">
-                    <i class="icon-plus icon-white"></i>
-                    Envoyer
-                </button>
+        {% crispy form %}
 
-                <button type="submit" name="preview" class="button secondary">
-                    Prévisualisation
-                </button>
-
-                <a href="{% url "pdp.messages.views.index" %}" class="button secondary">
-                    Annuler
-                </a>
-            </div>
-
-            {% csrf_token %}
-        </form>
     </div>
 </div>
 
-{% if text %}
+{% if form.text %}
 <div class="row">
     <div class="large-12 columns">
         <div class="panel">
             <h5>Prévisualisation de votre message</h5>
-            {{ text|emarkdown }}
+            {% if form.text.value %}
+                {{ form.text.value|emarkdown }}
+            {% endif %}
         </div>
     </div>
 </div>
