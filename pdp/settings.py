@@ -178,6 +178,15 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 INSTALLED_APPS = (
+    'pdp.member',
+    'pdp.forum',
+    'pdp.utils',
+    'pdp.pages',
+    'pdp.tutorial',
+    'pdp.article',
+    'pdp.gallery',
+    'pdp.messages',
+
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -200,14 +209,6 @@ INSTALLED_APPS = (
     'rest_framework_swagger',
     'haystack',
 
-    'pdp.member',
-    'pdp.forum',
-    'pdp.utils',
-    'pdp.pages',
-    'pdp.tutorial',
-    'pdp.article',
-    'pdp.gallery',
-    'pdp.messages',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:

@@ -24,14 +24,12 @@
     </div>
 </div>
 
-{% if form.text %}
+{% if form.text.value %}
 <div class="row">
     <div class="large-12 columns">
         <div class="panel">
             <h5>Prévisualisation de votre message</h5>
-            {% if form.text.value %}
-                {{ form.text.value|emarkdown }}
-            {% endif %}
+            {{ form.text.value|emarkdown }}
         </div>
     </div>
 </div>
