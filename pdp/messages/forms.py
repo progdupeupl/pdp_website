@@ -3,7 +3,7 @@
 from django import forms
 
 from crispy_forms.helper import FormHelper
-from crispy_forms_foundation.layout import Layout, Submit, Field
+from crispy_forms_foundation.layout import Layout, Submit, Field, HTML
 
 
 class PrivateTopicForm(forms.Form):
@@ -31,6 +31,7 @@ class PrivateTopicForm(forms.Form):
             Field('participants'),
             Field('title'),
             Field('subtitle'),
+            HTML('{% include "misc/editor.part.html" %}'),
             Field('text'),
             Submit('submit', u'Envoyer'),
             Submit('preview', u'Prévisualisation'),
