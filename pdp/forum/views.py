@@ -14,7 +14,7 @@ from pdp.utils import render_template, slugify
 from pdp.utils.paginator import paginator_range
 
 from models import Category, Forum, Topic, Post
-from models import POSTS_PER_PAGE, TOPICS_PER_PAGE
+from models import POSTS_PER_PAGE, TOPICS_PER_PAGE, FOLLOWED_TOPICS_PER_PAGE
 from models import never_read, mark_read
 from models import follow
 from forms import TopicForm, PostForm
@@ -457,6 +457,31 @@ def find_post(request, name):
     return render_template('forum/find_post.html', {
         'posts': shown_posts, 'usr': u,
         'pages': paginator_range(page, paginator.num_pages), 'nb': page
+    })
+
+
+@login_required
+def followed_topics(request):
+    followed_topics = request.user.get_profile().get_followed_topics()
+
+    # Paginator
+    paginator = Paginator(followed_topics, FOLLOWED_TOPICS_PER_PAGE)
+    page = request.GET.get('page')
+
+    try:
+        shown_topics = paginator.page(page)
+        page = int(page)
+    except PageNotAnInteger:
+        shown_topics = paginator.page(1)
+        page = 1
+    except EmptyPage:
+        shown_topics = paginator.page(paginator.num_pages)
+        page = paginator.num_pages
+
+    return render_template('forum/followed_topics.html', {
+        'followed_topics': shown_topics,
+        'pages': paginator_range(page, paginator.num_pages),
+        'nb': page
     })
 
 

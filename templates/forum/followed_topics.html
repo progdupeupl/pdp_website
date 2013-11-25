@@ -1,0 +1,22 @@
+{% extends "forum/base.html" %}
+
+{% block title %}
+  Sujets suivis 
+{% endblock %}
+
+{% block headline %}
+  Sujets suivis 
+{% endblock %}
+
+{% block breadcrumb %}
+  <li class="current"><a href="#">Sujets suivis</a></li>
+{% endblock %}
+
+{% block content %}
+    {% for topic in followed_topics %}
+        {% include "forum/details_row.part.html" %}
+    {% endfor %}
+    
+    {% include "misc/pagination.part.html" with position="bottom" %}
+
+{% endblock %}
