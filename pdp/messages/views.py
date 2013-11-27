@@ -152,6 +152,7 @@ def new(request):
 
             list_part = data['participants'].split(',')
             for part in list_part:
+                part = part.strip()
                 p = get_object_or_404(User, username=part)
                 n_topic.participants.add(p)
             n_topic.save()

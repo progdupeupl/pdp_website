@@ -22,6 +22,9 @@
         <form action="" method="POST">
             <input type="text" placeholder="Titre" name="title" class="input-xxlarge" value="{{ title }}" /><br />
             <input type="text" placeholder="Sous-titre" name="subtitle" class="input-xxlarge" value="{{ subtitle }}" /><br />
+
+            {% include "misc/editor.part.html" %}
+
             <textarea class="input-block-level" rows="20" name="text" id="id_text"
                 placeholder="Contenu de votre message au format Markdown.">{{ text }}</textarea>
 
