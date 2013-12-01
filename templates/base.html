@@ -192,7 +192,7 @@
                     {% endwith %}
                     <ul class="dropdown">
                         <li><a href="{% url "pdp.member.views.details" user.username %}"><i class="icon-user"></i> Profil</a></li>
-                        <li><a href="{% url "pdp.gallery.views.gallery_list" %}"> Galeries d'images</a></li>
+                        <li><a href="{% url "pdp.gallery.views.gallery_list" %}"> Galeries d’images</a></li>
                         <li><a href="{% url "pdp.member.views.publications" %}"><i class="icon-list"></i> Publications</a></li>
                         <li><a href="{% url "pdp.member.views.settings_profile" %}"><i class="icon-cog"></i> Paramètres</a></li>
                         <li><a href="{% url "pdp.member.views.logout_view" %}"><i class="icon-signout"></i> Se déconnecter</a></li>
@@ -200,7 +200,7 @@
                 </li>
                 {% else %}
                 <li>
-                    <a href="{% url "pdp.member.views.register_view" %}">S'inscrire</a>
+                    <a href="{% url "pdp.member.views.register_view" %}">S’inscrire</a>
                 </li>
                 <li>
                     <a href="{% url "pdp.member.views.login_view" %}">Se connecter</a>
