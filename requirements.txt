@@ -5,7 +5,7 @@ bleach
 pygments
 south
 pytz
-pil
+pillow
 PyYAML
 Whoosh
 defusedxml
