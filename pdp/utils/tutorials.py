@@ -81,6 +81,8 @@ def export_part(part):
     '''
     dct = OrderedDict()
     dct['title'] = part.title
+    dct['introduction'] = part.introduction
+    dct['conclusion'] = part.conclusion
     dct['chapters'] = []
 
     chapters = Chapter.objects\
