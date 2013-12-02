@@ -20,7 +20,7 @@ Progdupeupl (PDP) uses [Django](https://www.djangoproject.com/), a web
 framework for the [Python](http://python.org/) programming language (we
 currently only support Python 2, not Python 3), but it also uses tools
 implemented in [Ruby](https://www.ruby-lang.org/en/), and (optionally) with the
-[Node.js](http://nodejs.org/) javascript framework.
+[Node.js](http://nodejs.org/) Javascript framework.
 
 You must have at least recent-enough versions of Python 2 (at least 2.6) and
 Ruby installed on your system, and installation instructions will depend on
