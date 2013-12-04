@@ -45,5 +45,9 @@
             "$ref": "http://progdupeu.pl/static/schemas/part.json"
         }
     }
+    "chapter": {
+        "description": "Embded chapter for small tutorials",
+        "$ref": "http://progdupeu.pl/static/schemas/chapter-embded.json"
+    }
     "required": ["title", "is_mini", "authors"]
 }
