@@ -42,7 +42,7 @@
         "type": "array",
         "items": {
             "description": "A part of the tutorial",
-            "$ref": "http://progdupeu.pl/static/specs/part.json"
+            "$ref": "http://progdupeu.pl/static/schemas/part.json"
         }
     }
     "required": ["title", "is_mini", "authors"]

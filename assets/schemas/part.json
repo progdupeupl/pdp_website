@@ -1,11 +1,11 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "Chapter",
-    "description": "Chapter of a tutorial",
+    "title": "Part",
+    "description": "Part of an extended tutorial",
     "type": "object",
     "properties": {
         "title": {
-            "description": "Title of the chapter",
+            "description": "Title of the part",
             "type": "string",
             "maxLength": 80
         },
@@ -17,12 +17,12 @@
             "desciption": "Conclusion of the part",
             "type": "string"
         },
-        "extracts": {
+        "chapters": {
             "type": "array",
             "items": {
-                "$ref": "http://progdupeu.pl/static/specs/extract.json"
+                "$ref": "http://progdupeu.pl/static/schemas/chapter.json"
             }
         }
     },
-    "required": ["title", "extracts"]
+    "required": ["title", "chapters"]
 }
