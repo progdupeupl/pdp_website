@@ -6,6 +6,7 @@ pygments
 south
 pytz
 pillow
+jsonschema
 PyYAML
 Whoosh
 defusedxml

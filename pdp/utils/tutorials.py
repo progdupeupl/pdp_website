@@ -2,6 +2,9 @@
 
 from collections import OrderedDict
 
+import json
+import jsonschema
+
 from pdp.tutorial.models import Part, Chapter, Extract
 
 
@@ -119,3 +122,11 @@ def export_tutorial(tutorial):
             dct['parts'].append(export_part(part))
 
     return dct
+
+
+# JSON Schema validation functions
+
+def validate_tutorial(dct):
+    with open('assets/schemas/tutorial.json') as f:
+        schema = json.load(f)
+    return jsonschema.validate(dct, schema)
