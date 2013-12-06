@@ -1,7 +1,7 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#"
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "title": "Tutorial",
-    "description": "A tutorial for Progdupeupl community website"
+    "description": "A tutorial for Progdupeupl community website",
     "type": "object",
     "properties": {
         "title": {
@@ -36,18 +36,18 @@
             "description": "Conclusion of the tutorial",
             "type": "string"
         },
-    },
-    "parts": {
-        "description": "List of all the tutorial's parts, ordered",
-        "type": "array",
-        "items": {
-            "description": "A part of the tutorial",
-            "$ref": "http://progdupeu.pl/static/schemas/part.json"
+        "parts": {
+            "description": "List of all the tutorial's parts, ordered",
+            "type": "array",
+            "items": {
+                "description": "A part of the tutorial",
+                "$ref": "http://progdupeu.pl/static/schemas/part.json"
+            }
+        },
+        "chapter": {
+            "description": "Embded chapter for small tutorials",
+            "$ref": "http://progdupeu.pl/static/schemas/chapter-embded.json"
         }
-    }
-    "chapter": {
-        "description": "Embded chapter for small tutorials",
-        "$ref": "http://progdupeu.pl/static/schemas/chapter-embded.json"
-    }
+    },
     "required": ["title", "is_mini", "authors"]
 }
