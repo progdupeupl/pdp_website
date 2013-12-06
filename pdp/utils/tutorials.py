@@ -97,10 +97,19 @@ def export_part(part):
     return dct
 
 
-def export_tutorial(tutorial):
-    '''
-    Export a tutorial to a dict
-    '''
+def export_tutorial(tutorial, validate=True):
+    """Exports a tutorial to a dict.
+
+    Args:
+        tutorial: The tutorial database model to export
+        validate: Should the output dictionnary be checked?
+
+    Returns:
+        A dictionnary containing tutorial data. If the validate option is set
+        and the validation fails, it will fail silently returning an empty
+        dictionnary instead.
+
+    """
     dct = OrderedDict()
     dct['title'] = tutorial.title
     dct['description'] = tutorial.description
@@ -110,7 +119,7 @@ def export_tutorial(tutorial):
     dct['conclusion'] = tutorial.conclusion
 
     if tutorial.is_mini:
-        # We export the chapter without its empty title if mini tutorial
+        # We export the chapter without its empty title if small tutorial
         chapter = Chapter.objects.get(tutorial=tutorial)
         dct['chapter'] = export_chapter(chapter, export_all=False)
     else:
@@ -121,12 +130,35 @@ def export_tutorial(tutorial):
         for part in parts:
             dct['parts'].append(export_part(part))
 
-    return dct
+    # If validation is requested and fails, just return empty dict
+    if validate and not validate_tutorial(dct):
+        return {}
 
+    return dct
 
 # JSON Schema validation functions
 
 def validate_tutorial(dct):
+    """Validate a tutorial representation using its JSON-defined schema.
+
+    Returns:
+        boolean
+
+    """
+
+    # Load the tutorial schema in the assets directory
     with open('assets/schemas/tutorial.json') as f:
         schema = json.load(f)
-    return jsonschema.validate(dct, schema)
+
+    try:
+        jsonschema.validate(dct, schema)
+    # Foreign $ref schema not found, so we can't continue validation in deeper
+    # levels
+    except jsonschema.RefResolutionError:
+        return False
+    # Validation failed
+    except jsonschema.ValidationError:
+        return False
+
+    # No exception raised, validation passed!
+    return True
