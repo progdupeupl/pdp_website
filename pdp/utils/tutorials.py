@@ -1,5 +1,7 @@
 # coding: utf-8
 
+"""A small module for handling some common operations on tutorials."""
+
 from collections import OrderedDict
 
 import json
@@ -9,8 +11,7 @@ from pdp.tutorial.models import Part, Chapter, Extract
 
 
 def move(obj, new_pos, position_f, parent_f, children_fn):
-    '''
-    Move an object and reorder other objects affected by moving.
+    """Move an object and reorder other objects affected by moving.
 
     This function need the object, the new position you want the object to go,
     the position field name of the object (eg. 'position_in_chapter'), the
@@ -23,7 +24,7 @@ def move(obj, new_pos, position_f, parent_f, children_fn):
 
       move(extract, new_pos, 'position_in_chapter', 'chapter', 'get_extracts')
 
-    '''
+    """
     old_pos = getattr(obj, position_f)
     objects = getattr(getattr(obj, parent_f), children_fn)()
 
@@ -56,9 +57,15 @@ def move(obj, new_pos, position_f, parent_f, children_fn):
 # Export-to-dict functions
 
 def export_chapter(chapter, export_all=True):
-    '''
-    Export a chapter to a dict
-    '''
+    """Export a chapter to a dict.
+
+    Args:
+        chapter: The chapter database model to export
+
+    Returns:
+        A dictionnary containing extract data.
+
+    """
     dct = OrderedDict()
     if export_all:
         dct['title'] = chapter.title
@@ -79,9 +86,15 @@ def export_chapter(chapter, export_all=True):
 
 
 def export_part(part):
-    '''
-    Export a part to a dict
-    '''
+    """Export a part to a dict.
+
+    Args:
+        part: The part database model to export
+
+    Returns:
+        A dictionnary containing part data.
+
+    """
     dct = OrderedDict()
     dct['title'] = part.title
     dct['introduction'] = part.introduction
@@ -98,7 +111,7 @@ def export_part(part):
 
 
 def export_tutorial(tutorial, validate=True):
-    """Exports a tutorial to a dict.
+    """Export a tutorial to a dict.
 
     Args:
         tutorial: The tutorial database model to export
@@ -110,6 +123,7 @@ def export_tutorial(tutorial, validate=True):
         dictionnary instead.
 
     """
+
     dct = OrderedDict()
     dct['title'] = tutorial.title
     dct['description'] = tutorial.description
@@ -136,13 +150,15 @@ def export_tutorial(tutorial, validate=True):
 
     return dct
 
+
 # JSON Schema validation functions
 
 def validate_tutorial(dct):
-    """Validate a tutorial representation using its JSON-defined schema.
+    """Validate a tutorial dict representation using its JSON-defined schema.
 
     Returns:
-        boolean
+        True if the tutorial passed the validation though the schemas, False
+        otherwise.
 
     """
 

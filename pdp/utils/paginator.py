@@ -1,10 +1,28 @@
 # coding: utf-8
 
+"""Module used to display beautiful folded paginators."""
+
 
 def paginator_range(current, stop, start=1):
-    assert(current <= stop)
+    """Generate a folded paginator range.
 
-    # TODO: Rewrite this garbage, someday
+    Args:
+        current: current page of the paginator
+        stop: last page of the paginator
+        start: first page of the paginator
+
+    Returns:
+        A list containing integers (page numbers to be displayed) and sometimes
+        some None too (folding point to be displayed as three dots for
+        example).
+
+    Raises:
+        ValueError
+
+    """
+
+    if current > stop:
+        raise ValueError("Current value should not be greater than maximum")
 
     # Basic case when no folding
     if stop - start <= 4:
