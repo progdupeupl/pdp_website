@@ -12,33 +12,35 @@ from pdp.article.models import Article
 
 class Profile(models.Model):
 
-    '''Represents an user profile'''
+    """Represents an user profile."""
+
     class Meta:
         verbose_name = 'Profil'
         verbose_name_plural = 'Profils'
 
-    user = models.ForeignKey(User, unique=True, verbose_name='Utilisateur')
+    user = models.ForeignKey(User, unique=True, verbose_name=u'Utilisateur')
 
-    site = models.CharField('Site internet', max_length=128, blank=True)
-    show_email = models.BooleanField('Afficher adresse mail publiquement',
+    site = models.CharField(u'Site internet', max_length=128, blank=True)
+    show_email = models.BooleanField(u'Afficher adresse mail publiquement',
                                      default=True)
 
     avatar_url = models.CharField(
-        'URL de l\'avatar', max_length=128, null=True, blank=True
+        u'URL de l\'avatar', max_length=128, null=True, blank=True
     )
 
-    biography = models.TextField('Biographie', blank=True)
+    biography = models.TextField(u'Biographie', blank=True)
 
     def __unicode__(self):
-        '''Textual forum of a profile'''
+        """Textual representation of a profile."""
         return self.user.username
 
     def get_absolute_url(self):
-        '''Absolute URL to the profile page'''
+        """Absolute URL to visualize this profile."""
+        # TODO: use reverse
         return u'/membres/voir/{0}'.format(self.user.username)
 
     def get_avatar_url(self):
-        '''Avatar URL (using custom URL or Gravatar)'''
+        """Get the member's avatar URL (using custom URL or Gravatar)."""
         if self.avatar_url:
             return self.avatar_url
         else:
@@ -46,36 +48,42 @@ class Profile(models.Model):
                 .format(md5(self.user.email).hexdigest())
 
     def get_post_count(self):
-        '''Number of messages posted'''
+        """Total number of answers of the member on the forums."""
         return Post.objects.all().filter(author__pk=self.user.pk).count()
 
     def get_topic_count(self):
-        '''Number of threads created'''
+        """Total number of topics created on the forums by the member."""
         return Topic.objects.all().filter(author=self.user).count()
 
     def get_followed_topics(self):
-        '''Followed topics'''
+        """Get all the topics the user is currently following."""
         return Topic.objects.filter(topicfollowed__user=self.user)\
-          .order_by('-last_message__pubdate')
+            .order_by('-last_message__pubdate')
 
     # Tutorial
 
     def get_tutorials(self):
+        """GGet all the tutorials written or being written by this member."""
         return Tutorial.objects.filter(authors=self.user.pk)
 
     def get_visible_tutorials(self):
+        """Get all the tutorials published by this member."""
         return self.get_tutorials().filter(is_visible=True)
 
     def get_hidden_tutorials(self):
+        """Get all the tutorials the member is currently writing."""
         return self.get_tutorials().filter(is_visible=False)
 
     # Article
 
     def get_articles(self):
+        """Get all the articles written or being written by this member."""
         return Article.objects.all().filter(author=self.user)
 
     def get_visible_articles(self):
+        """Get all the articles published by this member."""
         return self.get_articles().filter(is_visible=True)
 
     def get_hidden_articles(self):
+        """Get all the articles the member is currently writing."""
         return self.get_articles().filter(is_visible=False)
