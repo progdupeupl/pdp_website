@@ -8,15 +8,18 @@ from crispy_forms.layout import Div
 from crispy_forms_foundation.layout import Layout, Fieldset, Submit, Field, \
     ButtonHolder, HTML
 
+from pdp.tutorial.models import Tutorial, Part, Chapter
+from pdp.utils import slugify
+
 
 class TutorialForm(forms.Form):
     title = forms.CharField(
-        label='Titre',
+        label=u'Titre',
         max_length=80
     )
-    
+
     image = forms.ImageField(
-        label='Selectionnez une image', 
+        label=u'Selectionnez une image',
         required=False)
 
     description = forms.CharField(
@@ -24,7 +27,7 @@ class TutorialForm(forms.Form):
     )
 
     is_mini = forms.BooleanField(
-        label='Mini-tutoriel',
+        label=u'Mini-tutoriel',
         required=False,
         initial=True
     )
@@ -47,18 +50,17 @@ class TutorialForm(forms.Form):
 
 class EditTutorialForm(forms.Form):
     title = forms.CharField(
-        label='Titre',
+        label=u'Titre',
         max_length=80
     )
 
     description = forms.CharField(
         max_length=200
     )
-    
-    image = forms.ImageField(
-        label='Selectionnez une image', 
-        required=False)
 
+    image = forms.ImageField(
+        label=u'Selectionnez une image',
+        required=False)
 
     introduction = forms.CharField(
         required=False,
@@ -85,9 +87,9 @@ class EditTutorialForm(forms.Form):
         super(EditTutorialForm, self).__init__(*args, **kwargs)
 
 
-class PartForm(forms.Form):
+class AddPartForm(forms.Form):
     title = forms.CharField(
-        label='Titre',
+        label=u'Titre',
         max_length=80
     )
 
@@ -101,6 +103,11 @@ class PartForm(forms.Form):
         widget=forms.Textarea
     )
 
+    tutorial = forms.IntegerField(
+        required=True,
+        widget=forms.HiddenInput
+    )
+
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
@@ -108,7 +115,8 @@ class PartForm(forms.Form):
         self.helper.layout = Layout(
             Fieldset(
                 u'Général',
-                Field('title')
+                Field('title'),
+                Field('tutorial'),
             ),
             Fieldset(
                 u'Contenu',
@@ -119,12 +127,26 @@ class PartForm(forms.Form):
                 Submit('submit', 'Valider'),
             )
         )
-        super(PartForm, self).__init__(*args, **kwargs)
+        super(AddPartForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super(AddPartForm, self).clean()
+
+        title = slugify(cleaned_data.get('title'))
+
+        existing = [x.slug for x in Part.objects.all().filter(
+            tutorial=Tutorial.objects.get(pk=cleaned_data.get('tutorial')))]
+
+        if title in existing:
+            msg = u'Une partie portant ce nom existe déjà dans ce tutoriel.'
+            self._errors['title'] = self.error_class([msg])
+
+        return cleaned_data
 
 
-class ChapterForm(forms.Form):
+class EditPartForm(forms.Form):
     title = forms.CharField(
-        label='Titre',
+        label=u'Titre',
         max_length=80
     )
 
@@ -132,14 +154,85 @@ class ChapterForm(forms.Form):
         required=False,
         widget=forms.Textarea
     )
-    
+
+    conclusion = forms.CharField(
+        required=False,
+        widget=forms.Textarea
+    )
+
+    tutorial = forms.IntegerField(
+        required=True,
+        widget=forms.HiddenInput
+    )
+
+    part = forms.IntegerField(
+        required=True,
+        widget=forms.HiddenInput
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+
+        self.helper.layout = Layout(
+            Fieldset(
+                u'Général',
+                Field('title'),
+                Field('tutorial'),
+                Field('part')
+            ),
+            Fieldset(
+                u'Contenu',
+                Field('introduction'),
+                Field('conclusion')
+            ),
+            ButtonHolder(
+                Submit('submit', u'Sauvegarder les modifications'),
+            )
+        )
+        super(EditPartForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super(EditPartForm, self).clean()
+
+        title = slugify(cleaned_data.get('title'))
+        part = cleaned_data.get('part')
+
+        existing = [x.slug for x in Part.objects.all()
+                    .filter(tutorial=Tutorial.objects.get(
+                        pk=cleaned_data.get('tutorial')))
+                    .exclude(pk=part)]
+
+        if title in existing:
+            msg = u'Une partie portant ce nom existe déjà dans ce tutoriel.'
+            self._errors['title'] = self.error_class([msg])
+
+        return cleaned_data
+
+
+class AddChapterForm(forms.Form):
+    title = forms.CharField(
+        label=u'Titre',
+        max_length=80
+    )
+
+    introduction = forms.CharField(
+        required=False,
+        widget=forms.Textarea
+    )
+
     image = forms.ImageField(
-        label='Selectionnez une image', 
+        label=u'Image',
         required=False)
 
     conclusion = forms.CharField(
         required=False,
         widget=forms.Textarea
+    )
+
+    part = forms.IntegerField(
+        required=True,
+        widget=forms.HiddenInput
     )
 
     def __init__(self, *args, **kwargs):
@@ -151,11 +244,12 @@ class ChapterForm(forms.Form):
                 u'Général',
                 Field('title'),
                 Field('image'),
+                Field('part'),
             ),
             Fieldset(
                 u'Contenu',
                 Field('introduction'),
-                Field('conclusion')
+                Field('conclusion'),
             ),
             ButtonHolder(
                 Div(
@@ -167,7 +261,93 @@ class ChapterForm(forms.Form):
                 ),
             )
         )
-        super(ChapterForm, self).__init__(*args, **kwargs)
+        super(AddChapterForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super(AddChapterForm, self).clean()
+
+        title = slugify(cleaned_data.get('title'))
+
+        existing_chapters_titles = [x.slug for x in Chapter.objects.all()
+                                    .filter(part=Part.objects.get(
+                                        pk=cleaned_data.get('part')))]
+
+        if title in existing_chapters_titles:
+            msg = u'Un chapitre portant ce nom existe déjà dans cette partie.'
+            self._errors['title'] = self.error_class([msg])
+
+        return cleaned_data
+
+
+class EditChapterForm(forms.Form):
+    title = forms.CharField(
+        label=u'Titre',
+        max_length=80
+    )
+
+    introduction = forms.CharField(
+        required=False,
+        widget=forms.Textarea
+    )
+
+    image = forms.ImageField(
+        label=u'Image',
+        required=False)
+
+    conclusion = forms.CharField(
+        required=False,
+        widget=forms.Textarea
+    )
+
+    part = forms.IntegerField(
+        required=True,
+        widget=forms.HiddenInput
+    )
+
+    chapter = forms.IntegerField(
+        required=True,
+        widget=forms.HiddenInput
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+
+        self.helper.layout = Layout(
+            Fieldset(
+                u'Général',
+                Field('title'),
+                Field('image'),
+                Field('part'),
+                Field('chapter'),
+            ),
+            Fieldset(
+                u'Contenu',
+                Field('introduction'),
+                Field('conclusion'),
+            ),
+            ButtonHolder(
+                Submit('submit', u'Sauvegarder les modifications'),
+            )
+        )
+        super(EditChapterForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super(EditChapterForm, self).clean()
+
+        title = slugify(cleaned_data.get('title'))
+        chapter = cleaned_data.get('chapter')
+
+        existing = [x.slug for x in Chapter.objects.all()
+                        .filter(part=Part.objects.get(
+                            pk=cleaned_data.get('part')))
+                        .exclude(pk=chapter)]
+
+        if title in existing:
+            msg = u'Un chapitre portant ce nom existe déjà dans cette partie.'
+            self._errors['title'] = self.error_class([msg])
+
+        return cleaned_data
 
 
 class EmbdedChapterForm(forms.Form):
@@ -177,7 +357,7 @@ class EmbdedChapterForm(forms.Form):
     )
 
     image = forms.ImageField(
-        label='Selectionnez une image', 
+        label=u'Image',
         required=False)
 
     conclusion = forms.CharField(
@@ -205,12 +385,12 @@ class EmbdedChapterForm(forms.Form):
 
 class ExtractForm(forms.Form):
     title = forms.CharField(
-        label='Titre',
+        label=u'Titre',
         max_length=80
     )
 
     text = forms.CharField(
-        label='Texte',
+        label=u'Texte',
         required=False,
         widget=forms.Textarea
     )
@@ -236,12 +416,12 @@ class ExtractForm(forms.Form):
 
 class EditExtractForm(forms.Form):
     title = forms.CharField(
-        label='Titre',
+        label=u'Titre',
         max_length=80
     )
 
     text = forms.CharField(
-        label='Texte',
+        label=u'Texte',
         required=False,
         widget=forms.Textarea
     )
