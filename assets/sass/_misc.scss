@@ -61,7 +61,7 @@ nav.top-bar {
     background-image: linear-gradient(rgb(84, 180, 235), rgb(47, 164, 231)) ;
 }
 
-@media #{$small} {
+@media (min-width: $topbar-breakpoint) {
     .top-bar-section li:not(.active) a:not(.button) {
         background-image: linear-gradient(rgb(84, 180, 235), rgb(47, 164, 231)) ;
     }
