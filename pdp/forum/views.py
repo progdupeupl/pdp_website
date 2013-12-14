@@ -223,18 +223,21 @@ def edit(request):
         # User actions
         if 'follow' in data:
             resp['follow'] = follow(g_topic)
+
     if request.user == g_topic.author:
         # Author actions
         if 'solved' in data:
             g_topic.is_solved = not g_topic.is_solved
             resp['solved'] = g_topic.is_solved
+
     if request.user.has_perm('forum.change_topic'):
         # Staff actions using AJAX
-        # TODO: Do not redirect on AJAX requests
         if 'lock' in data:
             g_topic.is_locked = data['lock'] == 'true'
         if 'sticky' in data:
             g_topic.is_sticky = data['sticky'] == 'true'
+        if 'solved' in data:
+            g_topic.is_solved = data['solved'] == 'true'
         if 'move' in data:
             try:
                 forum_pk = int(request.POST['move_target'])
@@ -247,6 +250,9 @@ def edit(request):
     g_topic.save()
 
     if request.is_ajax():
+        resp = {'lock': g_topic.is_locked,
+                'sticky': g_topic.is_sticky,
+                'solved': g_topic.is_solved}
         return HttpResponse(json.dumps(resp))
     else:
         return redirect(u'{}?page={}'.format(g_topic.get_absolute_url(), page))

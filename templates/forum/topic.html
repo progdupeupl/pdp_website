@@ -86,6 +86,16 @@
                         <span></span>
                     </div>
 
+                    <div class="switch">
+                        <input id="solved-off" name="solved" type="radio" {% if not topic.is_solved %}checked="checked"{% endif %}>
+                        <label for="solved-off" onclick="">Résolu</label>
+
+                        <input id="solved-on" name="solved" type="radio" {% if topic.is_solved %}checked="checked"{% endif %}>
+                        <label for="solved-on" onclick="">Résolu</label>
+
+                        <span></span>
+                    </div>
+
                     <a href="javascript:;" class="button validate">
                         Valider
                     </a>
@@ -218,10 +228,12 @@ method="POST" id="submit_form">
             $('.topic-actions .validate').click(function() {
                 var lock = $('#lock-on').is(':checked');
                 var sticky = $('#sticky-on').is(':checked');
+                var solved = $('#sticky-on').is(':checked');
                 $.post('{% url "pdp.forum.views.edit" %}', {
                     topic: {{ topic.pk}},
                     lock: lock.toString(),
                     sticky: sticky.toString(),
+                    solved: solved.toString(),
                 })
             });
         </script>
