@@ -1,0 +1,15 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Embded chapter",
+    "description": "Chapter containing extracts of a small tutorial",
+    "type": "object",
+    "properties": {
+        "extracts": {
+            "type": "array",
+            "items": {
+                "$ref": "http://progdupeu.pl/static/schemas/extract.json"
+            }
+        }
+    },
+    "required": ["extracts"]
+}

@@ -14,11 +14,17 @@ from pdp.member.models import Profile
 
 
 class LoginForm(forms.Form):
+
+    """Form used for login in users."""
+
     username = forms.CharField(max_length=30)
     password = forms.CharField(max_length=76, widget=forms.PasswordInput)
 
 
 class RegisterForm(forms.Form):
+
+    """Form used for to register new users."""
+
     email = forms.EmailField(label='Adresse email')
     username = forms.CharField(label='Nom d\'utilisateur', max_length=30)
     password = forms.CharField(

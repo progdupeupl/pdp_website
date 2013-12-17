@@ -1,5 +1,7 @@
 # coding: utf-8
 
+"""Module used for interacting with the bot user, if any."""
+
 from datetime import datetime
 
 from pdp.settings import BOT_USER_PK, BOT_TUTORIAL_FORUM_PK
@@ -8,7 +10,7 @@ from pdp.forum.models import Topic, Post
 
 def create_tutorial_topic(tutorial, bot_pk=BOT_USER_PK,
                           forum_pk=BOT_TUTORIAL_FORUM_PK):
-    '''Creates a new topic for a tutorial'''
+    """Create a new topic for a tutorial."""
 
     md = u'**{}**  \n{}\n\n[» Voir le tutoriel]({})'\
         .format(tutorial.title,

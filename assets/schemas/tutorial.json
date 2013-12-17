@@ -1,0 +1,53 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Tutorial",
+    "description": "A tutorial for Progdupeupl community website",
+    "type": "object",
+    "properties": {
+        "title": {
+            "description": "Title of the tutorial",
+            "type": "string",
+            "maxLength": 80
+        },
+        "description": {
+            "description": "Small introductive sentence to be displayed next to the title",
+            "type": "string",
+            "maxLength": 200
+        },
+        "is_mini": {
+            "description": "Format of the tutorial",
+            "type": "boolean"
+        },
+        "authors": {
+            "description": "List of all the authors' nicknames",
+            "type": "array",
+            "items": {
+                "description": "Author's nickname",
+                "type": "string"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "introduction": {
+            "description": "Introductive sentences for the whole tutorial",
+            "type": "string"
+        },
+        "conclusion": {
+            "description": "Conclusion of the tutorial",
+            "type": "string"
+        },
+        "parts": {
+            "description": "List of all the tutorial's parts, ordered",
+            "type": "array",
+            "items": {
+                "description": "A part of the tutorial",
+                "$ref": "http://progdupeu.pl/static/schemas/part.json"
+            }
+        },
+        "chapter": {
+            "description": "Embded chapter for small tutorials",
+            "$ref": "http://progdupeu.pl/static/schemas/chapter-embded.json"
+        }
+    },
+    "required": ["title", "is_mini", "authors"]
+}

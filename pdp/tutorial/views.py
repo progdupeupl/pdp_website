@@ -14,8 +14,9 @@ from pdp.utils.tutorials import move, export_tutorial
 from pdp.settings import BOT_ENABLED
 
 from .models import Tutorial, Part, Chapter, Extract
-from .forms import TutorialForm, EditTutorialForm, PartForm, ChapterForm, \
-    EmbdedChapterForm, ExtractForm, EditExtractForm
+from .forms import TutorialForm, EditTutorialForm, AddPartForm, EditPartForm, \
+    AddChapterForm, EditChapterForm, EmbdedChapterForm, ExtractForm, \
+    EditExtractForm
 
 
 def index(request):
@@ -275,6 +276,9 @@ def add_part(request):
         tutorial_pk = request.GET['tutoriel']
     except KeyError:
         raise Http404
+
+    # TODO: do not show error about empty title on new form
+
     tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
     # Make sure it's a big tutorial, just in case
     if tutorial.is_mini:
@@ -283,7 +287,7 @@ def add_part(request):
     if not request.user in tutorial.authors.all():
         raise Http404
     if request.method == 'POST':
-        form = PartForm(request.POST)
+        form = AddPartForm(request.POST)
         if form.is_valid():
             data = form.data
             part = Part()
@@ -295,7 +299,7 @@ def add_part(request):
             part.save()
             return redirect(part.get_absolute_url())
     else:
-        form = PartForm()
+        form = AddPartForm({'tutorial': tutorial.pk})
     return render_template('tutorial/new_part.html', {
         'tutorial': tutorial, 'form': form
     })
@@ -354,7 +358,7 @@ def edit_part(request):
         raise Http404
 
     if request.method == 'POST':
-        form = PartForm(request.POST)
+        form = EditPartForm(request.POST)
         if form.is_valid():
             data = form.data
             part.title = data['title']
@@ -363,10 +367,12 @@ def edit_part(request):
             part.save()
             return redirect(part.get_absolute_url())
     else:
-        form = PartForm({
+        form = EditPartForm({
             'title': part.title,
             'introduction': part.introduction,
-            'conclusion': part.conclusion
+            'conclusion': part.conclusion,
+            'tutorial': part.tutorial.pk,
+            'part': part.pk
         })
 
     return render_template('tutorial/edit_part.html', {
@@ -424,46 +430,37 @@ def add_chapter(request):
         raise Http404
     part = get_object_or_404(Part, pk=part_pk)
 
+    # TODO: do not show error about empty title on new form
+
     # Make sure the user is allowed to do that
     if not request.user in part.tutorial.authors.all():
         raise Http404
 
     if request.method == 'POST':
-        form = ChapterForm(request.POST, request.FILES)
+        form = AddChapterForm(request.POST, request.FILES)
         if form.is_valid():
             data = form.data
 
-            # We check that another chapter doesn't exist with the same slug
-            already_exist = False
-            for p_chapter in part.get_chapters():
-                if p_chapter.slug == slugify(data['title']):
-                    already_exist = True
-                    break
+            chapter = Chapter()
+            chapter.title = data['title']
+            chapter.introduction = data['introduction']
+            chapter.conclusion = data['conclusion']
+            chapter.part = part
+            chapter.position_in_part = part.get_chapters().count() + 1
+            chapter.update_position_in_tutorial()
+            if 'image' in request.FILES:
+                chapter.image = request.FILES['image']
+            chapter.save()
 
-            if not already_exist:
-                chapter = Chapter()
-                chapter.title = data['title']
-                chapter.introduction = data['introduction']
-                chapter.conclusion = data['conclusion']
-                chapter.part = part
-                chapter.position_in_part = part.get_chapters().count() + 1
-                chapter.update_position_in_tutorial()
-                if 'image' in request.FILES:
-                    chapter.image = request.FILES['image']
-                chapter.save()
-
-                if 'submit_continue' in request.POST:
-                    form = ChapterForm()
-                    messages.success(request,
-                                     u'Chapitre « {0} » ajouté avec succès.'
-                                     .format(chapter.title))
-                else:
-                    return redirect(chapter.get_absolute_url())
+            if 'submit_continue' in request.POST:
+                form = AddChapterForm({'part': part.pk})
+                messages.success(request,
+                                 u'Chapitre « {0} » ajouté avec succès.'
+                                 .format(chapter.title))
             else:
-                messages.error(request, u'Un chapitre portant le même nom '
-                                        u'existe déjà dans cette partie.')
+                return redirect(chapter.get_absolute_url())
     else:
-        form = ChapterForm()
+        form = AddChapterForm({'part': part.pk})
 
     return render_template('tutorial/new_chapter.html', {
         'part': part, 'form': form
@@ -543,7 +540,7 @@ def edit_chapter(request):
     if request.method == 'POST':
 
         if chapter.part:
-            form = ChapterForm(request.POST, request.FILES)
+            form = EditChapterForm(request.POST, request.FILES)
         else:
             form = EmbdedChapterForm(request.POST, request.FILES)
 
@@ -559,10 +556,12 @@ def edit_chapter(request):
             return redirect(chapter.get_absolute_url())
     else:
         if chapter.part:
-            form = ChapterForm({
+            form = EditChapterForm({
                 'title': chapter.title,
                 'introduction': chapter.introduction,
-                'conclusion': chapter.conclusion
+                'conclusion': chapter.conclusion,
+                'part': chapter.part.pk,
+                'chapter': chapter.pk
             })
         else:
             form = EmbdedChapterForm({
