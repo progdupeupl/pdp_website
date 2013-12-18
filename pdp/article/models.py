@@ -54,6 +54,8 @@ class Article(models.Model):
                                   blank=True, null=True, default=None)
 
     is_visible = models.BooleanField('Est visible publiquement')
+    
+    is_beta = models.BooleanField('Est visible par les membres', default=False)
 
     def __unicode__(self):
         return self.title
