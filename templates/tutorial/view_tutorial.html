@@ -59,16 +59,16 @@
                 {% if tutorial.is_pending or tutorial.is_visible %}disabled{% endif %}>
                 {% if not tutorial.is_visible %}
                     {% if not tutorial.is_pending %}
-                        Demander la validation
+                        Demander la publication
                     {% else %}
-                        En attente de validation
+                        En attente de validation…
                     {% endif %}
                 {% else %}
                    En ligne
                 {% endif %}
             </button>
             {% if not tutorial.is_visible %}
-                <button name="beta" class="button expand"> 
+                <button name="beta" class="button expand {% if not tutorial.is_beta %}secondary{% endif %}"> 
                     {% if not tutorial.is_beta %}
                         Activer la bêta
                     {% else %}
