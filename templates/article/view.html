@@ -101,7 +101,13 @@
     <div class="large-12 columns">
         <div class="panel">
             <p>
-                Cet article n'a pas encore été mis en ligne.
+                {% if not article.is_beta %}
+                    Cet article n’a pas encore été mis en ligne.
+                {% else %}
+                    Cet article n’a pas encore été mis en ligne mais est
+                    visible pour les membres possédant le lien vers celui-ci
+                    (période de bêta activée).
+                {% endif %}
             </p>
         </div>
     </div>
