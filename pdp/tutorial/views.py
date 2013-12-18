@@ -179,6 +179,7 @@ def modify_tutorial(request):
                 raise Http404
 
             tutorial.is_pending = False
+            tutorial.is_beta = False
             tutorial.is_visible = True
             tutorial.pubdate = datetime.now()
             tutorial.save()
