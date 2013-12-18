@@ -37,7 +37,8 @@ def view(request, article_pk, article_slug):
     article = get_object_or_404(Article, pk=article_pk)
 
     if not article.is_visible and not request.user == article.author:
-        raise Http404
+        if not (article.is_beta and request.user.is_authenticated()):
+            raise Http404
 
     if article_slug != slugify(article.title):
         return redirect(article.get_absolute_url())
@@ -155,6 +156,10 @@ def modify(request):
         if 'delete' in data:
             article.delete()
             return redirect('/articles/')
+
+        if 'beta' in data:
+            article.is_beta = not article.is_beta
+            article.save()
 
     return redirect(article.get_absolute_url())
 
