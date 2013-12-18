@@ -44,7 +44,8 @@ def view_tutorial(request, tutorial_pk, tutorial_slug):
     if not tutorial.is_visible \
        and not request.user.has_perm('tutorial.change_tutorial') \
        and request.user not in tutorial.authors.all():
-        raise Http404
+        if not (tutorial.is_beta and request.user.is_authenticated()):
+            raise Http404
 
     # Make sure the URL is well-formed
     if not tutorial_slug == slugify(tutorial.title):

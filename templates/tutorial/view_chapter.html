@@ -6,10 +6,13 @@
 {% endblock %}
 
 {% block headline %}
-{% if chapter.thumbnail %}
-<img src="{{chapter.thumbnail.url }}"/>
-{% endif %}
-{{ chapter.title }}
+    {% if chapter.thumbnail %}
+        <img src="{{chapter.thumbnail.url }}"/>
+    {% endif %}
+    {{ chapter.title }}
+    {% if chapter.part.tutorial.is_beta %}
+        <small><span class="label alert">BETA</span></small>
+    {% endif %}
 {% endblock %}
 
 {% block headline-actions %}
