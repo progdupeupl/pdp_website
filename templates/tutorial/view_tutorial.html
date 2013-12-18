@@ -154,8 +154,25 @@
         {% else %}
             <p>Aucune conclusion.</p>
         {% endif %}
-
     </div>
 </div>
+
+{% if not tutorial.is_visible %}
+<div class="row">
+    <div class="large-12 columns">
+        <div class="panel">
+            <p>
+                {% if not tutorial.is_beta %}
+                    Ce tutoriel n’a pas encore été mis en ligne.
+                {% else %}
+                    Ce tutoriel n’a pas encore été mis en ligne mais est
+                    visible pour les membres possédant le lien vers celui-ci
+                    (période de bêta activée).
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 {% endblock %}
