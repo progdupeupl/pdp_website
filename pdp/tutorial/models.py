@@ -92,6 +92,7 @@ class Tutorial(models.Model):
 
     is_visible = models.BooleanField('Est visible publiquement')
     is_pending = models.BooleanField('Est en attente', default=False)
+    is_beta = models.BooleanField('Est visible par les membres', default=False)
 
     def __unicode__(self):
         return self.title

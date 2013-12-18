@@ -64,6 +64,16 @@
                    En ligne
                 {% endif %}
             </button>
+            {% if not tutorial.is_visible %}
+                <button name="beta" class="button expand"> 
+                    {% if not tutorial.is_beta %}
+                            Activer la bêta
+                    {% else %}
+                            Désactiver la bêta
+                    {% endif %}
+                </button>
+            {% endif %}
+
             <input type="hidden" name="tutorial" value="{{ tutorial.pk }}" />
             {% csrf_token %}
         </form>

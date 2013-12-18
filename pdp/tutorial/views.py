@@ -242,6 +242,11 @@ def modify_tutorial(request):
             tutorial.save()
             return redirect(tutorial.get_absolute_url())
 
+        elif 'beta' in request.POST:
+            tutorial.is_beta = not tutorial.is_beta
+            tutorial.save()
+            return redirect(tutorial.get_absolute_url())
+
     # No action performed, raise 404
     raise Http404
 
