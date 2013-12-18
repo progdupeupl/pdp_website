@@ -34,6 +34,7 @@
                 </div>
                 <div class="large-10 columns">
                     <a href="{{ article.get_absolute_url }}">{{ article.title }} </a>
+                    {% if article.is_beta %}<span class="label alert">BETA</span>{% endif %}
                     <p>{{ article.description }}</p>
                 </div>
                 <div class="large-1 columns">
@@ -73,7 +74,8 @@
                     </div>
                 </div>
                 <div class="large-10 columns">
-                    <a href="{{ tuto.get_absolute_url }}">{{ tuto.title }}</a>
+                    <a href="{{ tuto.get_absolute_url }}">{{ tuto.title }} </a>
+                    {% if tuto.is_beta %}<span class="label alert">BETA</span>{% endif %}
                     <p>{{ tuto.description }}</p>
                 </div>
                 <div class="large-1 columns">

@@ -6,7 +6,11 @@
 {% endblock %}
 
 {% block headline %}
-    Partie {{ part.position_in_tutorial }} : {{ part.title }}<br />
+    Partie {{ part.position_in_tutorial }} : {{ part.title }}
+    {% if part.tutorial.is_beta %}
+        <small><span class="label alert">BETA</span></small>
+    {% endif %}
+    <br />
     <small>{{ part.tutorial.title }}</small>
 {% endblock %}
 
