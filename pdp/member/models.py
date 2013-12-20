@@ -31,16 +31,33 @@ class Profile(models.Model):
     biography = models.TextField(u'Biographie', blank=True)
 
     def __unicode__(self):
-        """Textual representation of a profile."""
+        """Textual representation of a profile.
+
+        Returns:
+            string
+
+        """
         return self.user.username
 
     def get_absolute_url(self):
-        """Absolute URL to visualize this profile."""
+        """Get URL to view this profile.
+
+        Returns:
+            string
+
+        """
         # TODO: use reverse
         return u'/membres/voir/{0}'.format(self.user.username)
 
     def get_avatar_url(self):
-        """Get the member's avatar URL (using custom URL or Gravatar)."""
+        """Get the member's avatar URL.
+
+        This will use custom URL or Gravatar.
+
+        Returns:
+            string
+
+        """
         if self.avatar_url:
             return self.avatar_url
         else:
@@ -48,22 +65,41 @@ class Profile(models.Model):
                 .format(md5(self.user.email).hexdigest())
 
     def get_post_count(self):
-        """Total number of answers of the member on the forums."""
+        """Get total number of answers of the member on the forums.
+
+        Returns:
+            int
+        """
         return Post.objects.all().filter(author__pk=self.user.pk).count()
 
     def get_topic_count(self):
-        """Total number of topics created on the forums by the member."""
+        """Get total number of topics created on the forums by the member.
+
+        Returns:
+            int
+
+        """
         return Topic.objects.all().filter(author=self.user).count()
 
     def get_followed_topics(self):
-        """Get all the topics the user is currently following."""
+        """Get all the topics the user is currently following.
+
+        Returns:
+            Topic list
+
+        """
         return Topic.objects.filter(topicfollowed__user=self.user)\
             .order_by('-last_message__pubdate')
 
     # Tutorial
 
     def get_tutorials(self):
-        """GGet all the tutorials written or being written by this member."""
+        """Get all the tutorials written or being written by this member.
+
+        Returns:
+            Tutorial list
+
+        """
         return Tutorial.objects.filter(authors=self.user.pk)
 
     def get_visible_tutorials(self):

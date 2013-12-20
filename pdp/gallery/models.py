@@ -12,19 +12,27 @@ from django.core.urlresolvers import reverse
 
 
 def image_path(instance, filename):
-    '''Return path to an image'''
+    """Return path to an image.
+
+    Returns:
+        string
+
+    """
     ext = filename.split('.')[-1]
     filename = u'{}.{}'.format(str(uuid.uuid4()), string.lower(ext))
     return os.path.join('galleries', str(instance.gallery.pk), filename)
 
 
 class UserGallery(models.Model):
+
+    """Rights for an user on a specific gallery."""
+
     class Meta:
         verbose_name = "Galeries de l'utilisateur"
         verbose_name_plural = "Galeries de l'utilisateur"
 
-    user = models.ForeignKey(User, verbose_name=('Membre'))
-    gallery = models.ForeignKey('Gallery', verbose_name=('Galerie'))
+    user = models.ForeignKey(User, verbose_name=(u'Membre'))
+    gallery = models.ForeignKey('Gallery', verbose_name=(u'Galerie'))
     MODE_CHOICES = (
         ('R', 'Lecture'),
         ('W', 'Ecriture')
@@ -32,27 +40,60 @@ class UserGallery(models.Model):
     mode = models.CharField(max_length=1, choices=MODE_CHOICES, default='R')
 
     def __unicode__(self):
-        '''Textual form of an User Gallery'''
+        """Textual form of an user gallery.
+
+        Returns:
+            string
+
+        """
         return u'Galerie "{0}" envoye par {1}'.format(self.gallery,
                                                       self.user)
 
     def is_write(self):
+        """Check if the user can add/edit images in the gallery.
+
+        Returns:
+            bool
+
+        """
         return self.mode == 'W'
 
     def is_read(self):
+        """Check if the user can see the gallery.
+
+        Returns:
+            bool
+
+        """
         return self.mode == 'R'
 
     def get_images(self):
+        """Get all the images of the remote gallery.
+
+        Returns:
+            Image list
+
+        """
         return Image.objects.all()\
             .filter(gallery=self.gallery)\
             .order_by('update')
 
     def get_gallery(self, user):
-        return Gallery.objects.all()\
-            .filter(pk=self.gallery.pk)
+        """Get the remote gallery.
+
+        Returns:
+            Gallery
+
+        """
+        # TODO: remove this func and just use obj.gallery instead of
+        # obj.get_gallery.
+        return self.gallery
 
 
 class Image(models.Model):
+
+    """Uploaded user image."""
+
     class Meta:
         verbose_name = "Image"
         verbose_name_plural = "Images"
@@ -67,29 +108,37 @@ class Image(models.Model):
         'Date de modification', null=True, blank=True)
 
     def __unicode__(self):
-        '''Textual form of an Image'''
+        """Textual representation of an Image.
+
+        Returns:
+            string
+
+        """
         return self.title
 
     def get_absolute_url(self):
+        """Get the URL of the image to be displayed.
+
+        Returns:
+            string
+
+        """
         return '{0}/{1}'.format(settings.MEDIA_URL, self.physical)
 
-    def get_extension(self):
-        return os.path.splitext(self.nom_physique)[1]
 
 # These two auto-delete files from filesystem when they are unneeded:
 
-
 @receiver(models.signals.post_delete, sender=Image)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
-    """Deletes image from filesystem
-    when corresponding object is deleted.
-    """
+    """Delete image from filesystem when corresponding object is deleted."""
     if instance.physical:
         if os.path.isfile(instance.physical.path):
             os.remove(instance.physical.path)
 
 
 class Gallery(models.Model):
+
+    """Gallery containing some Image instances."""
 
     class Meta:
         verbose_name = "Galerie"
@@ -103,23 +152,55 @@ class Gallery(models.Model):
         'Date de modification', null=True, blank=True)
 
     def __unicode__(self):
-        '''Textual form of an Gallery'''
+        """Textual form of an Gallery.
+
+        Returns:
+            string
+
+        """
         return self.title
 
     def get_absolute_url(self):
+        """Get URL to view this gallery.
+
+        Returns:
+            string
+
+        """
         return reverse('pdp.gallery.views.gallery_details',
                        args=[self.pk, self.slug])
 
     def get_users(self):
+        """Get all the user rights for this gallery.
+
+        Returns:
+            UserGallery list
+
+        """
         return UserGallery.objects.all()\
             .filter(gallery=self)
 
     def get_images(self):
+        """Get all the images published in the gallery.
+
+        Returns:
+            Image list
+
+        """
         return Image.objects.all()\
             .filter(gallery=self)\
             .order_by('pubdate')
 
     def get_last_image(self):
-        return Image.objects.all()\
-            .filter(gallery=self)\
-            .order_by('-pubdate')[0]
+        """Get the last image published in the gallery.
+
+        Returns:
+            Image or None
+
+        """
+        try:
+            return Image.objects.all()\
+                .filter(gallery=self)\
+                .order_by('-pubdate')[0]
+        except IndexError:
+            return None
