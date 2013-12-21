@@ -1,8 +1,11 @@
 # coding: utf-8
 
+"""Member app's database models and model-related functions."""
+
 from hashlib import md5
 
 from django.db import models
+from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
 from pdp.forum.models import Post, Topic
@@ -46,8 +49,7 @@ class Profile(models.Model):
             string
 
         """
-        # TODO: use reverse
-        return u'/membres/voir/{0}'.format(self.user.username)
+        return reverse('pdp.member.views.details', args=[self.user.username])
 
     def get_avatar_url(self):
         """Get the member's avatar URL.
@@ -68,7 +70,8 @@ class Profile(models.Model):
         """Get total number of answers of the member on the forums.
 
         Returns:
-            int
+            QuerySet on an integer.
+
         """
         return Post.objects.all().filter(author__pk=self.user.pk).count()
 
@@ -76,7 +79,7 @@ class Profile(models.Model):
         """Get total number of topics created on the forums by the member.
 
         Returns:
-            int
+            QuerySet on an integer.
 
         """
         return Topic.objects.all().filter(author=self.user).count()
@@ -85,7 +88,7 @@ class Profile(models.Model):
         """Get all the topics the user is currently following.
 
         Returns:
-            Topic list
+            QuerySet on Topic objects.
 
         """
         return Topic.objects.filter(topicfollowed__user=self.user)\
@@ -97,29 +100,54 @@ class Profile(models.Model):
         """Get all the tutorials written or being written by this member.
 
         Returns:
-            Tutorial list
+            QuerySet on Tutorial objects.
 
         """
         return Tutorial.objects.filter(authors=self.user.pk)
 
     def get_visible_tutorials(self):
-        """Get all the tutorials published by this member."""
+        """Get all the tutorials published by this member.
+
+        Returns:
+            QuerySet on Tutorial objects.
+
+        """
         return self.get_tutorials().filter(is_visible=True)
 
     def get_hidden_tutorials(self):
-        """Get all the tutorials the member is currently writing."""
+        """Get all the tutorials the member is currently writing.
+
+        Returns:
+            QuerySet on Tutorial objects.
+
+        """
         return self.get_tutorials().filter(is_visible=False)
 
     # Article
 
     def get_articles(self):
-        """Get all the articles written or being written by this member."""
+        """Get all the articles written or being written by this member.
+
+        Returns:
+            QuerySet on Article objects.
+
+        """
         return Article.objects.all().filter(author=self.user)
 
     def get_visible_articles(self):
-        """Get all the articles published by this member."""
+        """Get all the articles published by this member.
+
+        Returns:
+            QuerySet on Article objects.
+
+        """
         return self.get_articles().filter(is_visible=True)
 
     def get_hidden_articles(self):
-        """Get all the articles the member is currently writing."""
+        """Get all the articles the member is currently writing.
+
+        Returns:
+            QuerySet on Article objects.
+
+        """
         return self.get_articles().filter(is_visible=False)

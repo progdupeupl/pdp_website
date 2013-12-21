@@ -1,5 +1,7 @@
 # coding: utf-8
 
+"""Member app's views."""
+
 from django.shortcuts import redirect, get_object_or_404, render_to_response
 from django.http import Http404
 
@@ -17,12 +19,18 @@ from pdp.utils import render_template
 from pdp.article.models import Article
 from pdp.tutorial.models import Tutorial
 
-from .models import Profile
-from .forms import LoginForm, ProfileForm, RegisterForm, ChangePasswordForm
+from pdp.member.models import Profile
+from pdp.member.forms import LoginForm, ProfileForm, RegisterForm, \
+    ChangePasswordForm
 
 
 def index(request):
-    '''Displays the list of registered users'''
+    """Display list of registered users.
+
+    Returns:
+        HTTP response
+
+    """
     members = User.objects.order_by('date_joined')
     return render_template('member/index.html', {
         'members': members
@@ -31,10 +39,14 @@ def index(request):
 
 @login_required
 def actions(request):
-    '''
-    Show avaible actions for current user, like a customized homepage.
+    """Show avaible actions for current user, like a customized homepage.
+
     This may be very temporary.
-    '''
+
+    Returns:
+        HTTP response
+
+    """
 
     # TODO: Seriously improve this page, and see if cannot be merged in
     #       pdp.pages.views.home since it will be more coherent to give an
@@ -44,7 +56,12 @@ def actions(request):
 
 
 def details(request, user_name):
-    '''Displays details about a profile'''
+    """Display details about a profile.
+
+    Returns:
+        HTTP response
+
+    """
     usr = get_object_or_404(User, username=user_name)
 
     try:
@@ -59,6 +76,12 @@ def details(request, user_name):
 
 @login_required
 def edit_profile(request):
+    """Edit an user's profile.
+
+    Returns:
+        HTTP response
+
+    """
     try:
         profile_pk = int(request.GET['profil'])
         profile = get_object_or_404(Profile, pk=profile_pk)
@@ -68,6 +91,7 @@ def edit_profile(request):
     # Making sure the user is allowed to do that
     if not request.user == profile.user:
         raise Http404
+
     if request.method == 'POST':
         form = ProfileForm(request.POST)
         if form.is_valid():
@@ -90,6 +114,12 @@ def edit_profile(request):
 
 
 def login_view(request):
+    """Allow users to log into their accounts.
+
+    Returns:
+        HTTP response
+
+    """
     csrf_tk = {}
     csrf_tk.update(csrf(request))
 
@@ -107,9 +137,10 @@ def login_view(request):
                     request.session.set_expiry(0)
                 return redirect(reverse('pdp.pages.views.home'))
             else:
-                error = 'Les identifiants fournis ne sont pas valides'
+                error = u'Les identifiants fournis ne sont pas valides'
         else:
-            error = 'Veuillez spécifier votre identifiant et votre mot de passe'
+            error = (u'Veuillez spécifier votre identifiant'
+                     u'et votre mot de passe')
     else:
         form = LoginForm()
     csrf_tk['error'] = error
@@ -120,12 +151,24 @@ def login_view(request):
 
 @login_required
 def logout_view(request):
+    """Allow users to log out of their accounts.
+
+    Returns:
+        HTTP response
+
+    """
     logout(request)
     request.session.clear()
     return redirect(reverse('pdp.pages.views.home'))
 
 
 def register_view(request):
+    """Allow new users to register, creating them an account.
+
+    Returns:
+        HTTP response
+
+    """
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -148,10 +191,16 @@ def register_view(request):
     })
 
 
-# settings for public profile
+# Settings for public profile
 
 @login_required
 def settings_profile(request):
+    """Set current user's profile settings.
+
+    Returns:
+        HTTP response
+
+    """
     # extra information about the current user
     profile = Profile.objects.get(user=request.user)
 
@@ -166,8 +215,7 @@ def settings_profile(request):
             profile.show_email = 'show_email' in form.data
             profile.avatar_url = form.data['avatar_url']
 
-            # Save the profile
-            # and redirect the user to the configuration space
+            # Save the profile and redirect the user to the configuration space
             # with message indicate the state of the operation
             try:
                 profile.save()
@@ -179,7 +227,8 @@ def settings_profile(request):
                 request, 'Le profil a correctement été mis à jour.')
             return redirect('/membres/parametres/profil')
         else:
-            return render_to_response('member/settings_profile.html', c, RequestContext(request))
+            return render_to_response('member/settings_profile.html', c,
+                                      RequestContext(request))
     else:
         form = ProfileForm(request.user, initial={
             'biography': profile.biography,
@@ -190,11 +239,18 @@ def settings_profile(request):
         c = {
             'form': form
         }
-        return render_to_response('member/settings_profile.html', c, RequestContext(request))
+        return render_to_response('member/settings_profile.html', c,
+                                  RequestContext(request))
 
 
 @login_required
 def settings_account(request):
+    """Set current user's account settings.
+
+    Returns:
+        HTTP response
+
+    """
     if request.method == 'POST':
         form = ChangePasswordForm(request.user, request.POST)
         c = {
@@ -211,23 +267,35 @@ def settings_account(request):
                 messages.error(request, 'Une erreur est survenue.')
                 return redirect('/membres/parametres/profil')
         else:
-            return render_to_response('member/settings_account.html', c, RequestContext(request))
+            return render_to_response('member/settings_account.html', c,
+                                      RequestContext(request))
     else:
         form = ChangePasswordForm(request.user)
         c = {
             'form': form,
         }
-        return render_to_response('member/settings_account.html', c, RequestContext(request))
+        return render_to_response('member/settings_account.html', c,
+                                  RequestContext(request))
 
 
 @login_required
 def publications(request):
+    """Show current user's articles and tutorials.
+
+    Returns:
+        HTTP response
+
+    """
+
     user_articles = Article.objects.filter(
         author=request.user).order_by('-pubdate')
     user_tutorials = Tutorial.objects.filter(
         authors=request.user).order_by('-pubdate')
+
     c = {
         'user_articles': user_articles,
         'user_tutorials': user_tutorials,
     }
-    return render_to_response('member/publications.html', c, RequestContext(request))
+
+    return render_to_response('member/publications.html', c,
+                              RequestContext(request))
