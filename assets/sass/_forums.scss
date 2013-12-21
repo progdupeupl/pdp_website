@@ -17,9 +17,12 @@
     .forum-entry-title {
 
         @media #{$screen} {
+            // If we are on mobile devices, just show the title
             @include grid-column(12);
         }
+
         @media #{$small} {
+            // Else we have to keep space to show additional elements
             @include grid-column(6);
         }
 
