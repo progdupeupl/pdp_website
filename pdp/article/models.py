@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from taggit.managers import TaggableManager
 
 from pdp.utils import slugify
+from pdp.utils.models import has_changed
 
 from PIL import Image
 from cStringIO import StringIO
@@ -68,7 +69,8 @@ class Article(models.Model):
 
     is_visible = models.BooleanField(u'Est visible publiquement')
 
-    is_beta = models.BooleanField(u'Est visible par les membres', default=False)
+    is_beta = models.BooleanField(u'Est visible par les membres',
+                                  default=False)
 
     def __unicode__(self):
         """Textual representation of an article.
@@ -136,18 +138,6 @@ class Article(models.Model):
             super(Article, self).save(force_update, force_insert)
         else:
             super(Article, self).save()
-
-
-def has_changed(instance, field, manager='objects'):
-    """Returns true if a field has changed in a model
-    May be used in a model.save() method.
-    """
-    # TODO: put in utils since this function is also defined in tutorial app
-    if not instance.pk:
-        return True
-    manager = getattr(instance.__class__, manager)
-    old = getattr(manager.get(pk=instance.pk), field)
-    return not getattr(instance, field) == old
 
 
 def get_last_articles():

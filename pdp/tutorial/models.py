@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
 from pdp.utils import slugify
+from pdp.utils.models import has_changed
 
 from PIL import Image
 from cStringIO import StringIO
@@ -46,23 +47,6 @@ def thumbnail_path(instance, filename):
     ext = filename.split('.')[-1]
     filename = u'thumb.{}'.format(string.lower(ext))
     return os.path.join('tutorials', str(instance.pk), filename)
-
-
-def has_changed(instance, field, manager='objects'):
-    """Check if a field has changed in a model.
-
-    May be used in a model.save() method.
-
-    Returns:
-        bool
-
-    """
-    # TODO: put in utils since this function is also defined in article app
-    if not instance.pk:
-        return True
-    manager = getattr(instance.__class__, manager)
-    old = getattr(manager.get(pk=instance.pk), field)
-    return not getattr(instance, field) == old
 
 
 class Tutorial(models.Model):
