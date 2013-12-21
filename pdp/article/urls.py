@@ -15,6 +15,9 @@ urlpatterns = patterns('',
     url(r'^voir/(?P<article_pk>\d+)-(?P<article_slug>.+)$',
         views.deprecated_view_redirect),
     url(r'^(?P<article_pk>\d+)/(?P<article_slug>.+)$', views.view),
+
+    url(r'^telecharger', views.download),
+
     url(r'^nouveau$', views.new),
     url(r'^editer$', views.edit),
     url(r'^modifier$', views.modify),

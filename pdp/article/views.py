@@ -4,12 +4,13 @@ from datetime import datetime
 
 from django.shortcuts import get_object_or_404, redirect
 from django.core.urlresolvers import reverse
-from django.http import Http404
+from django.http import Http404, HttpResponse
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 from pdp.utils import render_template, slugify
+from pdp.utils.articles import export_article
 
 from .models import Article, get_prev_article, get_next_article
 from .forms import NewArticleForm, EditArticleForm
@@ -48,6 +49,26 @@ def view(request, article_pk, article_slug):
         'prev': get_prev_article(article),
         'next': get_next_article(article)
     })
+
+
+def download(request):
+    """Download an article."""
+    import json
+
+    article = get_object_or_404(Article, pk=request.GET['article'])
+
+    if not article.is_visible and not request.user == article.author:
+        raise Http404
+
+    dct = export_article(article)
+    data = json.dumps(dct, indent=4, ensure_ascii=False)
+
+    response = HttpResponse(data, mimetype='application/json')
+    response['Content-Disposition'] = 'attachment; filename={0}.json'.format(
+        slugify(article.title)
+    )
+
+    return response
 
 
 @login_required

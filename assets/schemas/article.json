@@ -30,6 +30,7 @@
         "text": {
             "description": "Content of the article",
             "type": "string"
-        },
+        }
+    },
     "required": ["title", "author"]
 }

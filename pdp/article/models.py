@@ -4,6 +4,7 @@ import os
 import string
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 from taggit.managers import TaggableManager
 
@@ -96,6 +97,11 @@ class Article(models.Model):
 
         """
         return '/articles/editer?article={0}'.format(self.pk)
+
+    def get_download_url(self):
+        return u'{}?article={}'.format(
+            reverse('pdp.article.views.download'),
+            self.pk)
 
     def save(self, force_update=False, force_insert=False,
              thumb_size=(IMAGE_MAX_HEIGHT, IMAGE_MAX_WIDTH)):

@@ -68,7 +68,7 @@ def view_tutorial(request, tutorial_pk, tutorial_slug):
 
 
 def download(request):
-    '''Download a tutorial'''
+    """Download a tutorial."""
     import json
 
     tutorial = get_object_or_404(Tutorial, pk=request.GET['tutoriel'])

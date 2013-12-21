@@ -61,6 +61,9 @@
             {% csrf_token %}
         </form>
     {% endifequal %}
+    <a href="{{ article.get_download_url }}" class="button">
+        Télécharger
+    </a>
 {% endblock %}
 
 {% block content %}
