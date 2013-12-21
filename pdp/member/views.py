@@ -2,7 +2,7 @@
 
 """Member app's views."""
 
-from django.shortcuts import redirect, get_object_or_404, render_to_response
+from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404
 
 from django.contrib.auth.models import User, SiteProfileNotAvailable
@@ -12,7 +12,6 @@ from django.contrib import messages
 
 from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
-from django.template import RequestContext
 
 from pdp.utils.tokens import generate_token
 from pdp.utils import render_template
@@ -214,21 +213,14 @@ def settings_profile(request):
             profile.site = form.data['site']
             profile.show_email = 'show_email' in form.data
             profile.avatar_url = form.data['avatar_url']
+            profile.save()
 
-            # Save the profile and redirect the user to the configuration space
-            # with message indicate the state of the operation
-            try:
-                profile.save()
-            except:
-                messages.error(request, 'Une erreur est survenue.')
-                return redirect('/membres/parametres/profil')
+            messages.success(request,
+                             u'Le profil a correctement été mis à jour.')
 
-            messages.success(
-                request, 'Le profil a correctement été mis à jour.')
             return redirect('/membres/parametres/profil')
         else:
-            return render_to_response('member/settings_profile.html', c,
-                                      RequestContext(request))
+            return render_template('member/settings_profile.html', c)
     else:
         form = ProfileForm(request.user, initial={
             'biography': profile.biography,
@@ -239,8 +231,7 @@ def settings_profile(request):
         c = {
             'form': form
         }
-        return render_to_response('member/settings_profile.html', c,
-                                  RequestContext(request))
+        return render_template('member/settings_profile.html', c)
 
 
 @login_required
@@ -257,25 +248,20 @@ def settings_account(request):
             'form': form,
         }
         if form.is_valid():
-            try:
-                request.user.set_password(form.data['password_new'])
-                request.user.save()
-                messages.success(
-                    request, 'Le mot de passe a bien été modifié.')
-                return redirect('/membres/parametres/profil')
-            except:
-                messages.error(request, 'Une erreur est survenue.')
-                return redirect('/membres/parametres/profil')
+            request.user.set_password(form.data['password_new'])
+            request.user.save()
+
+            messages.success(request, u'Le mot de passe a bien été modifié.')
+            return redirect('/membres/parametres/profil')
+
         else:
-            return render_to_response('member/settings_account.html', c,
-                                      RequestContext(request))
+            return render_template('member/settings_account.html', c)
     else:
         form = ChangePasswordForm(request.user)
         c = {
             'form': form,
         }
-        return render_to_response('member/settings_account.html', c,
-                                  RequestContext(request))
+        return render_template('member/settings_account.html', c)
 
 
 @login_required
@@ -297,5 +283,4 @@ def publications(request):
         'user_tutorials': user_tutorials,
     }
 
-    return render_to_response('member/publications.html', c,
-                              RequestContext(request))
+    return render_template('member/publications.html', c)
