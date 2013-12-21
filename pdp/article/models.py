@@ -68,7 +68,7 @@ class Article(models.Model):
                                   blank=True, null=True, default=None)
 
     is_visible = models.BooleanField(u'Est visible publiquement')
-
+    is_pending = models.BooleanField(u'Est en attente')
     is_beta = models.BooleanField(u'Est visible par les membres',
                                   default=False)
 

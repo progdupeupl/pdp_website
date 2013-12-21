@@ -4,7 +4,9 @@
 
 from datetime import datetime
 
-from pdp.settings import BOT_USER_PK, BOT_TUTORIAL_FORUM_PK
+from pdp.settings import BOT_USER_PK, BOT_TUTORIAL_FORUM_PK, \
+    BOT_ARTICLE_FORUM_PK
+
 from pdp.forum.models import Topic, Post
 
 
@@ -64,3 +66,23 @@ def create_tutorial_topic(tutorial):
     create_topic(
         BOT_TUTORIAL_FORUM_PK, u'[Tutoriel] {}'.format(tutorial.title),
         tutorial.description, md)
+
+
+def create_article_topic(article):
+    """Create a new topic for an article.
+
+    Args:
+        article: article instance to create a dedicated topic for
+
+    """
+
+    # Text to be displayed to users, with a link to the article
+    md = u'**{}**  \n{}\n\n[» Voir l’article]({})'\
+        .format(article.title,
+                article.description,
+                article.get_absolute_url())
+
+    # Create topic
+    create_topic(
+        BOT_ARTICLE_FORUM_PK, u'[Article] {}'.format(article.title),
+        article.description, md)

@@ -79,4 +79,49 @@
     </div>
 </div>
 
+{% if perms.article.change_article %}
+<div class="row">
+    <div class="large-12 columns">
+        <h2>Articles en attente de validation</h2>
+        {% if pending_articles %}
+            <div class="article-items">
+                {% for article in pending_articles %}
+                    <div class="row article-publication-item">
+                        <div class="small-1 columns">
+                            {% with date=article.pubdate %}
+                                {% include "misc/datebox.part.html" %}
+                            {% endwith %}
+                        </div>
+                        <div class="small-8 columns">
+                            <a href="{{ article.get_absolute_url }}">
+                                {{ article.title }}
+                            </a>
+                            <p>
+                                {{ article.description }}
+                            </p>
+                        </div>
+                        <div class="small-3 columns">
+                            <form action="{% url "pdp.article.views.modify" %}" method="post">
+                                <div class="button-group even-2 expand">
+                                    <button type="submit" class="button" name="validate">
+                                        Valider
+                                    </button>
+                                    <button type="submit" class="button" name="refuse">
+                                        Refuser
+                                    </button>
+                                </div>
+                                <input type="hidden" name="article" value="{{ article.pk }}">
+                                {% csrf_token %}
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Aucun article en attente de validation.</p>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
 {% endblock %}
