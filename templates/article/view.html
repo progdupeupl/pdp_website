@@ -55,12 +55,22 @@
                         Désactiver la bêta
                     {% endif %}
                 </button>
+                <button name="pending" class="button expand secondary" {% if article.is_pending %}disabled{% endif %}>
+                    {% if not article.is_pending %}
+                        Demander la publication
+                    {% else %}
+                        En attente de validation…
+                    {% endif %}
+                </button>
             {% endif %}
 
             <input type="hidden" name="article" value="{{ article.pk }}" />
             {% csrf_token %}
         </form>
     {% endifequal %}
+    <a href="{{ article.get_download_url }}" class="button">
+        Télécharger
+    </a>
 {% endblock %}
 
 {% block content %}

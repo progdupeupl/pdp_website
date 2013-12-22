@@ -4,10 +4,8 @@
 
 from collections import OrderedDict
 
-import json
-import jsonschema
-
 from pdp.tutorial.models import Part, Chapter, Extract
+from pdp.utils.schemas import validate_tutorial
 
 
 def move(obj, new_pos, position_f, parent_f, children_fn):
@@ -149,32 +147,3 @@ def export_tutorial(tutorial, validate=True):
         return {}
 
     return dct
-
-
-# JSON Schema validation functions
-
-def validate_tutorial(dct):
-    """Validate a tutorial dict representation using its JSON-defined schema.
-
-    Returns:
-        True if the tutorial passed the validation though the schemas, False
-        otherwise.
-
-    """
-
-    # Load the tutorial schema in the assets directory
-    with open('assets/schemas/tutorial.json') as f:
-        schema = json.load(f)
-
-    try:
-        jsonschema.validate(dct, schema)
-    # Foreign $ref schema not found, so we can't continue validation in deeper
-    # levels
-    except jsonschema.RefResolutionError:
-        return False
-    # Validation failed
-    except jsonschema.ValidationError:
-        return False
-
-    # No exception raised, validation passed!
-    return True

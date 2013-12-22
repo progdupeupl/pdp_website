@@ -4,31 +4,35 @@ from datetime import datetime
 
 from django.shortcuts import get_object_or_404, redirect
 from django.core.urlresolvers import reverse
-from django.http import Http404
+from django.http import Http404, HttpResponse
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
-from pdp.utils import render_template, slugify
+from pdp.settings import BOT_ENABLED
 
-from .models import Article, get_prev_article, get_next_article
-from .forms import NewArticleForm, EditArticleForm
+from pdp.utils import render_template, slugify, bot
+from pdp.utils.articles import export_article
+
+from pdp.article.models import Article, get_prev_article, get_next_article
+from pdp.article.forms import NewArticleForm, EditArticleForm
 
 
 def index(request):
-    '''Display articles list'''
+    """Display articles list."""
     article = Article.objects.all()\
         .filter(is_visible=True)\
         .order_by('-pubdate')
 
-    if request.user.is_authenticated():
-        user_article = Article.objects.filter(author=request.user)
-    else:
-        user_article = None
+    pending_articles = None
+    if request.user.has_perm('article.change_article'):
+        pending_articles = Article.objects.all()\
+            .filter(is_pending=True)\
+            .order_by('-pubdate')
 
     return render_template('article/index.html', {
         'articles': article,
-        'user_articles': user_article
+        'pending_articles': pending_articles
     })
 
 
@@ -48,6 +52,26 @@ def view(request, article_pk, article_slug):
         'prev': get_prev_article(article),
         'next': get_next_article(article)
     })
+
+
+def download(request):
+    """Download an article."""
+    import json
+
+    article = get_object_or_404(Article, pk=request.GET['article'])
+
+    if not article.is_visible and not request.user == article.author:
+        raise Http404
+
+    dct = export_article(article)
+    data = json.dumps(dct, indent=4, ensure_ascii=False)
+
+    response = HttpResponse(data, mimetype='application/json')
+    response['Content-Disposition'] = 'attachment; filename={0}.json'.format(
+        slugify(article.title)
+    )
+
+    return response
 
 
 @login_required
@@ -152,10 +176,48 @@ def modify(request):
     article_pk = data['article']
     article = get_object_or_404(Article, pk=article_pk)
 
+    # Validator actions
+    if request.user.has_perm('article.change_article'):
+
+        # We can't validate a non-pending article
+        if 'validate' in request.POST:
+            if not article.is_pending:
+                raise Http404
+
+            article.is_pending = False
+            article.is_beta = False
+            article.is_visible = True
+            article.pubdate = datetime.now()
+            article.save()
+
+            if BOT_ENABLED:
+                bot.create_article_topic(article)
+
+            return redirect(article.get_absolute_url())
+
+        if 'refuse' in request.POST:
+
+            # We can't refuse a non-pending article
+            if not article.is_pending:
+                raise Http404
+
+            article.is_pending = False
+            article.save()
+
+            return redirect(article.get_absolute_url())
+
+    # User actions
     if request.user == article.author:
         if 'delete' in data:
             article.delete()
             return redirect('/articles/')
+
+        if 'pending' in data:
+            if article.is_pending:
+                raise Http404
+
+            article.is_pending = True
+            article.save()
 
         if 'beta' in data:
             article.is_beta = not article.is_beta
