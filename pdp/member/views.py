@@ -12,6 +12,7 @@ from django.contrib import messages
 
 from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
 
 from pdp.utils.tokens import generate_token
 from pdp.utils import render_template
@@ -89,7 +90,7 @@ def edit_profile(request):
 
     # Making sure the user is allowed to do that
     if not request.user == profile.user:
-        raise Http404
+        raise PermissionDenied
 
     if request.method == 'POST':
         form = ProfileForm(request.POST)

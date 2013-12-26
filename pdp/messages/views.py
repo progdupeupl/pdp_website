@@ -1,15 +1,19 @@
 # coding: utf-8
 
 from datetime import datetime
+
 from django.db.models import Q
-from django.contrib.auth.models import User
 
 from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404
+
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.exceptions import PermissionDenied
+from django.views.decorators.http import require_POST
 
 from pdp.utils import render_template, slugify
 from pdp.utils.paginator import paginator_range
@@ -78,7 +82,7 @@ def topic(request, topic_pk, topic_slug):
 
     if not g_topic.author == request.user \
        and not request.user in list(g_topic.participants.all()):
-        raise Http404
+        raise PermissionDenied
 
     # Check link
     if not topic_slug == slugify(g_topic.title):
@@ -187,6 +191,7 @@ def new(request):
     return render_template('messages/new.html', {'form': form})
 
 
+@require_POST
 @login_required
 def edit(request):
     """Edit a message.
@@ -195,9 +200,6 @@ def edit(request):
         HttpResponse
 
     """
-    if not request.method == 'POST':
-        raise Http404
-
     try:
         topic_pk = request.POST['privatetopic']
     except KeyError:
@@ -238,7 +240,7 @@ def answer(request):
 
     # Check that the user isn't spamming
     if g_topic.antispam(request.user):
-        raise Http404
+        raise PermissionDenied
 
     # If we just sent data
     if request.method == 'POST':
@@ -312,7 +314,7 @@ def edit_post(request):
     tp = get_object_or_404(PrivateTopic, pk=post.privatetopic.pk)
     last = get_object_or_404(PrivatePost, pk=tp.last_message.pk)
     if not last.pk == post.pk:
-        raise Http404
+        raise PermissionDenied
 
     g_topic = None
     if post.position_in_topic == 1:
@@ -321,7 +323,7 @@ def edit_post(request):
     # Making sure the user is allowed to do that
     if post.author != request.user:
         if not request.user.has_perm('mp.change_post'):
-            raise Http404
+            raise PermissionDenied
         elif request.method == 'GET':
             messages.add_message(
                 request, messages.WARNING,

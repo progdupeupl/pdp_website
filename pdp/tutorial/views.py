@@ -6,6 +6,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404, HttpResponse
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
+from django.views.decorators.http import require_POST
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -190,6 +192,8 @@ def edit_tutorial(request):
     })
 
 
+@require_POST
+@login_required
 def modify_tutorial(request):
     """Modify a tutorial.
 
@@ -197,8 +201,6 @@ def modify_tutorial(request):
         HttpResponse
 
     """
-    if not request.method == 'POST':
-        raise Http404
 
     tutorial_pk = request.POST['tutorial']
     tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
@@ -209,7 +211,7 @@ def modify_tutorial(request):
 
             # We can't validate a non-pending tutorial
             if not tutorial.is_pending:
-                raise Http404
+                raise PermissionDenied
 
             tutorial.is_pending = False
             tutorial.is_beta = False
@@ -224,7 +226,7 @@ def modify_tutorial(request):
 
         if 'refuse' in request.POST:
             if not tutorial.is_pending:
-                raise Http404
+                raise PermissionDenied
 
             tutorial.is_pending = False
             tutorial.save()
@@ -255,7 +257,7 @@ def modify_tutorial(request):
 
             # Avoid orphan tutorials
             if tutorial.authors.all().count() <= 1:
-                raise Http404
+                raise PermissionDenied
 
             author_pk = request.POST['author']
             author = get_object_or_404(User, pk=author_pk)
@@ -271,7 +273,7 @@ def modify_tutorial(request):
 
         elif 'pending' in request.POST:
             if tutorial.is_pending:
-                raise Http404
+                raise PermissionDenied
 
             tutorial.is_pending = True
             tutorial.save()
@@ -304,7 +306,7 @@ def view_part(request, tutorial_pk, tutorial_slug, part_slug):
        and not request.user.has_perm('tutorial.change_part') \
        and not request.user in tutorial.authors.all():
         if not (tutorial.is_beta and request.user.is_authenticated()):
-            raise Http404
+            raise PermissionDenied
 
     # Make sure the URL is well-formed
     if not tutorial_slug == slugify(tutorial.title)\
@@ -334,10 +336,10 @@ def add_part(request):
     tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
     # Make sure it's a big tutorial, just in case
     if tutorial.is_mini:
-        raise Http404
+        raise PermissionDenied
     # Make sure the user belongs to the author list
     if not request.user in tutorial.authors.all():
-        raise Http404
+        raise PermissionDenied
     if request.method == 'POST':
         form = AddPartForm(request.POST)
         if form.is_valid():
@@ -357,6 +359,7 @@ def add_part(request):
     })
 
 
+@require_POST
 @login_required
 def modify_part(request):
     """Modifiy a part.
@@ -365,15 +368,12 @@ def modify_part(request):
         HttpResponse
 
     """
-    if not request.method == 'POST':
-        raise Http404
-
     part_pk = request.POST['part']
     part = get_object_or_404(Part, pk=part_pk)
 
     # Make sure the user is allowed to do that
     if not request.user in part.tutorial.authors.all():
-        raise Http404
+        raise PermissionDenied
 
     if 'move' in request.POST:
         try:
@@ -417,7 +417,7 @@ def edit_part(request):
     part = get_object_or_404(Part, pk=part_pk)
     # Make sure the user is allowed to do that
     if not request.user in part.tutorial.authors.all():
-        raise Http404
+        raise PermissionDenied
 
     if request.method == 'POST':
         form = EditPartForm(request.POST)
@@ -463,7 +463,7 @@ def view_chapter(request, tutorial_pk, tutorial_slug, part_slug,
        and not request.user.has_perm('tutorial.modify_chapter') \
        and not request.user in tutorial.authors.all():
         if not (tutorial.is_beta and request.user.is_authenticated()):
-            raise Http404
+            raise PermissionDenied
 
     if not tutorial_slug == slugify(tutorial.title)\
         or not part_slug == slugify(chapter.part.title)\
@@ -507,7 +507,7 @@ def add_chapter(request):
 
     # Make sure the user is allowed to do that
     if not request.user in part.tutorial.authors.all():
-        raise Http404
+        raise PermissionDenied
 
     if request.method == 'POST':
         form = AddChapterForm(request.POST, request.FILES)
@@ -540,6 +540,7 @@ def add_chapter(request):
     })
 
 
+@require_POST
 @login_required
 def modify_chapter(request):
     """Modify a chapter.
@@ -548,18 +549,18 @@ def modify_chapter(request):
         HttpResponse
 
     """
-    if not request.method == 'POST':
-        raise Http404
     data = request.POST
+
     try:
         chapter_pk = request.POST['chapter']
     except KeyError:
         raise Http404
+
     chapter = get_object_or_404(Chapter, pk=chapter_pk)
 
     # Make sure the user is allowed to do that
     if not request.user in chapter.get_tutorial().authors.all():
-        raise Http404
+        raise PermissionDenied
 
     if 'move' in data:
         try:
@@ -618,7 +619,7 @@ def edit_chapter(request):
     # Make sure the user is allowed to do that
     if big and (not request.user in chapter.part.tutorial.authors.all())\
             or small and (not request.user in chapter.tutorial.authors.all()):
-        raise Http404
+        raise PermissionDenied
 
     if request.method == 'POST':
 
@@ -743,6 +744,8 @@ def edit_extract(request):
     })
 
 
+@require_POST
+@login_required
 def modify_extract(request):
     """Modify an extract.
 
@@ -750,9 +753,6 @@ def modify_extract(request):
         HttpResponse
 
     """
-    if not request.method == 'POST':
-        raise Http404
-
     data = request.POST
 
     try:
@@ -786,7 +786,7 @@ def modify_extract(request):
 
         return redirect(extract.get_absolute_url())
 
-    raise Http404
+    raise PermissionDenied
 
 
 def find_tutorial(request, name):

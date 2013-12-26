@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
+from django.views.decorators.http import require_POST
 
 from pdp.utils import render_template, slugify
 from pdp.gallery.models import UserGallery, Image, Gallery
@@ -90,6 +92,7 @@ def new_gallery(request):
         })
 
 
+@require_POST
 @login_required
 def modify_gallery(request):
     """Modify a gallery.
@@ -98,9 +101,6 @@ def modify_gallery(request):
         HttpResponse
 
     """
-    if request.method != 'POST':
-        raise Http404
-
     # Global actions
 
     if 'delete_multi' in request.POST:
@@ -112,7 +112,7 @@ def modify_gallery(request):
 
         # Check that the user has the RW right on each gallery
         if perms < len(l):
-            raise Http404
+            raise PermissionDenied
 
         # Delete all the permissions on all the selected galleries
         UserGallery.objects.filter(gallery__pk__in=l).delete()
@@ -135,7 +135,7 @@ def modify_gallery(request):
 
     # Disallow actions to read-only members
     if gal_mode.mode != 'W':
-        raise Http404
+        raise PermissionDenied
 
     if 'adduser' in request.POST:
         form = UserGalleryForm(request.POST)
@@ -201,6 +201,7 @@ def edit_image(request, gal_pk, img_pk):
         })
 
 
+@require_POST
 @login_required
 def modify_image(request):
     """Modify an image.
@@ -210,9 +211,6 @@ def modify_image(request):
 
     """
     # We only handle secured POST actions
-    if request.method != 'POST':
-        raise Http404
-
     try:
         gal_pk = request.POST['gallery']
     except KeyError:
@@ -223,7 +221,7 @@ def modify_image(request):
 
     # Only allow RW users to modify images
     if gal_mode.mode != 'W':
-        raise Http404
+        raise PermissionDenied
 
     if 'delete' in request.POST:
         img = get_object_or_404(Image, pk=request.POST['image'])

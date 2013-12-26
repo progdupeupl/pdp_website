@@ -4,6 +4,8 @@ from datetime import datetime
 
 from django.shortcuts import get_object_or_404, redirect
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
+from django.views.decorators.http import require_POST
 from django.http import Http404, HttpResponse
 
 from django.contrib.auth.decorators import login_required
@@ -52,7 +54,7 @@ def view(request, article_pk, article_slug):
 
     if not article.is_visible and not request.user == article.author:
         if not (article.is_beta and request.user.is_authenticated()):
-            raise Http404
+            raise PermissionDenied
 
     if article_slug != slugify(article.title):
         return redirect(article.get_absolute_url())
@@ -76,7 +78,7 @@ def download(request):
     article = get_object_or_404(Article, pk=request.GET['article'])
 
     if not article.is_visible and not request.user == article.author:
-        raise Http404
+        raise PermissionDenied
 
     dct = export_article(article)
     data = json.dumps(dct, indent=4, ensure_ascii=False)
@@ -150,7 +152,7 @@ def edit(request):
 
     # Make sure the user is allowed to do it
     if not request.user == article.author:
-        raise Http404
+        raise PermissionDenied
 
     if request.method == 'POST':
         form = EditArticleForm(request.POST, request.FILES)
@@ -193,6 +195,7 @@ def edit(request):
     })
 
 
+@require_POST
 @login_required
 def modify(request):
     """Modify an article.
@@ -206,9 +209,6 @@ def modify(request):
         performed)
 
     """
-    if not request.method == 'POST':
-        raise Http404
-
     data = request.POST
 
     article_pk = data['article']
@@ -220,7 +220,7 @@ def modify(request):
         # We can't validate a non-pending article
         if 'validate' in request.POST:
             if not article.is_pending:
-                raise Http404
+                raise PermissionDenied
 
             article.is_pending = False
             article.is_beta = False
@@ -237,7 +237,7 @@ def modify(request):
 
             # We can't refuse a non-pending article
             if not article.is_pending:
-                raise Http404
+                raise PermissionDenied
 
             article.is_pending = False
             article.save()
@@ -252,7 +252,7 @@ def modify(request):
 
         if 'pending' in data:
             if article.is_pending:
-                raise Http404
+                raise PermissionDenied
 
             article.is_pending = True
             article.save()
