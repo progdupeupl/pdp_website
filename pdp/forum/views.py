@@ -21,9 +21,12 @@ from forms import TopicForm, PostForm
 
 
 def index(request):
-    '''
-    Display the category list with all their forums
-    '''
+    """Display the category list with all their forums.
+
+    Returns:
+        HttpResponse
+
+    """
     categories = Category.objects.all().order_by('position')
 
     return render_template('forum/index.html', {
@@ -32,9 +35,12 @@ def index(request):
 
 
 def details(request, cat_slug, forum_slug):
-    '''
-    Display the given forum and all its topics
-    '''
+    """Display the given forum and all its topics.
+
+    Returns:
+        HttpResponse
+
+    """
     forum = get_object_or_404(Forum, slug=forum_slug)
 
     sticky_topics = Topic.objects.all()\
@@ -65,9 +71,12 @@ def details(request, cat_slug, forum_slug):
 
 
 def cat_details(request, cat_slug):
-    '''
-    Display the forums belonging to the given category
-    '''
+    """Display the forums belonging to the given category.
+
+    Returns:
+        HttpResponse
+
+    """
     category = get_object_or_404(Category, slug=cat_slug)
     forums = Forum.objects.all().filter(category__pk=category.pk)
 
@@ -77,9 +86,12 @@ def cat_details(request, cat_slug):
 
 
 def topic(request, topic_pk, topic_slug):
-    '''
-    Display a thread and its posts using a pager
-    '''
+    """Display a thread and its posts using a pager.
+
+    Returns:
+        HttpResponse
+
+    """
 
     # TODO: Clean that up
     g_topic = get_object_or_404(Topic, pk=topic_pk)
@@ -135,9 +147,12 @@ def topic(request, topic_pk, topic_slug):
 
 @login_required
 def new(request):
-    '''
-    Creates a new topic in a forum
-    '''
+    """Creates a new topic in a forum.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         forum_pk = request.GET['forum']
     except KeyError:
@@ -198,9 +213,12 @@ def new(request):
 
 @login_required
 def edit(request):
-    '''
-    Edit the given topic
-    '''
+    """Edit a topic.
+
+    Returns:
+        HttpResponse
+
+    """
     if not request.method == 'POST':
         raise Http404
 
@@ -260,9 +278,12 @@ def edit(request):
 
 @login_required
 def answer(request):
-    '''
-    Adds an answer from an user to a topic
-    '''
+    """Adds an answer from an user to a topic.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         topic_pk = request.GET['sujet']
     except KeyError:
@@ -339,9 +360,12 @@ def answer(request):
 
 @login_required
 def edit_post(request):
-    '''
-    Edit the given user's post
-    '''
+    """Edit a specific post.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         post_pk = request.GET['message']
     except KeyError:
@@ -396,7 +420,12 @@ def edit_post(request):
 
 @login_required
 def useful_post(request):
-    '''Marks a message as useful (for the OP)'''
+    """Marks a message as useful for the original poster.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         post_pk = request.GET['message']
     except KeyError:
@@ -415,7 +444,12 @@ def useful_post(request):
 
 
 def find_topic(request, name):
+    """Find all topics created by an user.
 
+    Returns:
+        HttpResponse
+
+    """
     u = get_object_or_404(User, username=name)
 
     topics = Topic.objects.all().filter(author=u)\
@@ -442,6 +476,12 @@ def find_topic(request, name):
 
 
 def find_post(request, name):
+    """Find all posts written by an user.
+
+    Returns:
+        HttpResponse
+
+    """
     u = get_object_or_404(User, username=name)
 
     posts = Post.objects.all().filter(author=u)\
@@ -468,6 +508,12 @@ def find_post(request, name):
 
 @login_required
 def followed_topics(request):
+    """Displays all the topics followed by an user.
+
+    Returns:
+        HttpResponse
+
+    """
     followed_topics = request.user.get_profile().get_followed_topics()
 
     # Paginator

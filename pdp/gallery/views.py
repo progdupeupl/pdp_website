@@ -1,7 +1,5 @@
 # coding: utf-8
 
-# The max size in bytes
-
 from django.conf import settings
 from datetime import datetime
 
@@ -20,9 +18,12 @@ from pdp.gallery.forms import ImageForm, GalleryForm, UserGalleryForm
 
 @login_required
 def gallery_list(request):
-    '''
-    Display the gallery list with all their images
-    '''
+    """Display the gallery list with all their images.
+
+    Returns:
+        HttpResponse
+
+    """
     galleries = UserGallery.objects.all().filter(user=request.user)
 
     return render_template('gallery/gallery_list.html', {
@@ -32,9 +33,12 @@ def gallery_list(request):
 
 @login_required
 def gallery_details(request, gal_pk, gal_slug):
-    '''
-    Gallery details
-    '''
+    """Display a gallery.
+
+    Returns:
+        HttpResponse
+
+    """
 
     gal = get_object_or_404(Gallery, pk=gal_pk)
     gal_mode = get_object_or_404(UserGallery, gallery=gal, user=request.user)
@@ -49,9 +53,12 @@ def gallery_details(request, gal_pk, gal_slug):
 
 @login_required
 def new_gallery(request):
-    '''
-    Creates a new gallery
-    '''
+    """Create a new gallery.
+
+    Returns:
+        HttpResponse
+
+    """
     if request.method == 'POST':
         form = GalleryForm(request.POST)
         if form.is_valid():
@@ -85,8 +92,12 @@ def new_gallery(request):
 
 @login_required
 def modify_gallery(request):
-    '''Modify gallery instance'''
+    """Modify a gallery.
 
+    Returns:
+        HttpResponse
+
+    """
     if request.method != 'POST':
         raise Http404
 
@@ -142,6 +153,12 @@ def modify_gallery(request):
 
 @login_required
 def del_image(request, gal_pk):
+    """Remove an image from a gallery.
+
+    Returns:
+        HttpResponse
+
+    """
     gal = get_object_or_404(Gallery, pk=gal_pk)
     if request.method == 'POST':
         liste = request.POST.getlist('items')
@@ -152,9 +169,12 @@ def del_image(request, gal_pk):
 
 @login_required
 def edit_image(request, gal_pk, img_pk):
-    '''
-    Creates a new image
-    '''
+    """Edit an image.
+
+    Returns:
+        HttpResponse
+
+    """
     gal = get_object_or_404(Gallery, pk=gal_pk)
     img = get_object_or_404(Image, pk=img_pk)
 
@@ -183,6 +203,12 @@ def edit_image(request, gal_pk, img_pk):
 
 @login_required
 def modify_image(request):
+    """Modify an image.
+
+    Returns:
+        HttpResponse
+
+    """
     # We only handle secured POST actions
     if request.method != 'POST':
         raise Http404
@@ -212,9 +238,12 @@ def modify_image(request):
 
 @login_required
 def new_image(request, gal_pk):
-    '''
-    Creates a new image
-    '''
+    """Add a new image to a gallery.
+
+    Returns:
+        HttpResponse
+
+    """
     gal = get_object_or_404(Gallery, pk=gal_pk)
 
     if request.method == 'POST':

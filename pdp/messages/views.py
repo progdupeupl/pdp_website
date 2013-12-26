@@ -22,10 +22,12 @@ from pdp.messages.forms import PrivateTopicForm, PrivatePostForm
 
 @login_required
 def index(request):
-    '''
-    Display the all private topics
-    '''
+    """Display messages of the user.
 
+    Returns:
+        HttpResponse
+
+    """
     # delete actions
     if request.method == 'POST':
         if 'delete' in request.POST:
@@ -65,10 +67,12 @@ def index(request):
 
 @login_required
 def topic(request, topic_pk, topic_slug):
-    '''
-    Display a thread and its posts using a pager
-    '''
+    """Display a topic and its posts using a pager.
 
+    Returns:
+        HttpResponse
+
+    """
     # TODO: Clean that up
     g_topic = get_object_or_404(PrivateTopic, pk=topic_pk)
 
@@ -124,10 +128,12 @@ def topic(request, topic_pk, topic_slug):
 
 @login_required
 def new(request):
-    '''
-    Creates a new private topic
-    '''
+    """Creates a new message.
 
+    Returns:
+        HttpResponse
+
+    """
     if request.method == 'POST':
         # If the client is using the "preview" button
         if 'preview' in request.POST:
@@ -183,9 +189,12 @@ def new(request):
 
 @login_required
 def edit(request):
-    '''
-    Edit the given topic
-    '''
+    """Edit a message.
+
+    Returns:
+        HttpResponse
+
+    """
     if not request.method == 'POST':
         raise Http404
 
@@ -211,9 +220,12 @@ def edit(request):
 
 @login_required
 def answer(request):
-    '''
-    Adds an answer from an user to a topic
-    '''
+    """Add an answer from an user to a message
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         topic_pk = request.GET['sujet']
     except KeyError:
@@ -283,9 +295,12 @@ def answer(request):
 
 @login_required
 def edit_post(request):
-    '''
-    Edit the given user's post
-    '''
+    """Edit a post in a message.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         post_pk = request.GET['message']
     except KeyError:

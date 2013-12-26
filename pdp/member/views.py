@@ -27,7 +27,7 @@ def index(request):
     """Display list of registered users.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
     members = User.objects.order_by('date_joined')
@@ -43,7 +43,7 @@ def actions(request):
     This may be very temporary.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
 
@@ -58,7 +58,7 @@ def details(request, user_name):
     """Display details about a profile.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
     usr = get_object_or_404(User, username=user_name)
@@ -78,7 +78,7 @@ def edit_profile(request):
     """Edit an user's profile.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
     try:
@@ -116,7 +116,7 @@ def login_view(request):
     """Allow users to log into their accounts.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
     csrf_tk = {}
@@ -153,7 +153,7 @@ def logout_view(request):
     """Allow users to log out of their accounts.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
     logout(request)
@@ -165,7 +165,7 @@ def register_view(request):
     """Allow new users to register, creating them an account.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
     if request.method == 'POST':
@@ -197,7 +197,7 @@ def settings_profile(request):
     """Set current user's profile settings.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
     # extra information about the current user
@@ -239,7 +239,7 @@ def settings_account(request):
     """Set current user's account settings.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
     if request.method == 'POST':
@@ -269,7 +269,7 @@ def publications(request):
     """Show current user's articles and tutorials.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
 

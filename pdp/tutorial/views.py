@@ -5,6 +5,7 @@ from datetime import datetime
 from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404, HttpResponse
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -20,7 +21,12 @@ from .forms import TutorialForm, EditTutorialForm, AddPartForm, EditPartForm, \
 
 
 def index(request):
-    '''Display tutorials list'''
+    """Display tutorials list.
+
+    Returns:
+        HttpResponse
+
+    """
     tutorials = Tutorial.objects.all() \
         .filter(is_visible=True) \
         .order_by("-pubdate")
@@ -38,7 +44,12 @@ def index(request):
 # Tutorial
 
 def view_tutorial(request, tutorial_pk, tutorial_slug):
-    '''Display a tutorial'''
+    """Display a tutorial.
+
+    Returns:
+        HttpResponse
+
+    """
     tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
 
     if not tutorial.is_visible \
@@ -68,7 +79,12 @@ def view_tutorial(request, tutorial_pk, tutorial_slug):
 
 
 def download(request):
-    """Download a tutorial."""
+    """Download a tutorial.
+
+    Returns:
+        HttpResponse
+
+    """
     import json
 
     tutorial = get_object_or_404(Tutorial, pk=request.GET['tutoriel'])
@@ -88,7 +104,12 @@ def download(request):
 
 @login_required
 def add_tutorial(request):
-    ''''Adds a tutorial'''
+    """Add a tutorial.
+
+    Returns:
+        HttpResponse
+
+    """
     if request.method == 'POST':
         form = TutorialForm(request.POST, request.FILES)
         if form.is_valid():
@@ -127,6 +148,12 @@ def add_tutorial(request):
 
 @login_required
 def edit_tutorial(request):
+    """Edit a tutorial.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         tutorial_pk = request.GET['tutoriel']
     except KeyError:
@@ -164,6 +191,12 @@ def edit_tutorial(request):
 
 
 def modify_tutorial(request):
+    """Modify a tutorial.
+
+    Returns:
+        HttpResponse
+
+    """
     if not request.method == 'POST':
         raise Http404
 
@@ -249,14 +282,20 @@ def modify_tutorial(request):
             tutorial.save()
             return redirect(tutorial.get_absolute_url())
 
-    # No action performed, raise 404
-    raise Http404
+    # No action performed, no rights for request user, or not existing
+    # action called.
+    raise PermissionDenied
 
 
 # Part
 
 def view_part(request, tutorial_pk, tutorial_slug, part_slug):
-    '''Display a part'''
+    """Display a part.
+
+    Returns:
+        HttpResponse
+
+    """
     part = get_object_or_404(Part,
                              slug=part_slug, tutorial__pk=tutorial_pk)
 
@@ -279,7 +318,12 @@ def view_part(request, tutorial_pk, tutorial_slug, part_slug):
 
 @login_required
 def add_part(request):
-    '''Add a new part'''
+    """Add a new part.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         tutorial_pk = request.GET['tutoriel']
     except KeyError:
@@ -315,7 +359,12 @@ def add_part(request):
 
 @login_required
 def modify_part(request):
-    '''Modifiy the given part'''
+    """Modifiy a part.
+
+    Returns:
+        HttpResponse
+
+    """
     if not request.method == 'POST':
         raise Http404
 
@@ -355,7 +404,12 @@ def modify_part(request):
 
 @login_required
 def edit_part(request):
-    '''Edit the given part'''
+    """Edit a part.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         part_pk = int(request.GET['partie'])
     except KeyError:
@@ -392,7 +446,12 @@ def edit_part(request):
 
 def view_chapter(request, tutorial_pk, tutorial_slug, part_slug,
                  chapter_slug):
-    '''View chapter'''
+    """Display a chapter.
+
+    Returns:
+        HttpResponse
+
+    """
 
     chapter = get_object_or_404(Chapter,
                                 slug=chapter_slug,
@@ -432,7 +491,12 @@ def view_chapter(request, tutorial_pk, tutorial_slug, part_slug,
 
 @login_required
 def add_chapter(request):
-    '''Add a new chapter to given part'''
+    """Add a new chapter to a part.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         part_pk = request.GET['partie']
     except KeyError:
@@ -478,7 +542,12 @@ def add_chapter(request):
 
 @login_required
 def modify_chapter(request):
-    '''Modify the given chapter'''
+    """Modify a chapter.
+
+    Returns:
+        HttpResponse
+
+    """
     if not request.method == 'POST':
         raise Http404
     data = request.POST
@@ -530,7 +599,12 @@ def modify_chapter(request):
 
 @login_required
 def edit_chapter(request):
-    '''Edit the given chapter'''
+    """Edit a chapter.
+
+    Returns:
+        HttpResponse
+
+    """
 
     try:
         chapter_pk = int(request.GET['chapitre'])
@@ -587,7 +661,12 @@ def edit_chapter(request):
 
 @login_required
 def add_extract(request):
-    '''Add extract'''
+    """Add an extract.
+
+    Returns:
+        HttpResponse
+
+    """
 
     try:
         chapter_pk = int(request.GET['chapitre'])
@@ -625,7 +704,12 @@ def add_extract(request):
 
 @login_required
 def edit_extract(request):
-    '''Edit extract'''
+    """Edit an extract.
+
+    Returns:
+        HttpResponse
+
+    """
 
     try:
         extract_pk = request.GET['extrait']
@@ -660,6 +744,12 @@ def edit_extract(request):
 
 
 def modify_extract(request):
+    """Modify an extract.
+
+    Returns:
+        HttpResponse
+
+    """
     if not request.method == 'POST':
         raise Http404
 
@@ -700,6 +790,12 @@ def modify_extract(request):
 
 
 def find_tutorial(request, name):
+    """Find all tutorials written by an user.
+
+    Returns:
+        HttpResponse
+
+    """
     u = get_object_or_404(User, username=name)
 
     tutos = Tutorial.objects.all()\

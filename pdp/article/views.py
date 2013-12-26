@@ -19,7 +19,12 @@ from pdp.article.forms import NewArticleForm, EditArticleForm
 
 
 def index(request):
-    """Display articles list."""
+    """Display articles list.
+
+    Returns:
+        HttpResponse
+
+    """
     article = Article.objects.all()\
         .filter(is_visible=True)\
         .order_by('-pubdate')
@@ -37,7 +42,12 @@ def index(request):
 
 
 def view(request, article_pk, article_slug):
-    '''Show the given article if exists and is visible'''
+    """Show the given article if exists and is visible.
+
+    Returns:
+        HttpResponse
+
+    """
     article = get_object_or_404(Article, pk=article_pk)
 
     if not article.is_visible and not request.user == article.author:
@@ -55,7 +65,12 @@ def view(request, article_pk, article_slug):
 
 
 def download(request):
-    """Download an article."""
+    """Download an article.
+
+    Returns:
+        HttpResponse
+
+    """
     import json
 
     article = get_object_or_404(Article, pk=request.GET['article'])
@@ -76,7 +91,12 @@ def download(request):
 
 @login_required
 def new(request):
-    '''Create a new article'''
+    """Create a new article.
+
+    Returns:
+        HttpResponse
+
+    """
     if request.method == 'POST':
         form = NewArticleForm(request.POST, request.FILES)
         if form.is_valid():
@@ -113,7 +133,14 @@ def new(request):
 
 @login_required
 def edit(request):
-    '''Edit article identified by given GET paramter'''
+    """Edit an article.
+
+    This will use the 'article' GET field to find out which article to edit.
+
+    Returns:
+        HttpReponse
+
+    """
     try:
         article_pk = request.GET['article']
     except KeyError:
@@ -168,6 +195,17 @@ def edit(request):
 
 @login_required
 def modify(request):
+    """Modify an article.
+
+    This view will only accept POST forms with valid CSRF field to ensure CSRF
+    protection.
+
+
+    Returns:
+        HttpResponse (will mainly redirect to the article itself once action
+        performed)
+
+    """
     if not request.method == 'POST':
         raise Http404
 
@@ -227,6 +265,14 @@ def modify(request):
 
 
 def find_article(request, name):
+    """Find all articles written by an author.
+
+    The author name is extracted from the URL.
+
+    Returns:
+        HttpResponse
+
+    """
     u = get_object_or_404(User, username=name)
 
     articles = Article.objects.all()\
