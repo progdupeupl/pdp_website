@@ -60,6 +60,9 @@ class Article(models.Model):
 
     author = models.ForeignKey(User, verbose_name=u'Auteur',
                                related_name='articles')
+
+    slug = models.SlugField(max_length=80)
+
     pubdate = models.DateTimeField(u'Date de publication', blank=True)
 
     tags = TaggableManager()
@@ -114,6 +117,7 @@ class Article(models.Model):
         This will save thumbnail on disk and then save the model in database.
 
         """
+        self.slug = slugify(self.title)
 
         if has_changed(self, 'image') and self.image:
             # TODO : delete old image
