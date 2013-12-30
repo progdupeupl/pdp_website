@@ -1,16 +1,15 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
+# coding: utf-8
 
-Replace this with more appropriate tests for your application.
-"""
+"""Tests for gallery app."""
 
 from django.test import TestCase
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+class GalleryIntegrationTests(TestCase):
+
+    """Integration tests with no specific valid instances."""
+
+    def test_index_anon(self):
+        """Test to view gallery index as anonymous user."""
+        resp = self.client.get('/galerie/')
+        self.assertEquals(302, resp.status_code)
