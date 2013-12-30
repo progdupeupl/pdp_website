@@ -1,5 +1,7 @@
 # coding: utf-8
 
+"""Tests for forum app."""
+
 from django.test import TestCase
 from django.contrib.auth.models import User
 
@@ -11,15 +13,17 @@ from pdp.forum.models import Category, Forum, Topic, Post
 
 class ForumIntegrationTests(TestCase):
 
+    """Integration tests without any specific instances."""
+
     def test_index_url(self):
-        '''
-        Tests if the index URL of the forum application ('/forums/') is ok.
-        '''
+        """Test if the index URL of the forum application is ok."""
         resp = self.client.get('/forums/')
         self.assertEqual(resp.status_code, 200)
 
 
 class ForumCategoryIntegrationTests(TestCase):
+
+    """Integration tests with valid Category instance."""
 
     def setUp(self):
         self.category = G(Category, id=42, title='Test category',
@@ -35,6 +39,8 @@ class ForumCategoryIntegrationTests(TestCase):
 
 
 class ForumForumIntegrationTests(TestCase):
+
+    """Integration tests with valid Forum instance."""
 
     def setUp(self):
         self.category = G(Category, id=42, title='Test category',
@@ -52,6 +58,8 @@ class ForumForumIntegrationTests(TestCase):
 
 
 def ForumTopicIntegrationTests(TestCase):
+
+    """Integration tests with valid Topic instance."""
 
     def setUp(self):
         # Author
@@ -82,6 +90,8 @@ def ForumTopicIntegrationTests(TestCase):
 
 
 class FeedsIntegrationTests(TestCase):
+
+    """Integration tests for feeds."""
 
     def test_messages_feed_rss(self):
         resp = self.client.get('/forums/flux/messages/rss/')

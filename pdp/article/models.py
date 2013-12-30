@@ -1,5 +1,7 @@
 # coding: utf-8
 
+"""Models for article app."""
+
 import os
 import string
 from django.db import models

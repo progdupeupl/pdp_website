@@ -1,5 +1,7 @@
 # coding: utf-8
 
+"""Models for messages app."""
+
 from math import ceil
 
 from django.db import models
@@ -19,7 +21,8 @@ SPAM_LIMIT_PARTICIPANT = 2
 
 class PrivateTopic(models.Model):
 
-    '''Topic private, containing private posts'''
+    """Topic private, containing private posts."""
+
     class Meta:
         verbose_name = 'Message privé'
         verbose_name_plural = 'Messages privés'
@@ -27,39 +30,54 @@ class PrivateTopic(models.Model):
     title = models.CharField('Titre', max_length=80)
     subtitle = models.CharField('Sous-titre', max_length=200, blank=True)
 
-    author = models.ForeignKey(User, verbose_name='Auteur',
+    author = models.ForeignKey(User, verbose_name=u'Auteur',
                                related_name='author')
-    participants = models.ManyToManyField(User, verbose_name='Participants',
+    participants = models.ManyToManyField(User, verbose_name=u'Participants',
                                           related_name='participants')
-    last_message = models.ForeignKey('PrivatePost', null=True, blank=True,
+    last_message = models.ForeignKey(u'PrivatePost', null=True, blank=True,
                                      related_name='last_message',
                                      verbose_name='Dernier message')
-    pubdate = models.DateTimeField('Date de création', auto_now_add=True)
+    pubdate = models.DateTimeField(u'Date de création', auto_now_add=True)
 
     def __unicode__(self):
-        '''
-        Textual form of a thread
-        '''
+        """Textual representation of a PrivateTopic object.
+
+        Returns:
+            string
+
+        """
         return self.title
 
     def get_absolute_url(self):
+        """Get URL to view the private topic.
+
+        Returns:
+            string
+
+        """
         return reverse("pdp.messages.views.topic", kwargs={
             'topic_pk': self.pk,
             'topic_slug': slugify(self.title),
         })
 
     def get_post_count(self):
-        '''
-        Return the number of private posts in the private topic
-        '''
+        """Get the number of private posts in the private topic.
+
+        Returns:
+            QuerySet on integer
+
+        """
         return PrivatePost.objects.all()\
             .filter(privatetopic__pk=self.pk)\
             .count()
 
     def get_last_answer(self):
-        '''
-        Gets the last answer in the thread, if any
-        '''
+        """Gets the last answer in the thread, if any.
+
+        Returns:
+            PrivatePost object or None
+
+        """
 
         try:
             last_post = PrivatePost.objects.all()\
@@ -68,23 +86,30 @@ class PrivateTopic(models.Model):
         except IndexError:
             return None
 
+        # We do not want first post to be considered as an answer
         if last_post == self.first_post():
             return None
         else:
             return last_post
 
     def first_post(self):
-        '''
-        Return the first post of a topic, written by topic's author
-        '''
+        """Return the first post of a topic, written by topic's author.
+
+        Returns:
+            PrivatePost
+
+        """
         return PrivatePost.objects\
             .filter(privatetopic=self)\
             .order_by('pubdate')[0]
 
     def last_read_post(self):
-        '''
-        Return the last private post the user has read
-        '''
+        """Return the last private post the user has read.
+
+        Returns:
+            PrivatePost object
+
+        """
         try:
             post = PrivateTopicRead.objects\
                 .select_related()\
@@ -98,13 +123,17 @@ class PrivateTopic(models.Model):
             return self.first_post()
 
     def antispam(self, user=None):
-        '''
-        Check if the user is allowed to post in a topic according to the
-        SPAM_LIMIT_SECONDS value. If user shouldn't be able to post, then
-        antispam is activated and this method returns True. Otherwise time
-        elapsed between user's last post and now is enough, and the method will
-        return False.
-        '''
+        """Check if the user is allowed to post in a topic.
+
+        This method uses the SPAM_LIMIT_SECONDS value. If user shouldn't be
+        able to post, then antispam is activated and this method returns True.
+        Otherwise time elapsed between user's last post and now is enough, and
+        the method will return False.
+
+        Returns:
+            boolean
+
+        """
         if user is None:
             user = get_current_user()
 
@@ -128,25 +157,35 @@ class PrivateTopic(models.Model):
 
 class PrivatePost(models.Model):
 
-    '''
-    A private post written by an user.
-    '''
+    """A private post written by an user."""
+
     privatetopic = models.ForeignKey(
-        PrivateTopic, verbose_name='Message privé')
-    author = models.ForeignKey(User, verbose_name='Auteur',
+        PrivateTopic, verbose_name=u'Message privé')
+    author = models.ForeignKey(User, verbose_name=u'Auteur',
                                related_name='privateposts')
-    text = models.TextField('Texte')
+    text = models.TextField(u'Texte')
 
-    pubdate = models.DateTimeField('Date de publication', auto_now_add=True)
-    update = models.DateTimeField('Date d\'édition', null=True, blank=True)
+    pubdate = models.DateTimeField(u'Date de publication', auto_now_add=True)
+    update = models.DateTimeField(u'Date d\'édition', null=True, blank=True)
 
-    position_in_topic = models.IntegerField('Position dans le sujet')
+    position_in_topic = models.IntegerField(u'Position dans le sujet')
 
     def __unicode__(self):
-        '''Textual form of a post'''
+        """Textual representation of a PrivatePost object.
+
+        Returns:
+            string
+
+        """
         return u'<Post pour "{0}", #{1}>'.format(self.privatetopic, self.pk)
 
     def get_absolute_url(self):
+        """Get URL to view the private post.
+
+        Returns:
+            string
+
+        """
         page = int(ceil(float(self.position_in_topic) / POSTS_PER_PAGE))
 
         return '{0}?page={1}#p{2}'\
@@ -154,11 +193,14 @@ class PrivatePost(models.Model):
 
 
 class PrivateTopicRead(models.Model):
-    '''
-    Small model which keeps track of the user viewing private topics. It
-    remembers the topic he looked and what was the last private Post at this
+
+    """Small model which keeps track of the user viewing private topics.
+
+    It remembers the topic he looked and what was the last private Post at this
     time.
-    '''
+
+    """
+
     class Meta:
         verbose_name = 'Message privé lu'
         verbose_name_plural = 'Messages privés lus'
@@ -168,16 +210,23 @@ class PrivateTopicRead(models.Model):
     user = models.ForeignKey(User, related_name='privatetopics_read')
 
     def __unicode__(self):
-        return u'<Sujet "{0}" lu par {1}, #{2}>'.format(self.privatetopic,
-                                                        self.user,
-                                                        self.privatepost.pk)
+        """Textual representation of a PrivatePostRead object.
+
+        Returns:
+            string
+
+        """
+        return u'<Sujet "{0}" lu par {1}, #{2}>'.format(
+            self.privatetopic, self.user, self.privatepost.pk)
 
 
 def never_privateread(privatetopic, user=None):
-    '''
-    Check if a private topic has been read by an user since it last post was
-    added.
-    '''
+    """Check if a private topic has been read by an user.
+
+    Returns:
+        boolean
+
+    """
     if user is None:
         user = get_current_user()
 
@@ -188,9 +237,7 @@ def never_privateread(privatetopic, user=None):
 
 
 def mark_read(privatetopic):
-    '''
-    Mark a private topic as read for the user
-    '''
+    """Mark a private topic as read for the user."""
     PrivateTopicRead.objects.filter(
         privatetopic=privatetopic, user=get_current_user()).delete()
     t = PrivateTopicRead(
@@ -200,7 +247,10 @@ def mark_read(privatetopic):
 
 
 def get_last_privatetopics():
-    '''
-    Returns the 5 very last topics
-    '''
+    """Get the 5 very last topics.
+
+    Returns:
+        List (or QuerySet?) of PrivateTopic objects
+
+    """
     return PrivateTopic.objects.all().order_by('-pubdate')[:5]

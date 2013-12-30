@@ -1,6 +1,6 @@
 # coding: utf-8
 
-"""Tutorial app's database models and model-related functions.
+"""Models for tutorial app.
 
 The class hierarchy is as follows :
  - "large" tutorials: Tutorial < Parts < Chapters

@@ -1,5 +1,7 @@
 # coding: utf-8
 
+"""Tests for utils app."""
+
 import unittest
 
 from django.contrib.auth.models import User
@@ -14,30 +16,31 @@ from pdp.utils.paginator import paginator_range
 
 
 class TemplateTagsTests(unittest.TestCase):
-    '''Test for the custom template tags about users.'''
+
+    """Test for the custom template tags about users."""
+
     def setUp(self):
         self.user = G(User)
 
     def test_profile_none(self):
-        '''Test the output of profile templatetag if profile does not exist'''
+        """Test the output of profile templatetag if profile does not exist."""
         self.assertEqual(None, profile(self.user))
 
     def test_profile_existing(self):
-        '''Test the output of profile templatetag if profile does exist'''
+        """Test the output of profile templatetag if profile does exist."""
         p = G(Profile, user=self.user)
         self.assertEqual(p, profile(self.user))
 
     def test_interventions_none(self):
-        '''
-        Test both intervention_topics_count and interventions_topics
-        templatetags when no topic should match.
-        '''
+        """Test templatetags when no topic should match."""
         self.assertEqual(interventions_topics(self.user), {'unread': [],
                                                            'read': []})
 
 
 class PaginatorRangeTests(unittest.TestCase):
-    '''Tests for the paginator_range function.'''
+
+    """Tests for the paginator_range function."""
+
     def test_one(self):
         result = paginator_range(1, 1)
         self.assertEqual(result, [1])
