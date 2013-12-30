@@ -93,8 +93,8 @@ class Article(models.Model):
             string
 
         """
-        # TODO: use reverse
-        return '/articles/{0}/{1}'.format(self.pk, slugify(self.title))
+        return reverse('pdp.article.views.view', args=(
+            self.pk, self.slug))
 
     def get_edit_url(self):
         """Get URL to edit the article.
