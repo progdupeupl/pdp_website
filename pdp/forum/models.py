@@ -232,13 +232,22 @@ class Topic(models.Model):
             Post object or None
 
         """
-        try:
-            return TopicRead.objects\
-                .select_related()\
-                .filter(topic=self, user=get_current_user())\
-                .latest('post__pubdate').post
-        except TopicRead.DoesNotExist:
-            return self.first_post()
+        user = get_current_user()
+
+        if user is not None:
+            # Logged-in user, so he may have a TopicRead instance
+            try:
+                return TopicRead.objects\
+                    .select_related()\
+                    .filter(topic=self, user=user)\
+                    .latest('post__pubdate').post
+            except TopicRead.DoesNotExist:
+                return self.first_post()
+
+        # Anonymous user, we return the last post since the first one is
+        # available using the topic title link so it would have been redundant.
+        resp = self.get_last_answer()
+        return resp if resp is not None else self.first_post()
 
     def is_followed(self, user=None):
         """Check if the topic is currently followed by the user.
