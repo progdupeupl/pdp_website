@@ -9,7 +9,8 @@ TEST_APPS = (
     'pdp.member',
     'pdp.utils',
     'pdp.pages',
-    'pdp.messages')
+    'pdp.messages',
+    'pdp.gallery')
 
 ASSETS_DIR = path.join(path.dirname(__file__), 'assets/')
 
