@@ -72,8 +72,9 @@ class Article(models.Model):
     thumbnail = models.ImageField(upload_to=thumbnail_path,
                                   blank=True, null=True, default=None)
 
-    is_visible = models.BooleanField(u'Est visible publiquement')
-    is_pending = models.BooleanField(u'Est en attente')
+    is_visible = models.BooleanField(u'Est visible publiquement',
+                                     default=False)
+    is_pending = models.BooleanField(u'Est en attente', default=False)
     is_beta = models.BooleanField(u'Est visible par les membres',
                                   default=False)
 

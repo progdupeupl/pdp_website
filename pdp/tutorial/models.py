@@ -78,10 +78,11 @@ class Tutorial(models.Model):
 
     # We could distinguish large/small tutorials by looking at what chapters
     # are contained directly in a tutorial, but that'd be more complicated
-    # than a field
+    # than a field.
     is_mini = models.BooleanField(u'Est un mini-tutoriel')
 
-    is_visible = models.BooleanField(u'Est visible publiquement')
+    is_visible = models.BooleanField(u'Est visible publiquement',
+                                     default=False)
     is_pending = models.BooleanField(u'Est en attente', default=False)
     is_beta = models.BooleanField(u'Est en bêta', default=False)
 

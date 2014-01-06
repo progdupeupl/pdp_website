@@ -160,9 +160,9 @@ class Topic(models.Model):
                                      verbose_name=u'Dernier message')
     pubdate = models.DateTimeField(u'Date de création', auto_now_add=True)
 
-    is_solved = models.BooleanField(u'Est résolu')
-    is_locked = models.BooleanField(u'Est verrouillé')
-    is_sticky = models.BooleanField(u'Est en post-it')
+    is_solved = models.BooleanField(u'Est résolu', default=False)
+    is_locked = models.BooleanField(u'Est verrouillé', default=False)
+    is_sticky = models.BooleanField(u'Est en post-it', default=False)
 
     def __unicode__(self):
         """Textual representation of a topic.
