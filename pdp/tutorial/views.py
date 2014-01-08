@@ -94,7 +94,7 @@ def download(request):
     if not tutorial.is_visible and not request.user in tutorial.authors.all():
         raise Http404
 
-    dct = export_tutorial(tutorial)
+    dct = export_tutorial(tutorial, validate=False)
     data = json.dumps(dct, indent=4, ensure_ascii=False)
 
     response = HttpResponse(data, mimetype='application/json')

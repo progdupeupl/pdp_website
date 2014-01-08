@@ -80,7 +80,7 @@ def download(request):
     if not article.is_visible and not request.user == article.author:
         raise PermissionDenied
 
-    dct = export_article(article)
+    dct = export_article(article, validate=False)
     data = json.dumps(dct, indent=4, ensure_ascii=False)
 
     response = HttpResponse(data, mimetype='application/json')
