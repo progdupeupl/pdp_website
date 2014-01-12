@@ -5,6 +5,9 @@
 from django import forms
 from django.conf import settings
 
+from crispy_forms.helper import FormHelper
+from crispy_forms_foundation.layout import Layout, Field, Submit, HTML
+
 
 class UserGalleryForm(forms.Form):
     user = forms.CharField(label=u'Membre', required=False)
@@ -13,17 +16,80 @@ class UserGalleryForm(forms.Form):
 
 
 class GalleryForm(forms.Form):
-    title = forms.CharField(max_length=80)
-    subtitle = forms.CharField(max_length=200, required=False)
+    title = forms.CharField(
+        label=u'Titre',
+        max_length=80)
+
+    subtitle = forms.CharField(
+        label=u'Sous-titre',
+        max_length=200,
+        required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+
+        self.helper.layout = Layout(
+            Field('title'),
+            Field('subtitle'),
+            Submit('submit', u'Créer la galerie'),
+            HTML(u'<a href="{% url "pdp.gallery.views.gallery_list" %}" '
+                 u'class="button secondary">Retour</a>')
+        )
+        super(GalleryForm, self).__init__(*args, **kwargs)
 
 
 class ImageForm(forms.Form):
-    gallery = forms.CharField(label=u'Gallery', required=False)
-
-    physical = forms.ImageField(
-        label='Select an image',
-        help_text=u'max. {} megabytes'.format(settings.IMAGE_MAX_SIZE),
+    gallery = forms.CharField(
+        label=u'Gallery',
         required=False)
 
-    title = forms.CharField(label=u'Titre')
-    legend = forms.CharField(label=u'Légende', required=False)
+    physical = forms.ImageField(
+        label=u'Image (max. {} ko)'.format(settings.IMAGE_MAX_SIZE / 1024))
+
+    title = forms.CharField(
+        label=u'Titre')
+
+    legend = forms.CharField(
+        label=u'Légende',
+        required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+
+        self.helper.layout = Layout(
+            Field('title'),
+            Field('legend'),
+            Field('physical'),
+            Submit('submit', u'Ajouter l’image'),
+            HTML(u'<a href="{{ gallery.get_absolute_url }}" '
+                 u'class="button secondary">Annuler</a>')
+        )
+        super(ImageForm, self).__init__(*args, **kwargs)
+
+
+class EditImageForm(forms.Form):
+    gallery = forms.CharField(
+        label=u'Gallery',
+        required=False)
+
+    title = forms.CharField(
+        label=u'Titre')
+
+    legend = forms.CharField(
+        label=u'Légende',
+        required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+
+        self.helper.layout = Layout(
+            Field('title'),
+            Field('legend'),
+            Submit('submit', u'Modifier'),
+            HTML(u'<a href="{{ gallery.get_absolute_url }}" '
+                 u'class="button secondary">Retour</a>')
+        )
+        super(EditImageForm, self).__init__(*args, **kwargs)
