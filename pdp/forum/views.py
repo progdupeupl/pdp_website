@@ -104,8 +104,9 @@ def topic(request, topic_pk, topic_slug):
         if never_read(g_topic):
             mark_read(g_topic)
 
-    posts = Post.objects.all().filter(topic__pk=g_topic.pk)\
-                              .order_by('position_in_topic')
+    posts = Post.objects.all()\
+        .filter(topic__pk=g_topic.pk)\
+        .order_by('position_in_topic')
 
     last_post_pk = g_topic.last_message.pk
 
@@ -115,11 +116,13 @@ def topic(request, topic_pk, topic_slug):
     # The category list is needed to move threads
     categories = Category.objects.all()
 
+    # We try to get page number
     try:
         page_nbr = int(request.GET['page'])
     except KeyError:
         page_nbr = 1
 
+    # We try to page content
     try:
         posts = paginator.page(page_nbr)
     except PageNotAnInteger:
@@ -128,7 +131,7 @@ def topic(request, topic_pk, topic_slug):
         raise Http404
 
     res = []
-    if page_nbr != 1:
+    if page_nbr > 1:
         # Show the last post of the previous page
         last_page = paginator.page(page_nbr - 1).object_list
         last_post = (last_page)[len(last_page) - 1]
@@ -191,10 +194,11 @@ def new(request):
             post.position_in_topic = 1
             post.save()
 
+            # Updating the topic
             n_topic.last_message = post
             n_topic.save()
 
-            # Follow the topic
+            # Make the current user to follow his created topic
             follow(n_topic)
 
             return redirect(n_topic.get_absolute_url())
@@ -373,6 +377,7 @@ def edit_post(request):
 
     post = get_object_or_404(Post, pk=post_pk)
 
+    # If we are editing the first post, we also want to edit the topic
     g_topic = None
     if post.position_in_topic == 1:
         g_topic = get_object_or_404(Topic, pk=post.topic.pk)
