@@ -303,7 +303,8 @@ BOT_USER_PK = 1
 BOT_TUTORIAL_FORUM_PK = 1
 BOT_ARTICLE_FORUM_PK = 2
 
-# Django fileserve settings (set to True for local dev version only)
+# Should Django serve the static and media files ? This should not be set to
+# True in a production environment
 SERVE = False
 
 # Max size image upload (in bytes)

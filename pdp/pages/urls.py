@@ -2,9 +2,10 @@
 
 from django.conf.urls import patterns, url
 
-import views
+from pdp.pages import views
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
 
     # Markdown helper
     url(r'^markdown$', views.help_markdown),
