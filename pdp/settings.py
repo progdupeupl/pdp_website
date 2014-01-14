@@ -140,8 +140,13 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+
+    # Cache
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
+
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
@@ -155,10 +160,8 @@ ROOT_URLCONF = 'pdp.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'pdp.wsgi.application'
 
+# Absolute path to template directory
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
     os.path.join(SITE_ROOT, 'templates')
 )
 
@@ -243,6 +246,14 @@ LOGGING = {
     }
 }
 
+# Cache(s) used in order to store rendered pages or parts for some time. This
+# is a fake cache that does not cache anything, for developement purposes only.
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+
 REST_FRAMEWORK = {
 
     'DEFAULT_RENDERER_CLASSES': (
@@ -255,7 +266,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
 
     'DEFAULT_MODEL_SERIALIZER_CLASS':
-        'rest_framework.serializers.HyperlinkedModelSerializer',
+    'rest_framework.serializers.HyperlinkedModelSerializer',
 
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
@@ -265,7 +276,7 @@ REST_FRAMEWORK = {
 }
 
 SWAGGER_SETTINGS = {
-    "exclude_namespaces": [], # List URL namespaces to ignore
+    "exclude_namespaces": [],  # List URL namespaces to ignore
     "api_version": '0.1',  # Specify your API's version
     "api_path": "/",  # Specify the path to your API not a root level
     "enabled_methods": [  # Specify which methods to enable in Swagger UI
@@ -275,7 +286,7 @@ SWAGGER_SETTINGS = {
         'patch',
         'delete'
     ],
-    "api_key": '', # An API key
+    "api_key": '',  # An API key
     "is_authenticated": False,  # Set to True to enforce user authentication,
     "is_superuser": False,  # Set to True to enforce admin only access
 }
@@ -291,7 +302,8 @@ AUTH_PROFILE_MODULE = 'member.Profile'
 LOGIN_URL = '/membres/connexion'
 
 ABSOLUTE_URL_OVERRIDES = {
-    'auth.user': lambda u: '/membres/voir/{0}'.format(u.username.encode('utf-8'))
+    'auth.user': lambda u: '/membres/voir/{0}'.format(
+        u.username.encode('utf-8'))
 }
 
 CRISPY_FAIL_SILENTLY = not DEBUG
@@ -308,10 +320,10 @@ BOT_ARTICLE_FORUM_PK = 2
 SERVE = False
 
 # Max size image upload (in bytes)
-IMAGE_MAX_SIZE = 1024*512
+IMAGE_MAX_SIZE = 1024 * 512
 
 # Load the production settings, overwrite the existing ones if needed
 try:
-    from settings_prod import *
+    from pdp.settings_prod import *
 except ImportError:
     pass

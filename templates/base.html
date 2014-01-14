@@ -1,4 +1,5 @@
-﻿{% load staticfiles %}
+﻿{% load cache %}
+{% load staticfiles %}
 {% load compressed %}
 {% load profile %}
 {% load interventions %}
@@ -39,6 +40,7 @@
 </head>
 <body>
 
+    {# Start of top bar #}
     <nav class="top-bar">
         <ul class="title-area">
             <li class="name">
@@ -89,6 +91,8 @@
                     <a href="{% url "haystack_search" %}">Recherche</a>
                 </li>
                 {% if user.is_authenticated %}
+                    {% cache 120 topbar request.user.username %}
+
                     {% with topics=user|interventions_privatetopics %}
                         {% with unread_topics=topics.unread %}
                             <li class="{% block menu_messages %}{% endblock %} has-dropdown">
@@ -198,6 +202,7 @@
                         <li><a href="{% url "pdp.member.views.logout_view" %}"><i class="icon-signout"></i> Se déconnecter</a></li>
                     </ul>
                 </li>
+                {% endcache %}
                 {% else %}
                 <li>
                     <a href="{% url "pdp.member.views.register_view" %}">S’inscrire</a>
@@ -209,6 +214,7 @@
             </ul>
         </section>
     </nav>
+    {# End of top bar #}
 
     <header>
         <div class="row">
