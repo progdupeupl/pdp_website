@@ -122,7 +122,7 @@ class="active"
 </div>
 <div class="row hide-for-small">
     <div class="small-4 columns">
-        <form id="search-article" name="search-article" type="GET" action="{% url "haystack_search" %}">
+        <form id="search-article" name="search-article" method="GET" action="{% url "haystack_search" %}">
             <div class="row collapse">
                 <div class="small-7 columns">
                     <input type="hidden" name="models" value="article.article" />
@@ -135,7 +135,7 @@ class="active"
         </form>
     </div>
     <div class="large-4 columns">
-        <form id="search-tuto" name="search-tuto" type="GET" action="{% url "haystack_search" %}">
+        <form id="search-tuto" name="search-tuto" method="GET" action="{% url "haystack_search" %}">
             <div class="row collapse">
                 <div class="small-7 columns">
                     <input type="hidden" name="models" value="tutorial.extract" />
@@ -148,7 +148,7 @@ class="active"
         </form>
     </div>
     <div class="large-4 columns">
-        <form id="search-forum" name="search-forum" type="GET" action="{% url "haystack_search" %}">
+        <form id="search-forum" name="search-forum" method="GET" action="{% url "haystack_search" %}">
             <div class="row collapse">
                 <div class="small-7 columns">
                     <input type="hidden" name="models" value="forum.topic" />
