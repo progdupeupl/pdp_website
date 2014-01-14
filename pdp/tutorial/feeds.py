@@ -3,7 +3,7 @@ from django.core.cache import cache
 from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Atom1Feed
 
-from .models import Tutorial
+from pdp.tutorial.models import Tutorial
 
 
 class LastTutorialsFeedRSS(Feed):
@@ -15,7 +15,7 @@ class LastTutorialsFeedRSS(Feed):
         tutorials = cache.get('latest_tutorials')
 
         if tutorials is None:
-            tutorial = Tutorial.objects\
+            tutorials = Tutorial.objects\
                 .filter(is_visible=True)\
                 .order_by('-pubdate')[:5]
 
