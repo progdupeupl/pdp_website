@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load cache %}
 
 {% block menu_home %}
 class="active"
@@ -41,6 +42,7 @@ class="active"
 
 <div class="row">
     {# Articles #}
+    {% cache 120 home-articles %}
     <div class="large-4 columns">
         <div class="home-app-title">
             <h2 >
@@ -71,7 +73,10 @@ class="active"
             <p>Pas d'articles pour l'instant.</p>
         {% endif %}
     </div>
+    {% endcache %}
 
+    {# Tutorials #}
+    {% cache 120 home-tutorials %}
     <div class="large-4 columns">
         <div class="home-app-title">
             <h2>
@@ -102,6 +107,10 @@ class="active"
             <p>Aucun tutoriel actuellement.</p>
         {% endif %}
     </div>
+    {% endcache %}
+
+    {# Forums #}
+    {% cache 120 home-forums user.username %}
     <div class="large-4 columns">
         <div class="home-app-title">
             <h2>
@@ -119,7 +128,10 @@ class="active"
             <p>Aucun sujet récent.</p>
         {% endif %}
     </div>
+    {% endif %}
 </div>
+
+{# Search fields for desktop version #}
 <div class="row hide-for-small">
     <div class="small-4 columns">
         <form id="search-article" name="search-article" method="GET" action="{% url "haystack_search" %}">
@@ -162,6 +174,7 @@ class="active"
     </div>
 </div>
 
+{# Access buttons for desktop version #}
 <div class="row hide-for-small">
     <div class="large-4 columns">
         <div class="button-group">
