@@ -1,7 +1,9 @@
+from django.core.cache import cache
+
 from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Atom1Feed
 
-from .models import Article
+from pdp.article.models import Article
 
 
 class LastArticlesFeedRSS(Feed):
@@ -10,9 +12,16 @@ class LastArticlesFeedRSS(Feed):
     description = "Les derniers articles parus sur Progdupeupl."
 
     def items(self):
-        return Article.objects\
-            .filter(is_visible=True)\
-            .order_by('-pubdate')[:5]
+        articles = cache.get('latest_articles')
+
+        if articles is None:
+            articles = Article.objects\
+                .filter(is_visible=True)\
+                .order_by('-pubdate')[:5]
+
+            cache.set('latest_articles', articles)
+
+        return articles
 
     def item_title(self, item):
         return item.title
