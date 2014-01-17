@@ -22,5 +22,6 @@ pdp/whoosh/
 *.pyproj
 *.sln
 *.suo
-
 *.komodoproject
+
+.coverage
