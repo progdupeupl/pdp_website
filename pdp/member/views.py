@@ -5,7 +5,7 @@
 from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404
 
-from django.contrib.auth.models import User, SiteProfileNotAvailable
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -63,11 +63,7 @@ def details(request, user_name):
 
     """
     usr = get_object_or_404(User, username=user_name)
-
-    try:
-        profile = usr.get_profile()
-    except SiteProfileNotAvailable:
-        raise Http404
+    profile = get_object_or_404(Profile, user=usr)
 
     return render_template('member/profile.html', {
         'usr': usr, 'profile': profile
