@@ -13,11 +13,12 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from pdp.utils import render_template, slugify
 from pdp.utils.paginator import paginator_range
 
-from models import Category, Forum, Topic, Post
-from models import POSTS_PER_PAGE, TOPICS_PER_PAGE, FOLLOWED_TOPICS_PER_PAGE
-from models import never_read, mark_read
-from models import follow
-from forms import TopicForm, PostForm
+from pdp.forum.models import Category, Forum, Topic, Post
+from pdp.forum.models import POSTS_PER_PAGE, TOPICS_PER_PAGE, \
+    FOLLOWED_TOPICS_PER_PAGE
+from pdp.forum.models import never_read, mark_read
+from pdp.forum.models import follow
+from pdp.forum.forms import TopicForm, PostForm
 
 
 def index(request):
@@ -100,6 +101,7 @@ def topic(request, topic_pk, topic_slug):
     if not topic_slug == slugify(g_topic.title):
         return redirect(g_topic.get_absolute_url())
 
+    # We mark the topic as read
     if request.user.is_authenticated():
         if never_read(g_topic):
             mark_read(g_topic)

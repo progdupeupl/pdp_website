@@ -9,7 +9,10 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 
+from django.core.cache import cache
+
 from pdp.utils import get_current_user
+from pdp.utils.cache import template_cache_key
 
 # TODO: Put these constants in settings.py file
 POSTS_PER_PAGE = 21
@@ -20,7 +23,7 @@ FOLLOWED_TOPICS_PER_PAGE = 21
 
 class Category(models.Model):
 
-    """A category, containing forums"""
+    """A category, containing forums."""
 
     class Meta:
         verbose_name = u'Catégorie'
@@ -31,7 +34,7 @@ class Category(models.Model):
     slug = models.SlugField(max_length=80)
 
     def __unicode__(self):
-        """Textual representation of a category
+        """Textual representation of a category.
 
         Returns:
             string
@@ -61,7 +64,9 @@ class Category(models.Model):
 
 
 class Forum(models.Model):
-    """A forum, containing topics"""
+
+    """A forum, containing topics."""
+
     class Meta:
         verbose_name = u'Forum'
         verbose_name_plural = u'Forums'
@@ -115,7 +120,7 @@ class Forum(models.Model):
         return Post.objects.all().filter(topic__forum=self).count()
 
     def get_last_message(self):
-        """Gets the last message on the forum, if any.
+        """Get the last message on the forum, if any.
 
         Returns:
             Post object or None
@@ -129,7 +134,7 @@ class Forum(models.Model):
             return None
 
     def is_read(self):
-        """Was this forum read by current user?
+        """Check if this forum was read by current user.
 
         Returns:
             boolean
@@ -404,7 +409,6 @@ def never_read(topic, user=None):
         boolean
 
     """
-
     if user is None:
         user = get_current_user()
 
@@ -437,6 +441,10 @@ def mark_read(topic, user=None):
     # TODO: instead of deleting and creating a new instance, maybe it will be
     # more database-friendly to just update it in order to not make the index
     # increase.
+
+    # If the topic is followed, we want to update some cached values
+    if topic.is_followed(user):
+        cache.delete(template_cache_key('topbar-topics', user.username))
 
 
 def follow(topic, user=None):
