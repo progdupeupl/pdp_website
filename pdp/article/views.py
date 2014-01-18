@@ -14,9 +14,11 @@ from django.contrib.auth.models import User
 from pdp.settings import BOT_ENABLED
 
 from pdp.utils import render_template, slugify, bot
+from pdp.utils.cache import template_cache_delete
 from pdp.utils.articles import export_article
 
-from pdp.article.models import Article, get_prev_article, get_next_article
+from pdp.article.models import Article, get_prev_article, get_next_article, \
+    get_last_articles
 from pdp.article.forms import NewArticleForm, EditArticleForm
 
 
@@ -171,6 +173,11 @@ def edit(request):
                 article.tags.add(tag.strip())
 
             article.save()
+
+            # If the article was on the home page, update it
+            if article in get_last_articles():
+                template_cache_delete('home-articles')
+
             return redirect(article.get_absolute_url())
     else:
         # initial value for tags input
@@ -228,8 +235,12 @@ def modify(request):
             article.pubdate = datetime.now()
             article.save()
 
+            # We create a topic on forum for feedback
             if BOT_ENABLED:
                 bot.create_article_topic(article)
+
+            # We update home page article cache
+            template_cache_delete('home-articles')
 
             return redirect(article.get_absolute_url())
 

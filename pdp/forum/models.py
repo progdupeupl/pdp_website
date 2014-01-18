@@ -9,10 +9,8 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 
-from django.core.cache import cache
-
 from pdp.utils import get_current_user
-from pdp.utils.cache import template_cache_key
+from pdp.utils.cache import template_cache_delete
 
 # TODO: Put these constants in settings.py file
 POSTS_PER_PAGE = 21
@@ -444,7 +442,7 @@ def mark_read(topic, user=None):
 
     # If the topic is followed, we want to update some cached values
     if topic.is_followed(user):
-        cache.delete(template_cache_key('topbar-topics', user.username))
+        template_cache_delete('topbar-topics', user.username)
 
 
 def follow(topic, user=None):

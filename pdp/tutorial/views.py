@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from pdp.utils import render_template, slugify, bot
+from pdp.utils.cache import template_cache_delete
 from pdp.utils.tutorials import move, export_tutorial
 from pdp.settings import BOT_ENABLED
 
@@ -178,6 +179,10 @@ def edit_tutorial(request):
                 tutorial.image = request.FILES['image']
             tutorial.save()
 
+            # If the tutorial was on the home page, clean cache
+            if tutorial in get_last_tutorials():
+                template_cache_delete('home-tutorials')
+
             return redirect(tutorial.get_absolute_url())
     else:
         form = EditTutorialForm({
@@ -219,8 +224,12 @@ def modify_tutorial(request):
             tutorial.pubdate = datetime.now()
             tutorial.save()
 
+            # We create a topic on forum for feedback
             if BOT_ENABLED:
                 bot.create_tutorial_topic(tutorial)
+
+            # We update home page tutorial cache
+            template_cache_delete('home-tutorials')
 
             return redirect(tutorial.get_absolute_url())
 
