@@ -3,16 +3,15 @@
 """Tests for gallery app."""
 
 from django.test import TestCase
-
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
 
 from django_dynamic_fixture import G
+from pdp.utils.tests_helper import AuthenticatedTestCase
 
-from pdp.member.models import Profile
+from pdp.gallery.models import Gallery, UserGallery, Image
 
 
-class GalleryIntegrationTests(TestCase):
+class IntegrationTests(TestCase):
 
     """Integration tests with no specific valid instances."""
 
@@ -27,21 +26,9 @@ class GalleryIntegrationTests(TestCase):
         self.assertEquals(302, resp.status_code)
 
 
-class AuthenticatedGalleryIntegrationTests(TestCase):
+class AuthenticatedntegrationTests(AuthenticatedTestCase):
 
     """Integration tests with logged-in user."""
-
-    def setUp(self):
-        # Create user
-        self.user = G(User, username='test')
-        self.user.set_password('test')
-        self.user.save()
-
-        # Create profile
-        self.profile = G(Profile, user=self.user)
-
-        # Authenticate user
-        self.client.login(username='test', password='test')
 
     def test_url_index(self):
         """Test to view gallery index as logged-in user."""
@@ -51,4 +38,35 @@ class AuthenticatedGalleryIntegrationTests(TestCase):
     def test_url_new(self):
         """Test to create new gallery index as logged-in user."""
         resp = self.client.get(reverse('pdp.gallery.views.new_gallery'))
+        self.assertEquals(200, resp.status_code)
+
+
+class AuthenticatedGalleryTestCase(AuthenticatedTestCase):
+    def setUp(self):
+        AuthenticatedTestCase.setUp(self)
+
+        self.gallery = G(Gallery, title='test', slug='test')
+        self.usergallery = G(UserGallery, user=self.user, gallery=self.gallery)
+
+
+class AuthenticatedGalleryIntegrationTests(AuthenticatedGalleryTestCase):
+
+    """Integration tests with logged-in user and existing gallery."""
+
+    def test_url_new_image(self):
+        resp = self.client.get(reverse('pdp.gallery.views.new_image',
+                                       args=(str(self.gallery.pk))))
+        self.assertEquals(200, resp.status_code)
+
+
+class AuthenticatedImageIntegrationTests(AuthenticatedGalleryTestCase):
+    def setUp(self):
+        AuthenticatedGalleryTestCase.setUp(self)
+
+        self.image = G(Image, gallery=self.gallery)
+
+    def test_url_edit_image(self):
+        resp = self.client.get(reverse('pdp.gallery.views.edit_image',
+                                       args=(str(self.gallery.pk),
+                                             str(self.image.pk))))
         self.assertEquals(200, resp.status_code)
