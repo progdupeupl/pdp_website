@@ -130,22 +130,6 @@ class TutorialSearchIntegrationTests(TestCase):
         self.assertEquals(resp.status_code, 200)
 
 
-class DeprecatedTutorialIntegrationTest(TestCase):
-    """Test the correct redirect on deprecated URLs."""
-
-    def test_url_deprecated_tutorial(self):
-        tutorial = G(Tutorial, pk=42, title='Test tutorial', is_visible=True)
-        resp = self.client.get('/tutoriels/voir/42-test-tutorial/')
-        self.assertRedirects(resp, tutorial.get_absolute_url(), 301)
-
-    def test_url_deprecated_part(self):
-        tutorial = G(Tutorial, pk=42, title='Test tutorial', is_visible=True)
-        part = G(Part, pk=21, title='Test part', tutorial=tutorial,
-                 position_in_tutorial=1)
-        resp = self.client.get('/tutoriels/voir/42-test-tutorial/1-test-part/')
-        self.assertRedirects(resp, part.get_absolute_url(), 301)
-
-
 class AuthenticatedTutorialIntegrationTests(TestCase):
     def setUp(self):
         # Create user

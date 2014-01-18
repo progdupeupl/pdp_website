@@ -30,20 +30,6 @@ urlpatterns = patterns(
 
     url(r'^telecharger', views.download),
 
-    # Deprecated URLs
-    url(r'^voir/(?P<tutorial_pk>\d+)-(?P<tutorial_slug>.+)/'
-        r'(?P<part_pos>\d+)-(?P<part_slug>.+)/'
-        r'(?P<chapter_pos>\d+)-(?P<chapter_slug>.+)$',
-        views.deprecated_view_chapter_redirect),
-
-    url(r'^voir/(?P<tutorial_pk>\d+)-(?P<tutorial_slug>.+)/'
-        r'(?P<part_pos>\d+)-(?P<part_slug>.+)/$',
-        views.deprecated_view_part_redirect),
-
-    url(
-        r'^voir/(?P<tutorial_pk>\d+)-(?P<tutorial_slug>.+)/$',
-        views.deprecated_view_tutorial_redirect),
-
     # Editing
 
     url(r'^editer/tutoriel$', views.edit_tutorial),

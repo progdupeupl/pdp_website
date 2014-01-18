@@ -816,25 +816,3 @@ def find_tutorial(request, name):
         'tutos': tutos, 'usr': u,
     })
 
-
-# Handling deprecated links
-
-def deprecated_view_tutorial_redirect(request, tutorial_pk, tutorial_slug):
-    tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
-    return redirect(tutorial.get_absolute_url(), permanent=True)
-
-
-def deprecated_view_part_redirect(request, tutorial_pk, tutorial_slug,
-                                  part_pos, part_slug):
-    part = Part.objects.get(
-        position_in_tutorial=part_pos, tutorial__pk=tutorial_pk)
-    return redirect(part.get_absolute_url(), permanent=True)
-
-
-def deprecated_view_chapter_redirect(
-    request, tutorial_pk, tutorial_slug, part_pos, part_slug,
-        chapter_pos, chapter_slug):
-    chapter = Chapter.objects.get(position_in_part=chapter_pos,
-                                  part__position_in_tutorial=part_pos,
-                                  part__tutorial__pk=tutorial_pk)
-    return redirect(chapter.get_absolute_url(), permanent=True)
