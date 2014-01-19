@@ -156,9 +156,14 @@ def logout_view(request):
         HttpResponse
 
     """
-    logout(request)
-    request.session.clear()
-    return redirect(reverse('pdp.pages.views.home'))
+    # If we got a secure POST, we disconnect
+    if request.method == 'POST':
+        logout(request)
+        request.session.clear()
+        return redirect(reverse('pdp.pages.views.home'))
+
+    # Elsewise we ask the user to submit a form with correct csrf token
+    return render_template('member/logout.html')
 
 
 @sensitive_post_parameters('password', 'password_confirm')
