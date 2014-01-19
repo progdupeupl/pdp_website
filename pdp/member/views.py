@@ -14,6 +14,8 @@ from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 
+from django.views.decorators.debug import sensitive_post_parameters
+
 from pdp.utils.tokens import generate_token
 from pdp.utils import render_template
 from pdp.article.models import Article
@@ -109,6 +111,7 @@ def edit_profile(request):
         })
 
 
+@sensitive_post_parameters('password')
 def login_view(request):
     """Allow users to log into their accounts.
 
@@ -158,6 +161,7 @@ def logout_view(request):
     return redirect(reverse('pdp.pages.views.home'))
 
 
+@sensitive_post_parameters('password', 'password_confirm')
 def register_view(request):
     """Allow new users to register, creating them an account.
 
