@@ -18,6 +18,8 @@ from pdp.utils.tutorials import move, export_tutorial
 from pdp.settings import BOT_ENABLED
 
 from .models import Tutorial, Part, Chapter, Extract
+from .models import get_last_tutorials
+
 from .forms import TutorialForm, EditTutorialForm, AddPartForm, EditPartForm, \
     AddChapterForm, EditChapterForm, EmbdedChapterForm, ExtractForm, \
     EditExtractForm
