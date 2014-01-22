@@ -45,7 +45,10 @@
             {% endif %}
 
             {% if profile.site %}
-                Site internet : <a href="{{ profile.site }}">{{ profile.site }}</a><br />
+                Site internet :
+                <a href="{{ profile.site }}">
+                    {{ profile.site }}
+                </a><br />
             {% endif %}
 
             Inscrit {{ usr.date_joined|humane_date }},
@@ -65,7 +68,17 @@
                 </tr>
                 <tr>
                     <td>En ligne</td>
-                    <td><a href="{% url "pdp.article.views.find_article" usr.username %}">{{ profile.get_visible_articles.count }}</a></td>
+                    <td>
+                        {% with count=profile.get_visible_articles.count %}
+                            {% if count > 0 %}
+                                <a href="{% url "pdp.article.views.find_article" usr.username %}">
+                            {% endif %}
+                            {{ count }}
+                            {% if count > 0 %}
+                                </a>
+                            {% endif %}
+                        {% endwith %}
+                    </td>
                 </tr>
             </tbody>
             <tfoot>
@@ -86,7 +99,17 @@
                 </tr>
                 <tr>
                     <td>En ligne</td>
-                    <td><a href="{% url "pdp.tutorial.views.find_tutorial" usr.username %}">{{ profile.get_visible_tutorials.count }}</a></td>
+                    <td>
+                        {% with count=profile.get_visible_tutorials.count %}
+                            {% if count > 0 %}
+                                <a href="{% url "pdp.tutorial.views.find_tutorial" usr.username %}">
+                            {% endif %}
+                            {{ count }}
+                            {% if count > 0 %}
+                                </a>
+                            {% endif %}
+                        {% endwith %}
+                    </td>
                 </tr>
             </tbody>
             <tfoot>
@@ -103,11 +126,31 @@
             <tbody>
                 <tr>
                     <td>Sujets créés</td>
-                    <td><a href="{% url "pdp.forum.views.find_topic" usr.username %}">{{ profile.get_topic_count }}</a></td>
+                    <td>
+                        {% with count=profile.get_topic_count %}
+                            {% if count > 0 %}
+                                <a href="{% url "pdp.forum.views.find_topic" usr.username %}">
+                            {% endif %}
+                            {{ count }}
+                            {% if count > 0 %}
+                                </a>
+                            {% endif %}
+                        {% endwith %}
+                    </td>
                 </tr>
                 <tr>
                     <td>Messages postés</td>
-                    <td><a href="{% url "pdp.forum.views.find_post" usr.username %}">{{ profile.get_post_count }}</a></td>
+                    <td>
+                        {% with count=profile.get_post_count %}
+                            {% if count > 0 %}
+                                <a href="{% url "pdp.forum.views.find_post" usr.username %}">
+                            {% endif %}
+                            {{ count }}
+                            {% if count > 0 %}
+                                </a>
+                            {% endif %}
+                        {% endwith %}
+                    </td>
                 </tr>
             </tbody>
         </table>
