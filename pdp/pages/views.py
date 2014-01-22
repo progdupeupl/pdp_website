@@ -1,5 +1,7 @@
 # coding: utf-8
 
+from django.http import HttpResponse
+
 from pdp.utils import render_template
 
 from pdp.article.models import get_last_articles
@@ -49,3 +51,14 @@ def about(request):
 
     """
     return render_template('pages/about.html')
+
+def robots(request):
+    """Display robots.txt file.
+
+    Returns:
+        HttpResponse
+
+    """
+    with open('robots.txt') as f:
+        content = f.read()
+    return HttpResponse(content, mimetype='text/plain')

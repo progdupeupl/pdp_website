@@ -57,6 +57,8 @@ urlpatterns = patterns(
         form_class=ModelSearchForm),
         name='haystack_search'),
 
+    url(r'^robots\.txt$', pdp.pages.views.robots),
+
 ) + static(pdp.settings.MEDIA_URL, document_root=pdp.settings.MEDIA_ROOT)
 
 # Make Djago serve the files if needed (local versions)
