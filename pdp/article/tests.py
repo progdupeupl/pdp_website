@@ -77,6 +77,24 @@ class ArticleIntegrationTests(TestCase):
         self.assertEqual(200,
                          client.get(article.get_absolute_url()).status_code)
 
+    def test_url_download_invisible(self):
+        """Testing downloading an invisible article."""
+        article = G(Article, is_visible=False, pk=42)
+        url = '{}?article={}'.format(
+            reverse('pdp.article.views.download'),
+            article.pk)
+        resp = self.client.get(url)
+        self.assertEqual(403, resp.status_code)
+
+    def test_url_download_visible(self):
+        """Testing downloading a visible article."""
+        article = G(Article, is_visible=True, pk=42)
+        url = '{}?article={}'.format(
+            reverse('pdp.article.views.download'),
+            article.pk)
+        resp = self.client.get(url)
+        self.assertEqual(200, resp.status_code)
+
 
 class ArticleSearchIntegrationTests(TestCase):
     def setUp(self):

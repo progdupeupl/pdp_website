@@ -1,0 +1,2 @@
+[run]
+omit = *migrations*, *search_indexes*, *venv*

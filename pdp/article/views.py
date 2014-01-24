@@ -85,7 +85,7 @@ def download(request):
     dct = export_article(article, validate=False)
     data = json.dumps(dct, indent=4, ensure_ascii=False)
 
-    response = HttpResponse(data, mimetype='application/json')
+    response = HttpResponse(data, content_type='application/json')
     response['Content-Disposition'] = 'attachment; filename={0}.json'.format(
         slugify(article.title)
     )

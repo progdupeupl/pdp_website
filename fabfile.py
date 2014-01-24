@@ -40,6 +40,11 @@ def test():
     """Test all the project's own applications."""
     local('python manage.py test {0}'.format(' '.join(TEST_APPS)))
 
+def coverage():
+    """Launch coverage report."""
+    local('coverage run --source="." manage.py test {0}'.format(
+        ' '.join(TEST_APPS)))
+
 
 def initsearch():
     """Initialise the search engine and its cache."""
