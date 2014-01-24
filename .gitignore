@@ -12,6 +12,7 @@ assets/css/*
 *.swp
 *.old
 *.bak
+*.directory
 
 fabfile_local.py
 media/
@@ -25,3 +26,4 @@ pdp/whoosh/
 *.komodoproject
 
 .coverage
+htmlcov/
