@@ -452,9 +452,9 @@ def mark_read(topic, user=None):
 
     # If the topic is followed, we want to update some cached values
     if topic.is_followed(user):
-        template_cache_delete('topbar-topics', user.username)
+        template_cache_delete('topbar-topics', [user.username])
         if topic in get_last_topics():
-            template_cache_delete('home-forums', user.username)
+            template_cache_delete('home-forums', [user.username])
 
 
 def follow(topic, user=None):

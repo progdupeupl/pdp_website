@@ -5,31 +5,15 @@
 from hashlib import md5
 
 from django.core.cache import cache
+from django.core.cache.utils import make_template_fragment_key
 
 
-def template_cache_key(identifier, username=''):
-    """Get the template cached content.
-
-    Args:
-        identifier: name of the template cache block
-        username: user's name
-
-    Returns:
-        A key for accessing template's cached content.
-
-    """
-    key = 'template.cache.{}.{}'.format(
-        identifier,
-        md5(username.encode('utf-8')).hexdigest())
-    return key
-
-
-def template_cache_delete(identifier, username=''):
+def template_cache_delete(fragment_name, vary_on=None):
     """Delete the template cached content.
 
     Args:
-        identifier: name of the template cache block
-        username: user's name
+        fragment_name: name of the template cached fragment
+        vary_on: list of arguments
 
     """
-    cache.delete(template_cache_key(identifier, username))
+    cache.delete(make_template_fragment_key(fragment_name, vary_on))
