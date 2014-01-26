@@ -1,14 +1,12 @@
 {% extends "article/base.html" %}
+{% load cache %}
 
 {% block title %}
     Liste des articles
 {% endblock %}
 
 {% block meta %}
-    <meta name="description" content="Les articles sont rédigés par la
-    communauté ; ils permettent aussi bien de se tenir informé des dernières
-    innovations du moment que de découvrir de nouvelles notions liées aux
-    différents domaines de l'informatique." />
+    <meta name="description" content="Les articles sont rédigés par la communauté ; ils permettent aussi bien de se tenir informé des dernières innovations du moment que de découvrir de nouvelles notions liées aux différents domaines de l'informatique." />
 {% endblock %}
 
 {% block header %}
@@ -17,8 +15,10 @@
         Articles
     </h1>
     <p>
-        Les articles sont rédigés par la communauté ; ils permettent aussi bien de <strong>se tenir informé des dernières innovations</strong> du moment
-        que de <strong>découvrir de nouvelles notions</strong> liées aux différents domaines de l'informatique.
+        Les articles sont rédigés par la communauté ; ils permettent aussi bien
+        de <strong>se tenir informé des dernières innovations</strong> du
+        moment que de <strong>découvrir de nouvelles notions</strong> liées aux
+        différents domaines de l'informatique.
     </p>
 {% endblock %}
 
@@ -50,6 +50,8 @@
 <div class="row">
     <div class="large-12 columns">
         <h2>À la une</h2>
+
+        {% cache 120 articles-index %}
         {% if articles %}
             <div class="article-items">
                 {% for article in articles %}
@@ -76,13 +78,18 @@
         {% else %}
             <p>Aucun article disponible.</p>
         {% endif %}
+        {% endcache %}
+
     </div>
 </div>
+
+{# Validation stuff #}
 
 {% if perms.article.change_article %}
 <div class="row">
     <div class="large-12 columns">
         <h2>Articles en attente de validation</h2>
+        {% cache 120 articles-pending %}
         {% if pending_articles %}
             <div class="article-items">
                 {% for article in pending_articles %}
@@ -120,6 +127,7 @@
         {% else %}
             <p>Aucun article en attente de validation.</p>
         {% endif %}
+        {% endcache %}
     </div>
 </div>
 {% endif %}

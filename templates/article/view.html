@@ -1,6 +1,5 @@
 {% extends "article/base.html" %}
 {% load emarkdown %}
-{% load markup %}
 {% load humane_date %}
 
 {% block title %}
@@ -15,7 +14,7 @@
     {% endif %}
     <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
     {% if article.is_beta %}
-    <small><span class="label alert">BETA</span></small>
+        <small><span class="label alert">BETA</span></small>
     {% endif %}
     <br />
     <small>{{ article.description }}</small>

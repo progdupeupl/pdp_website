@@ -1,22 +1,32 @@
 {% extends "member/base.html" %}
 
 {% block title %}
-    Quoi de neuf ?
+    Panneau de contrôle
 {% endblock %}
 
 {% block headline %}
-    Quoi de neuf ?
+    Panneau de contrôle
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="current"><a href="#">Quoi de neuf ?</a></li>
+    <li class="current"><a href="#">Panneau de contrôle</a></li>
 {% endblock %}
 
 {% block content %}
 
 <div class="row">
     <div class="large-12 columns">
-        <h2>Actions</h2>
+        <p>
+            Bienvenue sur votre panneau de contrôle, celui-ci regroupe
+            l’ensemble des opérations disponibles pour votre compte
+            utitlisateur.
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="large-4 columns">
+        <h2>Activité</h2>
         <ul>
             <li>
                 <a href="{% url "pdp.member.views.details" user.username %}">
@@ -28,6 +38,11 @@
                     Voir vos publications
                 </a>
             </li>
+        </ul>
+    </div>
+    <div class="large-4 columns">
+        <h2>Configuration</h2>
+        <ul>
             <li>
                 <a href="{% url "pdp.member.views.settings_profile" %}">
                     Paramètres de votre profil
@@ -36,6 +51,34 @@
             <li>
                 <a href="{% url "pdp.member.views.settings_account" %}">
                     Paramètres de votre compte
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="large-4 columns">
+        <h2>Actions</h2>
+        <ul>
+            <li>
+                <a href="{% url "pdp.member.views.logout_view" %}">
+                    Se déconnecter
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div class="large-12 columns">
+        <h2>Galeries</h2>
+        <ul>
+            <li>
+                <a href="{% url "pdp.gallery.views.new_gallery" %}">
+                    Créer une nouvelle galerie
+                </a>
+            </li>
+            <li>
+                <a href="{% url "pdp.gallery.views.gallery_list" %}">
+                    Accéder à vos galeries
                 </a>
             </li>
         </ul>

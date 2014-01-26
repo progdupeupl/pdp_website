@@ -2,8 +2,16 @@ from os import path
 
 from fabric.api import local, lcd
 
-TEST_APPS = ('article', 'tutorial', 'forum', 'member', 'utils', 'pages',
-             'messages')
+TEST_APPS = (
+    'pdp.article',
+    'pdp.tutorial',
+    'pdp.forum',
+    'pdp.member',
+    'pdp.utils',
+    'pdp.pages',
+    'pdp.messages',
+    'pdp.gallery')
+
 ASSETS_DIR = path.join(path.dirname(__file__), 'assets/')
 
 
@@ -31,6 +39,11 @@ def collectstatic():
 def test():
     """Test all the project's own applications."""
     local('python manage.py test {0}'.format(' '.join(TEST_APPS)))
+
+def coverage():
+    """Launch coverage report."""
+    local('coverage run --source="." manage.py test {0}'.format(
+        ' '.join(TEST_APPS)))
 
 
 def initsearch():

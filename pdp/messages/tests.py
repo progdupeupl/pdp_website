@@ -8,9 +8,19 @@ from django.contrib.auth.models import User
 from django_dynamic_fixture import G
 
 from pdp.member.models import Profile
-from pdp.messages.models import PrivateTopic, PrivatePost
+
 
 class MessagesIntegrationTests(TestCase):
+    def test_url_index(self):
+        resp = self.client.get(reverse('pdp.messages.views.index'))
+        self.assertEquals(resp.status_code, 302)
+
+    def test_url_new(self):
+        resp = self.client.get(reverse('pdp.messages.views.new'))
+        self.assertEquals(resp.status_code, 302)
+
+
+class AuthenticatedMessagesIntegrationTests(TestCase):
     def setUp(self):
         # Create user
         self.user = G(User, username='test')
@@ -30,3 +40,4 @@ class MessagesIntegrationTests(TestCase):
     def test_url_new(self):
         resp = self.client.get(reverse('pdp.messages.views.new'))
         self.assertEquals(resp.status_code, 200)
+

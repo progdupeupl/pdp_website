@@ -98,7 +98,7 @@ class TutorialSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tutorial
         fields = ('id', 'title', 'description', 'authors', 'introduction',
-                  'conclusion', 'slug', 'icon', 'pubdate',
+                  'conclusion', 'slug', 'pubdate',
                   'is_mini', 'is_visible', 'is_pending')
 
 

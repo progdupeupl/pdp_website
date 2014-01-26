@@ -1,6 +1,6 @@
 # coding: utf-8
 
-"""Member app's database models and model-related functions."""
+"""Models for member app."""
 
 from hashlib import md5
 

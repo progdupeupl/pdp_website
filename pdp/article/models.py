@@ -1,5 +1,7 @@
 # coding: utf-8
 
+"""Models for article app."""
+
 import os
 import string
 from django.db import models
@@ -58,6 +60,9 @@ class Article(models.Model):
 
     author = models.ForeignKey(User, verbose_name=u'Auteur',
                                related_name='articles')
+
+    slug = models.SlugField(max_length=80)
+
     pubdate = models.DateTimeField(u'Date de publication', blank=True)
 
     tags = TaggableManager()
@@ -67,8 +72,9 @@ class Article(models.Model):
     thumbnail = models.ImageField(upload_to=thumbnail_path,
                                   blank=True, null=True, default=None)
 
-    is_visible = models.BooleanField(u'Est visible publiquement')
-    is_pending = models.BooleanField(u'Est en attente')
+    is_visible = models.BooleanField(u'Est visible publiquement',
+                                     default=False)
+    is_pending = models.BooleanField(u'Est en attente', default=False)
     is_beta = models.BooleanField(u'Est visible par les membres',
                                   default=False)
 
@@ -88,8 +94,8 @@ class Article(models.Model):
             string
 
         """
-        # TODO: use reverse
-        return '/articles/{0}/{1}'.format(self.pk, slugify(self.title))
+        return reverse('pdp.article.views.view', args=(
+            self.pk, self.slug))
 
     def get_edit_url(self):
         """Get URL to edit the article.
@@ -112,6 +118,7 @@ class Article(models.Model):
         This will save thumbnail on disk and then save the model in database.
 
         """
+        self.slug = slugify(self.title)
 
         if has_changed(self, 'image') and self.image:
             # TODO : delete old image

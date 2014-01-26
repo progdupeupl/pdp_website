@@ -1,6 +1,6 @@
 # coding: utf-8
 
-"""Tutorial app's database models and model-related functions.
+"""Models for tutorial app.
 
 The class hierarchy is as follows :
  - "large" tutorials: Tutorial < Parts < Chapters
@@ -13,6 +13,9 @@ import string
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+
+from pdp.tutorial.exceptions import CorruptedTutorialError, \
+    OrphanPartException, OrphanChapterException
 
 from pdp.utils import slugify
 from pdp.utils.models import has_changed
@@ -75,10 +78,11 @@ class Tutorial(models.Model):
 
     # We could distinguish large/small tutorials by looking at what chapters
     # are contained directly in a tutorial, but that'd be more complicated
-    # than a field
+    # than a field.
     is_mini = models.BooleanField(u'Est un mini-tutoriel')
 
-    is_visible = models.BooleanField(u'Est visible publiquement')
+    is_visible = models.BooleanField(u'Est visible publiquement',
+                                     default=False)
     is_pending = models.BooleanField(u'Est en attente', default=False)
     is_beta = models.BooleanField(u'Est en bêta', default=False)
 
@@ -128,6 +132,9 @@ class Tutorial(models.Model):
         Returns:
             Chapter
 
+        Raises:
+            CorruptedTutorialError
+
         """
         if not self.is_mini:
             return None
@@ -137,7 +144,7 @@ class Tutorial(models.Model):
             return Chapter.objects.get(tutorial__pk=self.pk)
         except Chapter.DoesNotExist:
             # Whoops, this tutorial is broken!
-            return None
+            raise CorruptedTutorialError('Small tutorial missing its chapter')
 
     def save(self, force_update=False, force_insert=False,
              thumb_size=(IMAGE_MAX_HEIGHT, IMAGE_MAX_WIDTH)):
@@ -320,7 +327,9 @@ class Chapter(models.Model):
             return self.part.get_absolute_url() + u'{0}/'.format(self.slug)
 
         else:
-            return u'/tutoriels/'
+            # Whoops, this chapter is orphan, but better return a fake URL than
+            # raise an exception here.
+            return reverse('pdp.tutorial.views.index')
 
     def get_extract_count(self):
         """Get the number of extracts in the chapter.
@@ -348,10 +357,19 @@ class Chapter(models.Model):
         Returns:
             Tutorial
 
+        Raises:
+            OrphanPartException, OrphanChapterException
+
         """
         if self.part:
-            return self.part.tutorial
-        return self.tutorial
+            if self.part.tutorial:
+                return self.part.tutorial
+            else:
+                raise OrphanPartException
+        elif self.tutorial:
+            return self.tutorial
+        else:
+            raise OrphanChapterException
 
     def update_position_in_tutorial(self):
         """Update the position of the chapter.

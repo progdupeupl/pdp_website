@@ -5,13 +5,16 @@
 from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404
 
-from django.contrib.auth.models import User, SiteProfileNotAvailable
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
+
+from django.views.decorators.debug import sensitive_post_parameters
 
 from pdp.utils.tokens import generate_token
 from pdp.utils import render_template
@@ -27,7 +30,7 @@ def index(request):
     """Display list of registered users.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
     members = User.objects.order_by('date_joined')
@@ -43,7 +46,7 @@ def actions(request):
     This may be very temporary.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
 
@@ -58,15 +61,11 @@ def details(request, user_name):
     """Display details about a profile.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
     usr = get_object_or_404(User, username=user_name)
-
-    try:
-        profile = usr.get_profile()
-    except SiteProfileNotAvailable:
-        raise Http404
+    profile = get_object_or_404(Profile, user=usr)
 
     return render_template('member/profile.html', {
         'usr': usr, 'profile': profile
@@ -78,7 +77,7 @@ def edit_profile(request):
     """Edit an user's profile.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
     try:
@@ -89,7 +88,7 @@ def edit_profile(request):
 
     # Making sure the user is allowed to do that
     if not request.user == profile.user:
-        raise Http404
+        raise PermissionDenied
 
     if request.method == 'POST':
         form = ProfileForm(request.POST)
@@ -112,11 +111,12 @@ def edit_profile(request):
         })
 
 
+@sensitive_post_parameters('password')
 def login_view(request):
     """Allow users to log into their accounts.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
     csrf_tk = {}
@@ -153,19 +153,25 @@ def logout_view(request):
     """Allow users to log out of their accounts.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
-    logout(request)
-    request.session.clear()
-    return redirect(reverse('pdp.pages.views.home'))
+    # If we got a secure POST, we disconnect
+    if request.method == 'POST':
+        logout(request)
+        request.session.clear()
+        return redirect(reverse('pdp.pages.views.home'))
+
+    # Elsewise we ask the user to submit a form with correct csrf token
+    return render_template('member/logout.html')
 
 
+@sensitive_post_parameters('password', 'password_confirm')
 def register_view(request):
     """Allow new users to register, creating them an account.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
     if request.method == 'POST':
@@ -197,7 +203,7 @@ def settings_profile(request):
     """Set current user's profile settings.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
     # extra information about the current user
@@ -239,7 +245,7 @@ def settings_account(request):
     """Set current user's account settings.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
     if request.method == 'POST':
@@ -269,7 +275,7 @@ def publications(request):
     """Show current user's articles and tutorials.
 
     Returns:
-        HTTP response
+        HttpResponse
 
     """
 

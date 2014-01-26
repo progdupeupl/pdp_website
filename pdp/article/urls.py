@@ -2,10 +2,12 @@
 
 from django.conf.urls import patterns, url
 
-import views
-import feeds
+from pdp.article import views
+from pdp.article import feeds
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
+
     url(r'^flux/rss/$', feeds.LastArticlesFeedRSS(), name='article-feed-rss'),
     url(r'^flux/atom/$', feeds.LastArticlesFeedATOM(),
         name='article-feed-atom'),

@@ -1,22 +1,23 @@
-{% extends "gallery/base.html" %}
-{% load crispy_forms_tags %}
+{% extends "base.html" %}
 
 {% block title %}
-    Nouvelle galerie
+    Erreur 403
 {% endblock %}
 
 {% block headline %}
-    Nouvelle galerie
+    Erreur 403
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="current"><a href="javascript:;">Nouvelle galerie</a></li>
+    <li class="current"><a href="#">Erreur 403</a></li>
 {% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="large-12 columns">
-        {% crispy form %}
+        <p>
+            Vous n’avez pas le droit d’effectuer cette action.
+        </p>
     </div>
 </div>
 {% endblock %}

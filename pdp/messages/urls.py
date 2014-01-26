@@ -2,9 +2,10 @@
 
 from django.conf.urls import patterns, url
 
-import views
+from pdp.messages import views
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
 
     # Viewing a thread
     url(r'^nouveau$', views.new),
@@ -14,7 +15,7 @@ urlpatterns = patterns('',
     # Message-related
     url(r'^message/editer$', views.edit_post),
     url(r'^message/nouveau$', views.answer),
-    
+
     # Home
     url(r'^$', views.index),
 )

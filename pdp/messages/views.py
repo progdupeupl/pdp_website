@@ -1,15 +1,19 @@
 # coding: utf-8
 
 from datetime import datetime
+
 from django.db.models import Q
-from django.contrib.auth.models import User
 
 from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404
+
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.exceptions import PermissionDenied
+from django.views.decorators.http import require_POST
 
 from pdp.utils import render_template, slugify
 from pdp.utils.paginator import paginator_range
@@ -22,10 +26,12 @@ from pdp.messages.forms import PrivateTopicForm, PrivatePostForm
 
 @login_required
 def index(request):
-    '''
-    Display the all private topics
-    '''
+    """Display messages of the user.
 
+    Returns:
+        HttpResponse
+
+    """
     # delete actions
     if request.method == 'POST':
         if 'delete' in request.POST:
@@ -65,16 +71,18 @@ def index(request):
 
 @login_required
 def topic(request, topic_pk, topic_slug):
-    '''
-    Display a thread and its posts using a pager
-    '''
+    """Display a topic and its posts using a pager.
 
+    Returns:
+        HttpResponse
+
+    """
     # TODO: Clean that up
     g_topic = get_object_or_404(PrivateTopic, pk=topic_pk)
 
     if not g_topic.author == request.user \
        and not request.user in list(g_topic.participants.all()):
-        raise Http404
+        raise PermissionDenied
 
     # Check link
     if not topic_slug == slugify(g_topic.title):
@@ -124,10 +132,12 @@ def topic(request, topic_pk, topic_slug):
 
 @login_required
 def new(request):
-    '''
-    Creates a new private topic
-    '''
+    """Creates a new message.
 
+    Returns:
+        HttpResponse
+
+    """
     if request.method == 'POST':
         # If the client is using the "preview" button
         if 'preview' in request.POST:
@@ -181,14 +191,15 @@ def new(request):
     return render_template('messages/new.html', {'form': form})
 
 
+@require_POST
 @login_required
 def edit(request):
-    '''
-    Edit the given topic
-    '''
-    if not request.method == 'POST':
-        raise Http404
+    """Edit a message.
 
+    Returns:
+        HttpResponse
+
+    """
     try:
         topic_pk = request.POST['privatetopic']
     except KeyError:
@@ -211,9 +222,12 @@ def edit(request):
 
 @login_required
 def answer(request):
-    '''
-    Adds an answer from an user to a topic
-    '''
+    """Add an answer from an user to a message
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         topic_pk = request.GET['sujet']
     except KeyError:
@@ -226,7 +240,7 @@ def answer(request):
 
     # Check that the user isn't spamming
     if g_topic.antispam(request.user):
-        raise Http404
+        raise PermissionDenied
 
     # If we just sent data
     if request.method == 'POST':
@@ -283,9 +297,12 @@ def answer(request):
 
 @login_required
 def edit_post(request):
-    '''
-    Edit the given user's post
-    '''
+    """Edit a post in a message.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         post_pk = request.GET['message']
     except KeyError:
@@ -297,7 +314,7 @@ def edit_post(request):
     tp = get_object_or_404(PrivateTopic, pk=post.privatetopic.pk)
     last = get_object_or_404(PrivatePost, pk=tp.last_message.pk)
     if not last.pk == post.pk:
-        raise Http404
+        raise PermissionDenied
 
     g_topic = None
     if post.position_in_topic == 1:
@@ -306,7 +323,7 @@ def edit_post(request):
     # Making sure the user is allowed to do that
     if post.author != request.user:
         if not request.user.has_perm('mp.change_post'):
-            raise Http404
+            raise PermissionDenied
         elif request.method == 'GET':
             messages.add_message(
                 request, messages.WARNING,

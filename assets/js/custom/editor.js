@@ -259,19 +259,13 @@ function italic(textAreaId) {
 	surroundSelection(textAreaId, "*", "*");
 }
 
-
-function h1(textAreaId) {
-	surroundSelection(textAreaId, "# ", " #");
+function ed_title(textAreaId, level) {
+    var start = "";
+    for(var i = 0; i < level; i++) {
+        start = start + "#";
+    }
+    surroundSelection(textAreaId, start + " ", "");
 }
-
-function h2(textAreaId) {
-	surroundSelection(textAreaId, "## ", " ##");
-}
-
-function h3(textAreaId) {
-	surroundSelection(textAreaId, "### ", " ###");
-}
-
 
 function link(textAreaId) {
 	var url = prompt('Saisissez l’adresse du lien :', 'http://');
@@ -308,8 +302,8 @@ function numericList(textAreaId) {
 
 function quote(textAreaId) {
 
-	var author = prompt('Saisissez l’auteur de la citation :\n' +
-			'Laissez vide pour créer une citation anonyme.', '');
+	var author = prompt('Saisissez l’auteur de la citation :\n'
+			+ 'Laissez vide pour créer une citation anonyme.', '');
 
 	var indenter = createSimpleIndenter("> ");
 
@@ -328,8 +322,8 @@ function quote(textAreaId) {
 
 function code(textAreaId) {
 
-	var code = prompt('Entrez le nom du langage ' +
-	        '(c, c++, java, python, php, html, ...) :', '');
+	var code = prompt('Entrez le nom du langage '
+	      + '(c, c++, java, python, php, html, ...) :', '');
 
 	if (! code)
 		code = '';

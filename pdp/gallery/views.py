@@ -1,7 +1,5 @@
 # coding: utf-8
 
-# The max size in bytes
-
 from django.conf import settings
 from datetime import datetime
 
@@ -12,17 +10,23 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
+from django.views.decorators.http import require_POST
 
 from pdp.utils import render_template, slugify
 from pdp.gallery.models import UserGallery, Image, Gallery
-from pdp.gallery.forms import ImageForm, GalleryForm, UserGalleryForm
+from pdp.gallery.forms import ImageForm, EditImageForm, GalleryForm, \
+    UserGalleryForm
 
 
 @login_required
 def gallery_list(request):
-    '''
-    Display the gallery list with all their images
-    '''
+    """Display the gallery list with all their images.
+
+    Returns:
+        HttpResponse
+
+    """
     galleries = UserGallery.objects.all().filter(user=request.user)
 
     return render_template('gallery/gallery_list.html', {
@@ -32,9 +36,12 @@ def gallery_list(request):
 
 @login_required
 def gallery_details(request, gal_pk, gal_slug):
-    '''
-    Gallery details
-    '''
+    """Display a gallery.
+
+    Returns:
+        HttpResponse
+
+    """
 
     gal = get_object_or_404(Gallery, pk=gal_pk)
     gal_mode = get_object_or_404(UserGallery, gallery=gal, user=request.user)
@@ -49,9 +56,12 @@ def gallery_details(request, gal_pk, gal_slug):
 
 @login_required
 def new_gallery(request):
-    '''
-    Creates a new gallery
-    '''
+    """Create a new gallery.
+
+    Returns:
+        HttpResponse
+
+    """
     if request.method == 'POST':
         form = GalleryForm(request.POST)
         if form.is_valid():
@@ -72,36 +82,35 @@ def new_gallery(request):
             userg.save()
 
             return redirect(gal.get_absolute_url())
-
-        else:
-            # TODO: add errors to the form and return it
-            raise Http404
     else:
         form = GalleryForm()
-        return render_template('gallery/new_gallery.html', {
-            'form': form
-        })
+
+    return render_template('gallery/new_gallery.html', {
+        'form': form
+    })
 
 
+@require_POST
 @login_required
 def modify_gallery(request):
-    '''Modify gallery instance'''
+    """Modify a gallery.
 
-    if request.method != 'POST':
-        raise Http404
+    Returns:
+        HttpResponse
 
+    """
     # Global actions
 
     if 'delete_multi' in request.POST:
         l = request.POST.getlist('items')
 
         perms = UserGallery.objects\
-                .filter(gallery__pk__in=l, user=request.user, mode='W')\
-                .count()
+            .filter(gallery__pk__in=l, user=request.user, mode='W')\
+            .count()
 
         # Check that the user has the RW right on each gallery
         if perms < len(l):
-            raise Http404
+            raise PermissionDenied
 
         # Delete all the permissions on all the selected galleries
         UserGallery.objects.filter(gallery__pk__in=l).delete()
@@ -124,7 +133,7 @@ def modify_gallery(request):
 
     # Disallow actions to read-only members
     if gal_mode.mode != 'W':
-        raise Http404
+        raise PermissionDenied
 
     if 'adduser' in request.POST:
         form = UserGalleryForm(request.POST)
@@ -136,30 +145,43 @@ def modify_gallery(request):
             ug.mode = 'W'
             ug.save()
 
-
     return redirect(gal.get_absolute_url())
 
 
+@require_POST
 @login_required
 def del_image(request, gal_pk):
+    """Remove an image from a gallery.
+
+    Returns:
+        HttpResponse
+
+    """
     gal = get_object_or_404(Gallery, pk=gal_pk)
-    if request.method == 'POST':
-        liste = request.POST.getlist('items')
-        Image.objects.filter(pk__in=liste).delete()
-        return redirect(gal.get_absolute_url())
+    gal_mode = get_object_or_404(UserGallery, gallery=gal, user=request.user)
+
+    if gal_mode.mode != 'W':
+        raise PermissionDenied
+
+    liste = request.POST.getlist('items')
+    Image.objects.filter(pk__in=liste).delete()
+
     return redirect(gal.get_absolute_url())
 
 
 @login_required
 def edit_image(request, gal_pk, img_pk):
-    '''
-    Creates a new image
-    '''
+    """Edit an image.
+
+    Returns:
+        HttpResponse
+
+    """
     gal = get_object_or_404(Gallery, pk=gal_pk)
     img = get_object_or_404(Image, pk=img_pk)
 
     if request.method == 'POST':
-        form = ImageForm(request.POST)
+        form = EditImageForm(request.POST)
         if form.is_valid():
             img.title = request.POST['title']
             img.legend = request.POST['legend']
@@ -169,24 +191,28 @@ def edit_image(request, gal_pk, img_pk):
 
             # Redirect to the document list after POST
             return redirect(gal.get_absolute_url())
-        else:
-            # TODO: add errors to the form and return it
-            raise Http404
     else:
-        form = ImageForm()  # A empty, unbound form
-        return render_template('gallery/edit_image.html', {
-            'form': form,
-            'gallery': gal,
-            'image': img
-        })
+        form = EditImageForm(initial={
+            'title': img.title,
+            'legend': img.legend})
+
+    return render_template('gallery/edit_image.html', {
+        'form': form,
+        'gallery': gal,
+        'image': img
+    })
 
 
+@require_POST
 @login_required
 def modify_image(request):
-    # We only handle secured POST actions
-    if request.method != 'POST':
-        raise Http404
+    """Modify an image.
 
+    Returns:
+        HttpResponse
+
+    """
+    # We only handle secured POST actions
     try:
         gal_pk = request.POST['gallery']
     except KeyError:
@@ -197,7 +223,7 @@ def modify_image(request):
 
     # Only allow RW users to modify images
     if gal_mode.mode != 'W':
-        raise Http404
+        raise PermissionDenied
 
     if 'delete' in request.POST:
         img = get_object_or_404(Image, pk=request.POST['image'])
@@ -212,9 +238,12 @@ def modify_image(request):
 
 @login_required
 def new_image(request, gal_pk):
-    '''
-    Creates a new image
-    '''
+    """Add a new image to a gallery.
+
+    Returns:
+        HttpResponse
+
+    """
     gal = get_object_or_404(Gallery, pk=gal_pk)
 
     if request.method == 'POST':
@@ -233,12 +262,10 @@ def new_image(request, gal_pk):
 
             # Redirect to the document list after POST
             return redirect(gal.get_absolute_url())
-        else:
-            # TODO: add errors to the form and return it
-            raise Http404
     else:
         form = ImageForm()  # A empty, unbound form
-        return render_template('gallery/new_image.html', {
-            'form': form,
-            'gallery': gal
-        })
+
+    return render_template('gallery/new_image.html', {
+        'form': form,
+        'gallery': gal
+    })

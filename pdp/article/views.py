@@ -4,6 +4,8 @@ from datetime import datetime
 
 from django.shortcuts import get_object_or_404, redirect
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
+from django.views.decorators.http import require_POST
 from django.http import Http404, HttpResponse
 
 from django.contrib.auth.decorators import login_required
@@ -12,14 +14,21 @@ from django.contrib.auth.models import User
 from pdp.settings import BOT_ENABLED
 
 from pdp.utils import render_template, slugify, bot
+from pdp.utils.cache import template_cache_delete
 from pdp.utils.articles import export_article
 
-from pdp.article.models import Article, get_prev_article, get_next_article
+from pdp.article.models import Article, get_prev_article, get_next_article, \
+    get_last_articles
 from pdp.article.forms import NewArticleForm, EditArticleForm
 
 
 def index(request):
-    """Display articles list."""
+    """Display articles list.
+
+    Returns:
+        HttpResponse
+
+    """
     article = Article.objects.all()\
         .filter(is_visible=True)\
         .order_by('-pubdate')
@@ -37,12 +46,17 @@ def index(request):
 
 
 def view(request, article_pk, article_slug):
-    '''Show the given article if exists and is visible'''
+    """Show the given article if exists and is visible.
+
+    Returns:
+        HttpResponse
+
+    """
     article = get_object_or_404(Article, pk=article_pk)
 
     if not article.is_visible and not request.user == article.author:
         if not (article.is_beta and request.user.is_authenticated()):
-            raise Http404
+            raise PermissionDenied
 
     if article_slug != slugify(article.title):
         return redirect(article.get_absolute_url())
@@ -55,18 +69,23 @@ def view(request, article_pk, article_slug):
 
 
 def download(request):
-    """Download an article."""
+    """Download an article.
+
+    Returns:
+        HttpResponse
+
+    """
     import json
 
     article = get_object_or_404(Article, pk=request.GET['article'])
 
     if not article.is_visible and not request.user == article.author:
-        raise Http404
+        raise PermissionDenied
 
-    dct = export_article(article)
+    dct = export_article(article, validate=False)
     data = json.dumps(dct, indent=4, ensure_ascii=False)
 
-    response = HttpResponse(data, mimetype='application/json')
+    response = HttpResponse(data, content_type='application/json')
     response['Content-Disposition'] = 'attachment; filename={0}.json'.format(
         slugify(article.title)
     )
@@ -76,7 +95,12 @@ def download(request):
 
 @login_required
 def new(request):
-    '''Create a new article'''
+    """Create a new article.
+
+    Returns:
+        HttpResponse
+
+    """
     if request.method == 'POST':
         form = NewArticleForm(request.POST, request.FILES)
         if form.is_valid():
@@ -113,7 +137,14 @@ def new(request):
 
 @login_required
 def edit(request):
-    '''Edit article identified by given GET paramter'''
+    """Edit an article.
+
+    This will use the 'article' GET field to find out which article to edit.
+
+    Returns:
+        HttpReponse
+
+    """
     try:
         article_pk = request.GET['article']
     except KeyError:
@@ -123,7 +154,7 @@ def edit(request):
 
     # Make sure the user is allowed to do it
     if not request.user == article.author:
-        raise Http404
+        raise PermissionDenied
 
     if request.method == 'POST':
         form = EditArticleForm(request.POST, request.FILES)
@@ -142,6 +173,11 @@ def edit(request):
                 article.tags.add(tag.strip())
 
             article.save()
+
+            # If the article was on the home page, update it
+            if article in get_last_articles():
+                template_cache_delete('home-articles')
+
             return redirect(article.get_absolute_url())
     else:
         # initial value for tags input
@@ -166,11 +202,20 @@ def edit(request):
     })
 
 
+@require_POST
 @login_required
 def modify(request):
-    if not request.method == 'POST':
-        raise Http404
+    """Modify an article.
 
+    This view will only accept POST forms with valid CSRF field to ensure CSRF
+    protection.
+
+
+    Returns:
+        HttpResponse (will mainly redirect to the article itself once action
+        performed)
+
+    """
     data = request.POST
 
     article_pk = data['article']
@@ -182,7 +227,7 @@ def modify(request):
         # We can't validate a non-pending article
         if 'validate' in request.POST:
             if not article.is_pending:
-                raise Http404
+                raise PermissionDenied
 
             article.is_pending = False
             article.is_beta = False
@@ -190,8 +235,12 @@ def modify(request):
             article.pubdate = datetime.now()
             article.save()
 
+            # We create a topic on forum for feedback
             if BOT_ENABLED:
                 bot.create_article_topic(article)
+
+            # We update home page article cache
+            template_cache_delete('home-articles')
 
             return redirect(article.get_absolute_url())
 
@@ -199,7 +248,7 @@ def modify(request):
 
             # We can't refuse a non-pending article
             if not article.is_pending:
-                raise Http404
+                raise PermissionDenied
 
             article.is_pending = False
             article.save()
@@ -214,7 +263,7 @@ def modify(request):
 
         if 'pending' in data:
             if article.is_pending:
-                raise Http404
+                raise PermissionDenied
 
             article.is_pending = True
             article.save()
@@ -227,6 +276,14 @@ def modify(request):
 
 
 def find_article(request, name):
+    """Find all articles written by an author.
+
+    The author name is extracted from the URL.
+
+    Returns:
+        HttpResponse
+
+    """
     u = get_object_or_404(User, username=name)
 
     articles = Article.objects.all()\

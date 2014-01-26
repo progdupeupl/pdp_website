@@ -13,17 +13,21 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from pdp.utils import render_template, slugify
 from pdp.utils.paginator import paginator_range
 
-from models import Category, Forum, Topic, Post
-from models import POSTS_PER_PAGE, TOPICS_PER_PAGE, FOLLOWED_TOPICS_PER_PAGE
-from models import never_read, mark_read
-from models import follow
-from forms import TopicForm, PostForm
+from pdp.forum.models import Category, Forum, Topic, Post
+from pdp.forum.models import POSTS_PER_PAGE, TOPICS_PER_PAGE, \
+    FOLLOWED_TOPICS_PER_PAGE
+from pdp.forum.models import never_read, mark_read
+from pdp.forum.models import follow
+from pdp.forum.forms import TopicForm, PostForm
 
 
 def index(request):
-    '''
-    Display the category list with all their forums
-    '''
+    """Display the category list with all their forums.
+
+    Returns:
+        HttpResponse
+
+    """
     categories = Category.objects.all().order_by('position')
 
     return render_template('forum/index.html', {
@@ -32,9 +36,12 @@ def index(request):
 
 
 def details(request, cat_slug, forum_slug):
-    '''
-    Display the given forum and all its topics
-    '''
+    """Display the given forum and all its topics.
+
+    Returns:
+        HttpResponse
+
+    """
     forum = get_object_or_404(Forum, slug=forum_slug)
 
     sticky_topics = Topic.objects.all()\
@@ -65,9 +72,12 @@ def details(request, cat_slug, forum_slug):
 
 
 def cat_details(request, cat_slug):
-    '''
-    Display the forums belonging to the given category
-    '''
+    """Display the forums belonging to the given category.
+
+    Returns:
+        HttpResponse
+
+    """
     category = get_object_or_404(Category, slug=cat_slug)
     forums = Forum.objects.all().filter(category__pk=category.pk)
 
@@ -77,9 +87,12 @@ def cat_details(request, cat_slug):
 
 
 def topic(request, topic_pk, topic_slug):
-    '''
-    Display a thread and its posts using a pager
-    '''
+    """Display a thread and its posts using a pager.
+
+    Returns:
+        HttpResponse
+
+    """
 
     # TODO: Clean that up
     g_topic = get_object_or_404(Topic, pk=topic_pk)
@@ -88,12 +101,14 @@ def topic(request, topic_pk, topic_slug):
     if not topic_slug == slugify(g_topic.title):
         return redirect(g_topic.get_absolute_url())
 
+    # We mark the topic as read
     if request.user.is_authenticated():
         if never_read(g_topic):
             mark_read(g_topic)
 
-    posts = Post.objects.all().filter(topic__pk=g_topic.pk)\
-                              .order_by('position_in_topic')
+    posts = Post.objects.all()\
+        .filter(topic__pk=g_topic.pk)\
+        .order_by('position_in_topic')
 
     last_post_pk = g_topic.last_message.pk
 
@@ -103,11 +118,13 @@ def topic(request, topic_pk, topic_slug):
     # The category list is needed to move threads
     categories = Category.objects.all()
 
+    # We try to get page number
     try:
         page_nbr = int(request.GET['page'])
     except KeyError:
         page_nbr = 1
 
+    # We try to page content
     try:
         posts = paginator.page(page_nbr)
     except PageNotAnInteger:
@@ -116,7 +133,7 @@ def topic(request, topic_pk, topic_slug):
         raise Http404
 
     res = []
-    if page_nbr != 1:
+    if page_nbr > 1:
         # Show the last post of the previous page
         last_page = paginator.page(page_nbr - 1).object_list
         last_post = (last_page)[len(last_page) - 1]
@@ -135,9 +152,12 @@ def topic(request, topic_pk, topic_slug):
 
 @login_required
 def new(request):
-    '''
-    Creates a new topic in a forum
-    '''
+    """Creates a new topic in a forum.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         forum_pk = request.GET['forum']
     except KeyError:
@@ -176,10 +196,11 @@ def new(request):
             post.position_in_topic = 1
             post.save()
 
+            # Updating the topic
             n_topic.last_message = post
             n_topic.save()
 
-            # Follow the topic
+            # Make the current user to follow his created topic
             follow(n_topic)
 
             return redirect(n_topic.get_absolute_url())
@@ -198,9 +219,12 @@ def new(request):
 
 @login_required
 def edit(request):
-    '''
-    Edit the given topic
-    '''
+    """Edit a topic.
+
+    Returns:
+        HttpResponse
+
+    """
     if not request.method == 'POST':
         raise Http404
 
@@ -260,9 +284,12 @@ def edit(request):
 
 @login_required
 def answer(request):
-    '''
-    Adds an answer from an user to a topic
-    '''
+    """Adds an answer from an user to a topic.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         topic_pk = request.GET['sujet']
     except KeyError:
@@ -339,9 +366,12 @@ def answer(request):
 
 @login_required
 def edit_post(request):
-    '''
-    Edit the given user's post
-    '''
+    """Edit a specific post.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         post_pk = request.GET['message']
     except KeyError:
@@ -349,6 +379,7 @@ def edit_post(request):
 
     post = get_object_or_404(Post, pk=post_pk)
 
+    # If we are editing the first post, we also want to edit the topic
     g_topic = None
     if post.position_in_topic == 1:
         g_topic = get_object_or_404(Topic, pk=post.topic.pk)
@@ -396,7 +427,12 @@ def edit_post(request):
 
 @login_required
 def useful_post(request):
-    '''Marks a message as useful (for the OP)'''
+    """Marks a message as useful for the original poster.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         post_pk = request.GET['message']
     except KeyError:
@@ -415,7 +451,12 @@ def useful_post(request):
 
 
 def find_topic(request, name):
+    """Find all topics created by an user.
 
+    Returns:
+        HttpResponse
+
+    """
     u = get_object_or_404(User, username=name)
 
     topics = Topic.objects.all().filter(author=u)\
@@ -442,6 +483,12 @@ def find_topic(request, name):
 
 
 def find_post(request, name):
+    """Find all posts written by an user.
+
+    Returns:
+        HttpResponse
+
+    """
     u = get_object_or_404(User, username=name)
 
     posts = Post.objects.all().filter(author=u)\
@@ -468,6 +515,12 @@ def find_post(request, name):
 
 @login_required
 def followed_topics(request):
+    """Displays all the topics followed by an user.
+
+    Returns:
+        HttpResponse
+
+    """
     followed_topics = request.user.get_profile().get_followed_topics()
 
     # Paginator

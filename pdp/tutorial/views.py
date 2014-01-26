@@ -5,22 +5,33 @@ from datetime import datetime
 from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404, HttpResponse
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
+from django.views.decorators.http import require_POST
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from pdp.utils import render_template, slugify, bot
+from pdp.utils.cache import template_cache_delete
 from pdp.utils.tutorials import move, export_tutorial
 from pdp.settings import BOT_ENABLED
 
 from .models import Tutorial, Part, Chapter, Extract
+from .models import get_last_tutorials
+
 from .forms import TutorialForm, EditTutorialForm, AddPartForm, EditPartForm, \
     AddChapterForm, EditChapterForm, EmbdedChapterForm, ExtractForm, \
     EditExtractForm
 
 
 def index(request):
-    '''Display tutorials list'''
+    """Display tutorials list.
+
+    Returns:
+        HttpResponse
+
+    """
     tutorials = Tutorial.objects.all() \
         .filter(is_visible=True) \
         .order_by("-pubdate")
@@ -38,7 +49,12 @@ def index(request):
 # Tutorial
 
 def view_tutorial(request, tutorial_pk, tutorial_slug):
-    '''Display a tutorial'''
+    """Display a tutorial.
+
+    Returns:
+        HttpResponse
+
+    """
     tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
 
     if not tutorial.is_visible \
@@ -68,7 +84,12 @@ def view_tutorial(request, tutorial_pk, tutorial_slug):
 
 
 def download(request):
-    """Download a tutorial."""
+    """Download a tutorial.
+
+    Returns:
+        HttpResponse
+
+    """
     import json
 
     tutorial = get_object_or_404(Tutorial, pk=request.GET['tutoriel'])
@@ -76,7 +97,7 @@ def download(request):
     if not tutorial.is_visible and not request.user in tutorial.authors.all():
         raise Http404
 
-    dct = export_tutorial(tutorial)
+    dct = export_tutorial(tutorial, validate=False)
     data = json.dumps(dct, indent=4, ensure_ascii=False)
 
     response = HttpResponse(data, mimetype='application/json')
@@ -88,7 +109,12 @@ def download(request):
 
 @login_required
 def add_tutorial(request):
-    ''''Adds a tutorial'''
+    """Add a tutorial.
+
+    Returns:
+        HttpResponse
+
+    """
     if request.method == 'POST':
         form = TutorialForm(request.POST, request.FILES)
         if form.is_valid():
@@ -127,6 +153,12 @@ def add_tutorial(request):
 
 @login_required
 def edit_tutorial(request):
+    """Edit a tutorial.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         tutorial_pk = request.GET['tutoriel']
     except KeyError:
@@ -149,6 +181,10 @@ def edit_tutorial(request):
                 tutorial.image = request.FILES['image']
             tutorial.save()
 
+            # If the tutorial was on the home page, clean cache
+            if tutorial in get_last_tutorials():
+                template_cache_delete('home-tutorials')
+
             return redirect(tutorial.get_absolute_url())
     else:
         form = EditTutorialForm({
@@ -163,9 +199,15 @@ def edit_tutorial(request):
     })
 
 
+@require_POST
+@login_required
 def modify_tutorial(request):
-    if not request.method == 'POST':
-        raise Http404
+    """Modify a tutorial.
+
+    Returns:
+        HttpResponse
+
+    """
 
     tutorial_pk = request.POST['tutorial']
     tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
@@ -176,7 +218,7 @@ def modify_tutorial(request):
 
             # We can't validate a non-pending tutorial
             if not tutorial.is_pending:
-                raise Http404
+                raise PermissionDenied
 
             tutorial.is_pending = False
             tutorial.is_beta = False
@@ -184,14 +226,18 @@ def modify_tutorial(request):
             tutorial.pubdate = datetime.now()
             tutorial.save()
 
+            # We create a topic on forum for feedback
             if BOT_ENABLED:
                 bot.create_tutorial_topic(tutorial)
+
+            # We update home page tutorial cache
+            template_cache_delete('home-tutorials')
 
             return redirect(tutorial.get_absolute_url())
 
         if 'refuse' in request.POST:
             if not tutorial.is_pending:
-                raise Http404
+                raise PermissionDenied
 
             tutorial.is_pending = False
             tutorial.save()
@@ -222,7 +268,7 @@ def modify_tutorial(request):
 
             # Avoid orphan tutorials
             if tutorial.authors.all().count() <= 1:
-                raise Http404
+                raise PermissionDenied
 
             author_pk = request.POST['author']
             author = get_object_or_404(User, pk=author_pk)
@@ -238,7 +284,7 @@ def modify_tutorial(request):
 
         elif 'pending' in request.POST:
             if tutorial.is_pending:
-                raise Http404
+                raise PermissionDenied
 
             tutorial.is_pending = True
             tutorial.save()
@@ -249,14 +295,20 @@ def modify_tutorial(request):
             tutorial.save()
             return redirect(tutorial.get_absolute_url())
 
-    # No action performed, raise 404
-    raise Http404
+    # No action performed, no rights for request user, or not existing
+    # action called.
+    raise PermissionDenied
 
 
 # Part
 
 def view_part(request, tutorial_pk, tutorial_slug, part_slug):
-    '''Display a part'''
+    """Display a part.
+
+    Returns:
+        HttpResponse
+
+    """
     part = get_object_or_404(Part,
                              slug=part_slug, tutorial__pk=tutorial_pk)
 
@@ -265,7 +317,7 @@ def view_part(request, tutorial_pk, tutorial_slug, part_slug):
        and not request.user.has_perm('tutorial.change_part') \
        and not request.user in tutorial.authors.all():
         if not (tutorial.is_beta and request.user.is_authenticated()):
-            raise Http404
+            raise PermissionDenied
 
     # Make sure the URL is well-formed
     if not tutorial_slug == slugify(tutorial.title)\
@@ -279,7 +331,12 @@ def view_part(request, tutorial_pk, tutorial_slug, part_slug):
 
 @login_required
 def add_part(request):
-    '''Add a new part'''
+    """Add a new part.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         tutorial_pk = request.GET['tutoriel']
     except KeyError:
@@ -290,10 +347,10 @@ def add_part(request):
     tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
     # Make sure it's a big tutorial, just in case
     if tutorial.is_mini:
-        raise Http404
+        raise PermissionDenied
     # Make sure the user belongs to the author list
     if not request.user in tutorial.authors.all():
-        raise Http404
+        raise PermissionDenied
     if request.method == 'POST':
         form = AddPartForm(request.POST)
         if form.is_valid():
@@ -313,18 +370,21 @@ def add_part(request):
     })
 
 
+@require_POST
 @login_required
 def modify_part(request):
-    '''Modifiy the given part'''
-    if not request.method == 'POST':
-        raise Http404
+    """Modifiy a part.
 
+    Returns:
+        HttpResponse
+
+    """
     part_pk = request.POST['part']
     part = get_object_or_404(Part, pk=part_pk)
 
     # Make sure the user is allowed to do that
     if not request.user in part.tutorial.authors.all():
-        raise Http404
+        raise PermissionDenied
 
     if 'move' in request.POST:
         try:
@@ -355,7 +415,12 @@ def modify_part(request):
 
 @login_required
 def edit_part(request):
-    '''Edit the given part'''
+    """Edit a part.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         part_pk = int(request.GET['partie'])
     except KeyError:
@@ -363,7 +428,7 @@ def edit_part(request):
     part = get_object_or_404(Part, pk=part_pk)
     # Make sure the user is allowed to do that
     if not request.user in part.tutorial.authors.all():
-        raise Http404
+        raise PermissionDenied
 
     if request.method == 'POST':
         form = EditPartForm(request.POST)
@@ -392,7 +457,12 @@ def edit_part(request):
 
 def view_chapter(request, tutorial_pk, tutorial_slug, part_slug,
                  chapter_slug):
-    '''View chapter'''
+    """Display a chapter.
+
+    Returns:
+        HttpResponse
+
+    """
 
     chapter = get_object_or_404(Chapter,
                                 slug=chapter_slug,
@@ -404,7 +474,7 @@ def view_chapter(request, tutorial_pk, tutorial_slug, part_slug,
        and not request.user.has_perm('tutorial.modify_chapter') \
        and not request.user in tutorial.authors.all():
         if not (tutorial.is_beta and request.user.is_authenticated()):
-            raise Http404
+            raise PermissionDenied
 
     if not tutorial_slug == slugify(tutorial.title)\
         or not part_slug == slugify(chapter.part.title)\
@@ -432,7 +502,12 @@ def view_chapter(request, tutorial_pk, tutorial_slug, part_slug,
 
 @login_required
 def add_chapter(request):
-    '''Add a new chapter to given part'''
+    """Add a new chapter to a part.
+
+    Returns:
+        HttpResponse
+
+    """
     try:
         part_pk = request.GET['partie']
     except KeyError:
@@ -443,7 +518,7 @@ def add_chapter(request):
 
     # Make sure the user is allowed to do that
     if not request.user in part.tutorial.authors.all():
-        raise Http404
+        raise PermissionDenied
 
     if request.method == 'POST':
         form = AddChapterForm(request.POST, request.FILES)
@@ -476,21 +551,27 @@ def add_chapter(request):
     })
 
 
+@require_POST
 @login_required
 def modify_chapter(request):
-    '''Modify the given chapter'''
-    if not request.method == 'POST':
-        raise Http404
+    """Modify a chapter.
+
+    Returns:
+        HttpResponse
+
+    """
     data = request.POST
+
     try:
         chapter_pk = request.POST['chapter']
     except KeyError:
         raise Http404
+
     chapter = get_object_or_404(Chapter, pk=chapter_pk)
 
     # Make sure the user is allowed to do that
     if not request.user in chapter.get_tutorial().authors.all():
-        raise Http404
+        raise PermissionDenied
 
     if 'move' in data:
         try:
@@ -530,7 +611,12 @@ def modify_chapter(request):
 
 @login_required
 def edit_chapter(request):
-    '''Edit the given chapter'''
+    """Edit a chapter.
+
+    Returns:
+        HttpResponse
+
+    """
 
     try:
         chapter_pk = int(request.GET['chapitre'])
@@ -544,7 +630,7 @@ def edit_chapter(request):
     # Make sure the user is allowed to do that
     if big and (not request.user in chapter.part.tutorial.authors.all())\
             or small and (not request.user in chapter.tutorial.authors.all()):
-        raise Http404
+        raise PermissionDenied
 
     if request.method == 'POST':
 
@@ -587,7 +673,12 @@ def edit_chapter(request):
 
 @login_required
 def add_extract(request):
-    '''Add extract'''
+    """Add an extract.
+
+    Returns:
+        HttpResponse
+
+    """
 
     try:
         chapter_pk = int(request.GET['chapitre'])
@@ -625,7 +716,12 @@ def add_extract(request):
 
 @login_required
 def edit_extract(request):
-    '''Edit extract'''
+    """Edit an extract.
+
+    Returns:
+        HttpResponse
+
+    """
 
     try:
         extract_pk = request.GET['extrait']
@@ -659,10 +755,15 @@ def edit_extract(request):
     })
 
 
+@require_POST
+@login_required
 def modify_extract(request):
-    if not request.method == 'POST':
-        raise Http404
+    """Modify an extract.
 
+    Returns:
+        HttpResponse
+
+    """
     data = request.POST
 
     try:
@@ -696,10 +797,16 @@ def modify_extract(request):
 
         return redirect(extract.get_absolute_url())
 
-    raise Http404
+    raise PermissionDenied
 
 
 def find_tutorial(request, name):
+    """Find all tutorials written by an user.
+
+    Returns:
+        HttpResponse
+
+    """
     u = get_object_or_404(User, username=name)
 
     tutos = Tutorial.objects.all()\
@@ -711,25 +818,3 @@ def find_tutorial(request, name):
         'tutos': tutos, 'usr': u,
     })
 
-
-# Handling deprecated links
-
-def deprecated_view_tutorial_redirect(request, tutorial_pk, tutorial_slug):
-    tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
-    return redirect(tutorial.get_absolute_url(), permanent=True)
-
-
-def deprecated_view_part_redirect(request, tutorial_pk, tutorial_slug,
-                                  part_pos, part_slug):
-    part = Part.objects.get(
-        position_in_tutorial=part_pos, tutorial__pk=tutorial_pk)
-    return redirect(part.get_absolute_url(), permanent=True)
-
-
-def deprecated_view_chapter_redirect(
-    request, tutorial_pk, tutorial_slug, part_pos, part_slug,
-        chapter_pos, chapter_slug):
-    chapter = Chapter.objects.get(position_in_part=chapter_pos,
-                                  part__position_in_tutorial=part_pos,
-                                  part__tutorial__pk=tutorial_pk)
-    return redirect(chapter.get_absolute_url(), permanent=True)

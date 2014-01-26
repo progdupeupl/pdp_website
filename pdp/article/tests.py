@@ -18,25 +18,25 @@ from pdp.member.models import Profile
 
 
 class GetLastArticlesTests(TestCase):
-    '''Tests for the get_last_article function.'''
+    """Tests for the get_last_article function."""
 
     def test_last_articles_zero(self):
-        '''
+        """
         Tests that the last articles work if there are no visible articles.
-        '''
+        """
         self.assertEqual(0, len(get_last_articles()))
         G(Article, is_visible=False)
         self.assertEqual(0, len(get_last_articles()))
 
     def test_last_articles_one(self):
-        '''Tests that the last articles work if there is only one.'''
+        """Tests that the last articles work if there is only one."""
         article = G(Article, is_visible=True)
         self.assertEqual(1, len(get_last_articles()))
         self.assertEqual(article, get_last_articles()[0])
 
     @skip_for_database(SQLITE3)
     def test_last_articles_many(self):
-        '''Tests that the last articles work correctly'''
+        """Tests that the last articles work correctly"""
         articles = []
         for n in range(2000, 1900, -1):
             a = G(Article, pubdate=datetime(n, 1, 1, tzinfo=utc))
@@ -50,12 +50,12 @@ class GetLastArticlesTests(TestCase):
 
 class ArticleIntegrationTests(TestCase):
     def test_url_index(self):
-        '''Tests viewing the index page of articles.'''
+        """Tests viewing the index page of articles."""
         client = Client()
         self.assertEqual(200, client.get('/articles/').status_code)
 
     def test_url_new(self):
-        '''Tests adding a new article as anonymous.'''
+        """Tests adding a new article as anonymous."""
         client = Client()
         self.assertEqual(302, client.get('/articles/nouveau').status_code)
 
@@ -64,18 +64,36 @@ class ArticleIntegrationTests(TestCase):
         # self.assertEqual(200, client.get('/articles/nouveau').status_code)
 
     def test_url_view_invisible(self):
-        '''Testing viewing an invisible article as anonymous.'''
+        """Testing viewing an invisible article as anonymous."""
         client = Client()
         article = G(Article, is_visible=False)
-        self.assertEqual(404,
-                         client.get(article.get_absolute_url()).status_code)
+        self.assertEqual(
+            403, client.get(article.get_absolute_url()).status_code)
 
     def test_url_view_visible(self):
-        '''Testing viewing a visible article as anonymous.'''
+        """Testing viewing a visible article as anonymous."""
         client = Client()
         article = G(Article, is_visible=True)
         self.assertEqual(200,
                          client.get(article.get_absolute_url()).status_code)
+
+    def test_url_download_invisible(self):
+        """Testing downloading an invisible article."""
+        article = G(Article, is_visible=False, pk=42)
+        url = '{}?article={}'.format(
+            reverse('pdp.article.views.download'),
+            article.pk)
+        resp = self.client.get(url)
+        self.assertEqual(403, resp.status_code)
+
+    def test_url_download_visible(self):
+        """Testing downloading a visible article."""
+        article = G(Article, is_visible=True, pk=42)
+        url = '{}?article={}'.format(
+            reverse('pdp.article.views.download'),
+            article.pk)
+        resp = self.client.get(url)
+        self.assertEqual(200, resp.status_code)
 
 
 class ArticleSearchIntegrationTests(TestCase):
@@ -135,14 +153,13 @@ class AuthenticatedArticleIntegrationTests(TestCase):
 
     def test_url_edit_badauthor(self):
         article = G(Article)
-        resp = self.client.get(
-            u'{}?article={}'.format(reverse('pdp.article.views.edit'),
-                                    article.pk))
-        self.assertEquals(resp.status_code, 404)
+        resp = self.client.get(u'{}?article={}'.format(
+            reverse('pdp.article.views.edit'), article.pk))
+        self.assertEquals(resp.status_code, 403)
 
     def test_url_modify_get(self):
         resp = self.client.get(reverse('pdp.article.views.modify'))
-        self.assertEquals(resp.status_code, 404)
+        self.assertEquals(resp.status_code, 405)
 
 
 class FeedsIntegrationTests(TestCase):

@@ -1,5 +1,4 @@
 {% extends "member/base.html" %}
-{% load markup %}
 
 {% block title %}
     Éditer mon profil
@@ -21,7 +20,7 @@
         <form action="" method="POST">
             <fieldset>
                 <legend>Public</legend>
-        
+
                 <div class="control-group">
                     <label for="id_biography" class="control-label">Biographie</label>
                     <div class="controls">
@@ -29,7 +28,7 @@
                             placeholder="Votre biographie au format Markdown.">{{ profile.biography }}</textarea>
                     </div>
                 </div>
-        
+
                 <div class="control-group">
                     <label for="id_site" class="control-label">Site internet</label>
                     <div class="controls">
@@ -37,7 +36,7 @@
                         placeholder="Lien vers votre site internet personnel." value="{{ profile.site }}"/>
                     </div>
                 </div>
-        
+
                 <div class="control-group">
                     <label for="id_email" class="control-label">Adresse mail</label>
                     <div class="controls">
@@ -45,7 +44,7 @@
                         placeholder="Veuillez entrer une adresse email valide" value="{{ profile.user.email }}"/>
                     </div>
                 </div>
-        
+
                 <div class="control-group">
                     <div class="controls">
                         <label class="checkbox">
@@ -55,25 +54,23 @@
                         </label>
                     </div>
                 </div>
-        
+
             </fieldset>
             <div style="text-align: center;">
                 <button type="submit" class="button">
                     <i class="icon-pencil icon-white"></i>
                     Éditer
                 </button>
-        
+
                 <a href="{{ profile.user.get_absolute_url }}" class="button secondary">
                     Annuler
                 </a>
             </div>
-        
+
             {% csrf_token %}
-        
+
         </form>
     </div>
 </div>
-
-
 
 {% endblock %}

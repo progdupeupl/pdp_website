@@ -59,7 +59,4 @@ def reads_topic(topic, user):
     if user.is_authenticated():
         if never_read(topic, user):
             return ''
-        else:
-            return 'secondary'
-    else:
-        return ''
+    return 'secondary'

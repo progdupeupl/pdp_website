@@ -66,7 +66,8 @@
                    <tr>
                        <th style="width: 3%;"></th>
                        <th style="width: 180px;">Image</th>
-                       <th style="width: 72%;">Titre</th>
+                       <th style="width: 36%;">Titre</th>
+                       <th style="width: 36%;">Légende</th>
                    </tr>
                 </thead>
                 <tbody>
@@ -85,6 +86,9 @@
                             </td>
                             <td>
                                 <a href="{% url "pdp.gallery.views.edit_image" gallery.pk img.pk %}">{{ img.title }}</a>
+                            </td>
+                            <td>
+                                {{ img.legend }}
                             </td>
                         </tr>
                     {% endfor %}
