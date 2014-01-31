@@ -48,6 +48,13 @@
 
 /* And now our custom SCSS */
 
+@import "pygments";
+@import "fonts";
+
 .top-bar, .button, .dropdown, .footer, .custom {
     display: none;
+}
+
+body, p, ul, ol, td, th {
+    font-size: 10pt;
 }
