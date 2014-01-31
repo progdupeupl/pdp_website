@@ -54,9 +54,10 @@ def view(request, article_pk, article_slug):
     """
     article = get_object_or_404(Article, pk=article_pk)
 
-    if not article.is_visible and not request.user == article.author:
-        if not (article.is_beta and request.user.is_authenticated()):
-            raise PermissionDenied
+    if not article.is_visible and not request.user == article.author \
+       and not (article.is_beta and request.user.is_authenticated()) \
+       and not request.user.has_perm('article.change_article'):
+        raise PermissionDenied
 
     if article_slug != slugify(article.title):
         return redirect(article.get_absolute_url())
