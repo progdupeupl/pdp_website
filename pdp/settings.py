@@ -122,8 +122,20 @@ PIPELINE_CSS = {
         'source_filenames': (
             'css/progdupeupl.css',
         ),
-        'output_filename': 'css/pdp.css'
-    }
+        'output_filename': 'css/pdp.css',
+        'extra_content': {
+            'media': 'screen,projection',
+        },
+    },
+    'print': {
+        'source_filenames': (
+            'css/print.css',
+        ),
+        'output_filename': 'css/print.css',
+        'extra_content': {
+            'media': 'print',
+        },
+    },
 }
 
 PIPELINE_DISABLE_WRAPPER = True

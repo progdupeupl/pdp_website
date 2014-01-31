@@ -14,12 +14,8 @@
 
     {% block meta %}{% endblock %}
 
-    {% compressed_css "pdp" %}
-
-    <!--
-        Temporary removed icons
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet" />
-    -->
+    <link rel="stylesheet" media="screen,projection" href="{% static "css/progdupeupl.css" %}">
+    <link rel="stylesheet" media="print" href="{% static "css/print.css" %}">
 
     {# for additionnal css in some pages #}
     {% block extracss %}{% endblock %}
