@@ -26,7 +26,7 @@
 
 <div class="row">
     <div class="large-12 columns">
-        <h2>Articles</h2>
+        <h2>Mes articles</h2>
     </div>
 </div>
 {% if user_articles %}
@@ -36,19 +36,19 @@
         {% else %}
             <div class="row article-publication-item">
         {% endif %}
-            <div class="large-1 columns">
+            <div class="large-1 columns hide-for-small">
                 <div class="date-box">
                     {% with date=article.pubdate %}
                         {% include "misc/datebox.part.html" %}
                     {% endwith %}
                 </div>
             </div>
-            <div class="large-10 columns">
-                <a href="{{ article.get_absolute_url }}">{{ article.title }} </a>
+            <div class="large-10 small-10 columns">
                 {% if article.is_beta %}<span class="label alert">BETA</span>{% endif %}
-                <p>{{ article.description }}</p>
+                {% if article.is_visible %}<span class="label success">PUBLIÉ</span>{% endif %}
+                <a href="{{ article.get_absolute_url }}">{{ article.title }} </a>
             </div>
-            <div class="large-1 columns">
+            <div class="large-1 small-2 columns">
                 <a href="{{ article.get_edit_url }}" class="button small">
                     <i class="icon-edit"></i>
                     Éditer
@@ -68,31 +68,31 @@
 
 <div class="row">
     <div class="large-12 columns">
-        <h2>Tutoriels</h2>
+        <h2>Mes tutoriels</h2>
     </div>
 </div>
 
 {% if user_tutorials %}
-    {% for tuto in user_tutorials %}
-        {% if tuto.is_visible %}
+    {% for tutorial in user_tutorials %}
+        {% if tutorial.is_visible %}
             <div class="row article-publication-item published">
         {% else %}
             <div class="row article-publication-item">
         {% endif %}
-            <div class="large-1 columns">
+            <div class="large-1 columns hide-for-small">
                 <div class="date-box">
-                    {% with date=tuto.pubdate %}
+                    {% with date=tutorial.pubdate %}
                         {% include "misc/datebox.part.html" %}
                     {% endwith %}
                 </div>
             </div>
-            <div class="large-10 columns">
-                <a href="{{ tuto.get_absolute_url }}">{{ tuto.title }} </a>
-                {% if tuto.is_beta %}<span class="label alert">BETA</span>{% endif %}
-                <p>{{ tuto.description }}</p>
+            <div class="large-10 small-10 columns">
+                {% if tutorial.is_beta %}<span class="label alert">BETA</span>{% endif %}
+                {% if tutorial.is_visible %}<span class="label success">PUBLIÉ</span>{% endif %}
+                <a href="{{ tutorial.get_absolute_url }}">{{ tutorial.title }} </a>
             </div>
-            <div class="large-1 columns">
-                <a href="{% url "pdp.tutorial.views.edit_tutorial" %}?tutoriel={{ tuto.pk }}" class="button small">
+            <div class="large-1 small-2 columns">
+                <a href="{% url "pdp.tutorial.views.edit_tutorial" %}?tutoriel={{ tutorial.pk }}" class="button small">
                     <i class="icon-edit"></i>
                     Éditer
                 </a>
