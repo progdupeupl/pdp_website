@@ -7,7 +7,6 @@ from django.http import Http404, HttpResponse
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.http import require_POST
-from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
