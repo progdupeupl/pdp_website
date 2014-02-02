@@ -61,7 +61,13 @@ urlpatterns = patterns(
 
 ) + static(pdp.settings.MEDIA_URL, document_root=pdp.settings.MEDIA_ROOT)
 
-# Make Djago serve the files if needed (local versions)
+# Serve debug toolbar files on debug
+if pdp.settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += patterns('',
+        url(r'^__debug__/', include(debug_toolbar.urls)))
+
+# Make Django serve the files if needed (local versions)
 if pdp.settings.SERVE:
     urlpatterns += patterns(
         '',
