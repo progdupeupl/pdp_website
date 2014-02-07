@@ -28,7 +28,7 @@ urlpatterns = patterns(
     url(r'^(?P<tutorial_pk>\d+)/(?P<tutorial_slug>.+)/$',
         views.view_tutorial),
 
-    url(r'^telecharger', views.download),
+    url(r'^telecharger$', views.download),
 
     # Editing
 

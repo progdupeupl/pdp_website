@@ -3,7 +3,7 @@
 from datetime import datetime
 
 from django.shortcuts import get_object_or_404, redirect
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.http import require_POST
@@ -91,7 +91,17 @@ def download(request):
     """
     import json
 
-    tutorial = get_object_or_404(Tutorial, pk=request.GET['tutoriel'])
+    tutorial_pk = request.GET.get('tutoriel', None)
+
+    if tutorial_pk is None:
+        return HttpResponseBadRequest()
+
+    try:
+        tutorial_pk = int(tutorial_pk)
+    except ValueError:
+        return HttpResponseBadRequest()
+
+    tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
 
     if not tutorial.is_visible and not request.user in tutorial.authors.all():
         raise Http404

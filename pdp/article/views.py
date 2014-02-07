@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.http import require_POST
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseBadRequest
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -78,7 +78,17 @@ def download(request):
     """
     import json
 
-    article = get_object_or_404(Article, pk=request.GET['article'])
+    article_pk = request.GET.get('article', None)
+
+    if article_pk is None:
+        return HttpResponseBadRequest()
+
+    try:
+        article_pk = int(article_pk)
+    except ValueError:
+        return HttpResponseBadRequest()
+
+    article = get_object_or_404(Article, pk=article_pk)
 
     if not article.is_visible and not request.user == article.author:
         raise PermissionDenied
@@ -87,9 +97,8 @@ def download(request):
     data = json.dumps(dct, indent=4, ensure_ascii=False)
 
     response = HttpResponse(data, content_type='application/json')
-    response['Content-Disposition'] = 'attachment; filename={0}.json'.format(
-        slugify(article.title)
-    )
+    response['Content-Disposition'] = 'attachment; filename={0}.json'\
+        .format(article.slug)
 
     return response
 
