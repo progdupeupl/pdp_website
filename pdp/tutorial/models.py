@@ -60,6 +60,16 @@ class Tutorial(models.Model):
         verbose_name = u'Tutoriel'
         verbose_name_plural = u'Tutoriels'
 
+    SMALL = 'S'
+    MEDIUM = 'M'
+    BIG = 'B'
+
+    SIZE_CHOICES = (
+        (SMALL, u'Mini'),
+        (MEDIUM, u'Standard'),
+        (BIG, u'Étendu'),
+    )
+
     title = models.CharField(u'Titre', max_length=80)
     description = models.CharField(u'Description', max_length=200)
     authors = models.ManyToManyField(User, verbose_name=u'Auteurs')
@@ -79,7 +89,8 @@ class Tutorial(models.Model):
     # We could distinguish large/small tutorials by looking at what chapters
     # are contained directly in a tutorial, but that'd be more complicated
     # than a field.
-    is_mini = models.BooleanField(u'Est un mini-tutoriel')
+    size = models.CharField(u'Taille du tutoriel', max_length=1,
+                            choices=SIZE_CHOICES, default=SMALL)
 
     is_visible = models.BooleanField(u'Est visible publiquement',
                                      default=False)
@@ -136,7 +147,7 @@ class Tutorial(models.Model):
             CorruptedTutorialError
 
         """
-        if not self.is_mini:
+        if not self.size == Tutorial.SMALL:
             return None
 
         try:

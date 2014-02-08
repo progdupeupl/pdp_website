@@ -71,7 +71,7 @@ def view_tutorial(request, tutorial_pk, tutorial_slug):
     parts = None
 
     # If it's a small tutorial, fetch its chapter
-    if tutorial.is_mini:
+    if tutorial.size == Tutorial.SMALL:
         chapter = Chapter.objects.get(tutorial=tutorial)
     else:
         parts = Part.objects.all(
@@ -132,7 +132,7 @@ def add_tutorial(request):
             tutorial = Tutorial()
             tutorial.title = data['title']
             tutorial.description = data['description']
-            tutorial.is_mini = 'is_mini' in data
+            tutorial.size = data['size']
             tutorial.pubdate = datetime.now()
             if 'image' in request.FILES:
                 tutorial.image = request.FILES['image']
@@ -146,7 +146,7 @@ def add_tutorial(request):
                 tutorial.icon = request.FILES['icon']
             tutorial.save()
             # If it's a small tutorial, create its corresponding chapter
-            if tutorial.is_mini:
+            if tutorial.size == Tutorial.SMALL:
                 chapter = Chapter()
                 chapter.tutorial = tutorial
                 chapter.save()
@@ -355,7 +355,7 @@ def add_part(request):
 
     tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
     # Make sure it's a big tutorial, just in case
-    if tutorial.is_mini:
+    if not tutorial.size == Tutorial.BIG:
         raise PermissionDenied
     # Make sure the user belongs to the author list
     if not request.user in tutorial.authors.all():

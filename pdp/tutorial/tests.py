@@ -58,20 +58,20 @@ class TutorialIntegrationTests(TestCase):
 
     def test_url_view_tutorial_visible(self):
         """Testing viewing a visible tutorial as anonymous."""
-        tutorial = G(Tutorial, is_visible=True)
+        tutorial = G(Tutorial, is_visible=True, size=Tutorial.BIG)
         resp = self.client.get(tutorial.get_absolute_url())
         self.assertEqual(200, resp.status_code)
 
     def test_url_view_part_invisible(self):
         """Testing viewing a part from invisible tutorial as anonymous."""
-        tutorial = G(Tutorial, is_visible=False, is_mini=False)
+        tutorial = G(Tutorial, is_visible=False, size=Tutorial.BIG)
         part = G(Part, tutorial=tutorial)
         resp = self.client.get(part.get_absolute_url())
         self.assertEqual(403, resp.status_code)
 
     def test_url_view_part_visible(self):
         """Testing viewing a part from visible tutorial as anonymous."""
-        tutorial = G(Tutorial, is_visible=True, is_mini=False)
+        tutorial = G(Tutorial, is_visible=True, size=Tutorial.BIG)
         part = G(Part, tutorial=tutorial)
         resp = self.client.get(part.get_absolute_url())
         self.assertEqual(200, resp.status_code)
@@ -91,7 +91,7 @@ class TutorialIntegrationTests(TestCase):
 
     def test_url_create_chapter_anon(self):
         """Testing creating a chapter as anonymous."""
-        tutorial = G(Tutorial, is_visible=True, is_mini=False)
+        tutorial = G(Tutorial, is_visible=True, size=Tutorial.BIG)
         part = G(Part, tutorial=tutorial)
         resp = self.client.get(u''.join(
             (reverse('pdp.tutorial.views.add_chapter'),

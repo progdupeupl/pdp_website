@@ -27,7 +27,7 @@
         <form action="{% url "pdp.tutorial.views.modify_tutorial" %}" method="post">
             <div class="button-group">
                 <a href="
-                    {% if not tutorial.is_mini %}
+                    {% if not tutorial.size == "S" %}
                         {% url "pdp.tutorial.views.add_part" %}?tutoriel={{ tutorial.pk }}
                     {% else %}
                         {% url "pdp.tutorial.views.add_extract" %}?chapitre={{ tutorial.get_chapter.pk }}
@@ -93,7 +93,7 @@
     <div class="large-12 columns">
         <p>
             Tutoriel
-            {% if not tutorial.is_mini %}
+            {% if not tutorial.size == "S" %}
                 étendu
             {% endif %}
             rédigé par
@@ -120,7 +120,7 @@
             <p>Aucune introduction.</p>
         {% endif %}
 
-        {% if tutorial.is_mini %}
+        {% if tutorial.size == "S" %}
         {# Small tutorial #}
 
             {% with authors=tutorial.authors.all %}

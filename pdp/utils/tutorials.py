@@ -4,7 +4,7 @@
 
 from collections import OrderedDict
 
-from pdp.tutorial.models import Part, Chapter, Extract
+from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
 from pdp.utils.schemas import validate_tutorial
 
 
@@ -125,12 +125,12 @@ def export_tutorial(tutorial, validate=True):
     dct = OrderedDict()
     dct['title'] = tutorial.title
     dct['description'] = tutorial.description
-    dct['is_mini'] = tutorial.is_mini
+    dct['is_mini'] = tutorial.size == Tutorial.SMALL
     dct['authors'] = [a.username for a in tutorial.authors.all()]
     dct['introduction'] = tutorial.introduction
     dct['conclusion'] = tutorial.conclusion
 
-    if tutorial.is_mini:
+    if tutorial.size == Tutorial.SMALL:
         # We export the chapter without its empty title if small tutorial
         chapter = Chapter.objects.get(tutorial=tutorial)
         dct['chapter'] = export_chapter(chapter, export_all=False)
