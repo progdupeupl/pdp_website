@@ -92,9 +92,13 @@
 <div class="row">
     <div class="large-12 columns">
         <p>
-            Tutoriel
             {% if not tutorial.size == "S" %}
-                étendu
+                Tutoriel
+                {% if not tutorial.size == "M" %}
+                    étendu
+                {% endif %}
+            {% else %}
+                Mini-tutoriel
             {% endif %}
             rédigé par
             {% for member in tutorial.authors.all %}
