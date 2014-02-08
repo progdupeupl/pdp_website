@@ -29,7 +29,7 @@
         </div>
     </div>
 
-    {% if user in authors and tutorial.size == "B" %}
+    {% if user in authors and tutorial.size != "S" %}
     <div class="row">
         <div class="large-12 columns">
             <a href="/tutoriels/nouveau/extrait?chapitre={{ chapter.pk }}" class="button">

@@ -69,16 +69,22 @@ def view_tutorial(request, tutorial_pk, tutorial_slug):
     # Two variables to handle two distinct cases (large/small tutorial)
     chapter = None
     parts = None
+    part = None
 
     # If it's a small tutorial, fetch its chapter
     if tutorial.size == Tutorial.SMALL:
         chapter = Chapter.objects.get(tutorial=tutorial)
+    elif tutorial.size == Tutorial.MEDIUM:
+        part = Part.objects.get(tutorial=tutorial)
     else:
         parts = Part.objects.all(
         ).filter(tutorial=tutorial).order_by('position_in_tutorial')
 
     return render_template('tutorial/view_tutorial.html', {
-        'tutorial': tutorial, 'chapter': chapter, 'parts': parts
+        'tutorial': tutorial,
+        'chapter': chapter,
+        'part': part,
+        'parts': parts,
     })
 
 
@@ -145,11 +151,18 @@ def add_tutorial(request):
             if 'icon' in request.FILES:
                 tutorial.icon = request.FILES['icon']
             tutorial.save()
+
             # If it's a small tutorial, create its corresponding chapter
             if tutorial.size == Tutorial.SMALL:
                 chapter = Chapter()
                 chapter.tutorial = tutorial
                 chapter.save()
+
+            # If it's a medium tutorial, create its corresponding part
+            if tutorial.size == Tutorial.MEDIUM:
+                part = Part()
+                part.tutorial = tutorial
+                part.save()
 
             return redirect(tutorial.get_absolute_url())
     else:
@@ -826,4 +839,3 @@ def find_tutorial(request, name):
     return render_template('tutorial/find_tutorial.html', {
         'tutos': tutos, 'usr': u,
     })
-
