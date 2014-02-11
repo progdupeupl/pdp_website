@@ -219,7 +219,8 @@ class Part(models.Model):
     # A part has to belong to a tutorial, since only tutorials with parts
     # are large tutorials
     tutorial = models.ForeignKey(Tutorial, verbose_name=u'Tutoriel parent')
-    position_in_tutorial = models.IntegerField(u'Position dans le tutoriel')
+    position_in_tutorial = models.IntegerField(u'Position dans le tutoriel',
+                                               null=True, blank=True)
 
     title = models.CharField(u'Titre', max_length=80)
 
