@@ -2,11 +2,12 @@
 {% load humane_date %}
 {% load upfirstletter %}
 
-{% if category.get_forums %}
-{% for forum in category.get_forums %}
+{% with forums=category.get_forums %}
+{% if forums %}
+{% for forum in forums %}
 <div class="forum-entry">
     <div class="forum-entry-title {% if user.is_authenticated and not forum.is_read %}unread{% endif %}">
-        <a href="{{ forum.get_absolute_url }}">
+        <a href="{% url "pdp.forum.views.details" cat_slug=category.slug forum_slug=forum.slug %}">
             {{ forum.title }}
         </a>
         <p>
@@ -57,3 +58,4 @@
         </div>
     </div>
 {% endif %}
+{% endwith %}

@@ -421,7 +421,7 @@ def never_read(topic, user=None):
         user = get_current_user()
 
     return TopicRead.objects\
-        .filter(post=topic.last_message, topic=topic, user=user)\
+        .filter(post_id=topic.last_message_id, topic=topic, user=user)\
         .count() == 0
 
 
@@ -443,7 +443,7 @@ def mark_read(topic, user=None):
     TopicRead.objects.filter(topic=topic, user=user).delete()
 
     # We create a new TopicRead and save it
-    t = TopicRead(post=topic.last_message, topic=topic, user=user)
+    t = TopicRead(post_id=topic.last_message_id, topic=topic, user=user)
     t.save()
 
     # TODO: instead of deleting and creating a new instance, maybe it will be
