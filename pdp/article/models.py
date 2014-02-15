@@ -153,7 +153,7 @@ def get_last_articles():
     This should be used for the home page article displaying.
 
     Returns:
-        list of Tutorial
+        list of Article
 
     """
     return Article.objects.all()\
