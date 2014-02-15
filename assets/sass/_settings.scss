@@ -1235,7 +1235,7 @@ $topbar-dropdown-toggle-alpha:         1;
 $topbar-link-weight:                   normal;
 // $topbar-link-font-size:                emCalc(13px);
 // $topbar-link-hover-lightness:          -30%; // Darken by 30%
-// $topbar-link-bg-hover:                 darken($topbar-bg, 3%);
+$topbar-link-bg-hover:                 darken($topbar-bg, 3%);
 $topbar-link-bg-active:                darken($topbar-bg, 5%);
 
 // $topbar-dropdown-label-color:          #555;
