@@ -65,6 +65,14 @@
         </div>
     </div>
 {% endif %}
+<div class="row">
+    <div class="large-12 columns">
+        <a href="{% url "pdp.article.views.new" %}" class="button">
+            <i class="icon-plus"></i>
+            Nouvel article
+        </a>
+    </div>
+</div>
 
 <div class="row">
     <div class="large-12 columns">
@@ -108,5 +116,12 @@
         </div>
     </div>
 {% endif %}
-
+<div class="row">
+    <div class="large-12 columns">
+        <a href="{% url "pdp.tutorial.views.add_tutorial" %}" class="button">
+            <i class="icon-plus"></i>
+            Nouveau tutoriel
+        </a>
+    </div>
+</div>
 {% endblock %}
