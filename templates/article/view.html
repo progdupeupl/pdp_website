@@ -9,7 +9,7 @@
 {% block headline %}
     {% if article.thumbnail %}
         <span>
-            <img src="{{ article.thumbnail.url }}" alt="Icône" class="hide-for-small"/>
+            <img src="{{ article.thumbnail.url }}" alt="" class="hide-for-small"/>
         </span>
     {% endif %}
     <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>

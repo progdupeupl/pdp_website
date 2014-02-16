@@ -40,7 +40,7 @@
     <nav class="top-bar">
         <ul class="title-area">
             <li class="name">
-                <img src="{% static "img/topbar.png" %}" alt="Logo" />
+                <img src="{% static "img/topbar.png" %}" alt="" />
                 <h1>
                     <a href="/">
                         Progdupeupl
@@ -188,7 +188,7 @@
                 <li class="has-dropdown">
                     {% with profile=user|profile %}
                         <a href="{% url "pdp.member.views.actions" %}">
-                            <img src="{{ profile.get_avatar_url }}" alt="Avatar" width="24" height="24" />
+                            <img src="{{ profile.get_avatar_url }}" alt="" width="24" height="24" />
                             {{ user.username }}
                         </a>
                     {% endwith %}
