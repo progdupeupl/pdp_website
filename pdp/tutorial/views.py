@@ -327,6 +327,16 @@ def modify_tutorial(request):
 def view_part(request, tutorial_pk, tutorial_slug, part_slug):
     """Display a part or a chapter depending on context.
 
+    Due to technical limitations, we cannot route an URL to two different
+    views, so this view is both used for:
+
+        - Displaying a part in a tutorial of size Tutorial.BIG
+        - Displaying a chapter in a tutorial of size Tutorial.MEDIUM
+
+    This is because we want the depth of the tutorial to be visible within the
+    URL so this view is for accessing the first level of depth after the root
+    level.
+
     Returns:
         HttpResponse
 
@@ -334,15 +344,21 @@ def view_part(request, tutorial_pk, tutorial_slug, part_slug):
 
     tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
 
-    # We try to match part or 404 before redirecting if bad tutorial slug
+    # We try to match requested item or 404 before redirecting if bad tutorial
+    # slug is detected.
     if tutorial.size == Tutorial.BIG:
-        part = get_object_or_404(
+        # Big tutorial so the object we will display will be a Part
+        item = get_object_or_404(
             Part, slug=part_slug, tutorial__pk=tutorial_pk)
     elif tutorial.size == Tutorial.MEDIUM:
-        part = get_object_or_404(
+        # Medium tutorial so the object we will display will be a Chapter
+        item = get_object_or_404(
             Chapter, slug=part_slug, part__tutorial__pk=tutorial_pk)
+    else:
+        # We do not know what to display so a 404 is adapted here
+        raise Http404
 
-    # Redirect if bad tutorial slug but part exists
+    # Redirect if bad tutorial slug but item exists
     if tutorial.slug != tutorial_slug:
         return redirect(reverse('pdp.tutorial.views.view_part', args=[
             tutorial_pk,
@@ -350,19 +366,26 @@ def view_part(request, tutorial_pk, tutorial_slug, part_slug):
             part_slug,
         ]))
 
-    if not tutorial.is_visible \
-       and not request.user.has_perm('tutorial.change_part') \
-       and not request.user in tutorial.authors.all():
-        if not (tutorial.is_beta and request.user.is_authenticated()):
-            raise PermissionDenied
+    # Check access rights
+    if not tutorial.is_visible:
+        if not (tutorial.is_beta and request.user.is_authenticated()) \
+                and not request.user in tutorial.authors.all():
+            if tutorial.size == Tutorial.BIG \
+                    and not request.user.has_perm('tutorial.change_part'):
+                raise PermissionDenied
+            elif tutorial.size == Tutorial.MEDIUM \
+                    and not request.user.has_perm('tutorial.change_chapter'):
+                raise PermissionDenied
 
     if tutorial.size == Tutorial.BIG:
+        # Render the part if we are viewing a big tutorial
         return render_template('tutorial/view_part.html', {
-            'part': part
+            'part': item
         })
     elif tutorial.size == Tutorial.MEDIUM:
+        # Render the chapter if we are viewing a medium tutorial
         return render_template('tutorial/view_chapter.html', {
-            'chapter': part
+            'chapter': item
         })
 
 
