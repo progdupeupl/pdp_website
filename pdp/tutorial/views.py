@@ -325,30 +325,45 @@ def modify_tutorial(request):
 # Part
 
 def view_part(request, tutorial_pk, tutorial_slug, part_slug):
-    """Display a part.
+    """Display a part or a chapter depending on context.
 
     Returns:
         HttpResponse
 
     """
-    part = get_object_or_404(Part,
-                             slug=part_slug, tutorial__pk=tutorial_pk)
 
-    tutorial = part.tutorial
+    tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
+
+    # We try to match part or 404 before redirecting if bad tutorial slug
+    if tutorial.size == Tutorial.BIG:
+        part = get_object_or_404(
+            Part, slug=part_slug, tutorial__pk=tutorial_pk)
+    elif tutorial.size == Tutorial.MEDIUM:
+        part = get_object_or_404(
+            Chapter, slug=part_slug, part__tutorial__pk=tutorial_pk)
+
+    # Redirect if bad tutorial slug but part exists
+    if tutorial.slug != tutorial_slug:
+        return redirect(reverse('pdp.tutorial.views.view_part', args=[
+            tutorial_pk,
+            tutorial.slug,
+            part_slug,
+        ]))
+
     if not tutorial.is_visible \
        and not request.user.has_perm('tutorial.change_part') \
        and not request.user in tutorial.authors.all():
         if not (tutorial.is_beta and request.user.is_authenticated()):
             raise PermissionDenied
 
-    # Make sure the URL is well-formed
-    if not tutorial_slug == slugify(tutorial.title)\
-            or not part_slug == slugify(part.title):
-        return redirect(part.get_absolute_url())
-
-    return render_template('tutorial/view_part.html', {
-        'part': part
-    })
+    if tutorial.size == Tutorial.BIG:
+        return render_template('tutorial/view_part.html', {
+            'part': part
+        })
+    elif tutorial.size == Tutorial.MEDIUM:
+        return render_template('tutorial/view_chapter.html', {
+            'chapter': part
+        })
 
 
 @login_required

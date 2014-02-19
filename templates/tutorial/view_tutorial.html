@@ -30,7 +30,7 @@
                     {% if tutorial.size == "B" %}
                         {% url "pdp.tutorial.views.add_part" %}?tutoriel={{ tutorial.pk }}
                     {% elif tutorial.size == "M" %}
-                        {% url "pdp.tutorial.views.add_chapter" %}?tutoriel={{ tutorial.pk }}
+                        {% url "pdp.tutorial.views.add_chapter" %}?partie={{ part.pk }}
                     {% else %}
                         {% url "pdp.tutorial.views.add_extract" %}?chapitre={{ tutorial.get_chapter.pk }}
                     {% endif %}" class="button small">

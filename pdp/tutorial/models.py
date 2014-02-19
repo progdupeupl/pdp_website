@@ -258,11 +258,17 @@ class Part(models.Model):
             string
 
         """
-        return reverse('pdp.tutorial.views.view_part', args=[
-            self.tutorial.pk,
-            self.tutorial.slug,
-            self.slug,
-        ])
+        if self.tutorial.size == "B":
+            return reverse('pdp.tutorial.views.view_part', args=[
+                self.tutorial.pk,
+                self.tutorial.slug,
+                self.slug,
+            ])
+        else:
+            return reverse('pdp.tutorial.views.view_tutorial', args=[
+                self.tutorial.pk,
+                self.tutorial.slug,
+            ])
 
     def get_chapters(self):
         """Get all the chapters of the part.
