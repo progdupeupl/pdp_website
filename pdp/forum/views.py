@@ -256,12 +256,12 @@ def edit(request):
 
     if request.user.has_perm('forum.change_topic'):
         # Staff actions using AJAX
-        if 'lock' in data:
-            g_topic.is_locked = data['lock'] == 'true'
-        if 'sticky' in data:
-            g_topic.is_sticky = data['sticky'] == 'true'
-        if 'solved' in data:
-            g_topic.is_solved = data['solved'] == 'true'
+        if 'op_lock' in data:
+            g_topic.is_locked = data['op_lock'] == 'true'
+        if 'op_sticky' in data:
+            g_topic.is_sticky = data['op_sticky'] == 'true'
+        if 'op_solved' in data:
+            g_topic.is_solved = data['op_solved'] == 'true'
         if 'move' in data:
             try:
                 forum_pk = int(request.POST['move_target'])
@@ -274,9 +274,12 @@ def edit(request):
     g_topic.save()
 
     if request.is_ajax():
-        resp = {'lock': g_topic.is_locked,
-                'sticky': g_topic.is_sticky,
-                'solved': g_topic.is_solved}
+        resp = {
+            'lock': g_topic.is_locked,
+            'sticky': g_topic.is_sticky,
+            'solved': g_topic.is_solved,
+            'follow': g_topic.is_followed(request.user),
+        }
         return HttpResponse(json.dumps(resp))
     else:
         return redirect(u'{}?page={}'.format(g_topic.get_absolute_url(), page))
