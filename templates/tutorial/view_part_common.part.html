@@ -74,7 +74,11 @@
             <ul>
                 {% for chapter in chapters %}
                 <li>
-                    <a href="{% url "view-chapter-url" tutorial.pk tutorial.slug part.slug chapter.slug %}">
+                    <a href="{% if tutorial.size == "B" %}
+                                 {% url "view-chapter-url" tutorial.pk tutorial.slug part.slug chapter.slug %}
+                             {% else %}
+                                 {% url "view-part-url" tutorial.pk tutorial.slug chapter.slug %}
+                             {% endif %}">
                         Chapitre
                         {% if tutorial.size == "B" %}{{ chapter.part.position_in_tutorial }}.{% endif %}{{ chapter.position_in_part }}
                         | {{ chapter.title }}
