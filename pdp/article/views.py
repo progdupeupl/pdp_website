@@ -312,7 +312,10 @@ def tags(request):
 
 def tag(request, name):
 
-    articles = Article.objects.filter(tags__name__in=[name])
+    articles = Article.objects\
+        .filter(is_visible=True)\
+        .filter(tags__name__in=[name])\
+        .order_by('-pubdate')
 
     return render_template('article/tag.html', {
         'tagname': name,
