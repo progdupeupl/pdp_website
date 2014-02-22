@@ -7,7 +7,7 @@ from crispy_forms_foundation.layout import Layout, Submit, Field, HTML
 
 
 class PrivateTopicForm(forms.Form):
-    participants = forms.CharField(
+    recipients = forms.CharField(
         label=u'Participants (séparés par une virgule)',
         required=True)
 
@@ -28,7 +28,7 @@ class PrivateTopicForm(forms.Form):
         self.helper.form_method = 'post'
 
         self.helper.layout = Layout(
-            Field('participants'),
+            Field('recipients'),
             Field('title'),
             Field('subtitle'),
             HTML('{% include "misc/editor.part.html" %}'),
