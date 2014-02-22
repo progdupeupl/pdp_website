@@ -1,0 +1,46 @@
+{% extends "article/base.html" %}
+{% load taggit_extras %}
+
+{% block title %}
+    Tags
+{% endblock %}
+
+{% block headline %}
+    Liste des tags
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="current"><a href="#">Liste des tags</a></li>
+{% endblock %}
+
+{% block content %}
+
+{% get_tagcloud as tags for 'article.Article' %}
+
+<div class="row">
+    <div class="large-12 columns">
+        <p>
+            Voici le nuage des tags utilisés sur les différents articles
+            actuellement publiés sur le site :
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="large-12 columns">
+        {% for tag in tags %}
+            {% if tag.name %}
+                {% with weight=tag.weight|floatformat:0 %}
+                    <a href="{% url "pdp.article.views.tag" name=tag.name %}"
+                        class="label secondary"
+                        style="font-size: {{ tag.weight|add:13 }}px">
+                        {{ tag.name }}
+                    </a>
+                {% endwith %}
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endblock %}

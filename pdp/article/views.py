@@ -306,6 +306,20 @@ def find_article(request, name):
     })
 
 
+def tags(request):
+    return render_template('article/tags.html')
+
+
+def tag(request, name):
+
+    articles = Article.objects.filter(tags__name__in=[name])
+
+    return render_template('article/tag.html', {
+        'tagname': name,
+        'articles': articles,
+    })
+
+
 # Deprecated URLs
 
 def deprecated_view_redirect(request, article_pk, article_slug):

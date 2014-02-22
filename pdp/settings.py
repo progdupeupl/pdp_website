@@ -212,6 +212,7 @@ INSTALLED_APPS = (
     'email_obfuscator',
     'debug_toolbar',
     'taggit',
+    'taggit_templatetags',
     'pipeline',
     'rest_framework',
     'provider',

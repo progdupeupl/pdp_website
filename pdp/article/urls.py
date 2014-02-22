@@ -23,7 +23,10 @@ urlpatterns = patterns(
     url(r'^nouveau$', views.new),
     url(r'^editer$', views.edit),
     url(r'^modifier$', views.modify),
-    url(r'^(?P<name>.+)$', views.find_article),
+    url(r'^auteur/(?P<name>.+)$', views.find_article),
+
+    url(r'^tags/$', views.tags),
+    url(r'^tag/(?P<name>.+)$', views.tag),
 
     url(r'^$', views.index),
 )
