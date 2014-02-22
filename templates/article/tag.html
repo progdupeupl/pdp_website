@@ -18,23 +18,32 @@
 
 <div class="row">
     <div class="large-12 columns">
-        <ul>
-            {% for article in articles %}
-                <li>
-                    <a href="{{ article.get_absolute_url }}">
-                        {{ article.title }}
-                    </a>
-                    {% for tag in article.tags.all %}
-                        {% if tag.name %}
-                        <a href="{% url "pdp.article.views.tag" name=tag.name %}"
-                            class="label {% if not tag.name == tagname %}secondary{% endif %}">
-                            {{ tag.name }}
+        {% if articles %}
+            <ul>
+                {% for article in articles %}
+                    <li>
+                        <a href="{{ article.get_absolute_url }}">
+                            {{ article.title }}
                         </a>
-                        {% endif %}
-                    {% endfor %}
-                </li>
-            {% endfor %}
-        </ul>
+                        {% for tag in article.tags.all %}
+                            {% if tag.name %}
+                            <a href="{% url "pdp.article.views.tag" name=tag.name %}"
+                                class="label {% if not tag.name == tagname %}secondary{% endif %}">
+                                {{ tag.name }}
+                            </a>
+                            {% endif %}
+                        {% endfor %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>
+                Aucun article n’est associé à ce tag.
+                <a href="{% url "pdp.article.views.tags" %}">
+                    Retour à la liste des tags
+                </a>
+            </p>
+        {% endif %}
     </div>
 </div>
 
