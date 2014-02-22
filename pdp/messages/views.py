@@ -181,12 +181,14 @@ def new(request):
 
             return redirect(n_topic.get_absolute_url())
     else:
-        form = PrivateTopicForm()
 
+        data = {}
         if 'destinataire' in request.GET:
             user_pk = request.GET['destinataire']
             u = get_object_or_404(User, pk=user_pk)
-            form.destinataires = u.username
+            data['recipients'] = u.username
+
+        form = PrivateTopicForm(data)
 
     return render_template('messages/new.html', {'form': form})
 
