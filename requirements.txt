@@ -17,6 +17,7 @@ django-email-obfuscator
 django-debug-toolbar
 crispy-forms-foundation
 django-taggit
+django-taggit-templatetags
 django-pipeline
 djangorestframework
 django-filter
