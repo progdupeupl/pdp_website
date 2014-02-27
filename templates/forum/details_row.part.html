@@ -15,9 +15,11 @@
             unread
         {% endif %}
     {% endif %}">
-        <a href="{{ topic.get_absolute_url }}">
-            {{ topic.title }}
-        </a>
+        <h3>
+            <a href="{{ topic.get_absolute_url }}">
+                {{ topic.title }}
+            </a>
+        </h3>
         {% if topic.subtitle %}
             <p>
                 {{ topic.subtitle }}
