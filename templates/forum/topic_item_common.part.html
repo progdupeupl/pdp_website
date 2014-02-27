@@ -12,6 +12,7 @@
     </div>
     <div class="small-2 column">
         <a class="tiny button {% reads_topic topic user %} radius right"
+            title="Nombre de réponses dans le sujet"
             href="{% if user.is_authenticated %}
                       {{ topic.last_read_post.get_absolute_url }}
                   {% else %}
