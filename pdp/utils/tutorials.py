@@ -3,6 +3,8 @@
 """A small module for handling some common operations on tutorials."""
 
 from collections import OrderedDict
+from itertools import repeat
+import subprocess
 
 from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
 from pdp.utils.schemas import validate_tutorial
@@ -174,3 +176,76 @@ def export_tutorial(tutorial, validate=True):
         return {}
 
     return dct
+
+# Export-to-PDF functions using Pandoc
+
+
+def export_title_md(f, title, level=1):
+    f.write('{} {}\n'.format(
+        ''.join(repeat('#', level)),
+        title,
+    ))
+
+
+def export_text_md(f, text):
+    f.write(text)
+    f.write('\n\n')
+
+
+def export_extract_md(f, extract, level=1):
+    export_title_md(f, extract.title, level)
+    export_text_md(f, extract.text)
+
+
+def export_chapter_md(f, chapter, level=1, export_all=True):
+    if export_all:
+        export_title_md(f, chapter.title, level)
+        export_text_md(f, chapter.introduction)
+
+    for extract in chapter.get_extracts():
+        export_extract_md(f, extract, level + 1 if export_all else level)
+
+    if export_all:
+        export_text_md(f, chapter.conclusion)
+
+
+def export_part_md(f, part, level=1, export_all=True):
+    if export_all:
+        export_title_md(f, part.title, level)
+        export_text_md(f, part.introduction)
+
+    for chapter in part.get_chapters():
+        export_chapter_md(f, chapter, level + 1 if export_all else level)
+
+    if export_all:
+        export_text_md(f, part.conclusion)
+
+
+def export_tutorial_pdf(tutorial):
+    title = tutorial.title
+    authors = u'; '.join([a.username for a in list(tutorial.authors.all())])
+
+    md_filepath = '/tmp/test.md'
+    pdf_filepath = '/tmp/test.pdf'
+
+    with open(md_filepath, 'w') as f:
+        f.write('% {}\n'.format(title))
+        f.write('% {}\n'.format(authors))
+
+        f.write('\n\n')
+
+        export_text_md(f, tutorial.introduction)
+
+        if tutorial.size == Tutorial.BIG:
+            for part in tutorial.get_parts():
+                export_part_md(f, part)
+
+        elif tutorial.size == Tutorial.MEDIUM:
+            export_part_md(f, tutorial.get_parts()[0], export_all=False)
+
+        elif tutorial.size == Tutorial.SMALL:
+            export_chapter(f, tutorial.get_chapter(), export_all=False)
+
+        export_text_md(f, tutorial.conclusion)
+
+    subprocess.call(['pandoc', '-N', '-o', pdf_filepath, md_filepath])
