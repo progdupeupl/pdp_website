@@ -177,8 +177,8 @@ def export_tutorial(tutorial, validate=True):
 
     return dct
 
-# Export-to-PDF functions using Pandoc
 
+# Export-to-PDF functions using Pandoc
 
 def export_title_md(f, title, level=1):
     f.write('{} {}\n'.format(
@@ -188,8 +188,9 @@ def export_title_md(f, title, level=1):
 
 
 def export_text_md(f, text):
-    f.write(text)
-    f.write('\n\n')
+    if text:
+        f.write(text)
+        f.write('\n\n')
 
 
 def export_extract_md(f, extract, level=1):
