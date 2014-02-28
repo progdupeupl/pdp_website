@@ -8,6 +8,16 @@ from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
 from pdp.utils.schemas import validate_tutorial
 
 
+def size_to_string(size):
+    if size == Tutorial.SMALL:
+        return u'small'
+    elif size == Tutorial.MEDIUM:
+        return u'medium'
+    elif size == Tutorial.BIG:
+        return u'big'
+    else:
+        raise NotImplementedError('No string for this size')
+
 def move(obj, new_pos, position_f, parent_f, children_fn):
     """Move an object and reorder other objects affected by moving.
 
@@ -65,10 +75,12 @@ def export_chapter(chapter, export_all=True):
 
     """
     dct = OrderedDict()
+
     if export_all:
         dct['title'] = chapter.title
         dct['introduction'] = chapter.introduction
         dct['conclusion'] = chapter.conclusion
+
     dct['extracts'] = []
 
     extracts = Extract.objects.filter(chapter=chapter)\
@@ -83,7 +95,7 @@ def export_chapter(chapter, export_all=True):
     return dct
 
 
-def export_part(part):
+def export_part(part, export_all=True):
     """Export a part to a dict.
 
     Args:
@@ -94,14 +106,18 @@ def export_part(part):
 
     """
     dct = OrderedDict()
-    dct['title'] = part.title
-    dct['introduction'] = part.introduction
-    dct['conclusion'] = part.conclusion
+
+    if export_all:
+        dct['title'] = part.title
+        dct['introduction'] = part.introduction
+        dct['conclusion'] = part.conclusion
+
     dct['chapters'] = []
 
     chapters = Chapter.objects\
         .filter(part=part)\
         .order_by('position_in_part')
+
     for chapter in chapters:
         dct['chapters'].append(export_chapter(chapter))
 
@@ -125,7 +141,7 @@ def export_tutorial(tutorial, validate=True):
     dct = OrderedDict()
     dct['title'] = tutorial.title
     dct['description'] = tutorial.description
-    dct['is_mini'] = tutorial.size == Tutorial.SMALL
+    dct['size'] = size_to_string(tutorial.size)
     dct['authors'] = [a.username for a in tutorial.authors.all()]
     dct['introduction'] = tutorial.introduction
     dct['conclusion'] = tutorial.conclusion
@@ -134,13 +150,22 @@ def export_tutorial(tutorial, validate=True):
         # We export the chapter without its empty title if small tutorial
         chapter = Chapter.objects.get(tutorial=tutorial)
         dct['chapter'] = export_chapter(chapter, export_all=False)
-    else:
+
+    elif tutorial.size == Tutorial.MEDIUM:
+        # We export the part without its empty title if medium tutorial
+        part = Part.objects.get(tutorial=tutorial)
+        dct['part'] = export_part(part, export_all=False)
+
+    elif tutorial.size == Tutorial.BIG:
         dct['parts'] = []
         parts = Part.objects\
             .filter(tutorial=tutorial)\
             .order_by('position_in_tutorial')
         for part in parts:
             dct['parts'].append(export_part(part))
+
+    else:
+        raise NotImplementedError('Export for this size does not exist')
 
     # If validation is requested and fails, just return empty dict
     if validate and not validate_tutorial(dct):
