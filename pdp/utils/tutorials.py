@@ -8,16 +8,6 @@ from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
 from pdp.utils.schemas import validate_tutorial
 
 
-def size_to_string(size):
-    if size == Tutorial.SMALL:
-        return u'small'
-    elif size == Tutorial.MEDIUM:
-        return u'medium'
-    elif size == Tutorial.BIG:
-        return u'big'
-    else:
-        raise NotImplementedError('No string for this size')
-
 def move(obj, new_pos, position_f, parent_f, children_fn):
     """Move an object and reorder other objects affected by moving.
 
@@ -63,6 +53,18 @@ def move(obj, new_pos, position_f, parent_f, children_fn):
 
 
 # Export-to-dict functions
+
+def size_to_string(size):
+    """Return a string representing the tutorial size, used for export."""
+    if size == Tutorial.SMALL:
+        return u'small'
+    elif size == Tutorial.MEDIUM:
+        return u'medium'
+    elif size == Tutorial.BIG:
+        return u'big'
+    else:
+        raise NotImplementedError('No string for this size')
+
 
 def export_chapter(chapter, export_all=True):
     """Export a chapter to a dict.
