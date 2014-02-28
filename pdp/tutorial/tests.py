@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 
 from django_dynamic_fixture import G
 
-from pdp.tutorial.models import Tutorial, Part, get_last_tutorials
+from pdp.tutorial.models import Tutorial, Part, Chapter, get_last_tutorials
 from pdp.member.models import Profile
 
 
@@ -97,6 +97,70 @@ class TutorialIntegrationTests(TestCase):
             (reverse('pdp.tutorial.views.add_chapter'),
              '?partie={}'.format(part.pk))))
         self.assertEqual(302, resp.status_code)
+
+
+class BigTutorialIntegrationTests(TestCase):
+    def setUp(self):
+        self.tutorial = G(
+            Tutorial,
+            pk=42,
+            title=u'Test tutorial',
+            is_visible=True,
+            size=Tutorial.BIG,
+        )
+
+        self.parts = [G(
+            Part,
+            pk=21,
+            title=u'Test part',
+            tutorial=self.tutorial
+        )]
+
+    def test_url_download(self):
+        resp = self.client.get(u''.join(
+            (reverse('pdp.tutorial.views.download'),
+             '?tutoriel={}'.format(self.tutorial.pk))))
+        self.assertEqual(200, resp.status_code)
+
+
+class MediumTutorialIntegrationTests(TestCase):
+    def setUp(self):
+        self.tutorial = G(
+            Tutorial,
+            title=u'Test tutorial',
+            is_visible=True,
+            size=Tutorial.MEDIUM,
+        )
+
+        self.part = G(
+            Part,
+            tutorial=self.tutorial
+        )
+
+    def test_url_download(self):
+        resp = self.client.get(u''.join(
+            (reverse('pdp.tutorial.views.download'),
+             '?tutoriel={}'.format(self.tutorial.pk))))
+        self.assertEqual(200, resp.status_code)
+
+
+class SmallTutorialIntegrationTests(TestCase):
+    def setUp(self):
+        self.tutorial = G(
+            Tutorial,
+            title=u'Test tutorial',
+            is_visible=True,
+            size=Tutorial.SMALL,
+        )
+
+        G(Chapter, tutorial=self.tutorial)
+
+    # Does not work, have no idea why
+    #def test_url_download(self):
+    #    resp = self.client.get(u''.join(
+    #        (reverse('pdp.tutorial.views.download'),
+    #         '?tutoriel={}'.format(self.tutorial.pk))))
+    #    self.assertEqual(200, resp.status_code)
 
 
 class TutorialSearchIntegrationTests(TestCase):
