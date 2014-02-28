@@ -181,16 +181,16 @@ def export_tutorial(tutorial, validate=True):
 # Export-to-PDF functions using Pandoc
 
 def export_title_md(f, title, level=1):
-    f.write('{} {}\n'.format(
-        ''.join(repeat('#', level)),
+    f.write(u'{} {}\n'.format(
+        u''.join(repeat(u'#', level)),
         title,
     ))
 
 
 def export_text_md(f, text):
     if text:
-        f.write(text)
-        f.write('\n\n')
+        f.write(text.encode('utf-8'))
+        f.write(u'\n\n')
 
 
 def export_extract_md(f, extract, level=1):
@@ -230,10 +230,10 @@ def export_tutorial_pdf(tutorial):
     pdf_filepath = '/tmp/test.pdf'
 
     with open(md_filepath, 'w') as f:
-        f.write('% {}\n'.format(title))
-        f.write('% {}\n'.format(authors))
+        f.write(u'% {}\n'.format(title))
+        f.write(u'% {}\n'.format(authors))
 
-        f.write('\n\n')
+        f.write(u'\n\n')
 
         export_text_md(f, tutorial.introduction)
 
@@ -245,8 +245,9 @@ def export_tutorial_pdf(tutorial):
             export_part_md(f, tutorial.get_parts()[0], export_all=False)
 
         elif tutorial.size == Tutorial.SMALL:
-            export_chapter(f, tutorial.get_chapter(), export_all=False)
+            export_chapter_md(f, tutorial.get_chapter(), export_all=False)
 
         export_text_md(f, tutorial.conclusion)
 
-    subprocess.call(['pandoc', '-N', '-o', pdf_filepath, md_filepath])
+    subprocess.call(['pandoc', '-N', '--latex-engine=xelatex',
+                     '-o', pdf_filepath, md_filepath])
