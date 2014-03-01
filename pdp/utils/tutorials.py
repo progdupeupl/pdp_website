@@ -181,6 +181,14 @@ def export_tutorial(tutorial, validate=True):
 # Export-to-PDF functions using Pandoc
 
 def export_title_md(f, title, level=1):
+    """Write title into a file using markdown.
+
+    Params:
+        f: the file object to write in
+        title: the title to write down
+        level: level of the title, higher value means less important level
+
+    """
     f.write(u'{} {}\n'.format(
         u''.join(repeat(u'#', level)),
         title,
@@ -188,17 +196,41 @@ def export_title_md(f, title, level=1):
 
 
 def export_text_md(f, text):
+    """Write text into a file using markdown.
+
+    Params:
+        f: the file object to write in
+        text: the text to write down, unicode
+
+    """
     if text:
         f.write(text.encode('utf-8'))
         f.write(u'\n\n')
 
 
 def export_extract_md(f, extract, level=1):
+    """Write an extract into a file using markdown.
+
+    Params:
+        f: the file object to write in
+        part: the extract to write down
+        level: level of the extract title
+
+    """
     export_title_md(f, extract.title, level)
     export_text_md(f, extract.text)
 
 
 def export_chapter_md(f, chapter, level=1, export_all=True):
+    """Write a chapter into a file using markdown.
+
+    Params:
+        f: the file object to write in
+        part: the chapter to write down
+        level: level of the chapter title, will be increased for sub items
+        export_all: should the part metadata be written down?
+
+    """
     if export_all:
         export_title_md(f, chapter.title, level)
         export_text_md(f, chapter.introduction)
@@ -211,6 +243,15 @@ def export_chapter_md(f, chapter, level=1, export_all=True):
 
 
 def export_part_md(f, part, level=1, export_all=True):
+    """Write a part into a file using markdown.
+
+    Params:
+        f: the file object to write in
+        part: the part to write down
+        level: level of the part title, will be increased for sub items
+        export_all: should the part metadata be written down?
+
+    """
     if export_all:
         export_title_md(f, part.title, level)
         export_text_md(f, part.introduction)
@@ -223,6 +264,20 @@ def export_part_md(f, part, level=1, export_all=True):
 
 
 def export_tutorial_pdf(tutorial):
+    """Export a tutorial to a PDF file.
+
+    This functions uses Pandoc in order to generate the PDF file, using
+    LaTeX intermediate source code. We simply generate a Markdown source file
+    so that we do not have to convert the tutorial contents and then generate
+    a PDF from this markdown file.
+
+    Params:
+        tutorial: the tutorial to render as PDF
+
+    Returns:
+        Path to the generated PDF file
+
+    """
     title = tutorial.title
     authors = u'; '.join([a.username for a in list(tutorial.authors.all())])
 
@@ -251,3 +306,5 @@ def export_tutorial_pdf(tutorial):
 
     subprocess.call(['pandoc', '-N', '--latex-engine=xelatex',
                      '-o', pdf_filepath, md_filepath])
+
+    return pdf_filepath
