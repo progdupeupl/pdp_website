@@ -4,6 +4,8 @@
 
 from collections import OrderedDict
 from itertools import repeat
+
+import io
 import subprocess
 
 from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
@@ -204,7 +206,7 @@ def export_text_md(f, text):
 
     """
     if text:
-        f.write(text.encode('utf-8'))
+        f.write(text)
         f.write(u'\n\n')
 
 
@@ -284,7 +286,7 @@ def export_tutorial_pdf(tutorial):
     md_filepath = '/tmp/test.md'
     pdf_filepath = '/tmp/test.pdf'
 
-    with open(md_filepath, 'w') as f:
+    with io.open(md_filepath, 'w', encoding='utf-8') as f:
         f.write(u'% {}\n'.format(title))
         f.write(u'% {}\n'.format(authors))
 
@@ -304,7 +306,7 @@ def export_tutorial_pdf(tutorial):
 
         export_text_md(f, tutorial.conclusion)
 
-    subprocess.call(['pandoc', '-N', '--latex-engine=xelatex',
+    subprocess.call(['pandoc', '--latex-engine=xelatex',
                      '-o', pdf_filepath, md_filepath])
 
     return pdf_filepath
