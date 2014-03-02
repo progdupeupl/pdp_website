@@ -7,6 +7,9 @@ from itertools import repeat
 
 import io
 import subprocess
+from os import path
+
+from pdp import settings
 
 from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
 from pdp.utils.schemas import validate_tutorial
@@ -283,8 +286,11 @@ def export_tutorial_pdf(tutorial):
     title = tutorial.title
     authors = u'; '.join([a.username for a in list(tutorial.authors.all())])
 
-    md_filepath = '/tmp/test.md'
-    pdf_filepath = '/tmp/test.pdf'
+    base_filepath = path.join(settings.MEDIA_ROOT, 'tutorials',
+                              str(tutorial.pk), tutorial.slug)
+
+    md_filepath = u'{}.md'.format(base_filepath)
+    pdf_filepath = u'{}.pdf'.format(base_filepath)
 
     with io.open(md_filepath, 'w', encoding='utf-8') as f:
         f.write(u'% {}\n'.format(title))
