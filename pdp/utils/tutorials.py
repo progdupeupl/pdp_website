@@ -5,9 +5,9 @@
 from collections import OrderedDict
 from itertools import repeat
 
+import os
 import io
 import subprocess
-from os import path
 
 from pdp import settings
 
@@ -286,12 +286,21 @@ def export_tutorial_pdf(tutorial):
     title = tutorial.title
     authors = u'; '.join([a.username for a in list(tutorial.authors.all())])
 
-    base_filepath = path.join(settings.MEDIA_ROOT, 'tutorials',
-                              str(tutorial.pk), tutorial.slug)
+    base_filepath = os.path.join(settings.MEDIA_ROOT, 'tutorials',
+                                 str(tutorial.pk), tutorial.slug)
 
+    # We try to create the directory if it does not exist
+    try:
+        os.mkdir(base_filepath)
+    except OSError:
+        # Use FileExistsError for Python 3, not OSError
+        pass
+
+    # We will store both generated markdown and PDF into this directory
     md_filepath = u'{}.md'.format(base_filepath)
     pdf_filepath = u'{}.pdf'.format(base_filepath)
 
+    # We write down the markdown source
     with io.open(md_filepath, 'w', encoding='utf-8') as f:
         f.write(u'% {}\n'.format(title))
         f.write(u'% {}\n'.format(authors))
@@ -312,6 +321,7 @@ def export_tutorial_pdf(tutorial):
 
         export_text_md(f, tutorial.conclusion)
 
+    # We generate the PDF from markdown using Pandoc
     subprocess.call(['pandoc', '--latex-engine=xelatex',
                      '-o', pdf_filepath, md_filepath])
 
