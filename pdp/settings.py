@@ -219,6 +219,7 @@ INSTALLED_APPS = (
     'provider.oauth2',
     'rest_framework_swagger',
     'haystack',
+    'celery',
 
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
@@ -330,6 +331,10 @@ SERVE = False
 
 # Max size image upload (in bytes)
 IMAGE_MAX_SIZE = 1024 * 512
+
+# Celery w/ Redis
+BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
 
 # Load the production settings, overwrite the existing ones if needed
 try:

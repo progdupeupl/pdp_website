@@ -7,12 +7,12 @@ from itertools import repeat
 
 import os
 import io
-import subprocess
 
 from pdp import settings
 
 from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
 from pdp.utils.schemas import validate_tutorial
+from pdp.utils.tasks import pandoc_pdf
 
 
 def move(obj, new_pos, position_f, parent_f, children_fn):
@@ -286,12 +286,13 @@ def export_tutorial_pdf(tutorial):
     title = tutorial.title
     authors = u'; '.join([a.username for a in list(tutorial.authors.all())])
 
-    base_filepath = os.path.join(settings.MEDIA_ROOT, 'tutorials',
-                                 str(tutorial.pk), tutorial.slug)
+    base_dir = os.path.join(settings.MEDIA_ROOT, 'tutorials',
+                                 str(tutorial.pk))
+    base_filepath = os.path.join(base_dir, tutorial.slug)
 
     # We try to create the directory if it does not exist
     try:
-        os.mkdir(base_filepath)
+        os.mkdir(base_dir)
     except OSError:
         # Use FileExistsError for Python 3, not OSError
         pass
@@ -322,7 +323,6 @@ def export_tutorial_pdf(tutorial):
         export_text_md(f, tutorial.conclusion)
 
     # We generate the PDF from markdown using Pandoc
-    subprocess.call(['pandoc', '--latex-engine=xelatex',
-                     '-o', pdf_filepath, md_filepath])
+    pandoc_pdf.delay(md_filepath, pdf_filepath)
 
     return pdf_filepath
