@@ -11,6 +11,7 @@ import os
 import string
 
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
@@ -116,6 +117,14 @@ class Tutorial(models.Model):
         return reverse('pdp.tutorial.views.view_tutorial', args=[
             self.pk, slugify(self.title)
         ])
+
+    def get_pdf_url(self):
+        """Get URL to get a PDF file of this tutorial."""
+        return u'{}/tutorials/{}/{}.pdf'.format(
+            settings.MEDIA_URL,
+            self.pk,
+            self.slug,
+        )
 
     def get_edit_url(self):
         """Get URL to edit this tutorial.

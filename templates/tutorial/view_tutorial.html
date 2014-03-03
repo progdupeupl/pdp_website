@@ -83,7 +83,7 @@
             {% csrf_token %}
         </form>
     {% endif %}
-    <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}" class="button">
+    <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}&format=pdf" class="button">
         <i class="icon-download"></i>
         Télécharger
     </a>

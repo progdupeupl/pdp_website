@@ -112,14 +112,26 @@ def download(request):
     if not tutorial.is_visible and not request.user in tutorial.authors.all():
         raise Http404
 
-    dct = export_tutorial(tutorial, validate=False)
-    data = json.dumps(dct, indent=4, ensure_ascii=False)
+    export_format = request.GET.get('format', None)
 
-    response = HttpResponse(data, mimetype='application/json')
-    response['Content-Disposition'] = 'attachment; filename={0}.json'\
-        .format(tutorial.slug)
+    if export_format is None:
+        return HttpResponseBadRequest()
 
-    return response
+    if export_format == 'json':
+        dct = export_tutorial(tutorial, validate=False)
+        data = json.dumps(dct, indent=4, ensure_ascii=False)
+
+        response = HttpResponse(data, mimetype='application/json')
+        response['Content-Disposition'] = 'attachment; filename={0}.json'\
+            .format(tutorial.slug)
+
+        return response
+
+    elif export_format == 'pdf':
+        return redirect(tutorial.get_pdf_url())
+
+    else:
+        return HttpResponseBadRequest()
 
 
 @login_required
