@@ -11,19 +11,23 @@ import os
 import string
 
 from django.db import models
+from django.db.models.signals import post_save
+
+from django.dispatch import receiver
 from django.conf import settings
 from django.contrib.auth.models import User
+
 from django.core.urlresolvers import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
+
+from PIL import Image
+from cStringIO import StringIO
 
 from pdp.tutorial.exceptions import CorruptedTutorialError, \
     OrphanPartException, OrphanChapterException
 
 from pdp.utils import slugify
 from pdp.utils.models import has_changed
-
-from PIL import Image
-from cStringIO import StringIO
-from django.core.files.uploadedfile import SimpleUploadedFile
 
 IMAGE_MAX_WIDTH = 64
 IMAGE_MAX_HEIGHT = 64
@@ -488,3 +492,31 @@ class Extract(models.Model):
             self.position_in_chapter,
             slugify(self.title)
         )
+
+
+@receiver(post_save, sender=Tutorial)
+def saved_extract_handler(sender, **kwargs):
+    """Function called on each tutorial save."""
+    from pdp.utils.tutorials import export_tutorial_pdf
+    export_tutorial_pdf(kwargs.get('instance', None))
+
+
+@receiver(post_save, sender=Part)
+def saved_extract_handler(sender, **kwargs):
+    """Function called on each tutorial save."""
+    from pdp.utils.tutorials import export_tutorial_pdf
+    export_tutorial_pdf(kwargs.get('instance', None).tutorial)
+
+
+@receiver(post_save, sender=Chapter)
+def saved_extract_handler(sender, **kwargs):
+    """Function called on each tutorial save."""
+    from pdp.utils.tutorials import export_tutorial_pdf
+    export_tutorial_pdf(kwargs.get('instance', None).get_tutorial())
+
+
+@receiver(post_save, sender=Extract)
+def saved_extract_handler(sender, **kwargs):
+    """Function called on each tutorial save."""
+    from pdp.utils.tutorials import export_tutorial_pdf
+    export_tutorial_pdf(kwargs.get('instance', None).chapter.get_tutorial())
