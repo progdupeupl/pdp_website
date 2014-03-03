@@ -83,10 +83,19 @@
             {% csrf_token %}
         </form>
     {% endif %}
-    <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}&format=pdf" class="button">
+    <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}&format=pdf"
+        class="button split">
         <i class="icon-download"></i>
-        Télécharger
+        Télécharger (PDF)
+        <span data-dropdown="drop-download"></span>
     </a>
+    <ul id="drop-download" class="f-dropdown" data-dropdown-content style="float: none;">
+        <li>
+            <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}&format=json">
+                Télécharger (JSON)
+            </a>
+        </li>
+    </ul>
 {% endblock %}
 
 {% block content %}
