@@ -1,6 +1,41 @@
 <h2>
-    Formattage de base
+    Mise en forme de base
 </h2>
+
+<h3>
+    Paragraphes et sauts à la ligne
+</h3>
+
+<p>
+    Les paragraphes sont séparés par une (ou plusieurs) lignes vides, comme
+    ceci :
+</p>
+
+<pre>
+Ceci est un paragraphe.
+Ce texte sera toujours dans le premier paragraphe car pas de ligne vide.
+Celui-ci également.
+
+Ceci est un autre paragraphe, on note la ligne vide.
+</pre>
+
+<p>
+    Pour obtenir un saut à la ligne sans obligatoirement changer de paragraphe,
+    on peut terminer une ligne de deux espaces pour signaler notre volonté
+    d’avoir un saut à la ligne pour la prochaine ligne :
+</p>
+
+<pre>
+Ceci est un paragraphe.
+Ce texte sera toujours dans le premier paragraphe car pas de ligne vide.␣␣
+Cette ligne sera séparée des lignes du dessus par un saut à la ligne.
+
+Ceci est un autre paragraphe.
+</pre>
+
+<h3>
+    Blocs de mise en forme
+</h3>
 
 <p>
     Voici les différentes options de mise en forme proposées par Markdown et
@@ -127,6 +162,50 @@ from os import path
 </table>
 
 <h2>
+    Formules mathématiques
+</h2>
+
+<p>
+    Vous avez la possibilité d’incorporer des formules mathématiques dans vos
+    messages et vos écrits de différentes manières.
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th>Vous tapez</th>
+            <th>Vous voyez</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Formule incorporée</td>
+            <td>
+<pre>
+texte
+$\int_0^1 f(x) dx$
+suite
+</pre>
+            </td>
+            <td><p>texte $\int_0^1 f(x) dx$ suite</p></td>
+        </tr>
+        <tr>
+            <td>Formule centrée</td>
+            <td>
+<pre>
+texte
+$$\int_0^1 f(x) dx$$
+suite
+</pre>
+            </td>
+            <td><p>texte $$\int_0^1 f(x) dx$$ suite</p></td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- Temporary disabled
+<h2>
     Extensions
 </h2>
 
@@ -168,3 +247,4 @@ from os import path
         </tr>
     </tbody>
 </table>
+-->
