@@ -7,6 +7,7 @@ from itertools import repeat
 
 import os
 import io
+from datetime import datetime
 
 from pdp import settings
 
@@ -283,11 +284,14 @@ def export_tutorial_pdf(tutorial):
         Path to the generated PDF file
 
     """
+
+    # Generated document meta informations
     title = tutorial.title
     authors = u'; '.join([a.username for a in list(tutorial.authors.all())])
+    date = datetime.now().strftime('%d/%m/%Y')
 
     base_dir = os.path.join(settings.MEDIA_ROOT, 'tutorials',
-                                 str(tutorial.pk))
+                            str(tutorial.pk))
     base_filepath = os.path.join(base_dir, tutorial.slug)
 
     # We try to create the directory if it does not exist
@@ -305,6 +309,7 @@ def export_tutorial_pdf(tutorial):
     with io.open(md_filepath, 'w', encoding='utf-8') as f:
         f.write(u'% {}\n'.format(title))
         f.write(u'% {}\n'.format(authors))
+        f.write(u'% {}\n'.format(date))
 
         f.write(u'\n\n')
 
