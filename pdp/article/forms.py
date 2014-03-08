@@ -5,6 +5,7 @@ from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms_foundation.layout import Layout, Submit, Field, HTML
 
+from pdp.article.models import ArticleCategory
 
 class NewArticleForm(forms.Form):
     title = forms.CharField(
@@ -26,6 +27,11 @@ class NewArticleForm(forms.Form):
         required=False
     )
 
+    category = forms.ModelChoiceField(
+        label=u'Catégorie',
+        queryset=ArticleCategory.objects.all()
+    )
+
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
@@ -35,6 +41,7 @@ class NewArticleForm(forms.Form):
             Field('description'),
             Field('image'),
             Field('tags'),
+            Field('category'),
             Submit('submit', u'Créer l’article'),
         )
         super(NewArticleForm, self).__init__(*args, **kwargs)

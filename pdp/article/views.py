@@ -130,9 +130,14 @@ def new(request):
             # important (will be changed on publish)
             article.pubdate = datetime.now()
 
+            category = ArticleCategory.objects.get(pk=int(data['category']))
+            if category:
+                article.category = category
+
             # First save before tags because they need to know the id of the
             # article
             article.save()
+
 
             list_tags = data['tags'].split(',')
             for tag in list_tags:
