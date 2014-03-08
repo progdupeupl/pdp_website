@@ -73,6 +73,11 @@ class EditArticleForm(forms.Form):
         required=False
     )
 
+    category = forms.ModelChoiceField(
+        label=u'Catégorie',
+        queryset=ArticleCategory.objects.all()
+    )
+
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
@@ -84,6 +89,7 @@ class EditArticleForm(forms.Form):
             Field('text'),
             Field('image'),
             Field('tags'),
+            Field('category'),
             Submit('submit', u'Enregistrer les modifications'),
         )
         super(EditArticleForm, self).__init__(*args, **kwargs)

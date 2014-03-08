@@ -190,6 +190,10 @@ def edit(request):
             for tag in list_tags:
                 article.tags.add(tag.strip())
 
+            category = ArticleCategory.objects.get(pk=int(data['category']))
+            if category:
+                article.category = category
+
             article.save()
 
             # If the article was on the home page, update it
@@ -208,11 +212,19 @@ def edit(request):
                 list_tags += ', '
             list_tags += tag.__str__()
 
+        # in the first migration
+        # artcle default category is set to None
+        if not article.category:
+            article_category_pk = None
+        else:
+            article_category_pk = article.category.pk
+
         form = EditArticleForm({
             'title': article.title,
             'description': article.description,
             'text': article.text,
             'tags': list_tags,
+            'category': article_category_pk
         })
 
     return render_template('article/edit.html', {
