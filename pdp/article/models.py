@@ -8,6 +8,8 @@ import string
 from django.db import models
 from django.db.models.signals import post_save
 
+from django.conf import settings
+
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -100,6 +102,14 @@ class Article(models.Model):
         """
         return reverse('pdp.article.views.view', args=(
             self.pk, self.slug))
+
+    def get_pdf_url(self):
+        """Get URL to get a PDF file of this article."""
+        return u'{}/articles/{}/{}.pdf'.format(
+            settings.MEDIA_URL,
+            self.pk,
+            self.slug,
+        )
 
     def get_edit_url(self):
         """Get URL to edit the article.
