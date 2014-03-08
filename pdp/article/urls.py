@@ -28,5 +28,7 @@ urlpatterns = patterns(
     url(r'^tags/$', views.tags),
     url(r'^tag/(?P<name>.+)$', views.tag),
 
+    url(r'^categorie/(?P<name>.+)$', views.category, name="articles_category"),
+
     url(r'^$', views.index),
 )

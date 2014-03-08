@@ -1,0 +1,75 @@
+{% extends "article/base.html" %}
+
+{% block title %}
+    {{ category }}
+{% endblock %}
+
+{% block headline %}
+    Catégories 
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="current"><a href="#">Catégories</a></li>
+    <li class="current"><a href="#">{{ category }}</a></li>
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="large-12 columns">
+        <dl class="sub-nav">
+            {% ifequal category.slug "tous" %}
+                <dd class="active"><a href="{% url "articles_category" "tous" %}">Tous les articles</a></dd>
+            {% else %}
+                <dd><a href="{% url "articles_category" "tous" %}">Tous les articles</a></dd>
+            {% endifequal %}
+
+            {% for c in all_category %}
+                {% ifequal category.slug c.slug %}
+                    <dd class="active"><a href="{{ c.get_absolute_url }}">{{ c }}</a></dd>
+                {% else %}
+                    <dd><a href="{{ c.get_absolute_url }}">{{ c }}</a></dd>
+                {% endifequal %}
+            {% endfor %}
+
+            {% ifequal category.slug "beta" %}
+                <dd class="active"><a href="{% url "articles_category" "beta" %}">Bêta</a></dd>
+            {% else %}
+                <dd><a href="{% url "articles_category" "beta" %}">Bêta</a></dd>
+            {% endifequal %}
+        </dl>
+    </div>
+</div>
+
+<div class="row">
+    <div class="large-12 columns">
+        {% if articles %}
+            <div class="article-items">
+                {% for article in articles %}
+                <div class="row article-publication-item">
+                    <div class="large-1 small-2 columns">
+                        {% if article.thumbnail %}
+                            <img src="{{article.thumbnail.url }}"/>
+                        {% endif %}
+                    </div>
+                    <div class="large-10 small-10 columns">
+                        <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+                        {% if article.is_beta %}<span class="label alert">BETA</span>{% endif %}
+                        <p>{{ article.description }}</p>
+                    </div>
+                    <div class="small-1 columns hide-for-small">
+                        <div class="date-box">
+                            {% with date=article.pubdate %}
+                                {% include "misc/datebox.part.html" %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Aucun article disponible.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

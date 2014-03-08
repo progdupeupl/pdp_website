@@ -66,7 +66,7 @@ class ArticleCategory(models.Model):
             string
 
         """
-        return u'/articles/categorie/{0}/'.format(self.slug)
+        return u'/articles/categorie/{0}'.format(self.slug)
 
 
 class Article(models.Model):

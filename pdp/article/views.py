@@ -326,6 +326,25 @@ def tag(request, name):
     })
 
 
+def category(request, name):
+    if name == 'tous':
+        category = ArticleCategory(title=u'Tout les articles',slug=u'tous')
+        articles = Article.objects.filter(is_beta=False, is_visible=True).order_by('-pubdate')
+    elif name == 'beta':
+        category = ArticleCategory(title=u'Bêta',slug=u'beta')
+        articles = Article.objects.filter(is_beta=True).order_by('-pubdate')
+    else:
+        category = get_object_or_404(ArticleCategory, slug=name)
+        articles = Article.objects.filter(category=category, is_beta=False, is_visible=True).order_by('-pubdate')
+
+    all_category = ArticleCategory.objects.all()
+    return render_template('article/category.html',{
+        'category': category,
+        'all_category': all_category,
+        'articles': articles
+    })
+
+
 # Deprecated URLs
 
 def deprecated_view_redirect(request, article_pk, article_slug):
