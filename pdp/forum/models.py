@@ -421,7 +421,7 @@ def never_read(topic, user=None):
         user = get_current_user()
 
     return TopicRead.objects\
-        .filter(post=topic.last_message, topic=topic, user=user)\
+        .filter(post_id=topic.last_message_id, topic=topic, user=user)\
         .count() == 0
 
 
@@ -439,16 +439,15 @@ def mark_read(topic, user=None):
     if user is None:
         user = get_current_user()
 
-    # We delete the previous TopicRead instance
-    TopicRead.objects.filter(topic=topic, user=user).delete()
+    # We update existing TopicRead or create a new one
+    req = TopicRead.objects.filter(topic=topic, user=user)
+    if req:
+        t = req[0]
+    else:
+        t = TopicRead(topic=topic, user=user)
 
-    # We create a new TopicRead and save it
-    t = TopicRead(post=topic.last_message, topic=topic, user=user)
+    t.post = topic.last_message
     t.save()
-
-    # TODO: instead of deleting and creating a new instance, maybe it will be
-    # more database-friendly to just update it in order to not make the index
-    # increase.
 
     # If the topic is followed, we want to update some cached values
     if topic.is_followed(user):

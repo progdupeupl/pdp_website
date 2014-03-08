@@ -27,8 +27,10 @@
         <form action="{% url "pdp.tutorial.views.modify_tutorial" %}" method="post">
             <div class="button-group">
                 <a href="
-                    {% if not tutorial.is_mini %}
+                    {% if tutorial.size == "B" %}
                         {% url "pdp.tutorial.views.add_part" %}?tutoriel={{ tutorial.pk }}
+                    {% elif tutorial.size == "M" %}
+                        {% url "pdp.tutorial.views.add_chapter" %}?partie={{ part.pk }}
                     {% else %}
                         {% url "pdp.tutorial.views.add_extract" %}?chapitre={{ tutorial.get_chapter.pk }}
                     {% endif %}" class="button small">
@@ -81,10 +83,19 @@
             {% csrf_token %}
         </form>
     {% endif %}
-    <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}" class="button">
+    <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}&format=pdf"
+        class="button split">
         <i class="icon-download"></i>
-        Télécharger
+        Télécharger (PDF)
+        <span data-dropdown="drop-download"></span>
     </a>
+    <ul id="drop-download" class="f-dropdown" data-dropdown-content style="float: none;">
+        <li>
+            <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}&format=json">
+                Télécharger (JSON)
+            </a>
+        </li>
+    </ul>
 {% endblock %}
 
 {% block content %}
@@ -92,9 +103,13 @@
 <div class="row">
     <div class="large-12 columns">
         <p>
-            Tutoriel
-            {% if not tutorial.is_mini %}
-                étendu
+            {% if not tutorial.size == "S" %}
+                Tutoriel
+                {% if not tutorial.size == "M" %}
+                    étendu
+                {% endif %}
+            {% else %}
+                Mini-tutoriel
             {% endif %}
             rédigé par
             {% for member in tutorial.authors.all %}
@@ -120,12 +135,17 @@
             <p>Aucune introduction.</p>
         {% endif %}
 
-        {% if tutorial.is_mini %}
+        {% if tutorial.size == "S" %}
         {# Small tutorial #}
 
             {% with authors=tutorial.authors.all %}
                 {% include "tutorial/view_chapter_common.part.html" %}
             {% endwith %}
+
+        {% elif tutorial.size == "M" %}
+        {# Medium tutorial #}
+
+            {% include "tutorial/view_part_common.part.html" %}
 
         {% else %}
         {# Large tutorial #}

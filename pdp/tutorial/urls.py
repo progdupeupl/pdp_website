@@ -17,6 +17,7 @@ urlpatterns = patterns(
 
     # Current URLs
     url(r'^voir/(?P<name>.+)$', views.find_tutorial),
+
     url(r'^(?P<tutorial_pk>\d+)/(?P<tutorial_slug>.+)/'
         r'(?P<part_slug>.+)/'
         r'(?P<chapter_slug>.+)/$',
@@ -26,9 +27,9 @@ urlpatterns = patterns(
         r'(?P<part_slug>.+)/$', views.view_part, name="view-part-url"),
 
     url(r'^(?P<tutorial_pk>\d+)/(?P<tutorial_slug>.+)/$',
-        views.view_tutorial),
+        views.view_tutorial, name="view-tutorial-url"),
 
-    url(r'^telecharger', views.download),
+    url(r'^telecharger$', views.download),
 
     # Editing
 

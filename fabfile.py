@@ -40,6 +40,7 @@ def test():
     """Test all the project's own applications."""
     local('python manage.py test {0}'.format(' '.join(TEST_APPS)))
 
+
 def coverage():
     """Launch coverage report."""
     local('coverage run --source="." manage.py test {0}'.format(
@@ -55,6 +56,10 @@ def updatesearch():
     """Update the search engine cache."""
     local('python manage.py update_index')
 
+
+def celery():
+    """Start the celery tasks server."""
+    local('celery worker --app=pdp.celeryapp:app')
 
 def bootstrap():
     """Initialise the whole project for the first time."""

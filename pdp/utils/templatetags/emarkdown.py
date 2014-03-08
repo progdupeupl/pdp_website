@@ -1,6 +1,6 @@
 # coding: utf-8
 
-import cssstyles
+from pdp.utils.templatetags import cssstyles
 import markdown
 import bleach
 

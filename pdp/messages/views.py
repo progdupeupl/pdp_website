@@ -142,7 +142,7 @@ def new(request):
         # If the client is using the "preview" button
         if 'preview' in request.POST:
             return render_template('messages/new.html', {
-                'participants': request.POST['participants'],
+                'recipients': request.POST['recipients'],
                 'title': request.POST['title'],
                 'subtitle': request.POST['subtitle'],
                 'text': request.POST['text'],
@@ -160,7 +160,7 @@ def new(request):
             n_topic.author = request.user
             n_topic.save()
 
-            list_part = data['participants'].split(',')
+            list_part = data['recipients'].split(',')
             for part in list_part:
                 part = part.strip()
                 p = get_object_or_404(User, username=part)
@@ -181,12 +181,14 @@ def new(request):
 
             return redirect(n_topic.get_absolute_url())
     else:
-        form = PrivateTopicForm()
 
+        data = {}
         if 'destinataire' in request.GET:
             user_pk = request.GET['destinataire']
             u = get_object_or_404(User, pk=user_pk)
-            form.destinataires = u.username
+            data['recipients'] = u.username
+
+        form = PrivateTopicForm(data)
 
     return render_template('messages/new.html', {'form': form})
 

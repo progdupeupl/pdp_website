@@ -24,11 +24,23 @@
     </div>
 </div>
 
+{# Articles #}
+
 <div class="row">
     <div class="large-12 columns">
         <h2>Mes articles</h2>
     </div>
 </div>
+
+<div class="row">
+    <div class="large-12 columns">
+        <a href="{% url "pdp.article.views.new" %}" class="button">
+            <i class="icon-plus"></i>
+            Nouvel article
+        </a>
+    </div>
+</div>
+
 {% if user_articles %}
     {% for article in user_articles %}
         {% if article.is_visible %}
@@ -66,9 +78,21 @@
     </div>
 {% endif %}
 
+
+{# Tutorials #}
+
 <div class="row">
     <div class="large-12 columns">
         <h2>Mes tutoriels</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="large-12 columns">
+        <a href="{% url "pdp.tutorial.views.add_tutorial" %}" class="button">
+            <i class="icon-plus"></i>
+            Nouveau tutoriel
+        </a>
     </div>
 </div>
 
@@ -108,5 +132,4 @@
         </div>
     </div>
 {% endif %}
-
 {% endblock %}

@@ -212,12 +212,17 @@ INSTALLED_APPS = (
     'email_obfuscator',
     'debug_toolbar',
     'taggit',
+    'taggit_templatetags',
     'pipeline',
     'rest_framework',
     'provider',
     'provider.oauth2',
     'rest_framework_swagger',
     'haystack',
+    'celery',
+
+    # Better use RabbitMQ or Redis in production
+    'kombu.transport.django',
 
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
@@ -329,6 +334,12 @@ SERVE = False
 
 # Max size image upload (in bytes)
 IMAGE_MAX_SIZE = 1024 * 512
+
+# Do use RabbitMQ or Redis in production
+BROKER_URL = 'django://'
+
+# Do not allow pickle in production
+CELERY_ACCEPT_CONTENT = ['json', 'pickle']
 
 # Load the production settings, overwrite the existing ones if needed
 try:

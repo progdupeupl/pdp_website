@@ -3,7 +3,7 @@
 from datetime import datetime
 
 from django.shortcuts import get_object_or_404, redirect
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.http import require_POST
@@ -69,16 +69,22 @@ def view_tutorial(request, tutorial_pk, tutorial_slug):
     # Two variables to handle two distinct cases (large/small tutorial)
     chapter = None
     parts = None
+    part = None
 
     # If it's a small tutorial, fetch its chapter
-    if tutorial.is_mini:
+    if tutorial.size == Tutorial.SMALL:
         chapter = Chapter.objects.get(tutorial=tutorial)
+    elif tutorial.size == Tutorial.MEDIUM:
+        part = Part.objects.get(tutorial=tutorial)
     else:
         parts = Part.objects.all(
         ).filter(tutorial=tutorial).order_by('position_in_tutorial')
 
     return render_template('tutorial/view_tutorial.html', {
-        'tutorial': tutorial, 'chapter': chapter, 'parts': parts
+        'tutorial': tutorial,
+        'chapter': chapter,
+        'part': part,
+        'parts': parts,
     })
 
 
@@ -91,19 +97,41 @@ def download(request):
     """
     import json
 
-    tutorial = get_object_or_404(Tutorial, pk=request.GET['tutoriel'])
+    tutorial_pk = request.GET.get('tutoriel', None)
+
+    if tutorial_pk is None:
+        return HttpResponseBadRequest()
+
+    try:
+        tutorial_pk = int(tutorial_pk)
+    except ValueError:
+        return HttpResponseBadRequest()
+
+    tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
 
     if not tutorial.is_visible and not request.user in tutorial.authors.all():
         raise Http404
 
-    dct = export_tutorial(tutorial, validate=False)
-    data = json.dumps(dct, indent=4, ensure_ascii=False)
+    export_format = request.GET.get('format', None)
 
-    response = HttpResponse(data, mimetype='application/json')
-    response['Content-Disposition'] = 'attachment; filename={0}.json'\
-        .format(tutorial.slug)
+    if export_format is None:
+        return HttpResponseBadRequest()
 
-    return response
+    if export_format == 'json':
+        dct = export_tutorial(tutorial, validate=False)
+        data = json.dumps(dct, indent=4, ensure_ascii=False)
+
+        response = HttpResponse(data, mimetype='application/json')
+        response['Content-Disposition'] = 'attachment; filename={0}.json'\
+            .format(tutorial.slug)
+
+        return response
+
+    elif export_format == 'pdf':
+        return redirect(tutorial.get_pdf_url())
+
+    else:
+        return HttpResponseBadRequest()
 
 
 @login_required
@@ -122,7 +150,7 @@ def add_tutorial(request):
             tutorial = Tutorial()
             tutorial.title = data['title']
             tutorial.description = data['description']
-            tutorial.is_mini = 'is_mini' in data
+            tutorial.size = data['size']
             tutorial.pubdate = datetime.now()
             if 'image' in request.FILES:
                 tutorial.image = request.FILES['image']
@@ -135,11 +163,18 @@ def add_tutorial(request):
             if 'icon' in request.FILES:
                 tutorial.icon = request.FILES['icon']
             tutorial.save()
+
             # If it's a small tutorial, create its corresponding chapter
-            if tutorial.is_mini:
+            if tutorial.size == Tutorial.SMALL:
                 chapter = Chapter()
                 chapter.tutorial = tutorial
                 chapter.save()
+
+            # If it's a medium tutorial, create its corresponding part
+            if tutorial.size == Tutorial.MEDIUM:
+                part = Part()
+                part.tutorial = tutorial
+                part.save()
 
             return redirect(tutorial.get_absolute_url())
     else:
@@ -302,30 +337,68 @@ def modify_tutorial(request):
 # Part
 
 def view_part(request, tutorial_pk, tutorial_slug, part_slug):
-    """Display a part.
+    """Display a part or a chapter depending on context.
+
+    Due to technical limitations, we cannot route an URL to two different
+    views, so this view is both used for:
+
+        - Displaying a part in a tutorial of size Tutorial.BIG
+        - Displaying a chapter in a tutorial of size Tutorial.MEDIUM
+
+    This is because we want the depth of the tutorial to be visible within the
+    URL so this view is for accessing the first level of depth after the root
+    level.
 
     Returns:
         HttpResponse
 
     """
-    part = get_object_or_404(Part,
-                             slug=part_slug, tutorial__pk=tutorial_pk)
 
-    tutorial = part.tutorial
-    if not tutorial.is_visible \
-       and not request.user.has_perm('tutorial.change_part') \
-       and not request.user in tutorial.authors.all():
-        if not (tutorial.is_beta and request.user.is_authenticated()):
-            raise PermissionDenied
+    tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
 
-    # Make sure the URL is well-formed
-    if not tutorial_slug == slugify(tutorial.title)\
-            or not part_slug == slugify(part.title):
-        return redirect(part.get_absolute_url())
+    # We try to match requested item or 404 before redirecting if bad tutorial
+    # slug is detected.
+    if tutorial.size == Tutorial.BIG:
+        # Big tutorial so the object we will display will be a Part
+        item = get_object_or_404(
+            Part, slug=part_slug, tutorial__pk=tutorial_pk)
+    elif tutorial.size == Tutorial.MEDIUM:
+        # Medium tutorial so the object we will display will be a Chapter
+        item = get_object_or_404(
+            Chapter, slug=part_slug, part__tutorial__pk=tutorial_pk)
+    else:
+        # We do not know what to display so a 404 is adapted here
+        raise Http404
 
-    return render_template('tutorial/view_part.html', {
-        'part': part
-    })
+    # Redirect if bad tutorial slug but item exists
+    if tutorial.slug != tutorial_slug:
+        return redirect(reverse('pdp.tutorial.views.view_part', args=[
+            tutorial_pk,
+            tutorial.slug,
+            part_slug,
+        ]))
+
+    # Check access rights
+    if not tutorial.is_visible:
+        if not (tutorial.is_beta and request.user.is_authenticated()) \
+                and not request.user in tutorial.authors.all():
+            if tutorial.size == Tutorial.BIG \
+                    and not request.user.has_perm('tutorial.change_part'):
+                raise PermissionDenied
+            elif tutorial.size == Tutorial.MEDIUM \
+                    and not request.user.has_perm('tutorial.change_chapter'):
+                raise PermissionDenied
+
+    if tutorial.size == Tutorial.BIG:
+        # Render the part if we are viewing a big tutorial
+        return render_template('tutorial/view_part.html', {
+            'part': item
+        })
+    elif tutorial.size == Tutorial.MEDIUM:
+        # Render the chapter if we are viewing a medium tutorial
+        return render_template('tutorial/view_chapter.html', {
+            'chapter': item
+        })
 
 
 @login_required
@@ -345,7 +418,7 @@ def add_part(request):
 
     tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
     # Make sure it's a big tutorial, just in case
-    if tutorial.is_mini:
+    if not tutorial.size == Tutorial.BIG:
         raise PermissionDenied
     # Make sure the user belongs to the author list
     if not request.user in tutorial.authors.all():
@@ -816,4 +889,3 @@ def find_tutorial(request, name):
     return render_template('tutorial/find_tutorial.html', {
         'tutos': tutos, 'usr': u,
     })
-

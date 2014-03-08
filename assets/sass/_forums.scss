@@ -35,6 +35,15 @@
         background-position: emCalc(24px) emCalc(5px);
         background-repeat: no-repeat;
 
+        // We are using a title in order to have better semantic but we want
+        // these titles to be displayed like normal text
+        h3 {
+            font-family: 'Noto Sans';
+            font-size: emCalc(16px);
+            margin: 0;
+            padding: 0;
+        }
+
         p {
             margin: 0;
             padding: 0;

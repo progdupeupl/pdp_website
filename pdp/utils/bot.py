@@ -4,6 +4,8 @@
 
 from datetime import datetime
 
+from django.template import Template, Context
+
 from pdp.settings import BOT_USER_PK, BOT_TUTORIAL_FORUM_PK, \
     BOT_ARTICLE_FORUM_PK
 
@@ -57,15 +59,15 @@ def create_tutorial_topic(tutorial):
     """
 
     # Text to be displayed to users, with a link to the tutorial
-    md = u'**{}**  \n{}\n\n[» Voir le tutoriel]({})'\
-        .format(tutorial.title,
-                tutorial.description,
-                tutorial.get_absolute_url())
+    with open('templates/bot/new_tutorial.html', 'r') as f:
+        t = Template(f.read())
+
+    text = t.render(Context({'tutorial': tutorial}))
 
     # Create topic
     create_topic(
         BOT_TUTORIAL_FORUM_PK, u'[Tutoriel] {}'.format(tutorial.title),
-        tutorial.description, md)
+        tutorial.description, text)
 
 
 def create_article_topic(article):
@@ -77,12 +79,12 @@ def create_article_topic(article):
     """
 
     # Text to be displayed to users, with a link to the article
-    md = u'**{}**  \n{}\n\n[» Voir l’article]({})'\
-        .format(article.title,
-                article.description,
-                article.get_absolute_url())
+    with open('templates/bot/new_article.html', 'r') as f:
+        t = Template(f.read())
+
+    text = t.render(Context({'article': article}))
 
     # Create topic
     create_topic(
         BOT_ARTICLE_FORUM_PK, u'[Article] {}'.format(article.title),
-        article.description, md)
+        article.description, text)

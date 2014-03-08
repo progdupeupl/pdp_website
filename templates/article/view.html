@@ -9,7 +9,7 @@
 {% block headline %}
     {% if article.thumbnail %}
         <span>
-            <img src="{{ article.thumbnail.url }}" alt="Icône" class="hide-for-small"/>
+            <img src="{{ article.thumbnail.url }}" alt="" class="hide-for-small"/>
         </span>
     {% endif %}
     <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
@@ -90,7 +90,10 @@
             <br />
             Tags : 
             {% for tag in article.tags.all %}
-                <a href="{% url "haystack_search" %}?q={{ tag.name }}&amp;models=article.article">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+                <a href="{% url "pdp.article.views.tag" name=tag.name %}"
+                    class="label secondary">
+                    {{ tag.name }}
+                </a>
             {% empty %}
                 aucun
             {% endfor %}

@@ -138,6 +138,11 @@ def modify_gallery(request):
     if 'adduser' in request.POST:
         form = UserGalleryForm(request.POST)
         u = get_object_or_404(User, username=request.POST['user'])
+
+        # If the user already owns the gallery, we don't add him again
+        if UserGallery.objects.filter(gallery=gal, user=u).count() > 0:
+            raise PermissionDenied
+
         if form.is_valid():
             ug = UserGallery()
             ug.user = u

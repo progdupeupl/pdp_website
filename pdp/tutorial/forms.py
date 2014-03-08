@@ -26,10 +26,9 @@ class TutorialForm(forms.Form):
         max_length=200
     )
 
-    is_mini = forms.BooleanField(
-        label=u'Mini-tutoriel',
-        required=False,
-        initial=True
+    size = forms.ChoiceField(
+        label=u'Taille du tutoriel',
+        choices=Tutorial.SIZE_CHOICES
     )
 
     icon = forms.ImageField(required=False)
@@ -42,7 +41,7 @@ class TutorialForm(forms.Form):
             Field('title'),
             Field('description'),
             Field('image'),
-            'is_mini',
+            Field('size'),
             Submit('submit', 'Valider')
         )
         super(TutorialForm, self).__init__(*args, **kwargs)

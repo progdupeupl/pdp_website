@@ -78,7 +78,9 @@
 
 {% block breadcrumb %}
     <li><a href="{{ chapter.part.tutorial.get_absolute_url }}">{{ chapter.part.tutorial.title }}</a></li>
-    <li><a href="{{ chapter.part.get_absolute_url }}">{{ chapter.part.title }}</a></li>
+    {% if tutorial.size == "B" %}
+        <li><a href="{{ chapter.part.get_absolute_url }}">{{ chapter.part.title }}</a></li>
+    {% endif %}
     <li class="current"><a href="#">{{ chapter.title }}</a></li>
 {% endblock %}
 

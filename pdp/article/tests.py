@@ -95,6 +95,24 @@ class ArticleIntegrationTests(TestCase):
         resp = self.client.get(url)
         self.assertEqual(200, resp.status_code)
 
+    def test_url_tags(self):
+        """Testing the tags index pagee."""
+        resp = self.client.get(reverse('pdp.article.views.tags'))
+        self.assertEqual(200, resp.status_code)
+
+    def test_url_tag_empty(self):
+        """Testing viewing a tag with no corresponding articles."""
+        resp = self.client.get(
+            reverse('pdp.article.views.tag', kwargs={'name': 'test'}))
+        self.assertEqual(200, resp.status_code)
+
+    def test_url_tag(self):
+        """Testing viewing a tag with corresponding article."""
+        G(Article, is_visible=True, pk=42, tags=['test'])
+        resp = self.client.get(
+            reverse('pdp.article.views.tag', kwargs={'name': 'test'}))
+        self.assertEqual(200, resp.status_code)
+
 
 class ArticleSearchIntegrationTests(TestCase):
     def setUp(self):

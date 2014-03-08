@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.views.decorators.http import require_POST
 
 from pdp.utils import render_template, slugify
 from pdp.utils.paginator import paginator_range
@@ -217,6 +218,7 @@ def new(request):
         })
 
 
+@require_POST
 @login_required
 def edit(request):
     """Edit a topic.
@@ -225,9 +227,6 @@ def edit(request):
         HttpResponse
 
     """
-    if not request.method == 'POST':
-        raise Http404
-
     try:
         topic_pk = request.POST['topic']
     except KeyError:
@@ -255,13 +254,16 @@ def edit(request):
             resp['solved'] = g_topic.is_solved
 
     if request.user.has_perm('forum.change_topic'):
-        # Staff actions using AJAX
-        if 'lock' in data:
-            g_topic.is_locked = data['lock'] == 'true'
-        if 'sticky' in data:
-            g_topic.is_sticky = data['sticky'] == 'true'
-        if 'solved' in data:
-            g_topic.is_solved = data['solved'] == 'true'
+        # Staff actions using AJAX, we are using the op_ prefix in order to
+        # distinguish staff commands from user commands, since staff commands
+        # need to be parsed differently since we are using some tricky JS to
+        # retrieve the value of the Foundation switch buttons.
+        if 'op_lock' in data:
+            g_topic.is_locked = data['op_lock'] == 'true'
+        if 'op_sticky' in data:
+            g_topic.is_sticky = data['op_sticky'] == 'true'
+        if 'op_solved' in data:
+            g_topic.is_solved = data['op_solved'] == 'true'
         if 'move' in data:
             try:
                 forum_pk = int(request.POST['move_target'])
@@ -271,14 +273,23 @@ def edit(request):
             forum = get_object_or_404(Forum, pk=forum_pk)
             g_topic.forum = forum
 
+    # Save the changes made on the topic
     g_topic.save()
 
     if request.is_ajax():
-        resp = {'lock': g_topic.is_locked,
-                'sticky': g_topic.is_sticky,
-                'solved': g_topic.is_solved}
-        return HttpResponse(json.dumps(resp))
+        # If our request is made with AJAX, we return a JSON document in order
+        # to update the buttons on the same page without reolading it.
+        resp = {
+            'lock': g_topic.is_locked,
+            'sticky': g_topic.is_sticky,
+            'solved': g_topic.is_solved,
+            'follow': g_topic.is_followed(request.user),
+        }
+        return HttpResponse(json.dumps(resp), mimetype='application/json')
+
     else:
+        # Elsewise this is a regular POST request so we redirect the user back
+        # to the topic.
         return redirect(u'{}?page={}'.format(g_topic.get_absolute_url(), page))
 
 

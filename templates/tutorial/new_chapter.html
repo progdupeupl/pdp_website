@@ -15,7 +15,9 @@
 
 {% block breadcrumb %}
     <li><a href="{{ part.tutorial.get_absolute_url }}">{{ part.tutorial.title }}</a></li>
-    <li><a href="{{ part.get_absolute_url }}">{{ part.title }}</a></li>
+    {% if part.tutorial.size != "M" %}
+        <li><a href="{{ part.get_absolute_url }}">{{ part.title }}</a></li>
+    {% endif %}
     <li class="current"><a href="#">Nouveau chapitre</a></li>
 {% endblock %}
 

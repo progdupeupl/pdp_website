@@ -111,6 +111,15 @@ compress CSS and JS sheets.
     :::console
     $ npm install yuglify
 
+In order to generate PDF files using a background task scheduler named celery,
+you will need to start it. A shortcut is provided in the fabfile, simply type :
+
+    :::console
+    $ fab celery
+
+And the celery server will start. You will also need Pandoc as PDF generator
+from Markdown sources.
+
 ## Deployment
 
 From the project's root, you will need to run the following command, which uses

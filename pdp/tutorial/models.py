@@ -11,18 +11,23 @@ import os
 import string
 
 from django.db import models
+from django.db.models.signals import post_save
+
+from django.dispatch import receiver
+from django.conf import settings
 from django.contrib.auth.models import User
+
 from django.core.urlresolvers import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
+
+from PIL import Image
+from cStringIO import StringIO
 
 from pdp.tutorial.exceptions import CorruptedTutorialError, \
     OrphanPartException, OrphanChapterException
 
 from pdp.utils import slugify
 from pdp.utils.models import has_changed
-
-from PIL import Image
-from cStringIO import StringIO
-from django.core.files.uploadedfile import SimpleUploadedFile
 
 IMAGE_MAX_WIDTH = 64
 IMAGE_MAX_HEIGHT = 64
@@ -60,6 +65,16 @@ class Tutorial(models.Model):
         verbose_name = u'Tutoriel'
         verbose_name_plural = u'Tutoriels'
 
+    SMALL = 'S'
+    MEDIUM = 'M'
+    BIG = 'B'
+
+    SIZE_CHOICES = (
+        (SMALL, u'Mini'),
+        (MEDIUM, u'Standard'),
+        (BIG, u'Étendu'),
+    )
+
     title = models.CharField(u'Titre', max_length=80)
     description = models.CharField(u'Description', max_length=200)
     authors = models.ManyToManyField(User, verbose_name=u'Auteurs')
@@ -79,7 +94,8 @@ class Tutorial(models.Model):
     # We could distinguish large/small tutorials by looking at what chapters
     # are contained directly in a tutorial, but that'd be more complicated
     # than a field.
-    is_mini = models.BooleanField(u'Est un mini-tutoriel')
+    size = models.CharField(u'Taille du tutoriel', max_length=1,
+                            choices=SIZE_CHOICES, default=SMALL)
 
     is_visible = models.BooleanField(u'Est visible publiquement',
                                      default=False)
@@ -105,6 +121,14 @@ class Tutorial(models.Model):
         return reverse('pdp.tutorial.views.view_tutorial', args=[
             self.pk, slugify(self.title)
         ])
+
+    def get_pdf_url(self):
+        """Get URL to get a PDF file of this tutorial."""
+        return u'{}/tutorials/{}/{}.pdf'.format(
+            settings.MEDIA_URL,
+            self.pk,
+            self.slug,
+        )
 
     def get_edit_url(self):
         """Get URL to edit this tutorial.
@@ -136,7 +160,7 @@ class Tutorial(models.Model):
             CorruptedTutorialError
 
         """
-        if not self.is_mini:
+        if not self.size == Tutorial.SMALL:
             return None
 
         try:
@@ -208,7 +232,8 @@ class Part(models.Model):
     # A part has to belong to a tutorial, since only tutorials with parts
     # are large tutorials
     tutorial = models.ForeignKey(Tutorial, verbose_name=u'Tutoriel parent')
-    position_in_tutorial = models.IntegerField(u'Position dans le tutoriel')
+    position_in_tutorial = models.IntegerField(u'Position dans le tutoriel',
+                                               null=True, blank=True)
 
     title = models.CharField(u'Titre', max_length=80)
 
@@ -246,11 +271,17 @@ class Part(models.Model):
             string
 
         """
-        return reverse('pdp.tutorial.views.view_part', args=[
-            self.tutorial.pk,
-            self.tutorial.slug,
-            self.slug,
-        ])
+        if self.tutorial.size == "B":
+            return reverse('pdp.tutorial.views.view_part', args=[
+                self.tutorial.pk,
+                self.tutorial.slug,
+                self.slug,
+            ])
+        else:
+            return reverse('pdp.tutorial.views.view_tutorial', args=[
+                self.tutorial.pk,
+                self.tutorial.slug,
+            ])
 
     def get_chapters(self):
         """Get all the chapters of the part.
@@ -461,3 +492,31 @@ class Extract(models.Model):
             self.position_in_chapter,
             slugify(self.title)
         )
+
+
+@receiver(post_save, sender=Tutorial)
+def saved_tutorial_handler(sender, **kwargs):
+    """Function called on each tutorial save."""
+    from pdp.utils.tutorials import export_tutorial_pdf
+    export_tutorial_pdf(kwargs.get('instance', None))
+
+
+@receiver(post_save, sender=Part)
+def saved_part_handler(sender, **kwargs):
+    """Function called on each tutorial save."""
+    from pdp.utils.tutorials import export_tutorial_pdf
+    export_tutorial_pdf(kwargs.get('instance', None).tutorial)
+
+
+@receiver(post_save, sender=Chapter)
+def saved_chapter_handler(sender, **kwargs):
+    """Function called on each tutorial save."""
+    from pdp.utils.tutorials import export_tutorial_pdf
+    export_tutorial_pdf(kwargs.get('instance', None).get_tutorial())
+
+
+@receiver(post_save, sender=Extract)
+def saved_extract_handler(sender, **kwargs):
+    """Function called on each tutorial save."""
+    from pdp.utils.tutorials import export_tutorial_pdf
+    export_tutorial_pdf(kwargs.get('instance', None).chapter.get_tutorial())

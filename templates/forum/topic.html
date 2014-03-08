@@ -173,7 +173,7 @@
         <div class="row post-content">
             <div class="large-2 columns hide-for-small post-avatar">
                 {% with profile=post.author|profile %}
-                    <img src="{{ profile.get_avatar_url }}" width="80" height="80" alt="Avatar" />
+                    <img src="{{ profile.get_avatar_url }}" width="80" height="80" alt="" />
                 {% endwith %}
             </div>
             <div class="large-10 columns">
@@ -227,12 +227,12 @@ method="POST" id="submit_form">
             $('.topic-actions .validate').click(function() {
                 var lock = $('#lock-on').is(':checked');
                 var sticky = $('#sticky-on').is(':checked');
-                var solved = $('#sticky-on').is(':checked');
+                var solved = $('#solved-on').is(':checked');
                 $.post('{% url "pdp.forum.views.edit" %}', {
                     topic: {{ topic.pk}},
-                    lock: lock.toString(),
-                    sticky: sticky.toString(),
-                    solved: solved.toString(),
+                    op_lock: lock.toString(),
+                    op_sticky: sticky.toString(),
+                    op_solved: solved.toString(),
                 })
             });
         </script>
