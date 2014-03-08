@@ -272,7 +272,7 @@ def export_part_md(f, part, level=1, export_all=True):
 def export_tutorial_pdf(tutorial):
     """Export a tutorial to a PDF file.
 
-    This functions uses Pandoc in order to generate the PDF file, using
+    This function uses Pandoc in order to generate the PDF file, using
     LaTeX intermediate source code. We simply generate a Markdown source file
     so that we do not have to convert the tutorial contents and then generate
     a PDF from this markdown file.
