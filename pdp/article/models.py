@@ -45,6 +45,21 @@ def thumbnail_path(instance, filename):
     return os.path.join('articles', str(instance.pk), filename)
 
 
+class ArticleCategory(models.Model):
+
+    title = models.CharField(u'Titre', max_length=80)
+    slug = models.SlugField(max_length=80)
+
+    def __unicode__(self):
+        """Textual representation of a category.
+
+        Returns:
+            string
+
+        """
+        return self.title
+
+
 class Article(models.Model):
 
     """An article."""
@@ -77,6 +92,8 @@ class Article(models.Model):
     is_pending = models.BooleanField(u'Est en attente', default=False)
     is_beta = models.BooleanField(u'Est visible par les membres',
                                   default=False)
+
+    category = models.ForeignKey(ArticleCategory, null=True, verbose_name=u'Catégorie')
 
     def __unicode__(self):
         """Textual representation of an article.
