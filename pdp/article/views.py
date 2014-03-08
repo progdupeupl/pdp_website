@@ -18,7 +18,7 @@ from pdp.utils.cache import template_cache_delete
 from pdp.utils.articles import export_article
 
 from pdp.article.models import Article, get_prev_article, get_next_article, \
-    get_last_articles
+    get_last_articles, ArticleCategory
 from pdp.article.forms import NewArticleForm, EditArticleForm
 
 
@@ -39,9 +39,12 @@ def index(request):
             .filter(is_pending=True)\
             .order_by('-pubdate')
 
+    all_article_category = ArticleCategory.objects.all()
+
     return render_template('article/index.html', {
         'articles': article,
-        'pending_articles': pending_articles
+        'pending_articles': pending_articles,
+        'all_article_category': all_article_category
     })
 
 

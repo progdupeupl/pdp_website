@@ -59,6 +59,15 @@ class ArticleCategory(models.Model):
         """
         return self.title
 
+    def get_absolute_url(self):
+        """Get URL to view the category.
+
+        Returns:
+            string
+
+        """
+        return u'/articles/categorie/{0}/'.format(self.slug)
+
 
 class Article(models.Model):
 
