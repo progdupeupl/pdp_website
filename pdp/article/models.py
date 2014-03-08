@@ -4,7 +4,11 @@
 
 import os
 import string
+
 from django.db import models
+from django.db.models.signals import post_save
+
+from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
@@ -195,3 +199,10 @@ def get_next_article(g_article):
             .order_by('pubdate')[0]
     except IndexError:
         return None
+
+
+@receiver(post_save, sender=Article)
+def saved_article_handler(sender, **kwargs):
+    """Function called on each article save."""
+    from pdp.utils.articles import export_article_pdf
+    export_article_pdf(kwargs.get('instance', None))
