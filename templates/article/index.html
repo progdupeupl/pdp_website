@@ -1,5 +1,6 @@
 {% extends "article/base.html" %}
 {% load cache %}
+{% load taggit_extras %}
 
 {% block title %}
     Liste des articles
@@ -46,6 +47,8 @@
 {% endblock %}
 
 {% block content %}
+
+{% get_tagcloud as tags for 'article.Article' %}
 
 <div class="row">
     <div class="large-12 columns">
@@ -101,6 +104,18 @@
 <div class="row">
     <div class="large-12 columns">
         <h2>Tags</h2>
+        <p>Voici le nuage des tags utilisés sur les différents articles actuellement publiés sur le site :</p>
+        {% for tag in tags %}
+            {% if tag.name %}
+                {% with weight=tag.weight|floatformat:0 %}
+                    <a href="{% url "pdp.article.views.tag" name=tag.name %}"
+                        class="label secondary"
+                        style="font-size: {{ tag.weight|add:13 }}px">
+                        {{ tag.name }}
+                    </a>
+                {% endwith %}
+            {% endif %}
+        {% endfor %}
     </div>
 </div>
 
