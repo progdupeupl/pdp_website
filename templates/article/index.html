@@ -78,7 +78,7 @@
                 </div>
                 {% endfor %}
             </div>
-            <a href="#">Voir tout les articles ...</a>
+            <a href="{% url "articles_category" "tous" %}">Voir tout les articles ...</a>
         {% else %}
             <p>Aucun article disponible.</p>
         {% endif %}

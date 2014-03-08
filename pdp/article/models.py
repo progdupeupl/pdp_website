@@ -47,6 +47,8 @@ def thumbnail_path(instance, filename):
 
 class ArticleCategory(models.Model):
 
+    """ A way to organize article in different category"""
+
     title = models.CharField(u'Titre', max_length=80)
     slug = models.SlugField(max_length=80)
 
