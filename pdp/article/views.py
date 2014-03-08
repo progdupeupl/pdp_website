@@ -31,7 +31,7 @@ def index(request):
     """
     article = Article.objects.all()\
         .filter(is_visible=True)\
-        .order_by('-pubdate')
+        .order_by('-pubdate')[:3]
 
     pending_articles = None
     if request.user.has_perm('article.change_article'):
