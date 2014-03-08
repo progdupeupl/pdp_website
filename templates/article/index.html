@@ -96,7 +96,9 @@
             {% for category in all_article_category %}
                 <li><a href="{{ category.get_absolute_url }}">{{ category }}</a></li>
             {% endfor %}
-            <li><a href="{% url "articles_category" "beta" %}">Bêta</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url "articles_category" "beta" %}">Bêta</a></li>
+            {% endif %}
         </ul>
     </div>
 </div>

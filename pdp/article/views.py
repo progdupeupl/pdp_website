@@ -348,6 +348,10 @@ def category(request, name):
         category = ArticleCategory(title=u'Tout les articles',slug=u'tous')
         articles = Article.objects.filter(is_beta=False, is_visible=True).order_by('-pubdate')
     elif name == 'beta':
+        # only visible for member
+        if not request.user.is_authenticated():
+            raise Http404
+
         category = ArticleCategory(title=u'Bêta',slug=u'beta')
         articles = Article.objects.filter(is_beta=True).order_by('-pubdate')
     else:

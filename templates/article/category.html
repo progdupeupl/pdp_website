@@ -31,12 +31,14 @@
                     <dd><a href="{{ c.get_absolute_url }}">{{ c }}</a></dd>
                 {% endifequal %}
             {% endfor %}
-
-            {% ifequal category.slug "beta" %}
-                <dd class="active"><a href="{% url "articles_category" "beta" %}">Bêta</a></dd>
-            {% else %}
-                <dd><a href="{% url "articles_category" "beta" %}">Bêta</a></dd>
-            {% endifequal %}
+            
+            {% if user.is_authenticated %}
+                {% ifequal category.slug "beta" %}
+                    <dd class="active"><a href="{% url "articles_category" "beta" %}">Bêta</a></dd>
+                {% else %}
+                    <dd><a href="{% url "articles_category" "beta" %}">Bêta</a></dd>
+                {% endifequal %}
+            {% endif %}
         </dl>
     </div>
 </div>
