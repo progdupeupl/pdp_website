@@ -3,9 +3,17 @@
 """A small module for handling some common operations on tutorials."""
 
 from collections import OrderedDict
+from itertools import repeat
+
+import os
+import io
+from datetime import datetime
+
+from pdp import settings
 
 from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
 from pdp.utils.schemas import validate_tutorial
+from pdp.utils.tasks import pandoc_pdf
 
 
 def move(obj, new_pos, position_f, parent_f, children_fn):
@@ -174,3 +182,152 @@ def export_tutorial(tutorial, validate=True):
         return {}
 
     return dct
+
+
+# Export-to-PDF functions using Pandoc
+
+def export_title_md(f, title, level=1):
+    """Write title into a file using markdown.
+
+    Params:
+        f: the file object to write in
+        title: the title to write down
+        level: level of the title, higher value means less important level
+
+    """
+    f.write(u'{} {}\n'.format(
+        u''.join(repeat(u'#', level)),
+        title,
+    ))
+
+
+def export_text_md(f, text):
+    """Write text into a file using markdown.
+
+    Params:
+        f: the file object to write in
+        text: the text to write down, unicode
+
+    """
+    if text:
+        f.write(text)
+        f.write(u'\n\n')
+
+
+def export_extract_md(f, extract, level=1):
+    """Write an extract into a file using markdown.
+
+    Params:
+        f: the file object to write in
+        part: the extract to write down
+        level: level of the extract title
+
+    """
+    export_title_md(f, extract.title, level)
+    export_text_md(f, extract.text)
+
+
+def export_chapter_md(f, chapter, level=1, export_all=True):
+    """Write a chapter into a file using markdown.
+
+    Params:
+        f: the file object to write in
+        part: the chapter to write down
+        level: level of the chapter title, will be increased for sub items
+        export_all: should the part metadata be written down?
+
+    """
+    if export_all:
+        export_title_md(f, chapter.title, level)
+        export_text_md(f, chapter.introduction)
+
+    for extract in chapter.get_extracts():
+        export_extract_md(f, extract, level + 1 if export_all else level)
+
+    if export_all:
+        export_text_md(f, chapter.conclusion)
+
+
+def export_part_md(f, part, level=1, export_all=True):
+    """Write a part into a file using markdown.
+
+    Params:
+        f: the file object to write in
+        part: the part to write down
+        level: level of the part title, will be increased for sub items
+        export_all: should the part metadata be written down?
+
+    """
+    if export_all:
+        export_title_md(f, part.title, level)
+        export_text_md(f, part.introduction)
+
+    for chapter in part.get_chapters():
+        export_chapter_md(f, chapter, level + 1 if export_all else level)
+
+    if export_all:
+        export_text_md(f, part.conclusion)
+
+
+def export_tutorial_pdf(tutorial):
+    """Export a tutorial to a PDF file.
+
+    This function uses Pandoc in order to generate the PDF file, using
+    LaTeX intermediate source code. We simply generate a Markdown source file
+    so that we do not have to convert the tutorial contents and then generate
+    a PDF from this markdown file.
+
+    Params:
+        tutorial: the tutorial to render as PDF
+
+    Returns:
+        Path to the generated PDF file
+
+    """
+
+    # Generated document meta informations
+    title = tutorial.title
+    authors = u'; '.join([a.username for a in list(tutorial.authors.all())])
+    date = datetime.now().strftime('%d/%m/%Y')
+
+    base_dir = os.path.join(settings.MEDIA_ROOT, 'tutorials',
+                            str(tutorial.pk))
+    base_filepath = os.path.join(base_dir, tutorial.slug)
+
+    # We try to create the directory if it does not exist
+    try:
+        os.mkdir(base_dir)
+    except OSError:
+        # Use FileExistsError for Python 3, not OSError
+        pass
+
+    # We will store both generated markdown and PDF into this directory
+    md_filepath = u'{}.md'.format(base_filepath)
+    pdf_filepath = u'{}.pdf'.format(base_filepath)
+
+    # We write down the markdown source
+    with io.open(md_filepath, 'w', encoding='utf-8') as f:
+        f.write(u'% {}\n'.format(title))
+        f.write(u'% {}\n'.format(authors))
+        f.write(u'% {}\n'.format(date))
+
+        f.write(u'\n\n')
+
+        export_text_md(f, tutorial.introduction)
+
+        if tutorial.size == Tutorial.BIG:
+            for part in tutorial.get_parts():
+                export_part_md(f, part)
+
+        elif tutorial.size == Tutorial.MEDIUM:
+            export_part_md(f, tutorial.get_parts()[0], export_all=False)
+
+        elif tutorial.size == Tutorial.SMALL:
+            export_chapter_md(f, tutorial.get_chapter(), export_all=False)
+
+        export_text_md(f, tutorial.conclusion)
+
+    # We generate the PDF from markdown using Pandoc
+    pandoc_pdf.delay(md_filepath, pdf_filepath)
+
+    return pdf_filepath

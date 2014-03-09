@@ -4,7 +4,13 @@
 
 import os
 import string
+
 from django.db import models
+from django.db.models.signals import post_save
+
+from django.conf import settings
+
+from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
@@ -96,6 +102,14 @@ class Article(models.Model):
         """
         return reverse('pdp.article.views.view', args=(
             self.pk, self.slug))
+
+    def get_pdf_url(self):
+        """Get URL to get a PDF file of this article."""
+        return u'{}/articles/{}/{}.pdf'.format(
+            settings.MEDIA_URL,
+            self.pk,
+            self.slug,
+        )
 
     def get_edit_url(self):
         """Get URL to edit the article.
@@ -195,3 +209,10 @@ def get_next_article(g_article):
             .order_by('pubdate')[0]
     except IndexError:
         return None
+
+
+@receiver(post_save, sender=Article)
+def saved_article_handler(sender, **kwargs):
+    """Function called on each article save."""
+    from pdp.utils.articles import export_article_pdf
+    export_article_pdf(kwargs.get('instance', None))
