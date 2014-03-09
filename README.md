@@ -36,7 +36,7 @@ You should install Python 2.6 or 2.7, and the
 Debian/Ubuntu systems for example, you can use the following commands:
 
     :::console
-    # aptitude install python2.7
+    # aptitude install python2.7 python2.7-dev
     # aptitude install python-pip
 
 You will also need Ruby, that on most systems come with its own package manager
@@ -103,6 +103,9 @@ install them with the `gem` package manager distributed with Ruby:
 
     :::console
     $ gem install --user-install compass zurb-foundation
+
+To run compass and zurb-foundation, you will need to add `~/gem/ruby/1.8/bin`
+to your `$PATH`.
 
 Finally, if you want to navigate in mode `debug = False`, then you will need to
 have [yuglify](https://github.com/yui/yuglify) on your system in order to
