@@ -20,6 +20,8 @@ static/
 venv/
 pdp/whoosh/
 
+doc/_build
+
 *.pyproj
 *.sln
 *.suo
