@@ -9,9 +9,20 @@ Welcome to Progdupeupl's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
-   member
+    article
+    tutorial
+    forum
+
+    member
+    messages
+    gallery
+
+    pages
+    utils
+
+.. automodule:: pdp
 
 Indices and tables
 ==================
