@@ -14,3 +14,5 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Progdupeupl. If not, see <http://www.gnu.org/licenses/>.
+
+"""Module containing various custom templatetags used in templates."""

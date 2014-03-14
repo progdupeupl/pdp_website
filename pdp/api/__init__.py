@@ -14,3 +14,5 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Progdupeupl. If not, see <http://www.gnu.org/licenses/>.
+
+"""Fast implementation of an API for the website."""
