@@ -157,6 +157,14 @@ released, you can install latest version of Sphinx using pip :
     :::console
     $ pip install sphinx==dev
 
+Then, you need to set an environment variable in your shell in order to make
+the documentation generation work, because of Django's settings handling :
+
+    :::console
+    $ cd doc
+    $ export DJANGO_SETTINGS_MODULE=pdp.settings
+    $ make html
+
 ## Copyright
 
 Progdupeupl is brought to you under GNU GPLv3 licence. For further informations
