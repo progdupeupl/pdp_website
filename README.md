@@ -148,6 +148,15 @@ The test instance should be available at
 behavior if you edit the code of the project. Enjoy, and send us lots of good
 patches!
 
+## Documentation
+
+If you want to build the documentation, you will need to install Sphinx 1.3 for
+its support of Google docstrings format. Since this version is 'till not
+released, you can install latest version of Sphinx using pip :
+
+    :::console
+    $ pip install sphinx==dev
+
 ## Copyright
 
 Progdupeupl is brought to you under GNU GPLv3 licence. For further informations
