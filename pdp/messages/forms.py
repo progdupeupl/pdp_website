@@ -16,6 +16,7 @@
 # along with Progdupeupl. If not, see <http://www.gnu.org/licenses/>.
 
 from django import forms
+from django.contrib.auth.models import User
 
 from crispy_forms.helper import FormHelper
 from crispy_forms_foundation.layout import Layout, Submit, Field, HTML
@@ -52,6 +53,26 @@ class PrivateTopicForm(forms.Form):
             Submit('preview', u'Prévisualisation'),
         )
         super(PrivateTopicForm, self).__init__(*args, **kwargs)
+
+    def clean_recipients(self):
+        data = self.cleaned_data['recipients']
+
+        bad_recipients = []
+        for recipient in data.split(','):
+            recipient = recipient.strip()
+
+            try:
+                User.objects.get(username=recipient)
+            except User.DoesNotExist:
+                bad_recipients.append(recipient)
+
+        if bad_recipients:
+            msg = u'Les utilisateurs suivants n’existent pas : {}.'.format(
+                ', '.join(bad_recipients).strip()
+            )
+            self._errors['recipients'] = self.error_class([msg])
+
+        return data
 
 
 class PrivatePostForm(forms.Form):
