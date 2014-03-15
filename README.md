@@ -36,7 +36,7 @@ You should install Python 2.6 or 2.7, and the
 Debian/Ubuntu systems for example, you can use the following commands:
 
     :::console
-    # aptitude install python2.7
+    # aptitude install python2.7 python2.7-dev
     # aptitude install python-pip
 
 You will also need Ruby, that on most systems come with its own package manager
@@ -104,6 +104,9 @@ install them with the `gem` package manager distributed with Ruby:
     :::console
     $ gem install --user-install compass zurb-foundation
 
+To run compass and zurb-foundation, you will need to add `~/gem/ruby/1.8/bin`
+to your `$PATH`.
+
 Finally, if you want to navigate in mode `debug = False`, then you will need to
 have [yuglify](https://github.com/yui/yuglify) on your system in order to
 compress CSS and JS sheets.
@@ -144,6 +147,23 @@ The test instance should be available at
 [http://localhost:8000](http://localhost:8000). It will automatically update its
 behavior if you edit the code of the project. Enjoy, and send us lots of good
 patches!
+
+## Documentation
+
+If you want to build the documentation, you will need to install Sphinx 1.3 for
+its support of Google docstrings format. Since this version is 'till not
+released, you can install latest version of Sphinx using pip :
+
+    :::console
+    $ pip install sphinx==dev
+
+Then, you need to set an environment variable in your shell in order to make
+the documentation generation work, because of Django's settings handling :
+
+    :::console
+    $ cd doc
+    $ export DJANGO_SETTINGS_MODULE=pdp.settings
+    $ make html
 
 ## Copyright
 

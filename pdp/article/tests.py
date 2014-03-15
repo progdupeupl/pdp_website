@@ -1,4 +1,19 @@
 # coding: utf-8
+#
+# This file is part of Progdupeupl.
+#
+# Progdupeupl is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Progdupeupl is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Progdupeupl. If not, see <http://www.gnu.org/licenses/>.
 
 from pytz import utc
 
@@ -80,16 +95,24 @@ class ArticleIntegrationTests(TestCase):
     def test_url_download_invisible(self):
         """Testing downloading an invisible article."""
         article = G(Article, is_visible=False, pk=42)
-        url = '{}?article={}'.format(
-            reverse('pdp.article.views.download'),
-            article.pk)
-        resp = self.client.get(url)
-        self.assertEqual(403, resp.status_code)
+        for frmt in ['json', 'pdf']:
+            url = '{}?article={}&format={}'.format(
+                reverse('pdp.article.views.download'),
+                article.pk,
+                frmt
+            )
+            resp = self.client.get(url)
+            self.assertEqual(403, resp.status_code)
 
     def test_url_download_visible(self):
-        """Testing downloading a visible article."""
+        """Testing downloading a visible article.
+
+        Since we need Pandoc and Gunicorn to test PDF download, we are just
+        testing JSON export here.
+
+        """
         article = G(Article, is_visible=True, pk=42)
-        url = '{}?article={}'.format(
+        url = '{}?article={}&format=json'.format(
             reverse('pdp.article.views.download'),
             article.pk)
         resp = self.client.get(url)

@@ -1,4 +1,19 @@
 # coding: utf-8
+#
+# This file is part of Progdupeupl.
+#
+# Progdupeupl is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Progdupeupl is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Progdupeupl. If not, see <http://www.gnu.org/licenses/>.
 
 from django.test import TestCase
 
@@ -117,18 +132,26 @@ class BigTutorialIntegrationTests(TestCase):
         )]
 
     def test_url_download(self):
+        """Test downloading a big tutorial.
+
+        Since we need Pandoc and Gunicorn for PDF export, we are only testing
+        JSON export here.
+
+        """
         resp = self.client.get(u''.join(
             (reverse('pdp.tutorial.views.download'),
-             '?tutoriel={}'.format(self.tutorial.pk))))
+             '?tutoriel={}&format=json'.format(self.tutorial.pk))))
         self.assertEqual(200, resp.status_code)
 
 
 class MediumTutorialIntegrationTests(TestCase):
     def setUp(self):
+        self.author = G(User, username='test')
         self.tutorial = G(
             Tutorial,
             title=u'Test tutorial',
             is_visible=True,
+            authors=[self.author],
             size=Tutorial.MEDIUM,
         )
 
@@ -138,9 +161,15 @@ class MediumTutorialIntegrationTests(TestCase):
         )
 
     def test_url_download(self):
+        """Test downloading a medium tutorial.
+
+        Since we need Pandoc and Gunicorn for PDF export, we are only testing
+        JSON export here.
+
+        """
         resp = self.client.get(u''.join(
             (reverse('pdp.tutorial.views.download'),
-             '?tutoriel={}'.format(self.tutorial.pk))))
+             '?tutoriel={}&format=json'.format(self.tutorial.pk))))
         self.assertEqual(200, resp.status_code)
 
 
@@ -176,7 +205,11 @@ class TutorialSearchIntegrationTests(TestCase):
         self.assertEquals(resp.status_code, 200)
 
     def test_url_search_invisible(self):
-        G(Tutorial, is_visible=False, author=self.user)
+        G(
+            Tutorial,
+            is_visible=False,
+            author=self.user
+        )
 
         resp = self.client.get(
             reverse('pdp.tutorial.views.find_tutorial',
@@ -185,7 +218,11 @@ class TutorialSearchIntegrationTests(TestCase):
         self.assertEquals(resp.status_code, 200)
 
     def test_url_search_visible(self):
-        G(Tutorial, is_visible=True, author=self.user)
+        G(
+            Tutorial,
+            is_visible=True,
+            author=self.user,
+        )
 
         resp = self.client.get(
             reverse('pdp.tutorial.views.find_tutorial',

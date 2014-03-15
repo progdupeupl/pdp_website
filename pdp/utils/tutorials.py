@@ -1,4 +1,19 @@
 # coding: utf-8
+#
+# This file is part of Progdupeupl.
+#
+# Progdupeupl is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Progdupeupl is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Progdupeupl. If not, see <http://www.gnu.org/licenses/>.
 
 """A small module for handling some common operations on tutorials."""
 
@@ -12,6 +27,7 @@ from datetime import datetime
 from pdp import settings
 
 from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
+from pdp.tutorial.exceptions import CorruptedTutorialError
 from pdp.utils.schemas import validate_tutorial
 from pdp.utils.tasks import pandoc_pdf
 
@@ -320,7 +336,11 @@ def export_tutorial_pdf(tutorial):
                 export_part_md(f, part)
 
         elif tutorial.size == Tutorial.MEDIUM:
-            export_part_md(f, tutorial.get_parts()[0], export_all=False)
+            try:
+                export_part_md(f, tutorial.get_parts()[0], export_all=False)
+            except IndexError:
+                raise CorruptedTutorialError(
+                    'Missing part for medium tutorial')
 
         elif tutorial.size == Tutorial.SMALL:
             export_chapter_md(f, tutorial.get_chapter(), export_all=False)

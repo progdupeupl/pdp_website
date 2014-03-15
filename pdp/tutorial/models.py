@@ -1,4 +1,19 @@
 # coding: utf-8
+#
+# This file is part of Progdupeupl.
+#
+# Progdupeupl is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Progdupeupl is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Progdupeupl. If not, see <http://www.gnu.org/licenses/>.
 
 """Models for tutorial app.
 
@@ -95,7 +110,7 @@ class Tutorial(models.Model):
     # are contained directly in a tutorial, but that'd be more complicated
     # than a field.
     size = models.CharField(u'Taille du tutoriel', max_length=1,
-                            choices=SIZE_CHOICES, default=SMALL)
+                            choices=SIZE_CHOICES, default=BIG)
 
     is_visible = models.BooleanField(u'Est visible publiquement',
                                      default=False)
@@ -497,26 +512,30 @@ class Extract(models.Model):
 @receiver(post_save, sender=Tutorial)
 def saved_tutorial_handler(sender, **kwargs):
     """Function called on each tutorial save."""
-    from pdp.utils.tutorials import export_tutorial_pdf
-    export_tutorial_pdf(kwargs.get('instance', None))
+    if not settings.TESTING:
+        from pdp.utils.tutorials import export_tutorial_pdf
+        export_tutorial_pdf(kwargs.get('instance', None))
 
 
 @receiver(post_save, sender=Part)
 def saved_part_handler(sender, **kwargs):
     """Function called on each tutorial save."""
-    from pdp.utils.tutorials import export_tutorial_pdf
-    export_tutorial_pdf(kwargs.get('instance', None).tutorial)
+    if not settings.TESTING:
+        from pdp.utils.tutorials import export_tutorial_pdf
+        export_tutorial_pdf(kwargs.get('instance', None).tutorial)
 
 
 @receiver(post_save, sender=Chapter)
 def saved_chapter_handler(sender, **kwargs):
     """Function called on each tutorial save."""
-    from pdp.utils.tutorials import export_tutorial_pdf
-    export_tutorial_pdf(kwargs.get('instance', None).get_tutorial())
+    if not settings.DEBUG:
+        from pdp.utils.tutorials import export_tutorial_pdf
+        export_tutorial_pdf(kwargs.get('instance', None).get_tutorial())
 
 
 @receiver(post_save, sender=Extract)
 def saved_extract_handler(sender, **kwargs):
     """Function called on each tutorial save."""
-    from pdp.utils.tutorials import export_tutorial_pdf
-    export_tutorial_pdf(kwargs.get('instance', None).chapter.get_tutorial())
+    if not settings.TESTING:
+        from pdp.utils.tutorials import export_tutorial_pdf
+        export_tutorial_pdf(kwargs.get('instance', None).chapter.get_tutorial())
