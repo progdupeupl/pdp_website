@@ -30,6 +30,7 @@ class OrphanPartException(Exception):
     """Exception thrown when a part is orphan."""
     pass
 
+
 class OrphanChapterException(Exception):
     """Exception thrown when a chapter is orphan."""
     pass

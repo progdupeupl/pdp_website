@@ -110,7 +110,7 @@ class Tutorial(models.Model):
     # are contained directly in a tutorial, but that'd be more complicated
     # than a field.
     size = models.CharField(u'Taille du tutoriel', max_length=1,
-                            choices=SIZE_CHOICES, default=SMALL)
+                            choices=SIZE_CHOICES, default=BIG)
 
     is_visible = models.BooleanField(u'Est visible publiquement',
                                      default=False)
@@ -512,26 +512,30 @@ class Extract(models.Model):
 @receiver(post_save, sender=Tutorial)
 def saved_tutorial_handler(sender, **kwargs):
     """Function called on each tutorial save."""
-    from pdp.utils.tutorials import export_tutorial_pdf
-    export_tutorial_pdf(kwargs.get('instance', None))
+    if not settings.TESTING:
+        from pdp.utils.tutorials import export_tutorial_pdf
+        export_tutorial_pdf(kwargs.get('instance', None))
 
 
 @receiver(post_save, sender=Part)
 def saved_part_handler(sender, **kwargs):
     """Function called on each tutorial save."""
-    from pdp.utils.tutorials import export_tutorial_pdf
-    export_tutorial_pdf(kwargs.get('instance', None).tutorial)
+    if not settings.TESTING:
+        from pdp.utils.tutorials import export_tutorial_pdf
+        export_tutorial_pdf(kwargs.get('instance', None).tutorial)
 
 
 @receiver(post_save, sender=Chapter)
 def saved_chapter_handler(sender, **kwargs):
     """Function called on each tutorial save."""
-    from pdp.utils.tutorials import export_tutorial_pdf
-    export_tutorial_pdf(kwargs.get('instance', None).get_tutorial())
+    if not settings.DEBUG:
+        from pdp.utils.tutorials import export_tutorial_pdf
+        export_tutorial_pdf(kwargs.get('instance', None).get_tutorial())
 
 
 @receiver(post_save, sender=Extract)
 def saved_extract_handler(sender, **kwargs):
     """Function called on each tutorial save."""
-    from pdp.utils.tutorials import export_tutorial_pdf
-    export_tutorial_pdf(kwargs.get('instance', None).chapter.get_tutorial())
+    if not settings.TESTING:
+        from pdp.utils.tutorials import export_tutorial_pdf
+        export_tutorial_pdf(kwargs.get('instance', None).chapter.get_tutorial())

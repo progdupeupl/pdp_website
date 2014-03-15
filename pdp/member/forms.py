@@ -102,6 +102,7 @@ class RegisterForm(forms.Form):
 
 
 # update extra information about user
+
 class ProfileForm(forms.Form):
     biography = forms.CharField(
         label='Biographie',
