@@ -93,7 +93,9 @@ class ArticleCategory(models.Model):
             string
 
         """
-        return u'/articles/categorie/{0}'.format(self.slug)
+        return reverse('pdp.article.views.category', args=(
+            self.slug,
+        ))
 
     def get_article_count(self):
         """Return number of articles in this category."""
@@ -153,7 +155,8 @@ class Article(models.Model):
 
         """
         return reverse('pdp.article.views.view', args=(
-            self.pk, self.slug))
+            self.pk, self.slug,
+        ))
 
     def get_pdf_url(self):
         """Get URL to get a PDF file of this article."""
