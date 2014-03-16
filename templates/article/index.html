@@ -1,5 +1,6 @@
 {% extends "article/base.html" %}
 {% load cache %}
+{% load taggit_extras %}
 
 {% block title %}
     Liste des articles
@@ -47,6 +48,8 @@
 
 {% block content %}
 
+{% get_tagcloud as tags for 'article.Article' %}
+
 <div class="row">
     <div class="large-12 columns">
         <h2>À la une</h2>
@@ -75,6 +78,7 @@
                 </div>
                 {% endfor %}
             </div>
+            <a href="{% url "articles_category" "tous" %}">Voir tous les articles ...</a>
         {% else %}
             <p>Aucun article disponible.</p>
         {% endif %}
@@ -82,6 +86,41 @@
 
     </div>
 </div>
+
+<div class="row">
+    <div class="large-12 columns">
+        <h2>Catégories</h2>
+
+        <ul class="inline-list">
+            <li><a href="{% url "articles_category" "tous" %}">Tout les articles</a></li>
+            {% for category in all_article_category %}
+                <li><a href="{{ category.get_absolute_url }}">{{ category }}</a></li>
+            {% endfor %}
+            {% if user.is_authenticated %}
+                <li><a href="{% url "articles_category" "beta" %}">Bêta</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div class="large-12 columns">
+        <h2>Tags</h2>
+        <p>Voici le nuage des tags utilisés sur les différents articles actuellement publiés sur le site :</p>
+        {% for tag in tags %}
+            {% if tag.name %}
+                {% with weight=tag.weight|floatformat:0 %}
+                    <a href="{% url "pdp.article.views.tag" name=tag.name %}"
+                        class="label secondary"
+                        style="font-size: {{ tag.weight|add:13 }}px">
+                        {{ tag.name }}
+                    </a>
+                {% endwith %}
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
 
 {# Validation stuff #}
 

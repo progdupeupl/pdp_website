@@ -28,7 +28,7 @@ from django.contrib.auth.models import User
 from django_dynamic_fixture import G
 from django_dynamic_fixture.decorators import skip_for_database, SQLITE3
 
-from pdp.article.models import Article, get_last_articles
+from pdp.article.models import Article, get_last_articles, ArticleCategory
 from pdp.member.models import Profile
 
 
@@ -212,3 +212,40 @@ class FeedsIntegrationTests(TestCase):
     def test_articles_feed_atom(self):
         resp = self.client.get('/articles/flux/atom/')
         self.assertEqual(resp.status_code, 200)
+
+
+class ArticleCategoryIntegrationTests(TestCase):
+    def setUp(self):
+        # Create user
+        self.user = G(User, username='test')
+        self.user.set_password('test')
+        self.user.save()
+
+        # Create profile
+        self.profile = G(Profile, user=self.user)
+
+        # Authenticate user
+        self.client.login(username='test', password='test')
+
+        self.anonymous = Client()
+
+
+    def test_url_category_all(self):
+        resp = self.anonymous.get('/articles/categorie/tous')
+        self.assertEqual(resp.status_code, 200)
+
+    def test_url_category_beta(self):
+        """ Test that member can access to the beta category """
+        resp = self.client.get('/articles/categorie/beta')
+        self.assertEqual(resp.status_code, 200)
+
+    def test_url_category_beta_anonymous(self):
+        """ Test that anonymous cant access to beta category """
+        resp = self.anonymous.get('/articles/categorie/beta')
+        self.assertEqual(resp.status_code, 404)
+
+    def test_url_category(self):
+        category = G(ArticleCategory, slug="test")
+        resp = self.anonymous.get(category.get_absolute_url())
+        self.assertEqual(resp.status_code, 200)
+

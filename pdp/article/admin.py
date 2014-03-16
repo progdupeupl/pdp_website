@@ -16,6 +16,7 @@
 # along with Progdupeupl. If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib import admin
-from .models import Article
+from .models import Article, ArticleCategory
 
 admin.site.register(Article)
+admin.site.register(ArticleCategory)

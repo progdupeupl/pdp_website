@@ -33,7 +33,7 @@ from pdp.utils.cache import template_cache_delete
 from pdp.utils.articles import export_article
 
 from pdp.article.models import Article, get_prev_article, get_next_article, \
-    get_last_articles
+    get_last_articles, ArticleCategory
 from pdp.article.forms import NewArticleForm, EditArticleForm
 
 
@@ -46,7 +46,7 @@ def index(request):
     """
     article = Article.objects.all()\
         .filter(is_visible=True)\
-        .order_by('-pubdate')
+        .order_by('-pubdate')[:3]
 
     pending_articles = None
     if request.user.has_perm('article.change_article'):
@@ -54,9 +54,12 @@ def index(request):
             .filter(is_pending=True)\
             .order_by('-pubdate')
 
+    all_article_category = ArticleCategory.objects.all()
+
     return render_template('article/index.html', {
         'articles': article,
-        'pending_articles': pending_articles
+        'pending_articles': pending_articles,
+        'all_article_category': all_article_category
     })
 
 
@@ -154,9 +157,14 @@ def new(request):
             # important (will be changed on publish)
             article.pubdate = datetime.now()
 
+            category = ArticleCategory.objects.get(pk=int(data['category']))
+            if category:
+                article.category = category
+
             # First save before tags because they need to know the id of the
             # article
             article.save()
+
 
             list_tags = data['tags'].split(',')
             for tag in list_tags:
@@ -209,6 +217,10 @@ def edit(request):
             for tag in list_tags:
                 article.tags.add(tag.strip())
 
+            category = ArticleCategory.objects.get(pk=int(data['category']))
+            if category:
+                article.category = category
+
             article.save()
 
             # If the article was on the home page, update it
@@ -227,11 +239,19 @@ def edit(request):
                 list_tags += ', '
             list_tags += tag.__str__()
 
+        # in the first migration
+        # artcle default category is set to None
+        if not article.category:
+            article_category_pk = None
+        else:
+            article_category_pk = article.category.pk
+
         form = EditArticleForm({
             'title': article.title,
             'description': article.description,
             'text': article.text,
             'tags': list_tags,
+            'category': article_category_pk
         })
 
     return render_template('article/edit.html', {
@@ -347,6 +367,29 @@ def tag(request, name):
     return render_template('article/tag.html', {
         'tagname': name,
         'articles': articles,
+    })
+
+
+def category(request, name):
+    if name == 'tous':
+        category = ArticleCategory(title=u'Tout les articles',slug=u'tous')
+        articles = Article.objects.filter(is_beta=False, is_visible=True).order_by('-pubdate')
+    elif name == 'beta':
+        # only visible for member
+        if not request.user.is_authenticated():
+            raise Http404
+
+        category = ArticleCategory(title=u'Bêta',slug=u'beta')
+        articles = Article.objects.filter(is_beta=True).order_by('-pubdate')
+    else:
+        category = get_object_or_404(ArticleCategory, slug=name)
+        articles = Article.objects.filter(category=category, is_beta=False, is_visible=True).order_by('-pubdate')
+
+    all_category = ArticleCategory.objects.all()
+    return render_template('article/category.html',{
+        'category': category,
+        'all_category': all_category,
+        'articles': articles
     })
 
 
