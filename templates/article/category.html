@@ -2,16 +2,16 @@
 {% load static %}
 
 {% block title %}
-    {{ category }}
+    {{ category.title }}
 {% endblock %}
 
 {% block headline %}
-    Catégories 
+    {{ category.title }}
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="current"><a href="#">Catégories</a></li>
-    <li class="current"><a href="#">{{ category }}</a></li>
+    <li class="unavailable"><a href="#">Par catégorie</a></li>
+    <li class="current"><a href="#">{{ category.title }}</a></li>
 {% endblock %}
 
 {% block content %}
@@ -19,26 +19,22 @@
 <div class="row">
     <div class="large-12 columns">
         <dl class="sub-nav">
-            {% ifequal category.slug "tous" %}
-                <dd class="active"><a href="{% url "articles_category" "tous" %}">Tous les articles</a></dd>
-            {% else %}
-                <dd><a href="{% url "articles_category" "tous" %}">Tous les articles</a></dd>
-            {% endifequal %}
+            <dt>Catégorie :</dt>
+
+            <dd class="{% ifequal category.slug "tous" %}active{% endifequal %}">
+                <a href="{% url "articles_category" "tous" %}">Tous</a>
+            </dd>
 
             {% for c in all_category %}
-                {% ifequal category.slug c.slug %}
-                    <dd class="active"><a href="{{ c.get_absolute_url }}">{{ c }}</a></dd>
-                {% else %}
-                    <dd><a href="{{ c.get_absolute_url }}">{{ c }}</a></dd>
-                {% endifequal %}
+                <dd class="{% ifequal category.slug c.slug %}active{% endifequal %}">
+                    <a href="{{ c.get_absolute_url }}">{{ c.title }}</a>
+                </dd>
             {% endfor %}
-            
+ 
             {% if user.is_authenticated %}
-                {% ifequal category.slug "beta" %}
-                    <dd class="active"><a href="{% url "articles_category" "beta" %}">Bêta</a></dd>
-                {% else %}
-                    <dd><a href="{% url "articles_category" "beta" %}">Bêta</a></dd>
-                {% endifequal %}
+                <dd class="{% ifequal category.slug "beta" %}active{% endifequal %}">
+                    <a href="{% url "articles_category" "beta" %}">Bêta</a>
+                </dd>
             {% endif %}
         </dl>
     </div>
