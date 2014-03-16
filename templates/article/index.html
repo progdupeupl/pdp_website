@@ -58,27 +58,12 @@
         {% if articles %}
             <div class="article-items">
                 {% for article in articles %}
-                <div class="row article-publication-item">
-                    <div class="large-1 small-2 columns">
-                        {% if article.thumbnail %}
-                            <img src="{{article.thumbnail.url }}"/>
-                        {% endif %}
-                    </div>
-                    <div class="large-10 small-10 columns">
-                        <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
-                        <p>{{ article.description }}</p>
-                    </div>
-                    <div class="small-1 columns hide-for-small">
-                        <div class="date-box">
-                            {% with date=article.pubdate %}
-                                {% include "misc/datebox.part.html" %}
-                            {% endwith %}
-                        </div>
-                    </div>
-                </div>
+                    {% include "article/article_item.part.html" %}
                 {% endfor %}
             </div>
-            <a href="{% url "articles_category" "tous" %}">Voir tous les articles ...</a>
+            <a href="{% url "articles_category" "tous" %}" class="button">
+                Voir tous les articles
+            </a>
         {% else %}
             <p>Aucun article disponible.</p>
         {% endif %}

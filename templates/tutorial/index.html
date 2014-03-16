@@ -45,30 +45,15 @@
     <div class="large-12 columns">
         <h2>À la une</h2>
         {% cache 120 tutorials-index %}
-        {% if tutorials %}
-            <div class="tutorial-items">
-            {% for tuto in tutorials %}
-                <div class="row article-publication-item">
-                    <div class="large-1 small-2 columns">
-                        {% if tuto.thumbnail %}
-                            <img src="{{tuto.thumbnail.url }}"/>
-                        {% endif %}
-                    </div>
-                    <div class="large-10 small-10 columns">
-                        <a href="{{ tuto.get_absolute_url }}">{{ tuto.title }}</a>
-                        <p>{{ tuto.description }}</p>
-                    </div>
-                    <div class="large-1 columns hide-for-small">
-                        {% with date=tuto.pubdate %}
-                            {% include "misc/datebox.part.html" %}
-                        {% endwith %}
-                    </div>
+            {% if tutorials %}
+                <div class="tutorial-items">
+                    {% for tuto in tutorials %}
+                        {% include "tutorial/tutorial_item.part.html" %}
+                    {% endfor %}
                 </div>
-            {% endfor %}
-            </div>
-        {% else %}
-            <p>Aucun tutoriel disponible.</p>
-        {% endif %}
+            {% else %}
+                <p>Aucun tutoriel disponible.</p>
+            {% endif %}
         {% endcache %}
     </div>
 </div>

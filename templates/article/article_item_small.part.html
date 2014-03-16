@@ -1,0 +1,16 @@
+{% load static %}
+
+{# TODO: use a custom css class for this kind of elements #}
+<div class="row collapse">
+    <div class="small-2 columns">
+        {% if article.thumbnail %}
+            <img src="{{ article.thumbnail.url }}" alt="" width="64px" />
+        {% else %}
+            <img src="{% static "img/article-blank.png" %}" alt="" width="64px" />
+        {% endif %}
+    </div>
+    <div class="small-10 columns" style="padding-left: 5px;">
+        <a href="{{ article.get_absolute_url }}">{{ article.title }}</a><br />
+        <p>{{ article.description }}</p>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+{% load static %}
+
+<div class="row article-publication-item">
+    <div class="large-1 small-2 columns">
+        {% if tuto.thumbnail %}
+            <img src="{{tuto.thumbnail.url }}" alt="" width="64px" />
+        {% else %}
+            <img src="{% static "img/tutorial-blank.png" %}" alt="" width="64px" />
+        {% endif %}
+    </div>
+    <div class="large-10 small-10 columns">
+        <a href="{{ tuto.get_absolute_url }}">{{ tuto.title }}</a>
+        <p>{{ tuto.description }}</p>
+    </div>
+    <div class="large-1 columns hide-for-small">
+        {% with date=tuto.pubdate %}
+            {% include "misc/datebox.part.html" %}
+        {% endwith %}
+    </div>
+</div>
