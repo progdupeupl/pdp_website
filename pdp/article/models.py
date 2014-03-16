@@ -135,7 +135,7 @@ class Article(models.Model):
     is_beta = models.BooleanField(u'Est visible par les membres',
                                   default=False)
 
-    category = models.ForeignKey(ArticleCategory, null=True,
+    category = models.ForeignKey(ArticleCategory, null=True, blank=True,
                                  verbose_name=u'Catégorie')
 
     def __unicode__(self):

@@ -44,7 +44,8 @@ class NewArticleForm(forms.Form):
 
     category = forms.ModelChoiceField(
         label=u'Catégorie',
-        queryset=ArticleCategory.objects.all()
+        queryset=ArticleCategory.objects.all(),
+        required=False
     )
 
     def __init__(self, *args, **kwargs):
@@ -90,7 +91,8 @@ class EditArticleForm(forms.Form):
 
     category = forms.ModelChoiceField(
         label=u'Catégorie',
-        queryset=ArticleCategory.objects.all()
+        queryset=ArticleCategory.objects.all(),
+        required=False
     )
 
     def __init__(self, *args, **kwargs):

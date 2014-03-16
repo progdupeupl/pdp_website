@@ -157,14 +157,22 @@ def new(request):
             # important (will be changed on publish)
             article.pubdate = datetime.now()
 
-            category = ArticleCategory.objects.get(pk=int(data['category']))
-            if category:
-                article.category = category
+            category = None
+            if 'category' in data:
+                try:
+                    category = ArticleCategory.objects.get(
+                        pk=int(data['category'])
+                    )
+                except ValueError:
+                    category = None
+                except ArticleCategory.DoesNotExist:
+                    category = None
+
+            article.category = category
 
             # First save before tags because they need to know the id of the
             # article
             article.save()
-
 
             list_tags = data['tags'].split(',')
             for tag in list_tags:
@@ -217,9 +225,19 @@ def edit(request):
             for tag in list_tags:
                 article.tags.add(tag.strip())
 
-            category = ArticleCategory.objects.get(pk=int(data['category']))
-            if category:
-                article.category = category
+            category = None
+
+            if 'category' in data:
+                try:
+                    category = ArticleCategory.objects.get(
+                        pk=int(data['category'])
+                    )
+                except ValueError:
+                    category = None
+                except ArticleCategory.DoesNotExist:
+                    category = None
+
+            article.category = category
 
             article.save()
 
@@ -372,21 +390,24 @@ def tag(request, name):
 
 def category(request, name):
     if name == 'tous':
-        category = ArticleCategory(title=u'Tout les articles',slug=u'tous')
-        articles = Article.objects.filter(is_beta=False, is_visible=True).order_by('-pubdate')
+        category = ArticleCategory(title=u'Tout les articles', slug=u'tous')
+        articles = Article.objects\
+            .filter(is_beta=False, is_visible=True).order_by('-pubdate')
     elif name == 'beta':
         # only visible for member
         if not request.user.is_authenticated():
             raise Http404
 
-        category = ArticleCategory(title=u'Bêta',slug=u'beta')
+        category = ArticleCategory(title=u'Bêta', slug=u'beta')
         articles = Article.objects.filter(is_beta=True).order_by('-pubdate')
     else:
         category = get_object_or_404(ArticleCategory, slug=name)
-        articles = Article.objects.filter(category=category, is_beta=False, is_visible=True).order_by('-pubdate')
+        articles = Article.objects\
+            .filter(category=category, is_beta=False, is_visible=True)\
+            .order_by('-pubdate')
 
     all_category = ArticleCategory.objects.all()
-    return render_template('article/category.html',{
+    return render_template('article/category.html', {
         'category': category,
         'all_category': all_category,
         'articles': articles
