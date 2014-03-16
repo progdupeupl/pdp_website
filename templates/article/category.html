@@ -27,7 +27,7 @@
 
             {% for c in all_category %}
                 <dd class="{% ifequal category.slug c.slug %}active{% endifequal %}">
-                    <a href="{{ c.get_absolute_url }}">{{ c.title }}</a>
+                    <a href="{{ c.get_absolute_url }}">{{ c.title }} ({{ c.get_article_count }})</a>
                 </dd>
             {% endfor %}
  

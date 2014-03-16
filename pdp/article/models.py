@@ -95,6 +95,10 @@ class ArticleCategory(models.Model):
         """
         return u'/articles/categorie/{0}'.format(self.slug)
 
+    def get_article_count(self):
+        """Return number of articles in this category."""
+        return Article.objects.filter(category__pk=self.pk).count()
+
 
 class Article(models.Model):
 
