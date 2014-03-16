@@ -1,4 +1,5 @@
 {% extends "member/base.html" %}
+{% load profile %}
 
 {% block title %}
     Liste des membres
@@ -17,19 +18,25 @@
 <div class="row">
     <div class="large-12 columns">
         <p>
-            Sur cette page vous pourrez trouver la liste des membres inscrits au site (actuellement {{ members.count }} membres).
+            Sur cette page vous pourrez trouver la liste des membres inscrits
+            au site (actuellement {{ members_count }} membres). Les membres les
+            plus récents sont listés en premier.
         </p>
     </div>
 </div>
 
 <div class="row">
     <div class="large-12 columns">
-        <p>
+        <ul class="large-block-grid-10 small-block-grid-4">
             {% for member in members %}
-                {% include "member/member_item_common.part.html" %}
+                <li style="text-align: center;">
+                    {% include "member/member_item_common_big.part.html" %}
+                </li>
             {% endfor %}
-        </p>
+        </ul>
     </div>
 </div>
+
+{% include "misc/pagination.part.html" %}
 
 {% endblock %}

@@ -344,6 +344,9 @@ BOT_USER_PK = 1
 BOT_TUTORIAL_FORUM_PK = 1
 BOT_ARTICLE_FORUM_PK = 2
 
+# Paginator settings
+MEMBERS_PER_PAGE = 10 * 10
+
 # Should Django serve the static and media files ? This should not be set to
 # True in a production environment
 SERVE = False

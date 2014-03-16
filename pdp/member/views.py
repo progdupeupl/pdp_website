@@ -19,6 +19,7 @@
 
 from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404
+from django.conf import settings
 
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -28,11 +29,13 @@ from django.contrib import messages
 from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from django.views.decorators.debug import sensitive_post_parameters
 
-from pdp.utils.tokens import generate_token
 from pdp.utils import render_template
+from pdp.utils.tokens import generate_token
+from pdp.utils.paginator import paginator_range
 from pdp.article.models import Article
 from pdp.tutorial.models import Tutorial
 
@@ -48,9 +51,26 @@ def index(request):
         HttpResponse
 
     """
-    members = User.objects.order_by('date_joined')
+    members = User.objects.order_by('-date_joined')
+
+    paginator = Paginator(members, settings.MEMBERS_PER_PAGE)
+    page = request.GET.get('page')
+
+    try:
+        shown_members = paginator.page(page)
+        page = int(page)
+    except PageNotAnInteger:
+        shown_members = paginator.page(1)
+        page = 1
+    except EmptyPage:
+        shown_members = paginator.page(paginator.num_pages)
+        page = paginator.num_pages
+
     return render_template('member/index.html', {
-        'members': members
+        'members': shown_members,
+        'members_count': members.count(),
+        'pages': paginator_range(page, paginator.num_pages),
+        'nb': page,
     })
 
 
