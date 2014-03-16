@@ -344,7 +344,16 @@ BOT_USER_PK = 1
 BOT_TUTORIAL_FORUM_PK = 1
 BOT_ARTICLE_FORUM_PK = 2
 
-# Paginator settings
+# Paginator settings for forum
+POSTS_PER_PAGE = 21
+TOPICS_PER_PAGE = 21
+FOLLOWED_TOPICS_PER_PAGE = 21
+
+# Settings for antispam
+SPAM_LIMIT_SECONDS = 60 * 15
+SPAM_LIMIT_PARTICIPANT = 2
+
+# Paginator settings for members
 MEMBERS_PER_PAGE = 10 * 10
 
 # Should Django serve the static and media files ? This should not be set to

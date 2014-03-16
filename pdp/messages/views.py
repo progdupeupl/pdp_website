@@ -19,6 +19,7 @@ from datetime import datetime
 
 from django.db.models import Q
 
+from django.conf import settings
 from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404
 
@@ -34,7 +35,6 @@ from pdp.utils import render_template, slugify
 from pdp.utils.paginator import paginator_range
 
 from pdp.messages.models import PrivateTopic, PrivatePost
-from pdp.messages.models import POSTS_PER_PAGE, TOPICS_PER_PAGE
 from pdp.messages.models import never_privateread, mark_read
 from pdp.messages.forms import PrivateTopicForm, PrivatePostForm
 
@@ -65,7 +65,7 @@ def index(request):
         .distinct().order_by('-last_message__pubdate')
 
     # Paginator
-    paginator = Paginator(privatetopics, TOPICS_PER_PAGE)
+    paginator = Paginator(privatetopics, settings.TOPICS_PER_PAGE)
     page = request.GET.get('page')
 
     try:
@@ -113,7 +113,7 @@ def topic(request, topic_pk, topic_slug):
     last_post_pk = g_topic.last_message.pk
 
     # Handle pagination
-    paginator = Paginator(posts, POSTS_PER_PAGE)
+    paginator = Paginator(posts, settings.POSTS_PER_PAGE)
 
     try:
         page_nbr = int(request.GET['page'])

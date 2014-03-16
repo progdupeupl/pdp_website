@@ -18,6 +18,7 @@
 import json
 from datetime import datetime
 
+from django.conf import settings
 from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404, HttpResponse
 from django.contrib import messages
@@ -30,8 +31,6 @@ from pdp.utils import render_template, slugify
 from pdp.utils.paginator import paginator_range
 
 from pdp.forum.models import Category, Forum, Topic, Post
-from pdp.forum.models import POSTS_PER_PAGE, TOPICS_PER_PAGE, \
-    FOLLOWED_TOPICS_PER_PAGE
 from pdp.forum.models import never_read, mark_read
 from pdp.forum.models import follow
 from pdp.forum.forms import TopicForm, PostForm
@@ -68,7 +67,7 @@ def details(request, cat_slug, forum_slug):
         .order_by('-last_message__pubdate')
 
     # Paginator
-    paginator = Paginator(topics, TOPICS_PER_PAGE)
+    paginator = Paginator(topics, settings.TOPICS_PER_PAGE)
     page = request.GET.get('page')
 
     try:
@@ -129,7 +128,7 @@ def topic(request, topic_pk, topic_slug):
     last_post_pk = g_topic.last_message.pk
 
     # Handle pagination
-    paginator = Paginator(posts, POSTS_PER_PAGE)
+    paginator = Paginator(posts, settings.POSTS_PER_PAGE)
 
     # The category list is needed to move threads
     categories = Category.objects.all()
@@ -489,7 +488,7 @@ def find_topic(request, name):
                           .order_by('-pubdate')
 
     # Paginator
-    paginator = Paginator(topics, TOPICS_PER_PAGE)
+    paginator = Paginator(topics, settings.TOPICS_PER_PAGE)
     page = request.GET.get('page')
 
     try:
@@ -520,7 +519,7 @@ def find_post(request, name):
     posts = Post.objects.all().filter(author=u)\
         .order_by('-pubdate')
 
-    paginator = Paginator(posts, POSTS_PER_PAGE)
+    paginator = Paginator(posts, settings.POSTS_PER_PAGE)
     page = request.GET.get('page')
 
     try:
@@ -550,7 +549,7 @@ def followed_topics(request):
     followed_topics = request.user.get_profile().get_followed_topics()
 
     # Paginator
-    paginator = Paginator(followed_topics, FOLLOWED_TOPICS_PER_PAGE)
+    paginator = Paginator(followed_topics, settings.FOLLOWED_TOPICS_PER_PAGE)
     page = request.GET.get('page')
 
     try:

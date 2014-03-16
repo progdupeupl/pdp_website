@@ -20,18 +20,13 @@
 from math import ceil
 
 from django.db import models
+from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from django.core.urlresolvers import reverse
 
 from pdp.utils import get_current_user
-
-# TODO: Put these constants in settings.py file
-POSTS_PER_PAGE = 21
-TOPICS_PER_PAGE = 21
-SPAM_LIMIT_SECONDS = 60 * 15
-SPAM_LIMIT_PARTICIPANT = 2
 
 
 class PrivateTopic(models.Model):
@@ -161,7 +156,7 @@ class PrivateTopic(models.Model):
            and last_user_privateposts[0] == self.get_last_answer():
             last_user_privatepost = last_user_privateposts[0]
             t = timezone.now() - last_user_privatepost.pubdate
-            if t.total_seconds() < SPAM_LIMIT_SECONDS:
+            if t.total_seconds() < settings.SPAM_LIMIT_SECONDS:
                 return True
 
         return False
@@ -201,7 +196,9 @@ class PrivatePost(models.Model):
             string
 
         """
-        page = int(ceil(float(self.position_in_topic) / POSTS_PER_PAGE))
+        page = int(ceil(
+            float(self.position_in_topic) / settings.POSTS_PER_PAGE
+        ))
 
         return '{0}?page={1}#p{2}'\
             .format(self.privatetopic.get_absolute_url(), page, self.pk)
