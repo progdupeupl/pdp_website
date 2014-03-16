@@ -131,49 +131,6 @@ class="active"
     {% endcache %}
 </div>
 
-{# Search fields for desktop version #}
-<div class="row hide-for-small">
-    <div class="small-4 columns">
-        <form id="search-article" name="search-article" method="GET" action="{% url "haystack_search" %}">
-            <div class="row collapse">
-                <div class="small-7 columns">
-                    <input type="hidden" name="models" value="article.article" />
-                  <input type="text" name="q" placeholder="Rechercher">
-                </div>
-                <div class="small-3 columns left">
-                  <button type="submit" class="button"><i class="fi-magnifying-glass size-12"></i></button>
-                </div>
-            </div>
-        </form>
-    </div>
-    <div class="large-4 columns">
-        <form id="search-tuto" name="search-tuto" method="GET" action="{% url "haystack_search" %}">
-            <div class="row collapse">
-                <div class="small-7 columns">
-                    <input type="hidden" name="models" value="tutorial.extract" />
-                  <input type="text" name="q" placeholder="Rechercher">
-                </div>
-                <div class="small-3 columns left">
-                  <button type="submit" class="button"><i class="fi-magnifying-glass size-12"></i></button>
-                </div>
-            </div>
-        </form>
-    </div>
-    <div class="large-4 columns">
-        <form id="search-forum" name="search-forum" method="GET" action="{% url "haystack_search" %}">
-            <div class="row collapse">
-                <div class="small-7 columns">
-                    <input type="hidden" name="models" value="forum.topic" />
-                  <input type="text" name="q" placeholder="Rechercher">
-                </div>
-                <div class="small-3 columns left">
-                  <button type="submit" class="button"><i class="fi-magnifying-glass size-12"></i></button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
 {# Access buttons for desktop version #}
 <div class="row hide-for-small">
     <div class="large-4 columns">
