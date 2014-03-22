@@ -145,6 +145,15 @@ class Tutorial(models.Model):
             self.slug,
         )
 
+    def has_pdf(self):
+        """Check if the tutorial has a PDF file."""
+        return os.path.isfile(os.path.join(
+            settings.MEDIA_ROOT,
+            'tutorials',
+            str(self.pk),
+            u'{}.pdf'.format(self.slug),
+        ))
+
     def get_edit_url(self):
         """Get URL to edit this tutorial.
 
@@ -538,4 +547,6 @@ def saved_extract_handler(sender, **kwargs):
     """Function called on each tutorial save."""
     if not settings.TESTING:
         from pdp.utils.tutorials import export_tutorial_pdf
-        export_tutorial_pdf(kwargs.get('instance', None).chapter.get_tutorial())
+        export_tutorial_pdf(
+            kwargs.get('instance', None).chapter.get_tutorial()
+        )
