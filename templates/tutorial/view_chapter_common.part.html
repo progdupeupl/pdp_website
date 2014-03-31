@@ -96,10 +96,18 @@
                             <i class="icon-pencil"></i>
                             Éditer
                         </a>
-                        <button type="submit" name="delete" class="button secondary">
+                        <a href="#" class="button secondary" data-dropdown="delete-drop-extract">
                             <i class="icon-remove"></i>
                             Supprimer
-                        </button>
+                        </a>
+                        <div id="delete-drop-extract" class="f-dropdown content small" data-dropdown-content>
+                            <p>
+                                Si vous supprimez cet extrait, il sera alors impossible de le modifier/consulter de nouveau.
+                            </p>
+                            <button type="submit" name="delete" class="button expand alert">
+                                Supprimer
+                            </button>
+                        </div>
                     </div>
                     {% csrf_token %}
                 </form>

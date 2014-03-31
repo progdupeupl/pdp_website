@@ -48,9 +48,17 @@
                                 Éditer
                             </a>
 
-                            <button type="submit" name="delete" class="button secondary">
+                            <a href="#" class="button secondary" data-dropdown="delete-drop-part">
                                 Supprimer
-                            </button>
+                            </a>
+                            <div id="delete-drop-part" class="f-dropdown content small" data-dropdown-content>
+                                <p>
+                                    Si vous supprimez cette partie, il sera alors impossible de la modifier/consulter de nouveau.
+                                </p>
+                                <button type="submit" name="delete" class="button expand alert">
+                                    Confirmer la suppression
+                                </button>
+                            </div>
                         </div>
                         {% csrf_token %}
                     </form>
