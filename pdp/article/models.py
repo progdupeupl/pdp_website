@@ -99,7 +99,9 @@ class ArticleCategory(models.Model):
 
     def get_article_count(self):
         """Return number of articles in this category."""
-        return Article.objects.filter(category__pk=self.pk).count()
+        return Article.objects \
+            .filter(is_visible=True) \
+            .filter(category__pk=self.pk).count()
 
 
 class Article(models.Model):
