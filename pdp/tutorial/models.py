@@ -38,7 +38,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from PIL import Image
 from cStringIO import StringIO
 
-from pdp.tutorial.exceptions import CorruptedTutorialError, \
+from pdp.tutorial.exceptions import \
     OrphanPartException, OrphanChapterException
 
 from pdp.utils import slugify
@@ -174,6 +174,10 @@ class Tutorial(models.Model):
             .filter(tutorial__pk=self.pk)\
             .order_by('position_in_tutorial')
 
+    def get_part(self):
+        """Get the part associated with the tutorial if medium."""
+        return self.get_parts().first()
+
     def get_chapter(self):
         """Get the chapter associated with the tutorial if it's small.
 
@@ -192,7 +196,7 @@ class Tutorial(models.Model):
             return Chapter.objects.get(tutorial__pk=self.pk)
         except Chapter.DoesNotExist:
             # Whoops, this tutorial is broken!
-            raise CorruptedTutorialError('Small tutorial missing its chapter')
+            return None
 
     def save(self, force_update=False, force_insert=False,
              thumb_size=(IMAGE_MAX_HEIGHT, IMAGE_MAX_WIDTH)):

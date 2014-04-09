@@ -27,7 +27,6 @@ from datetime import datetime
 from pdp import settings
 
 from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
-from pdp.tutorial.exceptions import CorruptedTutorialError
 from pdp.utils.schemas import validate_tutorial
 from pdp.utils.tasks import pandoc_pdf
 
@@ -336,14 +335,14 @@ def export_tutorial_pdf(tutorial):
                 export_part_md(f, part)
 
         elif tutorial.size == Tutorial.MEDIUM:
-            try:
-                export_part_md(f, tutorial.get_parts()[0], export_all=False)
-            except IndexError:
-                raise CorruptedTutorialError(
-                    'Missing part for medium tutorial')
+            part = tutorial.get_part()
+            if part:
+                export_part_md(f, part, export_all=False)
 
         elif tutorial.size == Tutorial.SMALL:
-            export_chapter_md(f, tutorial.get_chapter(), export_all=False)
+            chapter = tutorial.get_chapter()
+            if chapter:
+                export_chapter_md(f, chapter, export_all=False)
 
         export_text_md(f, tutorial.conclusion)
 
