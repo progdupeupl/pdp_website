@@ -173,7 +173,7 @@ def login_view(request):
             else:
                 error = u'Les identifiants fournis ne sont pas valides'
         else:
-            error = (u'Veuillez spécifier votre identifiant'
+            error = (u'Veuillez spécifier votre identifiant '
                      u'et votre mot de passe')
     else:
         form = LoginForm()
