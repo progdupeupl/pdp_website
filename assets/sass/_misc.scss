@@ -88,6 +88,11 @@ nav.top-bar {
     @media #{$small} {
         float: right;
     }
+    
+    /* Bug of dropdown's buttons for download articles and tutorials - While wait for a better solution. */
+    #drop-download {
+        margin-top: emCalc(26px);
+    }
 }
 
 .footer {
