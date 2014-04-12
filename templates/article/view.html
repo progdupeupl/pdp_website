@@ -67,18 +67,6 @@
             {% csrf_token %}
         </form>
     {% endifequal %}
-    <a href="{% url "pdp.article.views.download" %}?article={{ article.pk }}&format=pdf"
-        class="button split">
-        Télécharger (PDF)
-        <span data-dropdown="drop-download"></span>
-    </a>
-    <ul id="drop-download" class="f-dropdown" data-dropdown-content>
-        <li>
-            <a href="{% url "pdp.article.views.download" %}?article={{ article.pk }}&format=json">
-                Télécharger (JSON)
-            </a>
-        </li>
-    </ul>
 {% endblock %}
 
 {% block content %}
@@ -109,6 +97,24 @@
         </p>
     </div>
 </div>
+
+<div class="row">
+    <div class="large-12 columns">
+        <a href="{% url "pdp.article.views.download" %}?article={{ article.pk }}&format=pdf"
+            class="button split">
+            Télécharger (PDF)
+            <span data-dropdown="drop-download"></span>
+        </a>
+        <ul id="drop-download" class="f-dropdown" data-dropdown-content>
+            <li>
+                <a href="{% url "pdp.article.views.download" %}?article={{ article.pk }}&format=json">
+                    Télécharger (JSON)
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
 <div class="row">
     <div class="large-12 columns">
         {{ article.text|emarkdown }}
