@@ -1,0 +1,18 @@
+// Fix bugs about buttons
+
+// The split marker on buttons are not at good place anymore so we need to fix
+// it.
+.split.button span:before
+{
+    top: emCalc(15px);
+    margin-left: emCalc(-6px);
+}
+
+// We fix bad position of the dropdown on desktop version only
+.f-dropdown.open
+{
+    margin-left: 0px;
+    @media #{$small} {
+        margin-left: 1em;
+    }
+}
