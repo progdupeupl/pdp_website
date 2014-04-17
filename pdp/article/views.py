@@ -350,7 +350,7 @@ def modify(request):
     return redirect(article.get_absolute_url())
 
 
-def find_article(request, name):
+def by_author(request, name):
     """Find all articles written by an author.
 
     The author name is extracted from the URL.
@@ -366,7 +366,7 @@ def find_article(request, name):
         .filter(is_visible=True)\
         .order_by('-pubdate')
 
-    return render_template('article/find_article.html', {
+    return render_template('article/by_author.html', {
         'articles': articles, 'usr': u,
     })
 
@@ -388,7 +388,7 @@ def tag(request, name):
     })
 
 
-def category(request, name):
+def by_category(request, name):
     if name == 'tous':
         category = ArticleCategory(title=u'Tout les articles', slug=u'tous')
         articles = Article.objects\
@@ -407,7 +407,7 @@ def category(request, name):
             .order_by('-pubdate')
 
     all_category = ArticleCategory.objects.all()
-    return render_template('article/category.html', {
+    return render_template('article/by_category.html', {
         'category': category,
         'all_category': all_category,
         'articles': articles

@@ -93,7 +93,7 @@ class ArticleCategory(models.Model):
             string
 
         """
-        return reverse('pdp.article.views.category', args=(
+        return reverse('pdp.article.views.by_category', args=(
             self.slug,
         ))
 
