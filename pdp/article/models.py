@@ -115,7 +115,7 @@ class Article(models.Model):
     title = models.CharField(u'Titre', max_length=80)
     description = models.CharField(u'Description', max_length=200)
 
-    text = models.TextField(u'Texte')
+    text = models.TextField(u'Texte', blank=True)
 
     author = models.ForeignKey(User, verbose_name=u'Auteur',
                                related_name='articles')
