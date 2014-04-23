@@ -71,7 +71,7 @@
                     <td>
                         {% with count=profile.get_visible_articles.count %}
                             {% if count > 0 %}
-                                <a href="{% url "pdp.article.views.find_article" usr.username %}">
+                                <a href="{% url "pdp.article.views.by_author" usr.username %}">
                             {% endif %}
                             {{ count }}
                             {% if count > 0 %}
