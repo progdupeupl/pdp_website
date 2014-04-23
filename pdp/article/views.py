@@ -181,7 +181,7 @@ def new(request):
             # avoid IndexError.
             if list_tags and list_tags[0]:
                 for tag in list_tags:
-                    article.tags.add(tag.strip())
+                    article.tags.add(tag.strip().lower())
 
             article.save()
 
@@ -235,7 +235,7 @@ def edit(request):
             # avoid IndexError.
             if list_tags and list_tags[0]:
                 for tag in list_tags:
-                    article.tags.add(tag.strip())
+                    article.tags.add(tag.strip().lower())
 
             category = None
 
