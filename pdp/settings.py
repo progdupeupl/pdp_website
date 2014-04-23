@@ -335,8 +335,12 @@ ABSOLUTE_URL_OVERRIDES = {
         u.username.encode('utf-8'))
 }
 
+SOUTH_MIGRATION_MODULES = {
+    'taggit': 'taggit.south_migrations',
+}
+
 CRISPY_FAIL_SILENTLY = not DEBUG
-CRISPY_TEMPLATE_PACK = 'foundation'
+CRISPY_TEMPLATE_PACK = 'foundation-5'
 
 # Bot settings
 BOT_ENABLED = False
