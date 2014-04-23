@@ -22,6 +22,7 @@ from crispy_forms_foundation.layout import Layout, Submit, Field, HTML
 
 from pdp.article.models import ArticleCategory
 
+
 class NewArticleForm(forms.Form):
     title = forms.CharField(
         label=u'Titre',
