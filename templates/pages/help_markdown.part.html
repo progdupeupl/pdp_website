@@ -125,6 +125,11 @@ Ligne 2.</pre>
     Mise en forme avancée
 </h2>
 
+<h3>
+	Notes de bas de page et listes
+</h3>
+
+
 <table>
     <thead>
         <tr>
@@ -181,19 +186,42 @@ Ligne 2.</pre>
                     </li>
                 </ul>
             </td>
-        </tr><tr>
-            <td>Tableaux</td>
-            <td><pre>
-| Colonne 1 | Colonne 2 |
-|-----------|-----------|
-| Donnée a | Donnée b |
-| Donnée c | Donnée d |</pre>
-            </td>
-            <td>TODO : visuel qui va bien</td>
         </tr>
     </tbody>
 </table>
 
+<h3>
+	Tableaux
+</h3>
+
+<pre>
+| Colonne 1 | Colonne 2 |
+|-----------|-----------|
+| Donnée a | Donnée b |
+| Donnée c | Donnée d |
+</pre>
+
+<p>
+	Ce qui donne :
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Colonne 1</th>
+            <th>Colonne 2</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Donnée a</td>
+            <td>Donnée b</td>
+        </tr><tr>
+            <td>Donnée c</td>
+            <td>Donnée d</td>
+        </tr>
+    </tbody>
+</table>
 
 <h2>
     Code
@@ -238,8 +266,12 @@ from os import path
     </tbody>
 </table>
 
+<p>
+    Note : Les langages diponibles sont : c, c++, cmake, console, fsharp, haskel, html, python (comme dans l'exemple), shell, text, ocaml (liste non exhaustive).
+</p>
+
 <h2>
-    Formules mathématiques
+    Formules mathématiques (LaTex)
 </h2>
 
 <p>
