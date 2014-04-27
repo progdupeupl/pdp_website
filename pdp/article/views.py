@@ -175,9 +175,16 @@ def new(request):
             article.save()
 
             list_tags = data['tags'].split(',')
-            for tag in list_tags:
-                article.tags.add(tag.strip())
+
+            # If we don't give any tags the list_tags will be [u''] so we check
+            # that list_tags[0] is not null. We add the if list_tags before to
+            # avoid IndexError.
+            if list_tags and list_tags[0]:
+                for tag in list_tags:
+                    article.tags.add(tag.strip().lower())
+
             article.save()
+
             return redirect(''.join((reverse('pdp.article.views.edit'),
                             '?article={}'.format(article.pk))))
     else:
@@ -222,8 +229,13 @@ def edit(request):
 
             article.tags.clear()
             list_tags = data['tags'].split(',')
-            for tag in list_tags:
-                article.tags.add(tag.strip())
+
+            # If we don't give any tags the list_tags will be [u''] so we check
+            # that list_tags[0] is not null. We add the if list_tags before to
+            # avoid IndexError.
+            if list_tags and list_tags[0]:
+                for tag in list_tags:
+                    article.tags.add(tag.strip().lower())
 
             category = None
 

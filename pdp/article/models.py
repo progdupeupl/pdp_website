@@ -271,5 +271,7 @@ def get_next_article(g_article):
 @receiver(post_save, sender=Article)
 def saved_article_handler(sender, **kwargs):
     """Function called on each article save."""
+    article = kwargs.get('instance', None)
+
     from pdp.utils.articles import export_article_pdf
-    export_article_pdf(kwargs.get('instance', None))
+    export_article_pdf(article)

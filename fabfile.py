@@ -78,8 +78,12 @@ def celery():
     """Start the celery tasks server."""
     local('celery worker --app=pdp.celeryapp:app')
 
+
 def bootstrap():
     """Initialise the whole project for the first time."""
+    local('mkdir media')
+    local('mkdir media/tutorials')
+    local('mkdir media/articles')
     syncdb()
     migrate()
     initsearch()
