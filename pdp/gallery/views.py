@@ -34,7 +34,7 @@ from pdp.gallery.forms import ImageForm, EditImageForm, GalleryForm, \
     UserGalleryForm
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def gallery_list(request):
     """Display the gallery list with all their images.
 
@@ -49,7 +49,7 @@ def gallery_list(request):
     })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def gallery_details(request, gal_pk, gal_slug):
     """Display a gallery.
 
@@ -69,7 +69,7 @@ def gallery_details(request, gal_pk, gal_slug):
     })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def new_gallery(request):
     """Create a new gallery.
 
@@ -106,7 +106,7 @@ def new_gallery(request):
 
 
 @require_POST
-@login_required
+@login_required(redirect_field_name='suivant')
 def modify_gallery(request):
     """Modify a gallery.
 
@@ -169,7 +169,7 @@ def modify_gallery(request):
 
 
 @require_POST
-@login_required
+@login_required(redirect_field_name='suivant')
 def del_image(request, gal_pk):
     """Remove an image from a gallery.
 
@@ -189,7 +189,7 @@ def del_image(request, gal_pk):
     return redirect(gal.get_absolute_url())
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def edit_image(request, gal_pk, img_pk):
     """Edit an image.
 
@@ -224,7 +224,7 @@ def edit_image(request, gal_pk, img_pk):
 
 
 @require_POST
-@login_required
+@login_required(redirect_field_name='suivant')
 def modify_image(request):
     """Modify an image.
 
@@ -256,7 +256,7 @@ def modify_image(request):
     return redirect(gal.get_absolute_url())
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def new_image(request, gal_pk):
     """Add a new image to a gallery.
 

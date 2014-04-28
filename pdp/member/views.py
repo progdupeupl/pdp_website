@@ -74,7 +74,7 @@ def index(request):
     })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def actions(request):
     """Show avaible actions for current user, like a customized homepage.
 
@@ -107,7 +107,7 @@ def details(request, user_name):
     })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def edit_profile(request):
     """Edit an user's profile.
 
@@ -181,8 +181,8 @@ def login_view(request):
                 if 'remember' not in request.POST:
                     request.session.set_expiry(0)
 
-                if 'next' in request.GET:
-                    return redirect(request.GET['next'])
+                if 'suivant' in request.GET:
+                    return redirect(request.GET['suivant'])
                 else:
                     return redirect(reverse('pdp.pages.views.home'))
 
@@ -200,7 +200,7 @@ def login_view(request):
     return render_template('member/login.html', csrf_tk)
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def logout_view(request):
     """Allow users to log out of their accounts.
 
@@ -250,7 +250,7 @@ def register_view(request):
 
 # Settings for public profile
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def settings_profile(request):
     """Set current user's profile settings.
 
@@ -292,7 +292,7 @@ def settings_profile(request):
         return render_template('member/settings_profile.html', c)
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def settings_account(request):
     """Set current user's account settings.
 
@@ -322,7 +322,7 @@ def settings_account(request):
         return render_template('member/settings_account.html', c)
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def publications(request):
     """Show current user's articles and tutorials.
 

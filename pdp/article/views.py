@@ -133,7 +133,7 @@ def download(request):
         return HttpResponseBadRequest()
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def new(request):
     """Create a new article.
 
@@ -195,7 +195,7 @@ def new(request):
     })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def edit(request):
     """Edit an article.
 
@@ -290,7 +290,7 @@ def edit(request):
 
 
 @require_POST
-@login_required
+@login_required(redirect_field_name='suivant')
 def modify(request):
     """Modify an article.
 

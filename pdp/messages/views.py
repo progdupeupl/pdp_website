@@ -39,7 +39,7 @@ from pdp.messages.models import never_privateread, mark_read
 from pdp.messages.forms import PrivateTopicForm, PrivatePostForm
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def index(request):
     """Display messages of the user.
 
@@ -84,7 +84,7 @@ def index(request):
     })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def topic(request, topic_pk, topic_slug):
     """Display a topic and its posts using a pager.
 
@@ -145,7 +145,7 @@ def topic(request, topic_pk, topic_slug):
     })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def new(request):
     """Creates a new message.
 
@@ -209,7 +209,7 @@ def new(request):
 
 
 @require_POST
-@login_required
+@login_required(redirect_field_name='suivant')
 def edit(request):
     """Edit a message.
 
@@ -237,7 +237,7 @@ def edit(request):
     return redirect(u'{}?page={}'.format(g_topic.get_absolute_url(), page))
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def answer(request):
     """Add an answer from an user to a message
 
@@ -312,7 +312,7 @@ def answer(request):
         })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def edit_post(request):
     """Edit a post in a message.
 
