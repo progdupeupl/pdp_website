@@ -3,35 +3,56 @@
 </h2>
 
 <h3>
-    Paragraphes et sauts à la ligne
+    Titres, paragraphes et sauts de ligne
 </h3>
 
 <p>
-    Les paragraphes sont séparés par une (ou plusieurs) lignes vides, comme
-    ceci :
+    Les titres sont définis par le caractère <code>#</code>.
 </p>
-
-<pre>
-Ceci est un paragraphe.
-Ce texte sera toujours dans le premier paragraphe car pas de ligne vide.
-Celui-ci également.
-
-Ceci est un autre paragraphe, on note la ligne vide.
-</pre>
-
 <p>
-    Pour obtenir un saut à la ligne sans obligatoirement changer de paragraphe,
-    on peut terminer une ligne de deux espaces pour signaler notre volonté
-    d’avoir un saut à la ligne pour la prochaine ligne :
+    Les paragraphes sont séparés par une (ou plusieurs) lignes vides. S'il n'y a pas de ligne vide (donc un simple retour à la ligne), le texte ne marquera pas ce retour à la ligne. Pour insérer un retour à la ligne sans faire de nouveau paragraphe, il suffit de terminer la ligne qui précède avec deux espaces.
 </p>
 
-<pre>
-Ceci est un paragraphe.
-Ce texte sera toujours dans le premier paragraphe car pas de ligne vide.␣␣
-Cette ligne sera séparée des lignes du dessus par un saut à la ligne.
+<table>
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th>Vous tapez</th>
+            <th>Vous voyez</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Titre 1</td>
+            <td><code>## texte</code></td>
+            <td><h2>texte</h2></td>
+        </tr><tr>
+            <td>Titre 2</td>
+            <td><code>### texte</code></td>
+            <td><h3>texte</h3></td>
+        </tr><tr>
+            <td>Deux paragraphes distincts</td>
+            <td>
+<pre>Ligne 1.
+Ligne 2.
 
-Ceci est un autre paragraphe.
-</pre>
+Ligne 3.</pre>
+            </td><td>
+                <p>Ligne 1. Ligne 2.</p>
+                <p>Ligne 3.</p>
+            </td>
+        </tr><tr>
+            <td>Deux paragraphes collés</td>
+            <td>
+<pre>Ligne 1.␣␣
+Ligne 2.</pre>
+            </td><td>
+                <p>Ligne 1.<br />
+                Ligne 2.</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 <h3>
     Blocs de mise en forme
@@ -60,39 +81,18 @@ Ceci est un autre paragraphe.
             <td><code>**texte**</code> ou <code>__texte__</code></td>
             <td><b>texte</b></td>
         </tr><tr>
-            <td>Lien</td>
-            <td><code>[ce site est génial](http://progdupeu.pl/)</code></td>
-            <td><a href="http://progdupeu.pl/">ce site est génial</a></td>
+            <td>Barré</td>
+            <td><code>du texte &ltdel>barré&lt/del> encore du texte</code></td>
+            <td>du texte <del>barré</del> encore du texte</td>
         </tr><tr>
             <td>Lien brut</td>
             <td><code>&lt;http://progdupeu.pl/&gt;</code></td>
             <td><a href="http://progdupeu.pl/">http://progdupeu.pl/</a></td>
         </tr><tr>
-            <td>Image</td>
-            <td><code>![Texte alternatif](http://placehold.it/64x64)</code></td>
-            <td><img alt="Texte alternatif" src="http://placehold.it/64x64" /></td>
-        </tr>
-        <tr>
-            <td>Listes</td>
-            <td>
-<pre>
-␣* Puce 1
-␣␣␣␣* Puce 1.1
-␣␣␣␣* Puce 1.2
-␣* Puce 2</pre>
-            </td>
-            <td>
-                <ul>
-                    <li>Puce 1
-                        <ul>
-                            <li>Puce 1.1</li>
-                            <li>Puce 1.2</li>
-                        </ul>
-                    </li>
-                    <li>Puce 2</li>
-                </ul>
-            </td>
-            </tr><tr>
+            <td>Lien enrichi</td>
+            <td><code>[ce site est génial](http://progdupeu.pl/)</code></td>
+            <td><a href="http://progdupeu.pl/">ce site est génial</a></td>
+        </tr><tr>
             <td>Citation</td>
             <td>
 <pre>
@@ -103,10 +103,13 @@ Ceci est un autre paragraphe.
                 <blockquote><p>Texte à citer.</p></blockquote>
             </td>
         </tr><tr>
+            <td>Image</td>
+            <td><code>![Texte alternatif](http://placehold.it/64x64)</code></td>
+            <td><img alt="Texte alternatif" src="http://placehold.it/64x64" /></td>
+        </tr><tr>
             <td>Abréviations</td>
             <td>
-<pre>
-Ce site utilise HTML et CSS.
+<pre>Ce site utilise HTML et CSS.
 
 *[HTML]: Hyper Text Markup Language
 *[CSS]: Cascading Style Sheets</pre>
@@ -114,6 +117,108 @@ Ce site utilise HTML et CSS.
             <td>
                 <p>Ce site utilise <abbr title="Hyper Text Markup Language">HTML</abbr> et <abbr title="Cascading Style Sheets">CSS</abbr>.</p>
             </td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>
+    Mise en forme avancée
+</h2>
+
+<h3>
+	Notes de bas de page et listes
+</h3>
+
+
+<table>
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th>Vous tapez</th>
+            <th>Vous voyez</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Notes de bas de page</td>
+            <td>
+<pre>Ceci est[^1] du texte[^2] avec des notes de bas de page[^2].
+
+[^1]: Verbe
+[^2]: Nom commun</pre>
+            </td><td>
+            <p>Ceci est<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> du texte<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup> avec des notes de bas de page<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>.</p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:1">
+<p>Verbe <a class="footnote-backref" title="Jump back to footnote 1 in the text" href="#fnref:1">↩</a></p>
+</li>
+<li id="fn:2">
+<p>Nom commun <a class="footnote-backref" title="Jump back to footnote 2 in the text" href="#fnref:2">↩</a></p>
+</li>
+</ol>
+</div>
+            </td>
+        </tr><tr>
+            <td>Listes</td>
+            <td>
+<pre>* Puce 1
+␣␣␣␣* Puce 1.1
+␣␣␣␣* Puce 1.2
+* Puce 2
+␣␣␣␣* Puce 2.1
+␣␣␣␣* Puce 2.2</pre>
+            </td>
+            <td>
+                <ul>
+                    <li>Puce 1
+                        <ul>
+                            <li>Puce 1.1</li>
+                            <li>Puce 1.2</li>
+                        </ul>
+                    </li>
+                    <li>Puce 2
+                        <ul>
+                            <li>Puce 2.1</li>
+                            <li>Puce 2.2</li>
+                        </ul>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>
+	Tableaux
+</h3>
+
+<pre>
+| Colonne 1 | Colonne 2 |
+|-----------|-----------|
+| Donnée a | Donnée b |
+| Donnée c | Donnée d |
+</pre>
+
+<p>
+	Ce qui donne :
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Colonne 1</th>
+            <th>Colonne 2</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Donnée a</td>
+            <td>Donnée b</td>
+        </tr><tr>
+            <td>Donnée c</td>
+            <td>Donnée d</td>
         </tr>
     </tbody>
 </table>
@@ -161,8 +266,12 @@ from os import path
     </tbody>
 </table>
 
+<p>
+    Note : Les langages diponibles sont : c, c++, cmake, console, fsharp, haskel, html, python (comme dans l'exemple), shell, text, ocaml (liste non exhaustive).
+</p>
+
 <h2>
-    Formules mathématiques
+    Formules mathématiques (LaTex)
 </h2>
 
 <p>
