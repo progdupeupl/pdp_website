@@ -93,7 +93,7 @@ class ArticleCategory(models.Model):
             string
 
         """
-        return reverse('pdp.article.views.category', args=(
+        return reverse('pdp.article.views.by_category', args=(
             self.slug,
         ))
 
@@ -115,7 +115,7 @@ class Article(models.Model):
     title = models.CharField(u'Titre', max_length=80)
     description = models.CharField(u'Description', max_length=200)
 
-    text = models.TextField(u'Texte')
+    text = models.TextField(u'Texte', blank=True)
 
     author = models.ForeignKey(User, verbose_name=u'Auteur',
                                related_name='articles')
@@ -271,5 +271,7 @@ def get_next_article(g_article):
 @receiver(post_save, sender=Article)
 def saved_article_handler(sender, **kwargs):
     """Function called on each article save."""
+    article = kwargs.get('instance', None)
+
     from pdp.utils.articles import export_article_pdf
-    export_article_pdf(kwargs.get('instance', None))
+    export_article_pdf(article)

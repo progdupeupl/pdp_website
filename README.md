@@ -104,7 +104,7 @@ install them with the `gem` package manager distributed with Ruby:
     :::console
     $ gem install --user-install compass zurb-foundation
 
-To run compass and zurb-foundation, you will need to add `~/gem/ruby/1.8/bin`
+To run compass and zurb-foundation, you will need to add `~/.gem/ruby/1.9.1/bin`
 to your `$PATH`.
 
 Finally, if you want to navigate in mode `debug = False`, then you will need to

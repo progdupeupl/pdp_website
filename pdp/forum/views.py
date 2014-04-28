@@ -165,7 +165,7 @@ def topic(request, topic_pk, topic_slug):
     })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def new(request):
     """Creates a new topic in a forum.
 
@@ -233,7 +233,7 @@ def new(request):
 
 
 @require_POST
-@login_required
+@login_required(redirect_field_name='suivant')
 def edit(request):
     """Edit a topic.
 
@@ -299,7 +299,7 @@ def edit(request):
             'solved': g_topic.is_solved,
             'follow': g_topic.is_followed(request.user),
         }
-        return HttpResponse(json.dumps(resp), mimetype='application/json')
+        return HttpResponse(json.dumps(resp), content_type='application/json')
 
     else:
         # Elsewise this is a regular POST request so we redirect the user back
@@ -307,7 +307,7 @@ def edit(request):
         return redirect(u'{}?page={}'.format(g_topic.get_absolute_url(), page))
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def answer(request):
     """Adds an answer from an user to a topic.
 
@@ -389,7 +389,7 @@ def answer(request):
         })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def edit_post(request):
     """Edit a specific post.
 
@@ -450,7 +450,7 @@ def edit_post(request):
         })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def useful_post(request):
     """Marks a message as useful for the original poster.
 
@@ -538,7 +538,7 @@ def find_post(request, name):
     })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def followed_topics(request):
     """Displays all the topics followed by an user.
 

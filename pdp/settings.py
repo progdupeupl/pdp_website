@@ -192,6 +192,7 @@ TEMPLATE_DIRS = (
 TEMPLATE_CONTEXT_PROCESSORS = (
     # Default context processors
     'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.request',
     'django.core.context_processors.debug',
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
@@ -335,8 +336,12 @@ ABSOLUTE_URL_OVERRIDES = {
         u.username.encode('utf-8'))
 }
 
+SOUTH_MIGRATION_MODULES = {
+    'taggit': 'taggit.south_migrations',
+}
+
 CRISPY_FAIL_SILENTLY = not DEBUG
-CRISPY_TEMPLATE_PACK = 'foundation'
+CRISPY_TEMPLATE_PACK = 'foundation-5'
 
 # Bot settings
 BOT_ENABLED = False

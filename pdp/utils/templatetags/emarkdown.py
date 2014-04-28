@@ -49,7 +49,7 @@ def emarkdown(value):
         bleach.clean(
             markdown.markdown(value, extensions=[
                               md_cssstyle,
-                              'codehilite(force_linenos=True)',
+                              'codehilite(linenums=True)',
                               'extra']),
             tags=allowed_tags,
             attributes=allowed_attrs)

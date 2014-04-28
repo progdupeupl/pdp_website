@@ -133,7 +133,7 @@ def download(request):
         return HttpResponseBadRequest()
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def new(request):
     """Create a new article.
 
@@ -175,9 +175,16 @@ def new(request):
             article.save()
 
             list_tags = data['tags'].split(',')
-            for tag in list_tags:
-                article.tags.add(tag.strip())
+
+            # If we don't give any tags the list_tags will be [u''] so we check
+            # that list_tags[0] is not null. We add the if list_tags before to
+            # avoid IndexError.
+            if list_tags and list_tags[0]:
+                for tag in list_tags:
+                    article.tags.add(tag.strip().lower())
+
             article.save()
+
             return redirect(''.join((reverse('pdp.article.views.edit'),
                             '?article={}'.format(article.pk))))
     else:
@@ -188,7 +195,7 @@ def new(request):
     })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def edit(request):
     """Edit an article.
 
@@ -222,8 +229,13 @@ def edit(request):
 
             article.tags.clear()
             list_tags = data['tags'].split(',')
-            for tag in list_tags:
-                article.tags.add(tag.strip())
+
+            # If we don't give any tags the list_tags will be [u''] so we check
+            # that list_tags[0] is not null. We add the if list_tags before to
+            # avoid IndexError.
+            if list_tags and list_tags[0]:
+                for tag in list_tags:
+                    article.tags.add(tag.strip().lower())
 
             category = None
 
@@ -278,7 +290,7 @@ def edit(request):
 
 
 @require_POST
-@login_required
+@login_required(redirect_field_name='suivant')
 def modify(request):
     """Modify an article.
 
@@ -350,7 +362,7 @@ def modify(request):
     return redirect(article.get_absolute_url())
 
 
-def find_article(request, name):
+def by_author(request, name):
     """Find all articles written by an author.
 
     The author name is extracted from the URL.
@@ -366,7 +378,7 @@ def find_article(request, name):
         .filter(is_visible=True)\
         .order_by('-pubdate')
 
-    return render_template('article/find_article.html', {
+    return render_template('article/by_author.html', {
         'articles': articles, 'usr': u,
     })
 
@@ -388,7 +400,7 @@ def tag(request, name):
     })
 
 
-def category(request, name):
+def by_category(request, name):
     if name == 'tous':
         category = ArticleCategory(title=u'Tout les articles', slug=u'tous')
         articles = Article.objects\
@@ -407,7 +419,7 @@ def category(request, name):
             .order_by('-pubdate')
 
     all_category = ArticleCategory.objects.all()
-    return render_template('article/category.html', {
+    return render_template('article/by_category.html', {
         'category': category,
         'all_category': all_category,
         'articles': articles

@@ -40,13 +40,13 @@ class RegisterForm(forms.Form):
 
     """Form used for to register new users."""
 
-    email = forms.EmailField(label='Adresse email')
-    username = forms.CharField(label='Nom d\'utilisateur', max_length=30)
+    email = forms.EmailField(label=u'Adresse email')
+    username = forms.CharField(label=u'Nom d’utilisateur', max_length=30)
     password = forms.CharField(
-        label='Mot de passe', max_length=76, widget=forms.PasswordInput
+        label=u'Mot de passe', max_length=76, widget=forms.PasswordInput
     )
     password_confirm = forms.CharField(
-        label='Confirmation', max_length=76, widget=forms.PasswordInput
+        label=u'Confirmation', max_length=76, widget=forms.PasswordInput
     )
     captcha = CaptchaField()
 
@@ -67,8 +67,8 @@ class RegisterForm(forms.Form):
                 Field('captcha'),
             ),
             Div(
-                Submit('submit', 'Valider mon inscription'),
-                HTML('<a href="/" class="button secondary">Annuler</a>'),
+                Submit('submit', u'Valider mon inscription'),
+                HTML(u'<a href="/" class="button secondary">Annuler</a>'),
                 css_class='button-group'
             )
         )
@@ -105,26 +105,26 @@ class RegisterForm(forms.Form):
 
 class ProfileForm(forms.Form):
     biography = forms.CharField(
-        label='Biographie',
+        label=u'Biographie',
         required=False,
         widget=forms.Textarea(
-            attrs={'placeholder': 'Votre biographie au format Markdown.'}))
+            attrs={'placeholder': u'Votre biographie au format Markdown.'}))
     site = forms.CharField(
-        label='Site internet',
+        label=u'Site internet',
         required=False,
         max_length=128,
         widget=forms.TextInput(
-            attrs={'placeholder': 'Lien vers votre site internet personnel '
-                   '(ne pas oublier le http:// ou https:// devant).'}))
+            attrs={'placeholder': u'Lien vers votre site internet personnel '
+                   u'(ne pas oublier le http:// ou https:// devant).'}))
     show_email = forms.BooleanField(
-        label='Afficher mon adresse mail publiquement',
+        label=u'Afficher mon adresse mail publiquement',
         required=False)
     avatar_url = forms.CharField(
-        label='Avatar',
+        label=u'Avatar',
         required=False,
         widget=forms.TextInput(
-            attrs={'placeholder': 'Lien vers un avatar externe '
-                   '(laisser vide pour utiliser Gravatar).'}))
+            attrs={'placeholder': u'Lien vers un avatar externe '
+                   u'(laisser vide pour utiliser Gravatar).'}))
 
     def __init__(self, user, *args, **kwargs):
         self.helper = FormHelper()
@@ -162,11 +162,11 @@ class ProfileForm(forms.Form):
 
 class ChangePasswordForm(forms.Form):
     password_new = forms.CharField(
-        label='Nouveau mot de passe ', max_length=76, widget=forms.PasswordInput)
+        label=u'Nouveau mot de passe ', max_length=76, widget=forms.PasswordInput)
     password_old = forms.CharField(
-        label='Mot de passe actuel ', max_length=76, widget=forms.PasswordInput)
+        label=u'Mot de passe actuel ', max_length=76, widget=forms.PasswordInput)
     password_confirm = forms.CharField(
-        label='Confirmer le nouveau mot de passe ', max_length=76, widget=forms.PasswordInput)
+        label=u'Confirmer le nouveau mot de passe ', max_length=76, widget=forms.PasswordInput)
 
     def __init__(self, user, *args, **kwargs):
         self.helper = FormHelper()
@@ -182,7 +182,7 @@ class ChangePasswordForm(forms.Form):
                 Field('password_confirm'),
             ),
             Div(
-                Submit('submit', 'Changer mon mot de passe'),
+                Submit('submit', u'Changer mon mot de passe'),
                 css_class='button-group'
             )
         )

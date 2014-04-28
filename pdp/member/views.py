@@ -74,7 +74,7 @@ def index(request):
     })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def actions(request):
     """Show avaible actions for current user, like a customized homepage.
 
@@ -107,7 +107,7 @@ def details(request, user_name):
     })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def edit_profile(request):
     """Edit an user's profile.
 
@@ -150,6 +150,9 @@ def edit_profile(request):
 def login_view(request):
     """Allow users to log into their accounts.
 
+    If the `suivant` HTTP GET field is given, then this view will redirect the
+    user to the given URL after successful auth.
+
     Returns:
         HttpResponse
 
@@ -157,33 +160,47 @@ def login_view(request):
     csrf_tk = {}
     csrf_tk.update(csrf(request))
 
+    if 'suivant' in request.GET:
+        csrf_tk['next'] = request.GET['suivant']
+
     error = False
     if request.method == 'POST':
         form = LoginForm(request.POST)
+
         if form.is_valid():
             username = request.POST['username']
             password = request.POST['password']
+
             user = authenticate(username=username, password=password)
+
             if user is not None:
+                # Yeah auth successful
                 login(request, user)
                 request.session['get_token'] = generate_token()
-                if not 'remember' in request.POST:
+
+                if 'remember' not in request.POST:
                     request.session.set_expiry(0)
-                return redirect(reverse('pdp.pages.views.home'))
+
+                if 'suivant' in request.GET:
+                    return redirect(request.GET['suivant'])
+                else:
+                    return redirect(reverse('pdp.pages.views.home'))
+
             else:
                 error = u'Les identifiants fournis ne sont pas valides'
         else:
-            error = (u'Veuillez spécifier votre identifiant'
+            error = (u'Veuillez spécifier votre identifiant '
                      u'et votre mot de passe')
     else:
         form = LoginForm()
+
     csrf_tk['error'] = error
     csrf_tk['form'] = form
 
     return render_template('member/login.html', csrf_tk)
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def logout_view(request):
     """Allow users to log out of their accounts.
 
@@ -233,7 +250,7 @@ def register_view(request):
 
 # Settings for public profile
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def settings_profile(request):
     """Set current user's profile settings.
 
@@ -275,7 +292,7 @@ def settings_profile(request):
         return render_template('member/settings_profile.html', c)
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def settings_account(request):
     """Set current user's account settings.
 
@@ -305,7 +322,7 @@ def settings_account(request):
         return render_template('member/settings_account.html', c)
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def publications(request):
     """Show current user's articles and tutorials.
 

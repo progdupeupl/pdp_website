@@ -136,7 +136,7 @@ def download(request):
         dct = export_tutorial(tutorial, validate=False)
         data = json.dumps(dct, indent=4, ensure_ascii=False)
 
-        response = HttpResponse(data, mimetype='application/json')
+        response = HttpResponse(data, content_type='application/json')
         response['Content-Disposition'] = 'attachment; filename={0}.json'\
             .format(tutorial.slug)
 
@@ -149,7 +149,7 @@ def download(request):
         return HttpResponseBadRequest()
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def add_tutorial(request):
     """Add a tutorial.
 
@@ -200,7 +200,7 @@ def add_tutorial(request):
     })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def edit_tutorial(request):
     """Edit a tutorial.
 
@@ -249,7 +249,7 @@ def edit_tutorial(request):
 
 
 @require_POST
-@login_required
+@login_required(redirect_field_name='suivant')
 def modify_tutorial(request):
     """Modify a tutorial.
 
@@ -416,7 +416,7 @@ def view_part(request, tutorial_pk, tutorial_slug, part_slug):
         })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def add_part(request):
     """Add a new part.
 
@@ -458,7 +458,7 @@ def add_part(request):
 
 
 @require_POST
-@login_required
+@login_required(redirect_field_name='suivant')
 def modify_part(request):
     """Modifiy a part.
 
@@ -500,7 +500,7 @@ def modify_part(request):
     return redirect(part.tutorial.get_absolute_url())
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def edit_part(request):
     """Edit a part.
 
@@ -587,7 +587,7 @@ def view_chapter(request, tutorial_pk, tutorial_slug, part_slug,
     })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def add_chapter(request):
     """Add a new chapter to a part.
 
@@ -639,7 +639,7 @@ def add_chapter(request):
 
 
 @require_POST
-@login_required
+@login_required(redirect_field_name='suivant')
 def modify_chapter(request):
     """Modify a chapter.
 
@@ -696,7 +696,7 @@ def modify_chapter(request):
     return redirect(chapter.get_absolute_url())
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def edit_chapter(request):
     """Edit a chapter.
 
@@ -758,7 +758,7 @@ def edit_chapter(request):
 
 # Extract
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def add_extract(request):
     """Add an extract.
 
@@ -801,7 +801,7 @@ def add_extract(request):
     })
 
 
-@login_required
+@login_required(redirect_field_name='suivant')
 def edit_extract(request):
     """Edit an extract.
 
@@ -843,7 +843,7 @@ def edit_extract(request):
 
 
 @require_POST
-@login_required
+@login_required(redirect_field_name='suivant')
 def modify_extract(request):
     """Modify an extract.
 

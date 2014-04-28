@@ -83,25 +83,7 @@
             {% csrf_token %}
         </form>
     {% endif %}
-    {% with pdf=tutorial.has_pdf %}
-        <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}&format={% if not pdf %}json{% else %}pdf{% endif %}"
-            class="button {% if pdf %}split{% endif %}">
-            <i class="icon-download"></i>
-            Télécharger ({% if pdf %}PDF{% else %}JSON{% endif %})
-            {% if pdf %}
-                <span data-dropdown="drop-download"></span>
-            {% endif %}
-        </a>
-        {% if pdf %}
-        <ul id="drop-download" class="f-dropdown" data-dropdown-content style="float: none;">
-            <li>
-                <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}&format=json">
-                    Télécharger (JSON)
-                </a>
-            </li>
-        </ul>
-        {% endif %}
-    {% endwith %}
+
 {% endblock %}
 
 {% block content %}
@@ -129,6 +111,29 @@
                 {% include "member/member_item_common.part.html" %}
             {% endfor %}.
         </p>
+    </div>
+</div>
+<div class="row">
+    <div class="large-12 columns">
+        {% with pdf=tutorial.has_pdf %}
+            <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}&format={% if not pdf %}json{% else %}pdf{% endif %}"
+                class="button {% if pdf %}split{% endif %}">
+                <i class="icon-download"></i>
+                Télécharger ({% if pdf %}PDF{% else %}JSON{% endif %})
+                {% if pdf %}
+                    <span data-dropdown="drop-download"></span>
+                {% endif %}
+            </a>
+            {% if pdf %}
+            <ul id="drop-download" class="f-dropdown" data-dropdown-content>
+                <li>
+                    <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}&format=json">
+                        Télécharger (JSON)
+                    </a>
+                </li>
+            </ul>
+            {% endif %}
+        {% endwith %}
     </div>
 </div>
 
