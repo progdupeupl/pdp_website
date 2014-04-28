@@ -10,7 +10,11 @@
     Les titres sont définis par le caractère <code>#</code>.
 </p>
 <p>
-    Les paragraphes sont séparés par une (ou plusieurs) lignes vides. S'il n'y a pas de ligne vide (donc un simple retour à la ligne), le texte ne marquera pas ce retour à la ligne. Pour insérer un retour à la ligne sans faire de nouveau paragraphe, il suffit de terminer la ligne qui précède avec deux espaces.
+    Les paragraphes sont séparés par une (ou plusieurs) lignes vides. S'il n'y
+    a pas de ligne vide (donc un simple retour à la ligne), le texte ne
+    marquera pas ce retour à la ligne. Pour insérer un retour à la ligne sans
+    faire de nouveau paragraphe, il suffit de terminer la ligne qui précède
+    avec deux espaces.
 </p>
 
 <table>
@@ -31,7 +35,7 @@
             <td><code>### texte</code></td>
             <td><h3>texte</h3></td>
         </tr><tr>
-            <td>Deux paragraphes distincts</td>
+            <td>Deux paragraphes</td>
             <td>
 <pre>Ligne 1.
 Ligne 2.
@@ -42,7 +46,7 @@ Ligne 3.</pre>
                 <p>Ligne 3.</p>
             </td>
         </tr><tr>
-            <td>Deux paragraphes collés</td>
+            <td>Saut à la ligne</td>
             <td>
 <pre>Ligne 1.␣␣
 Ligne 2.</pre>
@@ -126,7 +130,7 @@ Ligne 2.</pre>
 </h2>
 
 <h3>
-	Notes de bas de page et listes
+    Notes de bas de page et listes
 </h3>
 
 
@@ -191,18 +195,24 @@ Ligne 2.</pre>
 </table>
 
 <h3>
-	Tableaux
+    Tableaux
 </h3>
 
+<p>
+    Vous tapez :
+</p>
+
 <pre>
+<code>
 | Colonne 1 | Colonne 2 |
 |-----------|-----------|
 | Donnée a | Donnée b |
 | Donnée c | Donnée d |
+</code>
 </pre>
 
 <p>
-	Ce qui donne :
+    Ce qui donne :
 </p>
 
 <table>
@@ -267,7 +277,19 @@ from os import path
 </table>
 
 <p>
-    Note : Les langages diponibles sont : c, c++, cmake, console, fsharp, haskel, html, python (comme dans l'exemple), shell, text, ocaml (liste non exhaustive).
+    <strong>Note :</strong> Les langages diponibles sont : 
+    <code>c</code>,
+    <code>cpp</code>,
+    <code>cmake</code>,
+    <code>console</code>,
+    <code>fsharp</code>,
+    <code>haskell</code>,
+    <code>html</code>,
+    <code>python</code>,
+    <code>shell</code>,
+    <code>text</code>,
+    <code>ocaml</code>,
+    etc. (<a href="http://pygments.org/languages/">liste complète ici</a>).
 </p>
 
 <h2>
