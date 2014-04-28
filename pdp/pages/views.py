@@ -67,6 +67,7 @@ def about(request):
     """
     return render_template('pages/about.html')
 
+
 def robots(request):
     """Display robots.txt file.
 
@@ -76,4 +77,4 @@ def robots(request):
     """
     with open('robots.txt') as f:
         content = f.read()
-    return HttpResponse(content, mimetype='text/plain')
+    return HttpResponse(content, content_type='text/plain')

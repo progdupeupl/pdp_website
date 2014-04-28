@@ -299,7 +299,7 @@ def edit(request):
             'solved': g_topic.is_solved,
             'follow': g_topic.is_followed(request.user),
         }
-        return HttpResponse(json.dumps(resp), mimetype='application/json')
+        return HttpResponse(json.dumps(resp), content_type='application/json')
 
     else:
         # Elsewise this is a regular POST request so we redirect the user back
