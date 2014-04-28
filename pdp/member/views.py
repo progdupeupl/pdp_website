@@ -150,6 +150,9 @@ def edit_profile(request):
 def login_view(request):
     """Allow users to log into their accounts.
 
+    If the `suivant` HTTP GET field is given, then this view will redirect the
+    user to the given URL after successful auth.
+
     Returns:
         HttpResponse
 
@@ -157,19 +160,32 @@ def login_view(request):
     csrf_tk = {}
     csrf_tk.update(csrf(request))
 
+    if 'suivant' in request.GET:
+        csrf_tk['next'] = request.GET['suivant']
+
     error = False
     if request.method == 'POST':
         form = LoginForm(request.POST)
+
         if form.is_valid():
             username = request.POST['username']
             password = request.POST['password']
+
             user = authenticate(username=username, password=password)
+
             if user is not None:
+                # Yeah auth successful
                 login(request, user)
                 request.session['get_token'] = generate_token()
-                if not 'remember' in request.POST:
+
+                if 'remember' not in request.POST:
                     request.session.set_expiry(0)
-                return redirect(reverse('pdp.pages.views.home'))
+
+                if 'next' in request.GET:
+                    return redirect(request.GET['next'])
+                else:
+                    return redirect(reverse('pdp.pages.views.home'))
+
             else:
                 error = u'Les identifiants fournis ne sont pas valides'
         else:
@@ -177,6 +193,7 @@ def login_view(request):
                      u'et votre mot de passe')
     else:
         form = LoginForm()
+
     csrf_tk['error'] = error
     csrf_tk['form'] = form
 
