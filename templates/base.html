@@ -208,7 +208,7 @@
                     <a href="{% url "pdp.member.views.register_view" %}">S’inscrire</a>
                 </li>
                 <li>
-                    <a href="{% url "pdp.member.views.login_view" %}">Se connecter</a>
+                <a href="{% url "pdp.member.views.login_view" %}{% if request.path != '/' %}?suivant={{ request.path }}{% endif %}">Se connecter</a>
                 </li>
                 {% endif %}
             </ul>
