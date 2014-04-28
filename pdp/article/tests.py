@@ -142,27 +142,27 @@ class ArticleSearchIntegrationTests(TestCase):
         self.user = G(User, username='test')
         self.profile = G(Profile, user=self.user)
 
-    def test_url_search_none(self):
+    def test_url_by_author_none(self):
         resp = self.client.get(
-            reverse('pdp.article.views.find_article',
+            reverse('pdp.article.views.by_author',
                     args=[self.user.username]))
 
         self.assertEquals(resp.status_code, 200)
 
-    def test_url_search_invisible(self):
+    def test_url_by_author_invisible(self):
         G(Article, is_visible=False, author=self.user)
 
         resp = self.client.get(
-            reverse('pdp.article.views.find_article',
+            reverse('pdp.article.views.by_author',
                     args=[self.user.username]))
 
         self.assertEquals(resp.status_code, 200)
 
-    def test_url_search_visible(self):
+    def test_url_by_author_visible(self):
         G(Article, is_visible=True, author=self.user)
 
         resp = self.client.get(
-            reverse('pdp.article.views.find_article',
+            reverse('pdp.article.views.by_author',
                     args=[self.user.username]))
 
         self.assertEquals(resp.status_code, 200)
