@@ -28,7 +28,7 @@ register = template.Library()
 
 
 @register.filter(needs_autoescape=False)
-def emarkdown(value):
+def emarkdown(value, post_id=None):
     # Allowed output tags from user raw HTML input and markdown generation
     allowed_tags = ['div', 'span', 'p', 'pre', 'hr', 'img', 'br',
                     'strong', 'em', 'i', 'b', 'code', 'sub', 'sup', 'del',
@@ -45,12 +45,20 @@ def emarkdown(value):
         'img': ['src', 'alt'],
     }
 
+    text = markdown.markdown(value, extensions=[
+                             md_cssstyle,
+                             'codehilite(linenums=True)',
+                             'extra'])
+
+    if post_id is not None:
+        if not isinstance(post_id, str):
+            post_id = str(post_id)
+        text = text.replace("fnref:", "fanref:"+post_id+"_")
+        text = text.replace("fn:", "fn:"+post_id+"_")
+        text = text.replace("fan", "fn") # Hack to avoid double replacement of "fn" and "fnref"
+
     return mark_safe('<div class="markdown">{0}</div>'.format(
-        bleach.clean(
-            markdown.markdown(value, extensions=[
-                              md_cssstyle,
-                              'codehilite(linenums=True)',
-                              'extra']),
+        bleach.clean(text,
             tags=allowed_tags,
             attributes=allowed_attrs)
         .encode('utf-8')))
