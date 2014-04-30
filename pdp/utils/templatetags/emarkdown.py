@@ -53,12 +53,19 @@ def emarkdown(value, post_id=None):
     if post_id is not None:
         if not isinstance(post_id, str):
             post_id = str(post_id)
-        text = text.replace("fnref:", "fanref:"+post_id+"_")
-        text = text.replace("fn:", "fn:"+post_id+"_")
-        text = text.replace("fan", "fn") # Hack to avoid double replacement of "fn" and "fnref"
+
+        # Adapt backlinks from footnotes to text
+        text = text.replace('id="fnref:', 'id="fnref:{}_'.format(post_id))
+        text = text.replace('href="#fnref:', 'href="#fnref:{}_'.format(
+            post_id))
+
+        # Adapt links from text to footnotes
+        text = text.replace('id="fn:', 'id="fn:{}_'.format(post_id))
+        text = text.replace('href="#fn:', 'href="#fn:{}_'.format(post_id))
 
     return mark_safe('<div class="markdown">{0}</div>'.format(
-        bleach.clean(text,
+        bleach.clean(
+            text,
             tags=allowed_tags,
-            attributes=allowed_attrs)
-        .encode('utf-8')))
+            attributes=allowed_attrs
+        ).encode('utf-8')))
