@@ -33,7 +33,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from django.views.decorators.debug import sensitive_post_parameters
 
-from pdp.utils import render_template
+from pdp.utils import render_template, bot
 from pdp.utils.tokens import generate_token
 from pdp.utils.paginator import paginator_range
 from pdp.article.models import Article
@@ -238,6 +238,10 @@ def register_view(request):
             profile.save()
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, user)
+            
+            if BOT_ENABLED:
+                bot.send_welcome_private_message(user)
+            
             return render_template('member/register_success.html')
         else:
             return render_template('member/register.html', {'form': form})
