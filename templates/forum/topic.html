@@ -177,7 +177,7 @@
                 {% endwith %}
             </div>
             <div class="large-10 columns">
-                {{ post.text|emarkdown }}
+                {{ post.text|emarkdown:post.pk }}
             </div>
         </div>
     </div>
