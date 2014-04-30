@@ -25,6 +25,7 @@ from pdp.settings import BOT_USER_PK, BOT_TUTORIAL_FORUM_PK, \
     BOT_ARTICLE_FORUM_PK
 
 from pdp.forum.models import Topic, Post
+from pdp.messages.models import PrivateTopic, PrivatePost
 
 
 def create_topic(forum_pk, title, subtitle, text):
@@ -104,31 +105,36 @@ def create_article_topic(article):
         BOT_ARTICLE_FORUM_PK, u'[Article] {}'.format(article.title),
         article.description, text)
 
-def create_private_topic(participants, title, subtitle, text):
+
+def create_private_topic(recipients, title, subtitle, text):
     """Create a new private topic using the bot.
- 
+
    Args:
-       participants: participants of the private topic
+       recipients: list of User instances
        title: title of the private topic
        subtitle: subtitle of the private topic, can be None
        text: content of the private post in markdown
- 
+
    """
- 
+
     # Create private topic
     private_topic = PrivateTopic(
         title=title,
         subtitle=subtitle,
         author_id=BOT_USER_PK,
         pubdate=datetime.now())
-   
-    list_part = participants.split(',')
-    for part in list_part:
-        part = part.strip()
-        private_topic.participants.add(part)
-    # Save private topic
+
+    # We beed to save our PrivateTopic before adding it participants
+    # since it uses a many-to-many field.
     private_topic.save()
- 
+
+    # Add participants
+    for user in recipients:
+        private_topic.participants.add(user)
+
+    # Save private topic again
+    private_topic.save()
+
     # Create first private post
     private_post = PrivatePost(
         privatetopic=private_topic,
@@ -136,30 +142,30 @@ def create_private_topic(participants, title, subtitle, text):
         pubdate=datetime.now(),
         position_in_topic=1,
         author_id=BOT_USER_PK)
- 
+
     # Save private post
     private_post.save()
- 
+
     # Finally update private topic
     private_topic.last_message = private_post
     private_topic.save()
 
+
 def send_welcome_private_message(user):
     """Send a welcome message to a user.
-    
+
     Args:
         user: person who will receive the message
-    
+
     """
-   
+
     # Text to be displayed to user
     with open('templates/bot/welcome_private_message.html', 'r') as f:
         t = Template(f.read())
- 
+
     text = t.render(Context({'user': user}))
-   
-    title = u'Bienvenue sur Progdupeu.pl'
-   
-    subtitle = None
-   
-    create_private_topic(user, title, subtitle, text)
+
+    title = u'Bienvenue sur Progdupeupl !'
+    subtitle = u'Quelques petits conseils pour commencer.'
+
+    create_private_topic([user], title, subtitle, text)

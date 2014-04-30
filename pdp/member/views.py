@@ -234,14 +234,17 @@ def register_view(request):
                 data['username'],
                 data['email'],
                 data['password'])
+
             profile = Profile(user=user, show_email=False)
             profile.save()
+
             user.backend = 'django.contrib.auth.backends.ModelBackend'
-            login(request, user)
-            
-            if BOT_ENABLED:
+
+            if settings.BOT_ENABLED:
                 bot.send_welcome_private_message(user)
-            
+
+            login(request, user)
+
             return render_template('member/register_success.html')
         else:
             return render_template('member/register.html', {'form': form})
