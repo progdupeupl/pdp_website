@@ -43,6 +43,7 @@ def emarkdown(value, post_id=None):
         '*': ['class', 'id'],
         'a': ['href', 'title'],
         'img': ['src', 'alt'],
+        'abbr': ['title'],
     }
 
     text = markdown.markdown(value, extensions=[
