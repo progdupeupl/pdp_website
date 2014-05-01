@@ -1,0 +1,100 @@
+{% extends "pages/base.html" %}
+{% load static %}
+
+{% block title %}
+    Module de rédaction
+{% endblock %}
+
+{% block headline %}
+    Module de rédaction
+{% endblock %}
+
+{% block headline-sub %}
+    Présentation du module et de ses fonctionnalités
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="current"><a href="#">Module de rédaction</a></li>
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="large-12 columns">
+        <p>
+            Le module de rédaction de Progdupeupl a été pensé pour vous
+            proposer un outil fonctionnel et de qualité.
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="large-12 columns">
+        <h2>Les différentes tailles</h2>
+        <p>
+            Le site vous propose plusieurs formats de rédaction adaptés à chacun de vos besoins.
+    </div>
+</div>
+
+<div class="row">
+    <div class="large-4 columns">
+        <h3>Des petits…</h3>
+        <div class="row">
+            <div class="small-3 columns">
+                <img src="{% static "img/tutorial/sizes/small.svg" %}" alt="" />
+            </div>
+            <div class="small-9 columns">
+                <p>
+                    C’est le plus simple des formats. Il est composé de plusieurs
+                    extraits.
+                </p>
+                <p>
+                    <strong>
+                        Idéal pour présenter rapidement un sujet.
+                    </strong>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="large-4 columns">
+        <h3>…aux moyens…</h3>
+        <div class="row">
+            <div class="small-3 columns">
+                <img src="{% static "img/tutorial/sizes/normal.svg" %}" alt="" />
+            </div>
+            <div class="small-9 columns">
+                <p>
+                    Composés de plusieurs chapitres, eux-même composés de plusieurs
+                    extraits.
+                </p>
+                <p>
+                    <strong>
+                        Quand on doit aller dans les détails, mais sans trop en
+                        donner.
+                    </strong>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="large-4 columns">
+        <h3>…jusqu’aux grands !</h3>
+        <div class="row">
+            <div class="small-3 columns">
+                <img src="{% static "img/tutorial/sizes/big.svg" %}" alt="" />
+            </div>
+            <div class="small-9 columns">
+                <p>
+                    Composés de plusieurs parties, elles-mêmes composées de
+                    plusieurs chapitres, eux-mêmes composés de plusieurs extraits.
+                </p>
+                <p>
+                    <strong>
+                        Quand on veut parcourir de fond en comble un sujet.
+                    </strong>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
