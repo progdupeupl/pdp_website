@@ -61,12 +61,11 @@ class TopicSerializer(serializers.ModelSerializer):
     is_locked = serializers.Field()
     is_solved = serializers.Field()
     is_sticky = serializers.Field()
-    last_message = serializers.Field()
 
     class Meta:
         model = Topic
         fields = ('id', 'title', 'subtitle', 'forum', 'author',
-                  'last_message', 'pubdate', 'is_solved', 'is_locked',
+                  'pubdate', 'is_solved', 'is_locked',
                   'is_sticky')
 
 
@@ -84,16 +83,12 @@ class PostSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     topics = serializers.PrimaryKeyRelatedField(many=True, read_only='true')
     articles = serializers.PrimaryKeyRelatedField(many=True, read_only='true')
-    topics_read = serializers.PrimaryKeyRelatedField(
-        many=True, read_only='true')
-    topics_followed = serializers.PrimaryKeyRelatedField(
-        many=True, read_only='true')
     posts = serializers.PrimaryKeyRelatedField(many=True, read_only='true')
 
     class Meta:
         model = User
         fields = ('id', 'username', 'topics', 'posts',
-                  'topics_read', 'topics_followed', 'articles')
+                  'articles')
 
 
 class ArticleSerializer(serializers.ModelSerializer):
@@ -102,7 +97,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = ('id', 'title', 'description',
-                  'text', 'author', 'pubdate', 'is_visible')
+                  'text', 'author', 'pubdate', 'is_visible', 'is_beta')
 
 
 class TutorialSerializer(serializers.ModelSerializer):

@@ -362,7 +362,9 @@ class ArticleList(generics.ListCreateAPIView):
     """
     List all article, or create a new article.
     """
-    queryset = Article.objects.all().filter(is_visible=True)
+    queryset = Article.objects.all()\
+        .filter(Q(is_visible=True) | Q(is_beta=True))
+
     serializer_class = ArticleSerializer
     filter_class = ArticleFilter
 
@@ -378,7 +380,8 @@ class ArticleDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a Article.
     """
-    queryset = Article.objects.all().filter(is_visible=True)
+    queryset = Article.objects.all()\
+        .filter(Q(is_visible=True) | Q(is_beta=True))
     serializer_class = ArticleSerializer
 
     def get(self, request, *args, **kwargs):
