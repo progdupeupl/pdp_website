@@ -24,7 +24,7 @@ urlpatterns = patterns(
 
     # Markdown helper
     url(r'^markdown$', views.help_markdown),
-    url(r'^tutoriels$', views.help_tutorial),
+    url(r'^redaction$', views.help_writting),
     url(r'^apropos$', views.about),
 
     url(r'^$', views.index),

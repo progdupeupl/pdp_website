@@ -58,9 +58,9 @@ def help_markdown(request):
     return render_template('pages/help_markdown.html')
 
 
-def help_tutorial(request):
+def help_writting(request):
     """Display a page with help about tutorial writting."""
-    return render_template('pages/help_tutorial.html')
+    return render_template('pages/help_writting.html')
 
 
 def about(request):
