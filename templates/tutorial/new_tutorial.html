@@ -17,6 +17,18 @@
 
 <div class="row">
     <div class="large-12 columns">
+        <p>
+            C’est votre premier écrit ? Certaines options sont floues ?
+            
+            N’hésitez pas à consulter 
+            <a href="{% url "pdp.pages.views.help_writting" %}">l’aide du
+            module de rédaction</a> pour bien commencer !
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="large-12 columns">
         {% crispy form %}
     </div>
 </div>
