@@ -201,7 +201,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
 
     # Custom context processors
-    'pdp.utils.context_processors.versions',
     'pdp.utils.context_processors.git_version',
 )
 
