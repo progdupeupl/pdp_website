@@ -22,6 +22,11 @@ from pdp.forum.models import TopicRead, TopicFollowed
 from pdp.article.models import Article
 from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
 
+from pdp.api import fields
+
+# In order to put some fields readonly, we redeclare them as a
+# serializers.Field() so they cannot be edited by PUT requests
+
 
 class CategorySerializer(serializers.ModelSerializer):
     slug = serializers.Field()
@@ -102,20 +107,20 @@ class ArticleSerializer(serializers.ModelSerializer):
 
 class TutorialSerializer(serializers.ModelSerializer):
     is_visible = serializers.Field()
-    is_pending = serializers.Field()
-    pubdate = serializers.Field()
+    pubdate = serializers.DateTimeField()
     slug = serializers.Field()
-    authors = serializers.Field()
+    size = fields.TutorialSizeField()
 
     class Meta:
         model = Tutorial
         fields = ('id', 'title', 'description', 'authors', 'introduction',
                   'conclusion', 'slug', 'pubdate',
-                  'is_mini', 'is_visible', 'is_pending')
+                  'size', 'is_visible')
 
 
 class PartSerializer(serializers.ModelSerializer):
     slug = serializers.Field()
+    position_in_tutorial = serializers.Field()
 
     class Meta:
         model = Part
@@ -125,6 +130,8 @@ class PartSerializer(serializers.ModelSerializer):
 
 class ChapterSerializer(serializers.ModelSerializer):
     slug = serializers.Field()
+    position_in_part = serializers.Field()
+    position_in_tutorial = serializers.Field()
 
     class Meta:
         model = Chapter
@@ -134,6 +141,8 @@ class ChapterSerializer(serializers.ModelSerializer):
 
 
 class ExtractSerializer(serializers.ModelSerializer):
+    chapter = fields.ChapterField()
+    position_in_chapter = serializers.Field()
 
     class Meta:
         model = Extract
