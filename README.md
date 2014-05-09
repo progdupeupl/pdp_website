@@ -167,6 +167,6 @@ the documentation generation work, because of Django's settings handling :
 
 ## Copyright
 
-Progdupeupl is brought to you under GNU GPLv3 licence. For further informations
+Progdupeupl is brought to you under GNU AGPLv3 licence. For further informations
 read the COPYING file. This project use some code parts from
 [progmod](http://progmod.org) available under the MIT licence.
