@@ -12,7 +12,6 @@
 
 {% block header %}
     <h1>
-        <i class="icon-file-text icon-large"></i>
         Articles
     </h1>
     <p>
@@ -38,7 +37,6 @@
 
         {% if user.is_authenticated %}
             <a href="{% url "pdp.article.views.new" %}" class="button">
-                <i class="icon-plus"></i>
                 Nouvel article
             </a>
         {% endif %}

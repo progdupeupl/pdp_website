@@ -29,7 +29,6 @@
         <form action="{% url "pdp.article.views.modify" %}" method="POST">
             <div class="button-group">
                 <a href="/articles/editer?article={{ article.pk }}" class="button">
-                    <i class="icon-pencil"></i>
                     Éditer
                 </a>
                 <a href="#" class="button secondary" data-dropdown="delete-drop">
@@ -40,7 +39,6 @@
                         Si vous supprimez cet article, il sera alors impossible de le modifier/consulter de nouveau.
                     </p>
                     <button type="submit" name="delete" class="button expand alert">
-                        <i class="icon-remove"></i>
                         Confirmer la suppression
                     </button>
                 </div>

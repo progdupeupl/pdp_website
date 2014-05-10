@@ -37,11 +37,9 @@
                     {% else %}
                         {% url "pdp.tutorial.views.add_extract" %}?chapitre={{ tutorial.get_chapter.pk }}
                     {% endif %}" class="button small">
-                    <i class="icon-plus"></i>
                     Ajouter
                 </a>
                 <a href="{% url "pdp.tutorial.views.edit_tutorial" %}?tutoriel={{ tutorial.pk }}" class="button small">
-                    <i class="icon-pencil"></i>
                     Éditer
                 </a>
                 <a href="#" class="button secondary small" data-dropdown="delete-drop-tutorial">
@@ -52,7 +50,6 @@
                         Si vous supprimez ce tutoriel, il sera alors impossible de le modifier/consulter de nouveau.
                     </p>
                     <button type="submit" name="delete" class="button expand alert">
-                        <i class="icon-remove"></i>
                         Confirmer la suppression
                     </button>
                 </div>
@@ -121,7 +118,6 @@
         {% with pdf=tutorial.has_pdf %}
             <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}&format={% if not pdf %}json{% else %}pdf{% endif %}"
                 class="button {% if pdf %}split{% endif %}">
-                <i class="icon-download"></i>
                 Télécharger ({% if pdf %}PDF{% else %}JSON{% endif %})
                 {% if pdf %}
                     <span data-dropdown="drop-download"></span>

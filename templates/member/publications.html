@@ -35,7 +35,6 @@
 <div class="row">
     <div class="large-12 columns">
         <a href="{% url "pdp.article.views.new" %}" class="button">
-            <i class="icon-plus"></i>
             Nouvel article
         </a>
     </div>
@@ -62,7 +61,6 @@
             </div>
             <div class="large-1 small-2 columns">
                 <a href="{{ article.get_edit_url }}" class="button small">
-                    <i class="icon-edit"></i>
                     Éditer
                 </a>
             </div>
@@ -90,7 +88,6 @@
 <div class="row">
     <div class="large-12 columns">
         <a href="{% url "pdp.tutorial.views.add_tutorial" %}" class="button">
-            <i class="icon-plus"></i>
             Nouveau tutoriel
         </a>
     </div>
@@ -117,7 +114,6 @@
             </div>
             <div class="large-1 small-2 columns">
                 <a href="{% url "pdp.tutorial.views.edit_tutorial" %}?tutoriel={{ tutorial.pk }}" class="button small">
-                    <i class="icon-edit"></i>
                     Éditer
                 </a>
             </div>

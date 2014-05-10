@@ -19,12 +19,10 @@
         <form action="{% url "pdp.tutorial.views.modify_chapter" %}" method="POST">
             <div class="button-group">
                 <a href="/tutoriels/editer/chapitre?chapitre={{ chapter.pk }}" class="button">
-                    <i class="icon-pencil"></i>
                     Éditer
                 </a>
                 {% if chapter.part %}
                 <a href="#" class="button secondary" data-dropdown="delete-drop-chapter">
-                    <i class="icon-remove"></i>
                     Supprimer
                 </a>
                 <div id="delete-drop-chapter" class="f-dropdown content small" data-dropdown-content>

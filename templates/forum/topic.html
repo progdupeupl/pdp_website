@@ -31,12 +31,10 @@
             <input type="hidden" name="page" value="{{ nb }}">
             <div class="button-group">
                 <a href="/forums/sujet/nouveau?forum={{ topic.forum.pk }}" class="button small">
-                    <i class="icon-plus"></i>
                     Nouveau
                 </a>
                 {% if topic.author.pk == user.pk %}
                 <button type="submit" name="solved" id="resolu_btn" class="button small {% if topic.is_solved %}success{% else %}secondary{% endif %}">
-                    <i class="icon-ok"></i>
                     {% if topic.is_solved %}
                         Résolu
                     {% else %}
@@ -45,7 +43,6 @@
                 </button>
                 {% endif %}
                 <button class="button small {% if not topic.is_followed %}secondary{% endif %}" type="submit" name="follow" id="follow_btn">
-                    <i class="icon-star"></i>
                     {% if topic.is_followed %}
                         Suivi
                     {% else %}
@@ -136,14 +133,12 @@
                         <div class="button-group">
                             {% if topic.author == user and post.author != user %}
                                 <a href="/forums/message/utile?message={{ post.pk }}" class="button small {% if not post.is_useful %}secondary{% else %}success{% endif %}">
-                                    <i class="icon-thumbs-up"></i>
                                     Cette réponse m'a aidé
                                 </a>
                             {% endif %}
 
                             {% if post.author == user or perms.forum.change_post %}
                                 <a href="/forums/message/editer?message={{ post.pk }}" class="button secondary small">
-                                    <i class="icon-pencil"></i>
                                     Éditer
                                 </a>
                             {% endif %}
@@ -151,7 +146,6 @@
                             {% if not topic.is_locked and not topic.antispam %}
                                 <a href="/forums/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.pk }}"
                                     class="button secondary small">
-                                    <i class="icon-quote-left"></i>
                                     Citer
                                 </a>
                             {% endif %}
@@ -206,7 +200,6 @@ method="POST" id="submit_form">
     <div class="row">
         <div class="large-8 large-centered columns" style="text-align: center;">
             <button class="button btn-primary" type="submit" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
-                <i class="icon-reply"></i>
                 Répondre
             </button>
             <button type="submit" name="preview" class="button secondary" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>

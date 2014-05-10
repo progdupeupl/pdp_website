@@ -23,7 +23,6 @@ class="active"
 
 {% block header %}
     <h1>
-        <i class="icon-home icon-large"></i>
         Bienvenue
     </h1>
     <p>
@@ -110,7 +109,6 @@ class="active"
     <div class="large-4 columns">
         <div class="button-group">
             <a href="{% url "pdp.article.views.index" %}" class="button">
-                <i class="icon-arrow-right"></i>
                 Aller aux articles
             </a>
             {% include "article/feeds.part.html" %}
@@ -119,7 +117,6 @@ class="active"
     <div class="large-4 columns">
         <div class="button-group">
             <a href="{% url "pdp.tutorial.views.index" %}" class="button">
-                <i class="icon-arrow-right"></i>
                 Aller aux tutoriels
             </a>
             {% include "tutorial/feeds.part.html" %}
@@ -128,7 +125,6 @@ class="active"
     <div class="large-4 columns">
         <div class="button-group full-width">
             <a href="{% url "pdp.forum.views.index" %}" class="button">
-                <i class="icon-arrow-right"></i>
                 Aller aux forums
             </a>
             {% include "forum/feeds.part.html" %}

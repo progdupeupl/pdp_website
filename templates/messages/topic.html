@@ -82,7 +82,6 @@
                             {% if post == topic.last_message %}
                             {% if post.author == user or perms.messages.change_post %}
                                 <a href="/messages/message/editer?message={{ post.pk }}" class="button secondary small">
-                                    <i class="icon-pencil"></i>
                                     Éditer
                                 </a>
                             {% endif %}
@@ -90,7 +89,6 @@
                             {% if not topic.is_locked and not topic.antispam %}
                                 <a href="/messages/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.pk }}"
                                     class="button secondary small">
-                                    <i class="icon-quote-left"></i>
                                     Citer
                                 </a>
                             {% endif %}
@@ -143,7 +141,6 @@ method="POST" id="submit_form">
     <div class="row">
         <div class="large-8 large-centered columns" style="text-align: center;">
             <button class="button btn-primary" type="submit" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
-                <i class="icon-reply"></i>
                 Répondre
             </button>
             <button type="submit" name="preview" class="button secondary" {% if topic.is_locked or topic.antispam %}disabled{% endif %}>
