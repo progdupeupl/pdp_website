@@ -115,23 +115,32 @@
 </div>
 <div class="row">
     <div class="large-12 columns">
-        {% with pdf=tutorial.has_pdf %}
-            <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}&format={% if not pdf %}json{% else %}pdf{% endif %}"
-                class="button {% if pdf %}split{% endif %}">
-                Télécharger ({% if pdf %}PDF{% else %}JSON{% endif %})
-                {% if pdf %}
-                    <span data-dropdown="drop-download"></span>
+        {% with md=tutorial.has_md %}
+            {% with pdf=tutorial.has_pdf %}
+                <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}&format={% if not pdf %}json{% else %}pdf{% endif %}"
+                    class="button {% if pdf or md %}split{% endif %}">
+                    Télécharger ({% if pdf %}PDF{% else %}JSON{% endif %})
+                    {% if pdf or md %}
+                        <span data-dropdown="drop-download"></span>
+                    {% endif %}
+                </a>
+                {% if pdf or md %}
+                <ul id="drop-download" class="f-dropdown" data-dropdown-content>
+                    {% if md %}
+                        <li>
+                            <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}&format=markdown">
+                                Télécharger (Markdown)
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li>
+                        <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}&format=json">
+                            Télécharger (JSON)
+                        </a>
+                    </li>
+                </ul>
                 {% endif %}
-            </a>
-            {% if pdf %}
-            <ul id="drop-download" class="f-dropdown" data-dropdown-content>
-                <li>
-                    <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}&format=json">
-                        Télécharger (JSON)
-                    </a>
-                </li>
-            </ul>
-            {% endif %}
+            {% endwith %}
         {% endwith %}
     </div>
 </div>

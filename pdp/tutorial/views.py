@@ -145,6 +145,9 @@ def download(request):
     elif export_format == 'pdf':
         return redirect(tutorial.get_pdf_url())
 
+    elif export_format == 'markdown':
+        return redirect(tutorial.get_md_url())
+
     else:
         return HttpResponseBadRequest()
 
