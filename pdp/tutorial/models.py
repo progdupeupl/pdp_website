@@ -146,6 +146,14 @@ class Tutorial(models.Model):
             self.slug,
         )
 
+    def get_md_url(self):
+        """Get URL to get a MD file of this tutorial."""
+        return u'{}/tutorials/{}/{}.md'.format(
+            settings.MEDIA_URL,
+            self.pk,
+            self.slug,
+        )
+
     def has_pdf(self):
         """Check if the tutorial has a PDF file."""
         return os.path.isfile(os.path.join(
@@ -153,6 +161,15 @@ class Tutorial(models.Model):
             'tutorials',
             str(self.pk),
             u'{}.pdf'.format(self.slug),
+        ))
+
+    def has_md(self):
+        """Check if the tutorial has a markdown file"""
+        return os.path.isfile(os.path.join(
+            settings.MEDIA_ROOT,
+            'tutorials',
+            str(self.pk),
+            u'{}.md'.format(self.slug),
         ))
 
     def get_edit_url(self):
