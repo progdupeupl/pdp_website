@@ -4,9 +4,9 @@
     <div class="large-1 small-2 columns" style="text-align: center;">
         <a href="{{ tuto.get_absolute_url }}">
             {% if tuto.thumbnail %}
-                <img src="{{ tuto.thumbnail.url }}" alt="" width="48px" />
+                <img src="{{ tuto.thumbnail.url }}" alt="" width="48" />
             {% else %}
-                <img src="{% static "img/tutorial/blank.png" %}" alt="" width="48px" />
+                <img src="{% static "img/tutorial/blank.png" %}" alt="" width="48" />
             {% endif %}
         </a>
     </div>
