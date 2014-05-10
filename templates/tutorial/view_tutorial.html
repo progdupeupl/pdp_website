@@ -9,9 +9,9 @@
 {% block headline %}
     <span>
         {% if tutorial.thumbnail %}
-            <img src="{{ tutorial.thumbnail.url }}" width="48px" class="hide-for-small"/>
+            <img src="{{ tutorial.thumbnail.url }}" width="48" class="hide-for-small"/>
         {% else %}
-            <img src="{% static "img/tutorial/blank.png" %}" width="48px" class="hide-for-small"/>
+            <img src="{% static "img/tutorial/blank.png" %}" width="48" class="hide-for-small"/>
         {% endif %}
     </span>
     {{ tutorial.title }}
