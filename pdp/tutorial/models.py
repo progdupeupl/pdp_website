@@ -18,8 +18,9 @@
 """Models for tutorial app.
 
 The class hierarchy is as follows :
- - "large" tutorials: Tutorial < Parts < Chapters
- - "small" tutorials : Tutorial < Chapter
+ - "large" tutorials: Tutorial < Parts < Chapters < Extracts
+ - "medium" tutorials: Tutorial < Part < Chapters < Extracts
+ - "small" tutorials : Tutorial < Chapter < Extracts
 
 """
 import os
