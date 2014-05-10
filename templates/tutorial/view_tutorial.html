@@ -133,11 +133,13 @@
                             </a>
                         </li>
                     {% endif %}
+                    {% if pdf %}
                     <li>
                         <a href="{% url "pdp.tutorial.views.download" %}?tutoriel={{ tutorial.pk }}&format=json">
                             Télécharger (JSON)
                         </a>
                     </li>
+                    {% endif %}
                 </ul>
                 {% endif %}
             {% endwith %}
