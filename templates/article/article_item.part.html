@@ -2,11 +2,13 @@
 
 <div class="row collapse article-publication-item">
     <div class="large-1 small-2 columns" style="text-align: center;">
-        {% if article.thumbnail %}
-            <img src="{{article.thumbnail.url }}" alt="" width="48px" />
-        {% else %}
-            <img src="{% static "img/article/blank.png" %}" alt="" width="48px" />
-        {% endif %}
+        <a href="{{ article.get_absolute_url }}">
+            {% if article.thumbnail %}
+                <img src="{{article.thumbnail.url }}" alt="" width="48px" />
+            {% else %}
+                <img src="{% static "img/article/blank.png" %}" alt="" width="48px" />
+            {% endif %}
+        </a>
     </div>
     <div class="large-10 small-10 columns" style="padding-left: 5px;">
         <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
