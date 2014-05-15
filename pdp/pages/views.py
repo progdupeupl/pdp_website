@@ -73,6 +73,10 @@ def about(request):
     return render_template('pages/about.html')
 
 
+def tos(request):
+    """Display terms of service for the website."""
+    return render_template('pages/tos.html')
+
 def robots(request):
     """Display robots.txt file.
 
