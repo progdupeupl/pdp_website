@@ -28,8 +28,6 @@
 
     {# RSS links #}
     <link rel="alternate" type="application/rss+xml"
-          title="Articles" href="{% url "article-feed-rss" %}"/>
-    <link rel="alternate" type="application/rss+xml"
           title="Tutoriels" href="{% url "tutorial-feed-rss" %}"/>
     <link rel="alternate" type="application/rss+xml"
           title="Forum" href="{% url "post-feed-rss" %}"/>
@@ -62,11 +60,6 @@
                 <li {% block menu_home %}{% endblock %}>
                     <a href="{% url "pdp.pages.views.home" %}">
                         Accueil
-                    </a>
-                </li>
-                <li {% block menu_article %}{% endblock %}>
-                    <a href="{% url "pdp.article.views.index" %}">
-                        Articles
                     </a>
                 </li>
                 <li {% block menu_tutorial %}{% endblock %}>

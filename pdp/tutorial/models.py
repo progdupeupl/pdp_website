@@ -154,6 +154,8 @@ class Tutorial(models.Model):
 
     tags = TaggableManager()
 
+    is_article = models.BooleanField(u'Est un article', default=False)
+
     def __unicode__(self):
         """Textual representation of a tutorial.
 

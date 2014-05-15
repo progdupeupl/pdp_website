@@ -36,9 +36,6 @@ urlpatterns = patterns('',
     url(r'^messages/$', views.PostList.as_view()),
     url(r'^messages/(?P<pk>[0-9]+)/$', views.PostDetail.as_view()),
 
-    url(r'^articles/$', views.ArticleList.as_view()),
-    url(r'^articles/(?P<pk>[0-9]+)/$', views.ArticleDetail.as_view()),
-
     url(r'^tutoriels/$', views.TutorialList.as_view()),
     url(r'^tutoriels/(?P<pk>[0-9]+)/$', views.TutorialDetail.as_view()),
     url(r'^parties/$', views.PartList.as_view()),

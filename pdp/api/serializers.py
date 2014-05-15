@@ -19,7 +19,6 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from pdp.forum.models import Category, Forum, Topic, Post
 from pdp.forum.models import TopicRead, TopicFollowed
-from pdp.article.models import Article
 from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
 
 from pdp.api import fields
@@ -94,15 +93,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'topics', 'posts',
                   'articles')
-
-
-class ArticleSerializer(serializers.ModelSerializer):
-    author = serializers.Field(source='author.username')
-
-    class Meta:
-        model = Article
-        fields = ('id', 'title', 'description',
-                  'text', 'author', 'pubdate', 'is_visible', 'is_beta')
 
 
 class TutorialSerializer(serializers.ModelSerializer):

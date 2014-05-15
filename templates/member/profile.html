@@ -58,35 +58,6 @@
 
 <div class="row">
     <div class="large-4 columns">
-        <h3>Articles</h3>
-        <table>
-            <tbody>
-                <tr>
-                    <td>En cours de rédaction</td>
-                    <td>{{ profile.get_hidden_articles.count }}</td>
-                </tr>
-                <tr>
-                    <td>En ligne</td>
-                    <td>
-                        {% with count=profile.get_visible_articles.count %}
-                            {% if count > 0 %}
-                                <a href="{% url "pdp.article.views.by_author" usr.username %}">
-                            {% endif %}
-                            {{ count }}
-                            {% if count > 0 %}
-                                </a>
-                            {% endif %}
-                        {% endwith %}
-                    </td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td>Total</td>
-                    <td>{{ profile.get_articles.count }}</td>
-                </tr>
-            </tfoot>
-        </table>
     </div>
     <div class="large-4 columns">
         <h3>Tutoriels</h3>
@@ -101,7 +72,7 @@
                     <td>
                         {% with count=profile.get_visible_tutorials.count %}
                             {% if count > 0 %}
-                                <a href="{% url "pdp.tutorial.views.find_tutorial" usr.username %}">
+                                <a href="{% url "pdp.tutorial.views.by_author" usr.username %}">
                             {% endif %}
                             {{ count }}
                             {% if count > 0 %}

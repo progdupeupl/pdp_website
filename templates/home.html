@@ -40,27 +40,9 @@ class="active"
 {% block content %}
 
 <div class="row">
-    {# Articles #}
-    {% cache 120 home-articles %}
     <div class="large-4 columns">
-        <div class="home-app-title">
-            <h2 >
-                <a href="{% url "pdp.article.views.index" %}">
-                    Articles
-                </a>
-            </h2>
-        </div>
-
-        {% if last_articles %}
-            {% for article in last_articles %}
-                {% include "article/article_item_small.part.html" %}
-            {% endfor %}
-        {% else %}
-            <p>Pas d'articles pour l'instant.</p>
-        {% endif %}
+        <p>À remplir.</p>
     </div>
-    {% endcache %}
-
     {# Tutorials #}
     {% cache 120 home-tutorials %}
     <div class="large-4 columns">
@@ -107,12 +89,7 @@ class="active"
 {# Access buttons for desktop version #}
 <div class="row hide-for-small">
     <div class="large-4 columns">
-        <div class="button-group">
-            <a href="{% url "pdp.article.views.index" %}" class="button">
-                Aller aux articles
-            </a>
-            {% include "article/feeds.part.html" %}
-        </div>
+        <p>À remplir.</p>
     </div>
     <div class="large-4 columns">
         <div class="button-group">

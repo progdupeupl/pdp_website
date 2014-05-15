@@ -25,14 +25,13 @@ from pdp.utils import slugify
 
 from pdp.forum.models import Category, Forum, Topic, Post
 from pdp.forum.models import TopicRead, TopicFollowed
-from pdp.article.models import Article
 from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
 
 from rest_framework import generics, permissions
 
 from .serializers import (CategorySerializer, ForumSerializer, TopicSerializer,
                           TopicFollowedSerializer, TopicReadSerializer,
-                          PostSerializer, UserSerializer, ArticleSerializer,
+                          PostSerializer, UserSerializer,
                           TutorialSerializer, ChapterSerializer,
                           PartSerializer, ExtractSerializer)
 
@@ -348,53 +347,6 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
             tp = Topic.objects.all().get(pk=obj.topic.pk)
             tp.last_message = obj
             tp.save()
-
-
-class ArticleFilter(django_filters.FilterSet):
-
-    class Meta:
-        model = Article
-        fields = ['author']
-
-
-class ArticleList(generics.ListCreateAPIView):
-
-    """
-    List all article, or create a new article.
-    """
-    queryset = Article.objects.all()\
-        .filter(Q(is_visible=True) | Q(is_beta=True))
-
-    serializer_class = ArticleSerializer
-    filter_class = ArticleFilter
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-
-class ArticleDetail(generics.RetrieveUpdateDestroyAPIView):
-
-    """
-    Retrieve, update or delete a Article.
-    """
-    queryset = Article.objects.all()\
-        .filter(Q(is_visible=True) | Q(is_beta=True))
-    serializer_class = ArticleSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-
-    def pre_save(self, obj):
-        obj.author = self.request.user
 
 
 class TutorialFilter(django_filters.FilterSet):

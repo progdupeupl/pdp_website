@@ -18,33 +18,14 @@
 from django.conf.urls import patterns, url
 
 from pdp.article import views
-from pdp.article import feeds
 
 urlpatterns = patterns(
     '',
 
-    url(r'^flux/rss/$', feeds.LastArticlesFeedRSS(), name='article-feed-rss'),
-    url(r'^flux/atom/$', feeds.LastArticlesFeedATOM(),
-        name='article-feed-atom'),
+    url(r'^flux/rss/$', views.redirect_feed_rss),
+    url(r'^flux/atom/$', views.redirect_feed_atom),
 
-    # TODO: Handle redirect
+    url(r'^(?P<article_pk>\d+)/(?P<article_slug>.+)$', views.redirect_view),
 
-    url(r'^voir/(?P<article_pk>\d+)-(?P<article_slug>.+)$',
-        views.deprecated_view_redirect),
-    url(r'^(?P<article_pk>\d+)/(?P<article_slug>.+)$', views.view),
-
-    url(r'^telecharger$', views.download),
-
-    url(r'^nouveau$', views.new),
-    url(r'^editer$', views.edit),
-    url(r'^modifier$', views.modify),
-
-    url(r'^tags/$', views.tags),
-    url(r'^tag/(?P<name>.+)$', views.tag),
-
-    url(r'^auteur/(?P<name>.+)$', views.by_author),
-    url(r'^categorie/(?P<name>.+)$', views.by_category,
-        name="articles_category"),
-
-    url(r'^$', views.index),
+    url(r'^$', views.redirect_index),
 )
