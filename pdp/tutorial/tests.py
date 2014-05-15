@@ -230,6 +230,40 @@ class TutorialSearchIntegrationTests(TestCase):
 
         self.assertEquals(resp.status_code, 200)
 
+    def test_url_by_category_all(self):
+        resp = self.client.get(
+            reverse('pdp.tutorial.views.by_category', args=['tous'])
+        )
+        self.assertEquals(resp.status_code, 200)
+
+    def test_url_by_category_beta(self):
+        """Test viewing beta tutorials as an unlogged used."""
+        resp = self.client.get(
+            reverse('pdp.tutorial.views.by_category', args=['beta'])
+        )
+        self.assertEquals(resp.status_code, 403)
+
+
+class AuthenticatedSearchIntegrationTests(TestCase):
+    def setUp(self):
+        # Create user
+        self.user = G(User, username='test')
+        self.user.set_password('test')
+        self.user.save()
+
+        # Create profile
+        self.profile = G(Profile, user=self.user)
+
+        # Authenticate user
+        self.client.login(username='test', password='test')
+
+    def test_url_by_category_beta(self):
+        """Test viewing beta tutorials as a logged used."""
+        resp = self.client.get(
+            reverse('pdp.tutorial.views.by_category', args=['beta'])
+        )
+        self.assertEquals(resp.status_code, 200)
+
 
 class AuthenticatedTutorialIntegrationTests(TestCase):
     def setUp(self):
