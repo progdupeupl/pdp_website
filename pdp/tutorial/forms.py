@@ -41,6 +41,12 @@ class TutorialForm(forms.Form):
         max_length=200
     )
 
+    tags = forms.CharField(
+        label=u'Tags (séparés par une virgule)',
+        max_length=80,
+        required=False
+    )
+
     category = forms.ModelChoiceField(
         label=u'Catégorie',
         queryset=TutorialCategory.objects.all(),
@@ -61,6 +67,7 @@ class TutorialForm(forms.Form):
         self.helper.layout = Layout(
             Field('title'),
             Field('description'),
+            Field('tags'),
             Field('category'),
             Field('image'),
             Field('size'),
@@ -81,6 +88,12 @@ class EditTutorialForm(forms.Form):
 
     image = forms.ImageField(
         label=u'Selectionnez une image',
+        required=False
+    )
+
+    tags = forms.CharField(
+        label=u'Tags (séparés par une virgule)',
+        max_length=80,
         required=False
     )
 
@@ -108,6 +121,7 @@ class EditTutorialForm(forms.Form):
             Field('title'),
             Field('description'),
             Field('image'),
+            Field('tags'),
             Field('category'),
             Field('introduction'),
             Field('conclusion'),
@@ -368,9 +382,8 @@ class EditChapterForm(forms.Form):
         chapter = cleaned_data.get('chapter')
 
         existing = [x.slug for x in Chapter.objects.all()
-                        .filter(part=Part.objects.get(
-                            pk=cleaned_data.get('part')))
-                        .exclude(pk=chapter)]
+                    .filter(part=Part.objects.get(pk=cleaned_data.get('part')))
+                    .exclude(pk=chapter)]
 
         if title in existing:
             msg = u'Un chapitre portant ce nom existe déjà dans cette partie.'

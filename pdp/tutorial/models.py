@@ -36,6 +36,8 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 
+from taggit.managers import TaggableManager
+
 from PIL import Image
 from cStringIO import StringIO
 
@@ -149,6 +151,8 @@ class Tutorial(models.Model):
 
     category = models.ForeignKey(TutorialCategory, null=True, blank=True,
                                  verbose_name=u'Catégorie')
+
+    tags = TaggableManager()
 
     def __unicode__(self):
         """Textual representation of a tutorial.

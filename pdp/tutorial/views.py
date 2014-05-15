@@ -173,13 +173,34 @@ def add_tutorial(request):
             tutorial.description = data['description']
             tutorial.size = data['size']
             tutorial.pubdate = datetime.now()
+
             if 'image' in request.FILES:
                 tutorial.image = request.FILES['image']
+
+            category = None
+            if 'category' in data:
+                try:
+                    category = TutorialCategory.objects.get(
+                        pk=int(data['category'])
+                    )
+                except ValueError:
+                    category = None
+                except TutorialCategory.DoesNotExist:
+                    category = None
+
+            tutorial.category = category
+
             tutorial.save()
 
-            # We need to save the tutorial before changing its author list
-            # since it's a many-to-many relationship
+            # Save tags after first save (m2m)
+            list_tags = data['tags'].split(',')
+            if list_tags and list_tags[0]:
+                for tag in list_tags:
+                    tutorial.tags.add(tag.strip().lower())
+
+            # Save author list (m2m)
             tutorial.authors.add(request.user)
+
             # Save the icon
             if 'icon' in request.FILES:
                 tutorial.icon = request.FILES['icon']
@@ -236,6 +257,18 @@ def edit_tutorial(request):
             if 'image' in request.FILES:
                 tutorial.image = request.FILES['image']
 
+            # Update tags
+            tutorial.tags.clear()
+            list_tags = data['tags'].split(',')
+
+            # If we don't give any tags the list_tags will be [u''] so we check
+            # that list_tags[0] is not null. We add the if list_tags before to
+            # avoid IndexError.
+            if list_tags and list_tags[0]:
+                for tag in list_tags:
+                    tutorial.tags.add(tag.strip().lower())
+
+            # Update category
             category = None
             if 'category' in data:
                 try:
@@ -262,10 +295,21 @@ def edit_tutorial(request):
         else:
             tutorial_category_pk = tutorial.category.pk
 
+        # initial value for tags input
+        list_tags = ''
+        first_tag = True
+        for tag in tutorial.tags.all():
+            if first_tag:
+                first_tag = False
+            else:
+                list_tags += ', '
+            list_tags += tag.__str__()
+
         form = EditTutorialForm({
             'title': tutorial.title,
             'description': tutorial.description,
             'category': tutorial_category_pk,
+            'tags': list_tags,
             'introduction': tutorial.introduction,
             'conclusion': tutorial.conclusion
         })
