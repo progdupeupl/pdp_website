@@ -54,9 +54,12 @@ def index(request):
     if request.user.has_perm('tutorial.change_tutorial'):
         pending_tutorials = Tutorial.objects.filter(is_pending=True)
 
+    categories = TutorialCategory.objects.all()
+
     return render_template('tutorial/index.html', {
         'tutorials': tutorials,
-        'pending_tutorials': pending_tutorials
+        'pending_tutorials': pending_tutorials,
+        'categories': categories
     })
 
 

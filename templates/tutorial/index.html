@@ -56,6 +56,38 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="large-12 columns">
+        <h2>Catégories</h2>
+        <ul class="inline-list">
+            <li>
+                <a href="{% url "pdp.tutorial.views.by_category" "tous" %}">
+                    Tous les tutoriels
+                </a>
+            </li>
+            {% for category in categories %}
+                <li>
+                    <a href="{{ category.get_absolute_url }}">
+                        {{ category }} ({{ category.get_tutorial_count }})
+                    </a>
+                </li>
+            {% endfor %}
+            <li>
+                <a href="{% url "pdp.tutorial.views.by_category" "autres" %}">
+                     Autres
+                 </a>
+             </li>
+            {% if user.is_authenticated %}
+                <li>
+                    <a href="{% url "pdp.tutorial.views.by_category" "beta" %}">
+                        Bêta
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
 {# Validation stuff #}
 
 {% if perms.tutorial.change_tutorial %}

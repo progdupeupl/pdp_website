@@ -73,7 +73,7 @@
         <h2>Catégories</h2>
 
         <ul class="inline-list">
-            <li><a href="{% url "articles_category" "tous" %}">Tout les articles</a></li>
+            <li><a href="{% url "articles_category" "tous" %}">Tous les articles</a></li>
             {% for category in all_article_category %}
                 <li><a href="{{ category.get_absolute_url }}">{{ category }} ({{ category.get_article_count }})</a></li>
             {% endfor %}
