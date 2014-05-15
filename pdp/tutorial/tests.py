@@ -243,6 +243,12 @@ class TutorialSearchIntegrationTests(TestCase):
         )
         self.assertEquals(resp.status_code, 403)
 
+    def test_url_by_category_other(self):
+        resp = self.client.get(
+            reverse('pdp.tutorial.views.by_category', args=['autres'])
+        )
+        self.assertEquals(resp.status_code, 200)
+
 
 class AuthenticatedSearchIntegrationTests(TestCase):
     def setUp(self):
