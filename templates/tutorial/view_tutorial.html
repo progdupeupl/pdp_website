@@ -11,7 +11,11 @@
         {% if tutorial.thumbnail %}
             <img src="{{ tutorial.thumbnail.url }}" width="48" class="hide-for-small"/>
         {% else %}
+            {% if tutorial.is_article %}
+            <img src="{% static "img/article/blank.png" %}" width="48" class="hide-for-small"/>
+            {% else %}
             <img src="{% static "img/tutorial/blank.png" %}" width="48" class="hide-for-small"/>
+            {% endif %}
         {% endif %}
     </span>
     {{ tutorial.title }}

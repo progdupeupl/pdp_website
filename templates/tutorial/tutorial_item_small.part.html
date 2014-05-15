@@ -7,7 +7,11 @@
             {% if tutorial.thumbnail %}
                 <img src="{{ tutorial.thumbnail.url }}" alt="" width="48" />
             {% else %}
+                {% if tutorial.is_article %}
+                <img src="{% static "img/article/blank.png" %}" alt="" width="48" />
+                {% else %}
                 <img src="{% static "img/tutorial/blank.png" %}" alt="" width="48" />
+                {% endif %}
             {% endif %}
         </a>
     </div>
