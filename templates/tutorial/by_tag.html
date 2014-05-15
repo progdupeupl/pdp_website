@@ -23,10 +23,10 @@
                 {% for tutorial in tutorials %}
                     <li>
                         <a href="{{ tutorial.get_absolute_url }}">
+                            {{ tutorial.title }}
                             {% if tutorial.is_beta %}
                                 <span class="label alert">BETA</span>
                             {% endif %}
-                            {{ tutorial.title }}
                         </a><br />
                         {% for tag in tutorial.tags.all %}
                             {% if tag.name %}
