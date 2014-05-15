@@ -402,7 +402,7 @@ def tag(request, name):
 
 def by_category(request, name):
     if name == 'tous':
-        category = ArticleCategory(title=u'Tout les articles', slug=u'tous')
+        category = ArticleCategory(title=u'Tous les articles', slug=u'tous')
         articles = Article.objects\
             .filter(is_beta=False, is_visible=True).order_by('-pubdate')
     elif name == 'beta':
