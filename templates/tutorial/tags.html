@@ -1,0 +1,45 @@
+{% extends "tutorial/base.html" %}
+
+{% block title %}
+    Tags
+{% endblock %}
+
+{% block headline %}
+    Liste des tags
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="current"><a href="#">Liste des tags</a></li>
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="large-12 columns">
+        <p>
+            Voici le nuage des tags utilisés sur les différents tutoriels
+            actuellement publiés sur le site :
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="large-12 columns">
+        {% for tag in tags %}
+            {% if tag.name %}
+                <a href="{% url "pdp.tutorial.views.by_tag" name=tag.name %}"
+                    class="label secondary">
+                    {{ tag.name }}
+                </a>
+            {% endif %}
+
+        {% empty %}
+            <p>
+                Aucun tag pour l’instant.
+            </p>
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endblock %}

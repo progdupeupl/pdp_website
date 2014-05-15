@@ -21,10 +21,14 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+
+from django.contrib.contenttypes.models import ContentType
+from taggit.models import TaggedItem
 
 from pdp.utils import render_template, slugify, bot
 from pdp.utils.cache import template_cache_delete
@@ -1014,4 +1018,44 @@ def by_author(request, name):
 
     return render_template('tutorial/by_author.html', {
         'tutorials': tutorials, 'usr': u,
+    })
+
+
+def tags(request):
+    ct = ContentType.objects.get(
+        app_label='tutorial',
+        model='tutorial'
+    )
+    tagged_items = TaggedItem.objects \
+        .filter(content_type=ct)
+
+    visible_tags = []
+    for item in tagged_items:
+        tutorial = Tutorial.objects.get(id=item.object_id)
+        if tutorial.is_visible or (request.user.is_authenticated() and
+                                   tutorial.is_beta):
+            visible_tags.append(item.tag)
+
+    return render_template('tutorial/tags.html', {
+        'tags': visible_tags
+    })
+
+
+def by_tag(request, name):
+    """Find all tutorials which was marked by a specific tag."""
+
+    if request.user.is_authenticated():
+        tutorials = Tutorial.objects\
+            .filter(Q(is_visible=True) | Q(is_beta=True))\
+            .filter(tags__name__in=[name])\
+            .order_by('-pubdate')
+    else:
+        tutorials = Tutorial.objects\
+            .filter(is_visible=True)\
+            .filter(tags__name__in=[name])\
+            .order_by('-pubdate')
+
+    return render_template('tutorial/by_tag.html', {
+        'tagname': name,
+        'tutorials': tutorials,
     })

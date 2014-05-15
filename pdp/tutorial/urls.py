@@ -33,6 +33,8 @@ urlpatterns = patterns(
     # Current URLs
     url(r'^auteur/(?P<name>.+)$', views.by_author),
     url(r'^categorie/(?P<name>.+)$', views.by_category),
+    url(r'^tag/(?P<name>.+)$', views.by_tag),
+    url(r'^tags/$', views.tags),
 
     url(r'^(?P<tutorial_pk>\d+)/(?P<tutorial_slug>.+)/'
         r'(?P<part_slug>.+)/'
