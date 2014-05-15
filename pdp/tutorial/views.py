@@ -922,6 +922,12 @@ def by_category(request, name):
         tutorials = Tutorial.objects \
             .filter(is_beta=False, is_visible=True) \
             .order_by('-pubdate')
+    elif name == 'autres':
+        category = TutorialCategory(title=u'Autres', slug=u'autres')
+        tutorials = Tutorial.objects \
+            .filter(is_beta=False, is_visible=True) \
+            .filter(category=None) \
+            .order_by('-pubdate')
     elif name == 'beta':
         # Only visible for members
         if not request.user.is_authenticated():

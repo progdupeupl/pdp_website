@@ -22,14 +22,24 @@
             <dt>Catégorie :</dt>
 
             <dd class="{% ifequal category.slug "tous" %}active{% endifequal %}">
-                <a href="{% url "pdp.tutorial.views.by_category" "tous" %}">Tous</a>
+                <a href="{% url "pdp.tutorial.views.by_category" "tous" %}">
+                    Tous
+                </a>
             </dd>
 
             {% for c in categories %}
                 <dd class="{% ifequal category.slug c.slug %}active{% endifequal %}">
-                    <a href="{{ c.get_absolute_url }}">{{ c.title }} ({{ c.get_tutorial_count }})</a>
+                    <a href="{{ c.get_absolute_url }}">
+                        {{ c.title }} ({{ c.get_tutorial_count }})
+                    </a>
                 </dd>
             {% endfor %}
+
+            <dd class="{% ifequal category.slug "autres" %}active{% endifequal %}">
+                <a href="{% url "pdp.tutorial.views.by_category" "autres" %}">
+                    Non classés
+                </a>
+            </dd>
  
             {% if user.is_authenticated %}
                 <dd class="{% ifequal category.slug "beta" %}active{% endifequal %}">
@@ -49,7 +59,7 @@
                 {% endfor %}
             </div>
         {% else %}
-            <p>Aucun tutoriel disponible.</p>
+            <p>Aucun tutoriel disponible dans cette catégorie.</p>
         {% endif %}
     </div>
 </div>
