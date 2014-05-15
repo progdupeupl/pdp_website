@@ -34,6 +34,8 @@ from taggit.managers import TaggableManager
 from pdp.utils import slugify
 from pdp.utils.models import has_changed
 
+from pdp.tutorial.models import Tutorial
+
 from PIL import Image
 from cStringIO import StringIO
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -139,6 +141,10 @@ class Article(models.Model):
 
     category = models.ForeignKey(ArticleCategory, null=True, blank=True,
                                  verbose_name=u'Catégorie')
+
+    to_tutorial = models.ForeignKey(Tutorial,
+                                    verbose_name=u'Tutoriel correspondant',
+                                    null=True, blank=True)
 
     def __unicode__(self):
         """Textual representation of an article.
