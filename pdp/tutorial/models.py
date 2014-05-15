@@ -595,7 +595,7 @@ def saved_part_handler(sender, **kwargs):
 @receiver(post_save, sender=Chapter)
 def saved_chapter_handler(sender, **kwargs):
     """Function called on each tutorial save."""
-    if not settings.DEBUG:
+    if not settings.TESTING:
         from pdp.utils.tutorials import export_tutorial_pdf
         export_tutorial_pdf(kwargs.get('instance', None).get_tutorial())
 

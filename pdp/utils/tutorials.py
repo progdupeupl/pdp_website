@@ -190,7 +190,9 @@ def export_tutorial(tutorial, validate=True):
             dct['parts'].append(export_part(part))
 
     else:
-        raise NotImplementedError('Export for this size does not exist')
+        raise NotImplementedError(
+            'Export for this size does not exist : {}'
+            .format(tutorial.size))
 
     # If validation is requested and fails, just return empty dict
     if validate and not validate_tutorial(dct):
@@ -343,6 +345,11 @@ def export_tutorial_pdf(tutorial):
             chapter = tutorial.get_chapter()
             if chapter:
                 export_chapter_md(f, chapter, export_all=False)
+
+        else:
+            raise NotImplementedError(
+                'Export for this size does not exist : {}'
+                .format(tutorial.size))
 
         export_text_md(f, tutorial.conclusion)
 
