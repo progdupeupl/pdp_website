@@ -23,7 +23,7 @@ from crispy_forms.layout import Div
 from crispy_forms_foundation.layout import Layout, Fieldset, Submit, Field, \
     ButtonHolder, HTML
 
-from pdp.tutorial.models import Tutorial, Part, Chapter
+from pdp.tutorial.models import TutorialCategory, Tutorial, Part, Chapter
 from pdp.utils import slugify
 
 
@@ -41,6 +41,12 @@ class TutorialForm(forms.Form):
         max_length=200
     )
 
+    category = forms.ModelChoiceField(
+        label=u'Catégorie',
+        queryset=TutorialCategory.objects.all(),
+        required=False
+    )
+
     size = forms.ChoiceField(
         label=u'Taille du tutoriel',
         choices=Tutorial.SIZE_CHOICES
@@ -55,6 +61,7 @@ class TutorialForm(forms.Form):
         self.helper.layout = Layout(
             Field('title'),
             Field('description'),
+            Field('category'),
             Field('image'),
             Field('size'),
             Submit('submit', 'Valider')
@@ -74,7 +81,14 @@ class EditTutorialForm(forms.Form):
 
     image = forms.ImageField(
         label=u'Selectionnez une image',
-        required=False)
+        required=False
+    )
+
+    category = forms.ModelChoiceField(
+        label=u'Catégorie',
+        queryset=TutorialCategory.objects.all(),
+        required=False
+    )
 
     introduction = forms.CharField(
         required=False,
@@ -94,6 +108,7 @@ class EditTutorialForm(forms.Form):
             Field('title'),
             Field('description'),
             Field('image'),
+            Field('category'),
             Field('introduction'),
             Field('conclusion'),
             Submit('submit', 'Valider')

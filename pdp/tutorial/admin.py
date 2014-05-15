@@ -16,8 +16,9 @@
 # along with Progdupeupl. If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib import admin
-from .models import Tutorial, Part, Chapter, Extract
+from .models import TutorialCategory, Tutorial, Part, Chapter, Extract
 
+admin.site.register(TutorialCategory)
 admin.site.register(Tutorial)
 admin.site.register(Part)
 admin.site.register(Chapter)

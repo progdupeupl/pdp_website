@@ -31,7 +31,8 @@ urlpatterns = patterns(
     # Viewing
 
     # Current URLs
-    url(r'^voir/(?P<name>.+)$', views.find_tutorial),
+    url(r'^auteur/(?P<name>.+)$', views.by_author),
+    url(r'^categorie/(?P<name>.+)$', views.by_category),
 
     url(r'^(?P<tutorial_pk>\d+)/(?P<tutorial_slug>.+)/'
         r'(?P<part_slug>.+)/'

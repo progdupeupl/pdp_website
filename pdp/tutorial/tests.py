@@ -185,7 +185,7 @@ class SmallTutorialIntegrationTests(TestCase):
         G(Chapter, tutorial=self.tutorial)
 
     # Does not work, have no idea why
-    #def test_url_download(self):
+    # def test_url_download(self):find_tutorial
     #    resp = self.client.get(u''.join(
     #        (reverse('pdp.tutorial.views.download'),
     #         '?tutoriel={}'.format(self.tutorial.pk))))
@@ -197,14 +197,14 @@ class TutorialSearchIntegrationTests(TestCase):
         self.user = G(User, username='test')
         self.profile = G(Profile, user=self.user)
 
-    def test_url_search_none(self):
+    def test_url_by_author_none(self):
         resp = self.client.get(
-            reverse('pdp.tutorial.views.find_tutorial',
+            reverse('pdp.tutorial.views.by_author',
                     args=[self.user.username]))
 
         self.assertEquals(resp.status_code, 200)
 
-    def test_url_search_invisible(self):
+    def test_url_by_author_invisible(self):
         G(
             Tutorial,
             is_visible=False,
@@ -212,12 +212,12 @@ class TutorialSearchIntegrationTests(TestCase):
         )
 
         resp = self.client.get(
-            reverse('pdp.tutorial.views.find_tutorial',
+            reverse('pdp.tutorial.views.by_author',
                     args=[self.user.username]))
 
         self.assertEquals(resp.status_code, 200)
 
-    def test_url_search_visible(self):
+    def test_url_by_author_visible(self):
         G(
             Tutorial,
             is_visible=True,
@@ -225,7 +225,7 @@ class TutorialSearchIntegrationTests(TestCase):
         )
 
         resp = self.client.get(
-            reverse('pdp.tutorial.views.find_tutorial',
+            reverse('pdp.tutorial.views.by_author',
                     args=[self.user.username]))
 
         self.assertEquals(resp.status_code, 200)

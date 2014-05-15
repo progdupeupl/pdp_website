@@ -31,7 +31,7 @@ from pdp.utils.cache import template_cache_delete
 from pdp.utils.tutorials import move, export_tutorial
 from pdp.settings import BOT_ENABLED
 
-from .models import Tutorial, Part, Chapter, Extract
+from .models import TutorialCategory, Tutorial, Part, Chapter, Extract
 from .models import get_last_tutorials
 
 from .forms import TutorialForm, EditTutorialForm, AddPartForm, EditPartForm, \
@@ -124,7 +124,7 @@ def download(request):
 
     tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
 
-    if not tutorial.is_visible and not request.user in tutorial.authors.all():
+    if not tutorial.is_visible and request.user not in tutorial.authors.all():
         raise Http404
 
     export_format = request.GET.get('format', None)
@@ -218,7 +218,7 @@ def edit_tutorial(request):
 
     tutorial = get_object_or_404(Tutorial, pk=tutorial_pk)
 
-    if not request.user in tutorial.authors.all():
+    if request.user not in tutorial.authors.all():
         raise Http404
 
     if request.method == 'POST':
@@ -229,8 +229,23 @@ def edit_tutorial(request):
             tutorial.description = data['description']
             tutorial.introduction = data['introduction']
             tutorial.conclusion = data['conclusion']
+
             if 'image' in request.FILES:
                 tutorial.image = request.FILES['image']
+
+            category = None
+            if 'category' in data:
+                try:
+                    category = TutorialCategory.objects.get(
+                        pk=int(data['category'])
+                    )
+                except ValueError:
+                    category = None
+                except TutorialCategory.DoesNotExist:
+                    category = None
+
+            tutorial.category = category
+
             tutorial.save()
 
             # If the tutorial was on the home page, clean cache
@@ -239,9 +254,15 @@ def edit_tutorial(request):
 
             return redirect(tutorial.get_absolute_url())
     else:
+        if not tutorial.category:
+            tutorial_category_pk = None
+        else:
+            tutorial_category_pk = tutorial.category.pk
+
         form = EditTutorialForm({
             'title': tutorial.title,
             'description': tutorial.description,
+            'category': tutorial_category_pk,
             'introduction': tutorial.introduction,
             'conclusion': tutorial.conclusion
         })
@@ -399,7 +420,7 @@ def view_part(request, tutorial_pk, tutorial_slug, part_slug):
     # Check access rights
     if not tutorial.is_visible:
         if not (tutorial.is_beta and request.user.is_authenticated()) \
-                and not request.user in tutorial.authors.all():
+                and request.user not in tutorial.authors.all():
             if tutorial.size == Tutorial.BIG \
                     and not request.user.has_perm('tutorial.change_part'):
                 raise PermissionDenied
@@ -439,7 +460,7 @@ def add_part(request):
     if not tutorial.size == Tutorial.BIG:
         raise PermissionDenied
     # Make sure the user belongs to the author list
-    if not request.user in tutorial.authors.all():
+    if request.user not in tutorial.authors.all():
         raise PermissionDenied
     if request.method == 'POST':
         form = AddPartForm(request.POST)
@@ -473,7 +494,7 @@ def modify_part(request):
     part = get_object_or_404(Part, pk=part_pk)
 
     # Make sure the user is allowed to do that
-    if not request.user in part.tutorial.authors.all():
+    if request.user not in part.tutorial.authors.all():
         raise PermissionDenied
 
     if 'move' in request.POST:
@@ -517,7 +538,7 @@ def edit_part(request):
         raise Http404
     part = get_object_or_404(Part, pk=part_pk)
     # Make sure the user is allowed to do that
-    if not request.user in part.tutorial.authors.all():
+    if request.user not in part.tutorial.authors.all():
         raise PermissionDenied
 
     if request.method == 'POST':
@@ -562,7 +583,7 @@ def view_chapter(request, tutorial_pk, tutorial_slug, part_slug,
     tutorial = chapter.get_tutorial()
     if not tutorial.is_visible \
        and not request.user.has_perm('tutorial.modify_chapter') \
-       and not request.user in tutorial.authors.all():
+       and request.user not in tutorial.authors.all():
         if not (tutorial.is_beta and request.user.is_authenticated()):
             raise PermissionDenied
 
@@ -607,7 +628,7 @@ def add_chapter(request):
     # TODO: do not show error about empty title on new form
 
     # Make sure the user is allowed to do that
-    if not request.user in part.tutorial.authors.all():
+    if request.user not in part.tutorial.authors.all():
         raise PermissionDenied
 
     if request.method == 'POST':
@@ -660,7 +681,7 @@ def modify_chapter(request):
     chapter = get_object_or_404(Chapter, pk=chapter_pk)
 
     # Make sure the user is allowed to do that
-    if not request.user in chapter.get_tutorial().authors.all():
+    if request.user not in chapter.get_tutorial().authors.all():
         raise PermissionDenied
 
     if 'move' in data:
@@ -718,8 +739,8 @@ def edit_chapter(request):
     small = chapter.tutorial
 
     # Make sure the user is allowed to do that
-    if big and (not request.user in chapter.part.tutorial.authors.all())\
-            or small and (not request.user in chapter.tutorial.authors.all()):
+    if big and (request.user not in chapter.part.tutorial.authors.all())\
+            or small and (request.user not in chapter.tutorial.authors.all()):
         raise PermissionDenied
 
     if request.method == 'POST':
@@ -821,8 +842,8 @@ def edit_extract(request):
     extract = get_object_or_404(Extract, pk=extract_pk)
 
     b = extract.chapter.part
-    if b and (not request.user in extract.chapter.part.tutorial.authors.all())\
-            or not b and (not request.user in
+    if b and (request.user not in extract.chapter.part.tutorial.authors.all())\
+            or not b and (request.user not in
                           extract.chapter.tutorial.authors.all()):
         raise Http404
 
@@ -890,7 +911,41 @@ def modify_extract(request):
     raise PermissionDenied
 
 
-def find_tutorial(request, name):
+# Tutorial filters
+
+def by_category(request, name):
+    """Display all tutorials belonging to a specific category."""
+
+    # Deduce category to display based on its name
+    if name == 'tous':
+        category = TutorialCategory(title=u'Tous les tutoriels', slug=u'tous')
+        tutorials = Tutorial.objects \
+            .filter(is_beta=False, is_visible=True) \
+            .order_by('-pubdate')
+    elif name == 'beta':
+        # Only visible for members
+        if not request.user.is_authenticated():
+            raise PermissionDenied
+
+        category = TutorialCategory(title=u'Bêta', slug=u'beta')
+        tutorials = Tutorial.objects \
+            .filter(is_beta=True) \
+            .order_by('-pubdate')
+    else:
+        category = get_object_or_404(TutorialCategory, slug=name)
+        tutorials = Tutorial.objects \
+            .filter(category=category, is_beta=False, is_visible=True) \
+            .order_by('-pubdate')
+
+    categories = TutorialCategory.objects.all()
+    return render_template('tutorial/by_category.html', {
+        'category': category,
+        'categories': categories,
+        'tutorials': tutorials,
+    })
+
+
+def by_author(request, name):
     """Find all tutorials written by an user.
 
     Returns:
@@ -899,11 +954,11 @@ def find_tutorial(request, name):
     """
     u = get_object_or_404(User, username=name)
 
-    tutos = Tutorial.objects.all()\
+    tutorials = Tutorial.objects.all()\
         .filter(authors__in=[u])\
         .filter(is_visible=True)\
         .order_by('-pubdate')
 
-    return render_template('tutorial/find_tutorial.html', {
-        'tutos': tutos, 'usr': u,
+    return render_template('tutorial/by_author.html', {
+        'tutorials': tutorials, 'usr': u,
     })

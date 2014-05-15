@@ -73,6 +73,35 @@ def thumbnail_path(instance, filename):
     return os.path.join('tutorials', str(instance.pk), filename)
 
 
+class TutorialCategory(models.Model):
+
+    """A way to organize tutorials in different categories."""
+
+    class Meta:
+        verbose_name = u'Catégorie de tutoriel'
+        verbose_name_plural = u'Catégories de tutoriel'
+
+    title = models.CharField(u'Titre', max_length=80)
+    slug = models.SlugField(max_length=80)
+
+    def __unicode__(self):
+        """Textual representation of a category."""
+        return self.title
+
+    def get_absolute_url(self):
+        """Get URL to view the category."""
+        return reverse('pdp.tutorial.views.by_category', args=(
+            self.slug,
+        ))
+
+    def get_tutorial_count(self):
+        """Return number of visible tutorials in this category."""
+        return Tutorial.objects \
+            .filter(is_visible=True) \
+            .filter(category__pk=self.pk) \
+            .count()
+
+
 class Tutorial(models.Model):
 
     """A tutorial, large or small."""
@@ -117,6 +146,9 @@ class Tutorial(models.Model):
                                      default=False)
     is_pending = models.BooleanField(u'Est en attente', default=False)
     is_beta = models.BooleanField(u'Est en bêta', default=False)
+
+    category = models.ForeignKey(TutorialCategory, null=True, blank=True,
+                                 verbose_name=u'Catégorie')
 
     def __unicode__(self):
         """Textual representation of a tutorial.
