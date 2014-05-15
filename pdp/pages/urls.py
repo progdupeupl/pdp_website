@@ -26,6 +26,7 @@ urlpatterns = patterns(
     url(r'^markdown$', views.help_markdown),
     url(r'^redaction$', views.help_writting),
     url(r'^apropos$', views.about),
+    url(r'^cgu$', views.tos),
 
     url(r'^$', views.index),
 )
