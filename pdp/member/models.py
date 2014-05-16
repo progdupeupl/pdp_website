@@ -137,32 +137,3 @@ class Profile(models.Model):
 
         """
         return self.get_tutorials().filter(is_visible=False)
-
-    # Article
-
-    def get_articles(self):
-        """Get all the articles written or being written by this member.
-
-        Returns:
-            QuerySet on Article objects.
-
-        """
-        return Article.objects.all().filter(author=self.user)
-
-    def get_visible_articles(self):
-        """Get all the articles published by this member.
-
-        Returns:
-            QuerySet on Article objects.
-
-        """
-        return self.get_articles().filter(is_visible=True)
-
-    def get_hidden_articles(self):
-        """Get all the articles the member is currently writing.
-
-        Returns:
-            QuerySet on Article objects.
-
-        """
-        return self.get_articles().filter(is_visible=False)
