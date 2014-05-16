@@ -52,6 +52,9 @@ class LastTutorialsFeedRSS(Feed):
     def item_link(self, item):
         return item.get_absolute_url()
 
+    def item_pubdate(self, item):
+        return item.pubdate
+
 
 class LastTutorialsFeedATOM(LastTutorialsFeedRSS):
     feed_type = Atom1Feed
