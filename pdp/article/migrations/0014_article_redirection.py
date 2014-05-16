@@ -12,7 +12,10 @@ class Migration(DataMigration):
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
         for a in orm.Article.objects.all():
-            t = orm['tutorial.Tutorial'].objects.get(title=a.title)
+            try:
+                t = orm['tutorial.Tutorial'].objects.get(title=a.title)
+            except:
+                continue
             a.to_tutorial = t
             a.save()
 

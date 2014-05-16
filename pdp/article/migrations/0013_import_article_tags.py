@@ -21,7 +21,10 @@ class Migration(DataMigration):
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
         for a in orm.Article.objects.all():
-            tuto = orm['tutorial.Tutorial'].objects.get(title=a.title)
+            try:
+                tuto = orm['tutorial.Tutorial'].objects.get(title=a.title)
+            except:
+                continue
             ct = orm['contenttypes.contenttype'].objects.get(
                 app_label='article',
                 model='article'
