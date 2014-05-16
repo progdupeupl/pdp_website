@@ -40,11 +40,7 @@ class="active"
 {% block content %}
 
 <div class="row">
-    <div class="large-4 columns">
-         
-    </div>
     {# Tutorials #}
-    {% cache 120 home-tutorials %}
     <div class="large-4 columns">
         <div class="home-app-title">
             <h2>
@@ -53,7 +49,21 @@ class="active"
                 </a>
             </h2>
         </div>
+    </div>
+    <div class="large-8 columns">
+        <div class="home-app-title">
+            <h2>
+                <a href="{% url "pdp.forum.views.index" %}">
+                    Forums
+                </a>
+            </h2>
+        </div>
+    </div>
+</div>
 
+<div class="row">
+    {% cache 120 home-tutorials %}
+    <div class="large-4 columns">
         {% if last_tutorials %}
             {% for tutorial in last_tutorials %}
                 {% include "tutorial/tutorial_item_small.part.html" %}
@@ -67,30 +77,31 @@ class="active"
     {# Forums #}
     {% cache 120 home-forums user.username %}
     <div class="large-4 columns">
-        <div class="home-app-title">
-            <h2>
-                <a href="{% url "pdp.forum.views.index" %}">
-                    Forums
-                </a>
-            </h2>
-        </div>
 
         {% if last_topics %}
             {% for topic in last_topics %}
-                {% include "forum/topic_item_common.part.html" %}
+                {% if not forloop.counter|divisibleby:2 %}
+                     {% include "forum/topic_item_common.part.html" %}
+                {% endif %}
             {% endfor %}
         {% else %}
             <p>Aucun sujet récent.</p>
         {% endif %}
     </div>
     {% endcache %}
+    <div class="large-4 columns">
+        {% if last_topics %}
+            {% for topic in last_topics %}
+                {% if forloop.counter|divisibleby:2 %}
+                     {% include "forum/topic_item_common.part.html" %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
 </div>
 
 {# Access buttons for desktop version #}
 <div class="row hide-for-small">
-    <div class="large-4 columns">
-         
-    </div>
     <div class="large-4 columns">
         <div class="button-group">
             <a href="{% url "pdp.tutorial.views.index" %}" class="button">
@@ -99,7 +110,7 @@ class="active"
             {% include "tutorial/feeds.part.html" %}
         </div>
     </div>
-    <div class="large-4 columns">
+    <div class="large-8 columns">
         <div class="button-group full-width">
             <a href="{% url "pdp.forum.views.index" %}" class="button">
                 Aller aux forums

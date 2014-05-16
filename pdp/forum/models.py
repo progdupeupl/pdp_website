@@ -413,7 +413,7 @@ def get_last_topics():
         List (or QuerySet?) of Topic objects
 
     """
-    return Topic.objects.all().order_by('-last_message__pubdate')[:5]
+    return Topic.objects.all().order_by('-last_message__pubdate')[:10]
 
 
 def never_read(topic, user=None):
