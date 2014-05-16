@@ -6,7 +6,9 @@ from django.db import models
 
 class Migration(DataMigration):
 
-    depends_on = ('tutorial', '0023_auto__add_field_tutorial_is_article')
+    depends_on = (
+        ('tutorial', '0023_auto__add_field_tutorial_is_article'),
+    )
 
     def forwards(self, orm):
         "Write your forwards methods here."
