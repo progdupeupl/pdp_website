@@ -11,14 +11,14 @@ class Migration(DataMigration):
         # Note: Don't use "from appname.models import ModelName".
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
-        for a in orm['article.Article'].objects.all():
-            t = orm.Tutorial.objects.get(title=a.title)
+        for a in orm.Article.objects.all():
+            t = orm['tutorial.Tutorial'].objects.get(title=a.title)
             t.is_article = True
             t.save()
 
     def backwards(self, orm):
         "Write your backwards methods here."
-        for t in orm.Tutorial.objects.all():
+        for t in orm['tutorial.Tutorial'].objects.all():
             t.is_article = False
             t.save()
 

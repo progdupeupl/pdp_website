@@ -11,8 +11,8 @@ class Migration(DataMigration):
         # Note: Don't use "from appname.models import ModelName".
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
-        for a in orm['article.Article'].objects.all():
-            t = orm.Tutorial(
+        for a in orm.Article.objects.all():
+            t = orm['tutorial.Tutorial'](
                 title=a.title,
                 description=a.description,
                 image=a.image,
@@ -27,11 +27,11 @@ class Migration(DataMigration):
             t.save()
             t.authors.add(a.author)
             t.save()
-            c = orm.Chapter(
+            c = orm['tutorial.Chapter'](
                 tutorial=t,
             )
             c.save()
-            e = orm.Extract(
+            e = orm['tutorial.Extract'](
                 chapter=c,
                 title=u'Article',
                 position_in_chapter=0,
@@ -41,7 +41,6 @@ class Migration(DataMigration):
 
     def backwards(self, orm):
         "Write your backwards methods here."
-        raise RuntimeError('Cannot reverse this migration.')
 
     models = {
         u'article.article': {

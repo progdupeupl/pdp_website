@@ -20,8 +20,8 @@ class Migration(DataMigration):
         # Note: Don't use "from appname.models import ModelName".
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
-        for a in orm['article.Article'].objects.all():
-            tuto = orm.Tutorial.objects.get(title=a.title)
+        for a in orm.Article.objects.all():
+            tuto = orm['tutorial.Tutorial'].objects.get(title=a.title)
             ct = orm['contenttypes.contenttype'].objects.get(
                 app_label='article',
                 model='article'

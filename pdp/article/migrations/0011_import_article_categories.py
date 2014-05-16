@@ -11,13 +11,13 @@ class Migration(DataMigration):
         # Note: Don't use "from appname.models import ModelName".
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
-        for c in orm['article.ArticleCategory'].objects.all():
-            nc = orm.TutorialCategory(title=c.title, slug=c.slug)
+        for c in orm.ArticleCategory.objects.all():
+            nc = orm['tutorial.TutorialCategory'](title=c.title, slug=c.slug)
             nc.save()
 
     def backwards(self, orm):
         "Write your backwards methods here."
-        for c in orm.TutorialCategory.objects.all():
+        for c in orm['tutorial.TutorialCategory'].objects.all():
             c.delete()
 
     models = {
