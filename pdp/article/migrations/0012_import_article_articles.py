@@ -6,6 +6,10 @@ from django.db import models
 
 class Migration(DataMigration):
 
+    needed_by = (
+        ('tutorial', '0023_auto__add_field_tutorial_is_article'),
+    )
+
     def forwards(self, orm):
         "Write your forwards methods here."
         # Note: Don't use "from appname.models import ModelName".

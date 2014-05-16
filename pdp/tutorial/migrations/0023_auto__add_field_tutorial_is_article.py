@@ -7,10 +7,6 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
-    depends_on = (
-        ('article', '0012_import_article_articles'),
-    )
-
     def forwards(self, orm):
         # Adding field 'Tutorial.is_article'
         db.add_column(u'tutorial_tutorial', 'is_article',
