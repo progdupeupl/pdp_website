@@ -162,7 +162,7 @@ class Article(models.Model):
             string
 
         """
-        return reverse('pdp.article.views.view', args=(
+        return reverse('pdp.article.views.redirect_view', args=(
             self.pk, self.slug,
         ))
 

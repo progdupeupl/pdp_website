@@ -26,14 +26,14 @@ from pdp.article.models import Article
 class ArticleIntegrationTests(TestCase):
     def test_url_index(self):
         """Tests viewing the index page of articles."""
-        resp = self.client.get(reverse('pdp.article.views.index'))
+        resp = self.client.get(reverse('pdp.article.views.redirect_index'))
         self.assertEqual(301, resp.status_code)
 
     def test_url_view_invisible(self):
         """Testing viewing an invisible article as anonymous."""
         article = G(Article, is_visible=False)
         resp = self.client.get(article.get_absolute_url())
-        self.assertEqual(403, resp.status_code)
+        self.assertEqual(301, resp.status_code)
 
     def test_url_view_visible(self):
         """Testing viewing a visible article as anonymous."""
