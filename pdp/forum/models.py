@@ -144,13 +144,26 @@ class Forum(models.Model):
     def is_read(self):
         """Check if this forum was read by current user.
 
+        For convenience for new users, we only mark the forum as unread if the
+        user has not read messages posted after the datetime he joined.
+
         Returns:
             boolean
 
         """
-        for t in Topic.objects.all().filter(forum=self):
+        user = get_current_user()
+
+        # Though the never_read func will return false for old topics, better
+        # filter these old topics here so our topic set is way more compact
+        # than a Topic.objects.all() on which we call never_read in for loop.
+        topics = Topic.objects.all() \
+            .filter(forum=self) \
+            .filter(last_message__pubdate__gt=user.date_joined)
+
+        for t in topics:
             if never_read(t):
                 return False
+
         return True
 
 
@@ -419,6 +432,9 @@ def get_last_topics():
 def never_read(topic, user=None):
     """Check if a topic has been read by an user since it last post was added.
 
+    For convenience for new users, topics older than the user's joined
+    datetime will be marked as read.
+
     If no user is provided, this will use the current session user.
 
     Args:
@@ -431,6 +447,9 @@ def never_read(topic, user=None):
     """
     if user is None:
         user = get_current_user()
+
+    if topic.last_message.pubdate < user.date_joined:
+        return False
 
     return TopicRead.objects\
         .filter(post_id=topic.last_message_id, topic=topic, user=user)\
