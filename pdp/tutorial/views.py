@@ -974,7 +974,7 @@ def by_category(request, name):
             .filter(is_beta=False, is_visible=True) \
             .order_by('-pubdate')
     elif name == 'autres':
-        category = TutorialCategory(title=u'Autres', slug=u'autres')
+        category = TutorialCategory(title=u'Non classés', slug=u'autres')
         tutorials = Tutorial.objects \
             .filter(is_beta=False, is_visible=True) \
             .filter(category=None) \
