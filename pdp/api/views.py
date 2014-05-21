@@ -29,11 +29,12 @@ from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
 
 from rest_framework import generics, permissions
 
-from .serializers import (CategorySerializer, ForumSerializer, TopicSerializer,
-                          TopicFollowedSerializer, TopicReadSerializer,
-                          PostSerializer, UserSerializer,
-                          TutorialSerializer, ChapterSerializer,
-                          PartSerializer, ExtractSerializer)
+from .serializers import (
+    CategorySerializer, ForumSerializer, TopicSerializer,
+    TopicFollowedSerializer, TopicReadSerializer, PostSerializer,
+    UserSerializer, TutorialSerializer, TutorialListSerializer,
+    ChapterSerializer, PartSerializer, ExtractSerializer
+)
 
 from .permissions import IsOwnerOrReadOnly
 
@@ -350,11 +351,9 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class TutorialFilter(django_filters.FilterSet):
-    is_mini = django_filters.BooleanFilter()
-
     class Meta:
         model = Tutorial
-        fields = ['is_mini']
+        fields = ['size']
 
 
 class TutorialList(generics.ListCreateAPIView):
@@ -362,8 +361,9 @@ class TutorialList(generics.ListCreateAPIView):
     """
     List all tutorial, or create a new tutorial.
     """
-    queryset = Tutorial.objects.all().filter(is_visible=True)
-    serializer_class = TutorialSerializer
+    queryset = Tutorial.objects.all() \
+        .filter(is_visible=True)
+    serializer_class = TutorialListSerializer
     filter_class = TutorialFilter
 
     def get(self, request, *args, **kwargs):

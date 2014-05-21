@@ -108,6 +108,15 @@ class TutorialSerializer(serializers.ModelSerializer):
                   'size', 'is_visible')
 
 
+class TutorialListSerializer(serializers.ModelSerializer):
+    size = fields.TutorialSizeField()
+
+    class Meta:
+        model = Tutorial
+        fields = ('id', 'title', 'description', 'authors', 'slug', 'pubdate',
+                  'size', 'is_visible')
+
+
 class PartSerializer(serializers.ModelSerializer):
     slug = serializers.Field()
     position_in_tutorial = serializers.Field()
