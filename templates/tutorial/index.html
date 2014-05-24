@@ -53,6 +53,9 @@
                 <p>Aucun tutoriel disponible.</p>
             {% endif %}
         {% endcache %}
+        <a href="{% url "pdp.tutorial.views.by_category" "tous" %}" class="button">
+            Voir tous les tutoriels
+        </a>
     </div>
 </div>
 

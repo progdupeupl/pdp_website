@@ -17,10 +17,12 @@
 
 from datetime import datetime
 
+from django.conf import settings
 from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User
@@ -31,6 +33,7 @@ from django.contrib.contenttypes.models import ContentType
 from taggit.models import TaggedItem
 
 from pdp.utils import render_template, slugify, bot
+from pdp.utils.paginator import paginator_range
 from pdp.utils.cache import template_cache_delete
 from pdp.utils.tutorials import move, export_tutorial
 from pdp.settings import BOT_ENABLED
@@ -52,7 +55,7 @@ def index(request):
     """
     tutorials = Tutorial.objects.all() \
         .filter(is_visible=True) \
-        .order_by("-pubdate")
+        .order_by("-pubdate")[:5]
 
     pending_tutorials = None
     if request.user.has_perm('tutorial.change_tutorial'):
@@ -994,11 +997,28 @@ def by_category(request, name):
             .filter(category=category, is_beta=False, is_visible=True) \
             .order_by('-pubdate')
 
+    paginator = Paginator(tutorials, settings.TUTORIALS_PER_PAGE)
+
+    try:
+        page_nbr = int(request.GET['page'])
+    except KeyError:
+        page_nbr = 1
+
+    try:
+        tutorials = paginator.page(page_nbr)
+    except PageNotAnInteger:
+        tutorials = paginator.page(1)
+    except EmptyPage:
+        raise Http404
+
     categories = TutorialCategory.objects.all()
+
     return render_template('tutorial/by_category.html', {
         'category': category,
         'categories': categories,
         'tutorials': tutorials,
+        'nb': page_nbr,
+        'pages': paginator_range(page_nbr, paginator.num_pages),
     })
 
 
