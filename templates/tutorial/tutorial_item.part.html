@@ -2,11 +2,11 @@
 
 <div class="row collapse article-publication-item">
     <div class="large-1 small-2 columns" style="text-align: center;">
-        <a href="{{ tuto.get_absolute_url }}">
-            {% if tuto.thumbnail %}
-                <img src="{{ tuto.thumbnail.url }}" alt="" width="48" />
+        <a href="{{ tutorial.get_absolute_url }}">
+            {% if tutorial.thumbnail %}
+                <img src="{{ tutorial.thumbnail.url }}" alt="" width="48" />
             {% else %}
-                {% if tuto.is_article %}
+                {% if tutorial.is_article %}
                 <img src="{% static "img/article/blank.png" %}" alt="" width="48" />
                 {% else %}
                 <img src="{% static "img/tutorial/blank.png" %}" alt="" width="48" />
@@ -14,13 +14,8 @@
             {% endif %}
         </a>
     </div>
-    <div class="large-10 small-10 columns" style="padding-left: 5px;">
-        <a href="{{ tuto.get_absolute_url }}">{{ tuto.title }}</a>
-        <p>{{ tuto.description }}</p>
-    </div>
-    <div class="large-1 columns hide-for-small">
-        {% with date=tuto.pubdate %}
-            {% include "misc/datebox.part.html" %}
-        {% endwith %}
+    <div class="large-11 small-10 columns" style="padding-left: 5px;">
+        <a href="{{ tutorial.get_absolute_url }}">{{ tutorial.title }}</a>
+        <p>{{ tutorial.description }}</p>
     </div>
 </div>
