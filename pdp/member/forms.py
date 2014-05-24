@@ -21,11 +21,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
 from crispy_forms.helper import FormHelper
-from crispy_forms_foundation.layout import Layout, Div, Fieldset, Submit, Field, HTML
+from crispy_forms_foundation.layout import (
+    Layout, Div, Fieldset, Submit, Field, HTML
+)
 
 from captcha.fields import CaptchaField
-
-from pdp.member.models import Profile
 
 
 class LoginForm(forms.Form):
@@ -104,36 +104,47 @@ class RegisterForm(forms.Form):
 # update extra information about user
 
 class ProfileForm(forms.Form):
+    """Form used to change an user's personnal informations and options."""
+
     biography = forms.CharField(
         label=u'Biographie',
         required=False,
         widget=forms.Textarea(
-            attrs={'placeholder': u'Votre biographie au format Markdown.'}))
+            attrs={'placeholder': u'Votre biographie au format Markdown.'}
+        )
+    )
+
     site = forms.CharField(
         label=u'Site internet',
         required=False,
         max_length=128,
         widget=forms.TextInput(
             attrs={'placeholder': u'Lien vers votre site internet personnel '
-                   u'(ne pas oublier le http:// ou https:// devant).'}))
+                   u'(ne pas oublier le http:// ou https:// devant).'}
+        )
+    )
+
     show_email = forms.BooleanField(
         label=u'Afficher mon adresse mail publiquement',
-        required=False)
+        required=False
+    )
+
     avatar_url = forms.CharField(
         label=u'Avatar',
         required=False,
         widget=forms.TextInput(
             attrs={'placeholder': u'Lien vers un avatar externe '
-                   u'(laisser vide pour utiliser Gravatar).'}))
+                   u'(laisser vide pour utiliser Gravatar).'}
+        )
+    )
 
     def __init__(self, user, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
 
         self.user = user
-        profile = Profile.objects.get(user=self.user)
 
-        # to get initial value form checkbox show email
+        # Get initial value form checkbox show email
         initial = kwargs.get('initial', {})
         value_checked = ''
         if 'show_email' in initial and initial['show_email']:
@@ -145,10 +156,14 @@ class ProfileForm(forms.Form):
                 Field('biography'),
                 Field('site'),
                 Field('avatar_url'),
-                # inline checkbox is not supported by crispy form
-                HTML('<div id="div_id_show_email" class="ctrlHolder checkbox" style="padding-top:10px">\
-                <label for="id_show_email" > <input id="id_show_email" type="checkbox" class="checkboxinput" name="show_email" ' + value_checked + '/>\
-                Afficher mon adresse mail publiquement</label></div>'),
+                # Inline checkbox is not supported by crispy form
+                HTML(
+                    u'<div id="div_id_show_email" class="ctrlHolder checkbox"'
+                    u'style="padding-top:10px"><label for="id_show_email"> '
+                    u'<input id="id_show_email" type="checkbox"'
+                    u'class="checkboxinput" name="show_email" {}/> Afficher '
+                    u'mon adresse mail publiquement</label></div>'
+                    .format(value_checked)),
             ),
             Div(
                 Submit('submit', 'Editer mon profil'),
@@ -158,15 +173,26 @@ class ProfileForm(forms.Form):
         super(ProfileForm, self).__init__(*args, **kwargs)
 
 
-# to update a password
-
 class ChangePasswordForm(forms.Form):
+    """Form used to change an user's password."""
+
     password_new = forms.CharField(
-        label=u'Nouveau mot de passe ', max_length=76, widget=forms.PasswordInput)
+        label=u'Nouveau mot de passe ',
+        max_length=76,
+        widget=forms.PasswordInput
+    )
+
     password_old = forms.CharField(
-        label=u'Mot de passe actuel ', max_length=76, widget=forms.PasswordInput)
+        label=u'Mot de passe actuel ',
+        max_length=76,
+        widget=forms.PasswordInput
+    )
+
     password_confirm = forms.CharField(
-        label=u'Confirmer le nouveau mot de passe ', max_length=76, widget=forms.PasswordInput)
+        label=u'Confirmer le nouveau mot de passe ',
+        max_length=76,
+        widget=forms.PasswordInput
+    )
 
     def __init__(self, user, *args, **kwargs):
         self.helper = FormHelper()
