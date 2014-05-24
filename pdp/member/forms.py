@@ -151,9 +151,9 @@ class ProfileForm(forms.Form):
             value_checked = 'checked'
 
         self.helper.layout = Layout(
-            Fieldset(
-                u'Public',
-                Field('biography'),
+            Div(
+                HTML(u'{% include "misc/editor.part.html" %}'),
+                Field('biography', id='id_text'),
                 Field('site'),
                 Field('avatar_url'),
                 # Inline checkbox is not supported by crispy form
@@ -202,14 +202,14 @@ class ChangePasswordForm(forms.Form):
 
         self.helper.layout = Layout(
             Fieldset(
-                u'Mot de passe',
+                u'Changement de mot de passe',
                 Field('password_old'),
                 Field('password_new'),
                 Field('password_confirm'),
-            ),
-            Div(
-                Submit('submit', u'Changer mon mot de passe'),
-                css_class='button-group'
+                Div(
+                    Submit('submit', u'Changer mon mot de passe'),
+                    css_class='button-group'
+                )
             )
         )
         super(ChangePasswordForm, self).__init__(*args, **kwargs)
