@@ -22,7 +22,7 @@
             Pourquoi pas vous ?
         </strong>
     </p>
-    <div class="button-group button-center">
+    <div class="button-group button-center" style="margin-bottom: 2em;">
         <a href="{% url "pdp.tutorial.views.add_tutorial" %}" class="button success large">
             Créer un tutoriel
         </a>
@@ -40,21 +40,10 @@
     <li class="current"><a href="#">Index</a></li>
 {% endblock %}
 
-{% block headline-actions %}
-    <div class="button-group">
-        {% include "tutorial/feeds.part.html" %}
-        {% if user.is_authenticated %}
-            <a href="{% url "pdp.tutorial.views.add_tutorial" %}" class="button">
-                Nouveau tutoriel
-            </a>
-        {% endif %}
-    </div>
-{% endblock %}
-
 {% block content %}
 
 <div class="row">
-    <div class="large-12 columns">
+    <div class="large-8 columns">
         <h2>À la une</h2>
         {% cache 120 tutorials-index %}
             {% if tutorials %}
@@ -67,16 +56,11 @@
                 <p>Aucun tutoriel disponible.</p>
             {% endif %}
         {% endcache %}
-        <a href="{% url "pdp.tutorial.views.by_category" "tous" %}" class="button">
-            Voir tous les tutoriels
-        </a>
     </div>
-</div>
 
-<div class="row">
-    <div class="large-12 columns">
+    <div class="large-4 columns">
         <h2>Catégories</h2>
-        <ul class="inline-list">
+        <ul>
             <li>
                 <a href="{% url "pdp.tutorial.views.by_category" "tous" %}">
                     Tous les tutoriels
@@ -102,6 +86,24 @@
                 </li>
             {% endif %}
         </ul>
+
+        {% if random_tuto %}
+            <h2>Au hasard…</h2>
+            {% with tutorial=random_tuto %}
+                {% include "tutorial/tutorial_item_small.part.html" %}
+            {% endwith %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="row" style="margin-top: 2em; margin-bottom: 2em;">
+    <div class="large-12 columns">
+        <div class="button-group button-center">
+            <a href="{% url "pdp.tutorial.views.by_category" "tous" %}" class="button large">
+                Tous les tutoriels
+            </a>
+            {% include "tutorial/feeds.part.html" %}
+        </div>
     </div>
 </div>
 

@@ -55,7 +55,7 @@ def index(request):
     """
     tutorials = Tutorial.objects.all() \
         .filter(is_visible=True) \
-        .order_by("-pubdate")[:5]
+        .order_by('-pubdate')[:5]
 
     pending_tutorials = None
     if request.user.has_perm('tutorial.change_tutorial'):
@@ -63,10 +63,18 @@ def index(request):
 
     categories = TutorialCategory.objects.all()
 
+    try:
+        random_tuto = Tutorial.objects.all() \
+            .filter(is_visible=True) \
+            .order_by('?')[0]
+    except IndexError:
+        random_tuto = None
+
     return render_template('tutorial/index.html', {
         'tutorials': tutorials,
         'pending_tutorials': pending_tutorials,
-        'categories': categories
+        'categories': categories,
+        'random_tuto': random_tuto
     })
 
 

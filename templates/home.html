@@ -33,6 +33,16 @@ class="active"
         partager, aider, en bref : échanger de façon utile sur le monde de
         l'informatique.
     </p>
+    {% if not user.is_authenticated %}
+        <div class="button-group button-center" style="margin-bottom: 2em;">
+            <a href="{% url "pdp.member.views.register_view" %}" class="button large success">
+                Inscription
+            </a>
+            <a href="{% url "pdp.member.views.login_view" %}" class="button large">
+                Connexion
+            </a>
+        </div>
+    {% endif %}
 {% endblock %}
 
 {# Content #}
@@ -101,7 +111,7 @@ class="active"
 {# Access buttons for desktop version #}
 <div class="row hide-for-small">
     <div class="large-4 columns">
-        <div class="button-group">
+        <div class="button-group button-center">
             <a href="{% url "pdp.tutorial.views.index" %}" class="button">
                 Aller aux tutoriels
             </a>
@@ -109,7 +119,7 @@ class="active"
         </div>
     </div>
     <div class="large-8 columns">
-        <div class="button-group full-width">
+        <div class="button-group button-center">
             <a href="{% url "pdp.forum.views.index" %}" class="button">
                 Aller aux forums
             </a>

@@ -1,5 +1,5 @@
-<a href="#" class="button secondary dropdown" data-dropdown="tutorials-drop-feeds">
-    Flux
+<a href="#" class="button secondary dropdown {% if request.path != '/' %}large{% endif %}" data-dropdown="tutorials-drop-feeds">
+    S’abonner
 </a><br />
 <ul id="tutorials-drop-feeds" class="f-dropdown">
     <li><a href="{% url "tutorial-feed-rss" %}">Nouveaux tutoriels (RSS)</a></li>
