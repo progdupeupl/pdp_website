@@ -14,8 +14,22 @@
         Tutoriels
     </h1>
     <p>
-        Les tutoriels vous permettent <strong>d'apprendre</strong> sur divers sujets axés autour de la programmation et de l'informatique.
+        Les tutoriels vous permettent <strong>d'apprendre</strong> sur divers
+        sujets axés autour de la programmation et de l'informatique.
+        De nombreux auteurs font confiance à Progdupeupl pour partager
+        leurs connaissances avec les autres membres.
+        <strong>
+            Pourquoi pas vous ?
+        </strong>
     </p>
+    <div class="button-group button-center">
+        <a href="{% url "pdp.tutorial.views.add_tutorial" %}" class="button success large">
+            Créer un tutoriel
+        </a>
+        <a href="{% url "pdp.pages.views.help_writting" %}" class="button large">
+            Découvrir
+        </a>
+    </div>
 {% endblock %}
 
 {% block headline %}
