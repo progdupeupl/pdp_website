@@ -60,7 +60,7 @@ class TutorialImporter(object):
             self.initial_level = 0
 
     def check_titles(self):
-        # We cannot perform tests on titles if they is only one
+        # We cannot perform tests on titles if there is only one
         assert(len(self.titles) > 1)
 
         previous_level = self.initial_level
@@ -146,7 +146,7 @@ class TutorialImporter(object):
                     tutorial.introduction = content
                     tutorial.save()
 
-                # Small tutorial, obviously its an extract
+                # Small tutorial, obviously it is an extract
                 if base_chapter:
 
                     # Update content
@@ -163,7 +163,7 @@ class TutorialImporter(object):
                         chapter=base_chapter
                     )
 
-                # Medium tutorial, its a chapter or an extract
+                # Medium tutorial, it is a chapter or an extract
                 elif base_part:
                     if level == levels_to_match[0]:
 
@@ -199,7 +199,7 @@ class TutorialImporter(object):
                             chapter=chapter
                         )
 
-                # Big tutorial, its a part or a chapter or an extract
+                # Big tutorial, it is a part or a chapter or an extract
                 else:
                     if level == levels_to_match[0]:
 
