@@ -39,6 +39,7 @@ class Tutorial:
 
     def save(self):
         print("SAVE {}".format(self.__repr__()))
+        print(self.introduction)
 
 
 class Part:
@@ -55,6 +56,7 @@ class Part:
 
     def save(self):
         print("SAVE {}".format(self.__repr__()))
+        print(self.introduction)
 
 
 class Chapter:
@@ -73,6 +75,7 @@ class Chapter:
 
     def save(self):
         print("SAVE {}".format(self.__repr__()))
+        print self.introduction
 
 
 class Extract:
@@ -89,3 +92,4 @@ class Extract:
 
     def save(self):
         print("SAVE {}".format(self.__repr__()))
+        print(self.text)

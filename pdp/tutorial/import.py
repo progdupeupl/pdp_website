@@ -26,7 +26,7 @@ some markdown sources
 import sys
 import re
 
-from pdp.tutorial.dummy_models import Tutorial, Part, Chapter, Extract
+from dummy_models import Tutorial, Part, Chapter, Extract
 
 
 class TutorialImporter(object):
