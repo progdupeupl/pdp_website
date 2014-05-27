@@ -225,6 +225,45 @@ class TutorialImporter(object):
                     self.extract.text = content
                     self.extract.save()
 
+        else:
+            if self.current_level == self.levels_to_match[0]:
+
+                if self.last_matched_level == self.levels_to_match[0]:
+                    self.part.introduction = content
+                    self.part.save()
+                elif self.last_matched_level == self.levels_to_match[1]:
+                    self.chapter.introduction = content
+                    self.chapter.save()
+                elif self.last_matched_level == self.levels_to_match[2]:
+                    self.extract.text = content
+                    self.extract.save()
+
+            elif self.current_level == self.levels_to_match[1]:
+
+                # Update content
+                if self.last_matched_level == self.levels_to_match[0]:
+                    self.part.introduction = content
+                    self.part.save()
+                elif self.last_matched_level == self.levels_to_match[1]:
+                    self.chapter.introduction = content
+                    self.chapter.save()
+                elif self.last_matched_level == self.levels_to_match[2]:
+                    self.extract.text = content
+                    self.extract.save()
+
+            else:
+
+                # Update content
+                if self.last_matched_level == self.levels_to_match[0]:
+                    self.part.introduction = content
+                    self.part.save()
+                elif self.last_matched_level == self.levels_to_match[1]:
+                    self.chapter.introduction = content
+                    self.chapter.save()
+                elif self.last_matched_level == self.levels_to_match[2]:
+                    self.extract.text = content
+                    self.extract.save()
+
 
     def to_database(self,):
         # We remember the last level we matched in order to recognize
