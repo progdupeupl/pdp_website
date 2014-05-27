@@ -30,6 +30,13 @@ from dummy_models import Tutorial, Part, Chapter, Extract
 
 
 class TutorialImporter(object):
+
+    """Tool used to import tutorials into database models.
+
+    You should only use this class by calling its load(fp) and run() methods
+    unless you know what you do.
+    """
+
     def __init__(self, size):
         self.size = size
         self.tutorial = None
@@ -54,10 +61,12 @@ class TutorialImporter(object):
         self.part = None
 
     def load(self, filepath):
+        """Load a markdown source from a text file."""
         with open(filepath, "r") as f:
             self.lines = f.read().splitlines()
 
     def deduce_level(self, sharps):
+        """Deduce the level of a title based on its sharp amount."""
         return len(sharps)
 
     def deduce_initial_level(self):
@@ -154,6 +163,12 @@ class TutorialImporter(object):
         )
 
     def check_titles(self):
+        """Check that the source is correctly formatted.
+
+        This will run some assert() calls all over the loaded structure of
+        titles. You can catch AssertError in order to know that the user input
+        is wrong, until more precise exceptions.
+        """
         # We cannot perform tests on titles if there is only one
         if len(self.titles) <= 1:
             return
@@ -177,6 +192,11 @@ class TutorialImporter(object):
             previous_level = level
 
     def prepare_base_items(self):
+        """Create the base database items and save them for the import.
+
+        This will save optional Part and Chapter depending on the size of the
+        tutorial, plus the Tutorial database instance itself.
+        """
         # We create the initial tutorial database element
         self.tutorial = Tutorial(
             title=self.titles[0][2],
@@ -195,6 +215,7 @@ class TutorialImporter(object):
             self.base_part.save()
 
     def finish_text_import(self):
+        """Finish the import process once every title has been parsed."""
         content = "\n".join(self.lines[self.last_matched_num + 1:])
 
         if self.base_chapter:
@@ -264,8 +285,13 @@ class TutorialImporter(object):
                     self.extract.text = content
                     self.extract.save()
 
+    def to_database(self):
+        """Loop over the titles in order to convert them to database instances.
 
-    def to_database(self,):
+        This will create the corresponding Part, Chapter and Extract elements
+        based on the input and fill their introduction/text fields with rest
+        of the markdown.
+        """
         # We remember the last level we matched in order to recognize
         # introductions for elements.
         self.last_matched_level = self.initial_level
@@ -377,6 +403,15 @@ class TutorialImporter(object):
         # markdown import for the last matched title till end of file.
         self.finish_text_import()
 
+    def run(self):
+        """Start the import process."""
+        self.extract_titles()
+        self.deduce_initial_level()
+        self.check_titles()
+        self.deduce_levels_to_match()
+        self.prepare_base_items()
+        self.to_database()
+
 
 if __name__ == "__main__":
 
@@ -385,15 +420,5 @@ if __name__ == "__main__":
     ti = TutorialImporter('B')
 
     ti.load(sys.argv[1])
+    ti.run()
 
-    ti.extract_titles()
-    ti.deduce_initial_level()
-    ti.check_titles()
-    ti.deduce_levels_to_match()
-
-    # Check that the titles are correct after check
-    print(ti.titles)
-
-    # Yeah let's simulate this with dummy models
-    ti.prepare_base_items()
-    ti.to_database()
