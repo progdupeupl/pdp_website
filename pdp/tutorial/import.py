@@ -61,7 +61,8 @@ class TutorialImporter(object):
 
     def check_titles(self):
         # We cannot perform tests on titles if there is only one
-        assert(len(self.titles) > 1)
+        if len(self.titles) <= 1:
+            return
 
         previous_level = self.initial_level
 
@@ -138,7 +139,10 @@ class TutorialImporter(object):
                 # If we were matching markdown before, we stop the match
                 # process since we are changing level and add markdown content
                 # to the revelant place.
-                content = "\n".join(self.lines[last_matched_num:num])
+                #
+                # We start at (last_matched_num + 1) in order to not catch last
+                # processed title in the content.
+                content = "\n".join(self.lines[last_matched_num + 1:num])
 
                 # If we were under the first title, we update tutorial's
                 # introduction.
@@ -174,7 +178,8 @@ class TutorialImporter(object):
                             extract.text = content
 
                         # Save previous chapter
-                        chapter.save()
+                        if chapter:
+                            chapter.save()
 
                         # Prepare new chapter
                         chapter = Chapter(
@@ -191,7 +196,8 @@ class TutorialImporter(object):
                             extract.text = content
 
                         # Save previous extract
-                        extract.save()
+                        if extract:
+                            extract.save()
 
                         # Prepare new extract
                         extract = Extract(
@@ -212,7 +218,8 @@ class TutorialImporter(object):
                             extract.text = content
 
                         # Save previous part
-                        part.save()
+                        if part:
+                            part.save()
 
                         # Prepare new part
                         part = Part(
@@ -231,7 +238,8 @@ class TutorialImporter(object):
                             extract.text = content
 
                         # Save previous chapter
-                        chapter.save()
+                        if chapter:
+                            chapter.save()
 
                         # Prepare new chapter
                         chapter = Chapter(
@@ -250,7 +258,8 @@ class TutorialImporter(object):
                             extract.text = content
 
                         # Save previous extract
-                        extract.save()
+                        if extract:
+                            extract.save()
 
                         # Prepare new extract
                         extract = Extract(
@@ -260,6 +269,22 @@ class TutorialImporter(object):
 
                 last_matched_level = level
                 last_matched_num = num
+
+        # At this point we have matched all titles. we finally need to finish
+        # markdown import for the last matched title till end of file.
+        content = "\n".join(self.lines[last_matched_num + 1:])
+
+        if base_chapter:
+            if last_matched_level == levels_to_match[0]:
+                extract.text = content
+                extract.save()
+            else:
+                tutorial.introduction = content
+                tutorial.save()
+        else:
+            raise NotImplementedError(
+                "Not implemented for medium and big tutorials"
+            )
 
 
 if __name__ == "__main__":
