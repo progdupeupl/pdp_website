@@ -49,9 +49,9 @@ class Part:
         self.introduction = ""
 
     def __repr__(self):
-        return "<Part tutorial={} title={}>".format(
-            self.tutorial,
-            self.title
+        return "<Part title={} tutorial={}>".format(
+            self.title,
+            self.tutorial
         )
 
     def save(self):
@@ -67,10 +67,10 @@ class Chapter:
         self.introduction = ""
 
     def __repr__(self):
-        return "<Chapter tutorial={} part={} title={}>".format(
+        return "<Chapter title={} tutorial={} part={}>".format(
+            self.title,
             self.tutorial,
-            self.part,
-            self.title
+            self.part
         )
 
     def save(self):
@@ -85,9 +85,9 @@ class Extract:
         self.text = ""
 
     def __repr__(self):
-        return "<Extract chapter={} title={}>".format(
-            self.chapter,
-            self.title
+        return "<Extract title={} chapter={}>".format(
+            self.title,
+            self.chapter
         )
 
     def save(self):
