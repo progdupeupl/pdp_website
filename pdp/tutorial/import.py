@@ -30,10 +30,28 @@ from dummy_models import Tutorial, Part, Chapter, Extract
 
 
 class TutorialImporter(object):
-    def __init__(self):
+    def __init__(self, size):
+        self.size = size
+        self.tutorial = None
         self.lines = []
         self.titles = []
+
+        # Level of the first title of the document
         self.initial_level = 0
+        self.levels_to_match = []
+
+        # Values of the previous title iteration
+        self.last_matched_level = 0
+        self.last_matched_num = 0
+
+        # Static base items used for generation dependencies
+        self.base_chapter = None
+        self.base_part = None
+
+        # Dynamic items used for generation
+        self.extract = None
+        self.chapter = None
+        self.part = None
 
     def load(self, filepath):
         with open(filepath, "r") as f:
@@ -42,7 +60,40 @@ class TutorialImporter(object):
     def deduce_level(self, sharps):
         return len(sharps)
 
+    def deduce_initial_level(self):
+        """Deduce initial level from first title."""
+        if len(self.titles) > 0:
+            self.initial_level = self.titles[0][1]
+        else:
+            self.initial_level = 0
+
+    def deduce_levels_to_match(self):
+        """Deduce the title levels to match during import."""
+        levels_depth = 0
+
+        # We generate a list of levels to match depending on the tutorial size
+        # and create base_* elements depending on this size.
+        if self.size == 'S':
+            # Extract title
+            levels_depth = 1
+            self.base_chapter = Chapter(tutorial=self.tutorial)
+            self.base_chapter.save()
+        elif self.size == 'M':
+            # Chapter title + extract title
+            levels_depth = 2
+            self.base_part = Part(tutorial=self.tutorial)
+            self.base_part.save()
+        elif self.size == 'B':
+            # Part title + chapter title + extract title
+            levels_depth = 3
+
+        self.levels_to_match = list(map(
+            lambda x: x + self.initial_level,
+            range(1, levels_depth + 1)
+        ))
+
     def extract_titles(self):
+        """Match and extract all the titles out of the markdown document."""
         self.titles = []
         expr = re.compile("^(#+) (.+)$")
 
@@ -53,11 +104,54 @@ class TutorialImporter(object):
                 level = self.deduce_level(match.group(1))
                 self.titles.append((num, level, title))
 
-        # Deduce initial level from first title
-        if len(self.titles) > 0:
-            self.initial_level = self.titles[0][1]
+    def prepare_next_extract(self):
+        """Save the previous extract in database and prepare a new one."""
+
+        # Save previous extract (if any)
+        if self.extract:
+            self.extract.save()
+
+        # Prepare new extract
+        if self.size == 'S':
+            chapter = self.base_chapter
         else:
-            self.initial_level = 0
+            chapter = self.chapter
+
+        self.extract = Extract(
+            title=self.current_title,
+            chapter=chapter
+        )
+
+    def prepare_next_chapter(self):
+        """Save the previous chapter in database and prepare a new one."""
+
+        # Save previous chapter (if any)
+        if self.chapter:
+            self.chapter.save()
+
+        # Prepare new chapter
+        if self.size == 'M':
+            part = self.base_part
+        else:
+            part = self.part
+
+        self.chapter = Chapter(
+            title=self.current_title,
+            part=part
+        )
+
+    def prepare_next_part(self):
+        """Save the previous part in database and prepare a new one."""
+
+        # Save previous part (if any)
+        if self.part:
+            self.part.save()
+
+        # Prepare new part
+        self.part = Part(
+            title=self.current_title,
+            tutorial=self.tutorial
+        )
 
     def check_titles(self):
         # We cannot perform tests on titles if there is only one
@@ -82,59 +176,67 @@ class TutorialImporter(object):
 
             previous_level = level
 
-    def to_database(self, size):
+    def prepare_base_items(self):
         # We create the initial tutorial database element
-        tutorial = Tutorial(
+        self.tutorial = Tutorial(
             title=self.titles[0][2],
-            size=size
+            size=self.size
         )
 
         # We save it for the first time in order to make the m2m relations work
-        tutorial.save()
+        self.tutorial.save()
 
-        # Deduce depth of levels to match for database elements
-        levels_depth = 0
+        if self.size == 'S':
+            self.base_chapter = Chapter(tutorial=self.tutorial)
+            self.base_chapter.save()
 
-        # Static base items used for generation dependencies
-        base_chapter = None
-        base_part = None
+        elif self.size == 'M':
+            self.base_part = Part(tutorial=self.tutorial)
+            self.base_part.save()
 
-        # Dynamic items used for generation
-        extract = None
-        chapter = None
-        part = None
+    def finish_text_import(self):
+        content = "\n".join(self.lines[self.last_matched_num + 1:])
 
-        # We generate a list of levels to match depending on the tutorial size
-        # and create base_* elements depending on this size.
-        if size == 'S':
-            # Extract title
-            levels_depth = 1
-            base_chapter = Chapter(tutorial=tutorial)
-            base_chapter.save()
-        elif size == 'M':
-            # Chapter title + extract title
-            levels_depth = 2
-            base_part = Part(tutorial=tutorial)
-            base_part.save()
-        elif size == 'B':
-            # Part title + chapter title + extract title
-            levels_depth = 3
+        if self.base_chapter:
 
-        levels_to_match = list(map(
-            lambda x: x + self.initial_level,
-            range(1, levels_depth + 1)
-        ))
+            if self.last_matched_level == self.levels_to_match[0]:
+                self.extract.text = content
+                self.extract.save()
+            else:
+                self.tutorial.introduction = content
+                self.tutorial.save()
 
+        elif self.base_part:
+            if self.current_level == self.levels_to_match[0]:
+
+                if self.last_matched_level == self.levels_to_match[0]:
+                    self.chapter.introduction = content
+                    self.chapter.save()
+                elif self.last_matched_level == self.levels_to_match[1]:
+                    self.extract.text = content
+                    self.extract.save()
+
+            else:
+
+                if self.last_matched_level == self.levels_to_match[0]:
+                    self.chapter.introduction = content
+                    self.chapter.save()
+                elif self.last_matched_level == self.levels_to_match[1]:
+                    self.extract.text = content
+                    self.extract.save()
+
+
+    def to_database(self,):
         # We remember the last level we matched in order to recognize
         # introductions for elements.
-        last_matched_level = self.initial_level
-        last_matched_num = 0
+        self.last_matched_level = self.initial_level
+        self.last_matched_num = 0
 
-        for num, level, title in self.titles[1:]:
+        for self.current_num, self.current_level, self.current_title in self.titles[1:]:
 
             # If the level is in the list, we have to create a database element
             # out of if. Elsewise this title is considered as Markdown title.
-            if level in levels_to_match:
+            if self.current_level in self.levels_to_match:
 
                 # If we were matching markdown before, we stop the match
                 # process since we are changing level and add markdown content
@@ -142,164 +244,117 @@ class TutorialImporter(object):
                 #
                 # We start at (last_matched_num + 1) in order to not catch last
                 # processed title in the content.
-                content = "\n".join(self.lines[last_matched_num + 1:num])
+                content = "\n".join(
+                    self.lines[self.last_matched_num + 1:self.current_num]
+                )
 
                 # If we were under the first title, we update tutorial's
                 # introduction.
-                if last_matched_level == self.initial_level:
-                    tutorial.introduction = content
-                    tutorial.save()
+                if self.last_matched_level == self.initial_level:
+                    self.tutorial.introduction = content
+                    self.tutorial.save()
 
                 # Small tutorial, obviously it is an extract
-                if base_chapter:
+                if self.base_chapter:
 
                     # Update content
-                    if last_matched_level == levels_to_match[0]:
-                        extract.text = content
+                    if self.last_matched_level == self.levels_to_match[0]:
+                        self.extract.text = content
 
-                    # Save previous extract
-                    if extract:
-                        extract.save()
-
-                    # Prepare new extract
-                    extract = Extract(
-                        title=title,
-                        chapter=base_chapter
-                    )
+                    self.prepare_next_extract()
 
                 # Medium tutorial, it is a chapter or an extract
-                elif base_part:
-                    if level == levels_to_match[0]:
+                elif self.base_part:
+                    if self.current_level == self.levels_to_match[0]:
 
                         # Update content
-                        if last_matched_level == levels_to_match[0]:
-                            chapter.introduction = content
-                        elif last_matched_level == levels_to_match[1]:
-                            extract.text = content
+                        if self.last_matched_level == self.levels_to_match[0]:
+                            self.chapter.introduction = content
+                        elif self.last_matched_level == self.levels_to_match[1]:
+                            self.extract.text = content
+                            self.extract.save()
 
-                        # Save previous chapter
-                        if chapter:
-                            chapter.save()
-
-                        # Prepare new chapter
-                        chapter = Chapter(
-                            title=title,
-                            part=base_part
-                        )
+                        self.prepare_next_chapter()
 
                     else:
 
                         # Update content
-                        if last_matched_level == levels_to_match[0]:
-                            chapter.introduction = content
-                        elif last_matched_level == levels_to_match[1]:
-                            extract.text = content
+                        if self.last_matched_level == self.levels_to_match[0]:
+                            self.chapter.introduction = content
+                            self.chapter.save()
+                        elif self.last_matched_level == self.levels_to_match[1]:
+                            self.extract.text = content
 
-                        # Save previous extract
-                        if extract:
-                            extract.save()
-
-                        # Prepare new extract
-                        extract = Extract(
-                            title=title,
-                            chapter=chapter
-                        )
+                        self.prepare_next_extract()
 
                 # Big tutorial, it is a part or a chapter or an extract
                 else:
-                    if level == levels_to_match[0]:
+                    if self.current_level == self.levels_to_match[0]:
 
                         # Update content
-                        if last_matched_level == levels_to_match[0]:
-                            part.introduction = content
-                        elif last_matched_level == levels_to_match[1]:
-                            chapter.introduction = content
-                        elif last_matched_level == levels_to_match[2]:
-                            extract.text = content
+                        if self.last_matched_level == self.levels_to_match[0]:
+                            self.part.introduction = content
+                        elif self.last_matched_level == self.levels_to_match[1]:
+                            self.chapter.introduction = content
+                            self.chapter.save()
+                        elif self.last_matched_level == self.levels_to_match[2]:
+                            self.extract.text = content
+                            self.extract.save()
 
-                        # Save previous part
-                        if part:
-                            part.save()
+                        self.prepare_next_part()
 
-                        # Prepare new part
-                        part = Part(
-                            title=title,
-                            tutorial=tutorial
-                        )
-
-                    elif level == levels_to_match[1]:
+                    elif self.current_level == self.levels_to_match[1]:
 
                         # Update content
-                        if last_matched_level == levels_to_match[0]:
-                            part.introduction = content
-                        elif last_matched_level == levels_to_match[1]:
-                            chapter.introduction = content
-                        elif last_matched_level == levels_to_match[2]:
-                            extract.text = content
+                        if self.last_matched_level == self.levels_to_match[0]:
+                            self.part.introduction = content
+                            self.part.save()
+                        elif self.last_matched_level == self.levels_to_match[1]:
+                            self.chapter.introduction = content
+                        elif self.last_matched_level == self.levels_to_match[2]:
+                            self.extract.text = content
+                            self.extract.save()
 
-                        # Save previous chapter
-                        if chapter:
-                            chapter.save()
-
-                        # Prepare new chapter
-                        chapter = Chapter(
-                            title=title,
-                            part=part
-                        )
+                        self.prepare_next_chapter()
 
                     else:
 
                         # Update content
-                        if last_matched_level == levels_to_match[0]:
-                            part.introduction = content
-                        elif last_matched_level == levels_to_match[1]:
-                            chapter.introduction = content
-                        elif last_matched_level == levels_to_match[2]:
-                            extract.text = content
+                        if self.last_matched_level == self.levels_to_match[0]:
+                            self.part.introduction = content
+                            self.part.save()
+                        elif self.last_matched_level == self.levels_to_match[1]:
+                            self.chapter.introduction = content
+                            self.chapter.save()
+                        elif self.last_matched_level == self.levels_to_match[2]:
+                            self.extract.text = content
 
-                        # Save previous extract
-                        if extract:
-                            extract.save()
+                        self.prepare_next_extract()
 
-                        # Prepare new extract
-                        extract = Extract(
-                            title=title,
-                            chapter=chapter
-                        )
-
-                last_matched_level = level
-                last_matched_num = num
+                self.last_matched_level = self.current_level
+                self.last_matched_num = self.current_num
 
         # At this point we have matched all titles. we finally need to finish
         # markdown import for the last matched title till end of file.
-        content = "\n".join(self.lines[last_matched_num + 1:])
-
-        if base_chapter:
-            if last_matched_level == levels_to_match[0]:
-                extract.text = content
-                extract.save()
-            else:
-                tutorial.introduction = content
-                tutorial.save()
-        else:
-            raise NotImplementedError(
-                "Not implemented for medium and big tutorials"
-            )
+        self.finish_text_import()
 
 
 if __name__ == "__main__":
 
     # usage: python import.py my_tutorial.md
 
-    ti = TutorialImporter()
+    ti = TutorialImporter('B')
 
     ti.load(sys.argv[1])
 
     ti.extract_titles()
+    ti.deduce_initial_level()
     ti.check_titles()
+    ti.deduce_levels_to_match()
 
     # Check that the titles are correct after check
     print(ti.titles)
 
     # Yeah let's simulate this with dummy models
-    ti.to_database('S')
+    ti.prepare_base_items()
+    ti.to_database()
