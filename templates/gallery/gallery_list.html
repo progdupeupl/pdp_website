@@ -16,21 +16,19 @@
 {% block content %}
 <form id="form" name="form" method="POST" action="{% url "pdp.gallery.views.modify_gallery" %}">
 <div class="row">
-    <div class="small-12 columns">
-        <div class="small-3 columns">
-            <a href="{% url "pdp.gallery.views.new_gallery" %}" class="button">Nouvelle galerie</a>
-        </div>
-        <div class="small-2 columns">
-            <button type="submit" name="delete_multi" class="button secondary">
-                Supprimer
-            </button>
-        </div>
+    <div class="large-12 columns">
+        <a href="{% url "pdp.gallery.views.new_gallery" %}" class="button">
+            Nouvelle galerie
+        </a>
+        <button type="submit" name="delete_multi" class="button secondary" style="float: right;">
+            Supprimer
+        </button>
     </div>
 </div>
 <div class="row">
     <div class="small-12 columns">
         {% for gallery in galleries %}
-            <div class="small-6 columns expand">
+            <div class="large-6 small-12 columns expand">
                 <div class="panel">
                     <div class="row">
                         <div class="small-8 columns">
