@@ -446,9 +446,10 @@ class ExtractForm(forms.Form):
             HTML('{% include "misc/editor.part.html" %}'),
             Field('text'),
             Div(
-                Submit('submit', 'Ajouter'),
+                Submit('submit', u'Ajouter'),
+                Submit('preview', u'Prévisualiser'),
                 Submit(
-                    'submit_continue', 'Ajouter et continuer',
+                    'submit_continue', u'Ajouter et continuer',
                     css_class='secondary'),
                 css_class='button-group'
             )
@@ -476,6 +477,7 @@ class EditExtractForm(forms.Form):
             Field('title'),
             HTML('{% include "misc/editor.part.html" %}'),
             Field('text'),
-            Submit('submit', 'Modifier'),
+            Submit('submit', u'Modifier'),
+            Submit('preview', u'Prévisualiser')
         )
         super(EditExtractForm, self).__init__(*args, **kwargs)

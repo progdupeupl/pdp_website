@@ -863,6 +863,13 @@ def add_extract(request):
 
     if request.method == 'POST':
         form = ExtractForm(request.POST)
+
+        if 'preview' in request.POST:
+            return render_template('tutorial/new_extract.html', {
+                'chapter': chapter, 'form': form, 'notify': notify,
+                'text': form.data['text']
+            })
+
         if form.is_valid():
             data = form.data
             extract = Extract()
@@ -911,6 +918,14 @@ def edit_extract(request):
 
     if request.method == 'POST':
         form = EditExtractForm(request.POST)
+
+        if 'preview' in request.POST:
+            return render_template('tutorial/edit_extract.html', {
+                'form': form,
+                'text': form.data['text'],
+                'extract': extract
+            })
+
         if form.is_valid():
             data = form.data
             extract.title = data['title']
