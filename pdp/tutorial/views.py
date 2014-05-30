@@ -863,6 +863,13 @@ def add_extract(request):
 
     if request.method == 'POST':
         form = ExtractForm(request.POST)
+
+        if 'preview' in request.POST:
+            return render_template('tutorial/new_extract.html', {
+                'chapter': chapter, 'form': form, 'notify': notify,
+                'text': form.data['text']
+            })
+
         if form.is_valid():
             data = form.data
             extract = Extract()
