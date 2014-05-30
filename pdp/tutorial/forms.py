@@ -476,6 +476,7 @@ class EditExtractForm(forms.Form):
             Field('title'),
             HTML('{% include "misc/editor.part.html" %}'),
             Field('text'),
-            Submit('submit', 'Modifier'),
+            Submit('submit', u'Modifier'),
+            Submit('preview', u'Prévisualiser')
         )
         super(EditExtractForm, self).__init__(*args, **kwargs)
