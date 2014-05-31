@@ -9,7 +9,7 @@ python:
  - "2.7"
 
 before_install:
- - sudo apt-get install language-pack-fr
+ - sudo apt-get -y install language-pack-fr
 
 # Install dependencies
 install:
@@ -20,3 +20,8 @@ install:
 # Run tests
 script:
  - python manage.py test pdp.article pdp.tutorial pdp.forum pdp.member pdp.utils pdp.pages pdp.messages pdp.gallery
+
+# Only select master branch to be tested
+branches:
+ - only:
+   - master
