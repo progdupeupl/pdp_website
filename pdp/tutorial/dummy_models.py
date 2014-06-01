@@ -45,14 +45,16 @@ class Tutorial:
 
 
 class Part:
-    def __init__(self, title="", tutorial=None):
+    def __init__(self, title="", tutorial=None, position_in_tutorial=-1):
         self.tutorial = tutorial
         self.title = title
         self.introduction = ""
+        self.position_in_tutorial = position_in_tutorial
 
     def __repr__(self):
-        return "<Part title={} tutorial={}>".format(
+        return "<Part title={} position={} tutorial={}>".format(
             self.title,
+            self.position_in_tutorial,
             self.tutorial
         )
 
@@ -62,15 +64,17 @@ class Part:
 
 
 class Chapter:
-    def __init__(self, tutorial=None, part=None, title=""):
+    def __init__(self, tutorial=None, part=None, title="", position_in_part=-1):
         self.tutorial = tutorial
         self.part = part
         self.title = title
         self.introduction = ""
+        self.position_in_part = position_in_part
 
     def __repr__(self):
-        return "<Chapter title={} tutorial={} part={}>".format(
+        return "<Chapter title={} position={} tutorial={} part={}>".format(
             self.title,
+            self.position_in_part,
             self.tutorial,
             self.part
         )
@@ -81,14 +85,16 @@ class Chapter:
 
 
 class Extract:
-    def __init__(self, chapter=None, title=""):
+    def __init__(self, chapter=None, title="", position_in_chapter=-1):
         self.chapter = chapter
         self.title = title
         self.text = ""
+        self.position_in_chapter = position_in_chapter
 
     def __repr__(self):
-        return "<Extract title={} chapter={}>".format(
+        return "<Extract title={} position={} chapter={}>".format(
             self.title,
+            self.position_in_chapter,
             self.chapter
         )
 
