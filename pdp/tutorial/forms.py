@@ -71,9 +71,32 @@ class TutorialForm(forms.Form):
             Field('category'),
             Field('image'),
             Field('size'),
-            Submit('submit', 'Valider')
+            Submit('submit', u'Créer')
         )
         super(TutorialForm, self).__init__(*args, **kwargs)
+
+
+class ImportTutorialForm(forms.Form):
+    input_file = forms.FileField(
+        label=u'Fichier markdown',
+        required=True
+    )
+
+    size = forms.ChoiceField(
+        label=u'Taille du tutoriel',
+        choices=Tutorial.SIZE_CHOICES
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+
+        self.helper.layout = Layout(
+            Field('input_file'),
+            Field('size'),
+            Submit('submit', u'Importer')
+        )
+        super(ImportTutorialForm, self).__init__(*args, **kwargs)
 
 
 class EditTutorialForm(forms.Form):
