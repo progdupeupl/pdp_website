@@ -104,13 +104,9 @@ class TutorialImporter(object):
         if self.size == 'S':
             # Extract title
             levels_depth = 1
-            self.base_chapter = Chapter(tutorial=self.tutorial)
-            self.base_chapter.save()
         elif self.size == 'M':
             # Chapter title + extract title
             levels_depth = 2
-            self.base_part = Part(tutorial=self.tutorial)
-            self.base_part.save()
         elif self.size == 'B':
             # Part title + chapter title + extract title
             levels_depth = 3
@@ -241,7 +237,7 @@ class TutorialImporter(object):
 
         self.tutorial.authors.add(self.author)
 
-
+        # Create required base elements depending on tutorial size
         if self.size == 'S':
             self.base_chapter = Chapter(tutorial=self.tutorial)
             self.base_chapter.save()
