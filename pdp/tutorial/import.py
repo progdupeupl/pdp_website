@@ -37,8 +37,10 @@ class TutorialImporter(object):
     unless you know what you do.
     """
 
-    def __init__(self, size):
+    def __init__(self, author, size):
+        self.author = author
         self.size = size
+
         self.tutorial = None
         self.lines = []
         self.titles = []
@@ -200,7 +202,8 @@ class TutorialImporter(object):
         # We create the initial tutorial database element
         self.tutorial = Tutorial(
             title=self.titles[0][2],
-            size=self.size
+            size=self.size,
+            authors=[self.author]
         )
 
         # We save it for the first time in order to make the m2m relations work
@@ -417,7 +420,7 @@ if __name__ == "__main__":
 
     # usage: python import.py my_tutorial.md
 
-    ti = TutorialImporter('B')
+    ti = TutorialImporter('fakeauthor', 'B')
 
     ti.load(sys.argv[1])
     ti.run()

@@ -27,14 +27,16 @@ the good time.
 """
 
 class Tutorial:
-    def __init__(self, title="", size=""):
+    def __init__(self, title="", size="", authors=[]):
         self.title = title
         self.introduction = ""
         self.size = size
+        self.authors = authors
 
     def __repr__(self):
-        return "<Tutorial title={}>".format(
-            self.title
+        return "<Tutorial title={} authors={}>".format(
+            self.title,
+            self.authors
         )
 
     def save(self):
