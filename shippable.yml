@@ -1,0 +1,27 @@
+# Build environment
+build_environment: ubuntu1204
+
+# Set language to Python
+language: python
+
+# Supported Python versions
+python:
+ - "2.7"
+
+before_install:
+ - sudo apt-get -y install language-pack-fr
+
+# Install dependencies
+install:
+ - pip install --use-mirrors -r requirements.txt
+ - python manage.py syncdb
+ - python manage.py migrate
+
+# Run tests
+script:
+ - python manage.py test pdp.article pdp.tutorial pdp.forum pdp.member pdp.utils pdp.pages pdp.messages pdp.gallery
+
+# Only select master branch to be tested
+branches:
+ - only:
+   - master

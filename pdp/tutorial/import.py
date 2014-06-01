@@ -28,6 +28,14 @@ import re
 
 from dummy_models import Tutorial, Part, Chapter, Extract
 
+class NegativeTitleLevelError(Exception):
+    pass
+
+class InvalidLevelIncreaseError(Exception):
+    pass
+
+class EmptyTitleError(Exception):
+    pass
 
 class TutorialImporter(object):
 
@@ -37,8 +45,10 @@ class TutorialImporter(object):
     unless you know what you do.
     """
 
-    def __init__(self, size):
+    def __init__(self, author, size):
+        self.author = author
         self.size = size
+
         self.tutorial = None
         self.lines = []
         self.titles = []
@@ -59,6 +69,11 @@ class TutorialImporter(object):
         self.extract = None
         self.chapter = None
         self.part = None
+
+        # Position fields
+        self.position_in_tutorial = 0
+        self.position_in_part = 0
+        self.position_in_chapter = 0
 
     def load(self, filepath):
         """Load a markdown source from a text file."""
@@ -119,6 +134,7 @@ class TutorialImporter(object):
         # Save previous extract (if any)
         if self.extract:
             self.extract.save()
+            self.position_in_chapter += 1
 
         # Prepare new extract
         if self.size == 'S':
@@ -128,6 +144,7 @@ class TutorialImporter(object):
 
         self.extract = Extract(
             title=self.current_title,
+            position_in_chapter=self.position_in_chapter,
             chapter=chapter
         )
 
@@ -137,6 +154,8 @@ class TutorialImporter(object):
         # Save previous chapter (if any)
         if self.chapter:
             self.chapter.save()
+            self.position_in_chapter = 0
+            self.position_in_part += 1
 
         # Prepare new chapter
         if self.size == 'M':
@@ -146,6 +165,7 @@ class TutorialImporter(object):
 
         self.chapter = Chapter(
             title=self.current_title,
+            position_in_part=self.position_in_part,
             part=part
         )
 
@@ -155,10 +175,14 @@ class TutorialImporter(object):
         # Save previous part (if any)
         if self.part:
             self.part.save()
+            self.position_in_chapter = 0
+            self.position_in_part = 0
+            self.position_in_tutorial += 1
 
         # Prepare new part
         self.part = Part(
             title=self.current_title,
+            position_in_tutorial=self.position_in_tutorial,
             tutorial=self.tutorial
         )
 
@@ -181,13 +205,17 @@ class TutorialImporter(object):
             assert(num >= 0 and num < len(self.lines))
 
             # All titles must have a superior level than the main title
-            assert(level > self.initial_level)
-            assert(len(title) > 0)
+            if level <= self.initial_level:
+                raise NegativeTitleLevelError
+
+            if len(title) <= 0:
+                raise EmptyTitleError
 
             # If ascending level we must be sure that it is increasing by
             # maximum 1 or staying at 0.
             if level > previous_level:
-                assert(level - previous_level <= 1)
+                if level - previous_level > 1:
+                    raise InvalidLevelIncreaseError
 
             previous_level = level
 
@@ -200,7 +228,8 @@ class TutorialImporter(object):
         # We create the initial tutorial database element
         self.tutorial = Tutorial(
             title=self.titles[0][2],
-            size=self.size
+            size=self.size,
+            authors=[self.author]
         )
 
         # We save it for the first time in order to make the m2m relations work
@@ -417,7 +446,7 @@ if __name__ == "__main__":
 
     # usage: python import.py my_tutorial.md
 
-    ti = TutorialImporter('B')
+    ti = TutorialImporter('fakeauthor', 'B')
 
     ti.load(sys.argv[1])
     ti.run()

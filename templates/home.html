@@ -86,7 +86,7 @@ class="active"
             <div class="large-6 columns">
                 {% if last_topics %}
                     {% for topic in last_topics %}
-                        {% if not forloop.counter|divisibleby:2 %}
+                        {% if forloop.counter <= 5 %}
                              {% include "forum/topic_item_common.part.html" %}
                         {% endif %}
                     {% endfor %}
@@ -97,7 +97,7 @@ class="active"
             <div class="large-6 columns">
                 {% if last_topics %}
                     {% for topic in last_topics %}
-                        {% if forloop.counter|divisibleby:2 %}
+                        {% if forloop.counter > 5 %}
                              {% include "forum/topic_item_common.part.html" %}
                         {% endif %}
                     {% endfor %}
