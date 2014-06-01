@@ -23,19 +23,23 @@ import is fine on different sizes of tutorials, and in order to test it over
 some markdown sources
 """
 
-import sys
 import re
+import io
+from datetime import datetime
 
-from dummy_models import Tutorial, Part, Chapter, Extract
+from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
 
 class NegativeTitleLevelError(Exception):
     pass
 
+
 class InvalidLevelIncreaseError(Exception):
     pass
 
+
 class EmptyTitleError(Exception):
     pass
+
 
 class TutorialImporter(object):
 
@@ -77,7 +81,7 @@ class TutorialImporter(object):
 
     def load(self, filepath):
         """Load a markdown source from a text file."""
-        with open(filepath, "r") as f:
+        with io.open(filepath, 'r', encoding='utf-8') as f:
             self.lines = f.read().splitlines()
 
     def deduce_level(self, sharps):
@@ -229,11 +233,14 @@ class TutorialImporter(object):
         self.tutorial = Tutorial(
             title=self.titles[0][2],
             size=self.size,
-            authors=[self.author]
+            pubdate=datetime.now()
         )
 
         # We save it for the first time in order to make the m2m relations work
         self.tutorial.save()
+
+        self.tutorial.authors.add(self.author)
+
 
         if self.size == 'S':
             self.base_chapter = Chapter(tutorial=self.tutorial)
@@ -437,17 +444,8 @@ class TutorialImporter(object):
         self.extract_titles()
         self.deduce_initial_level()
         self.check_titles()
-        self.deduce_levels_to_match()
         self.prepare_base_items()
+        self.deduce_levels_to_match()
         self.to_database()
 
-
-if __name__ == "__main__":
-
-    # usage: python import.py my_tutorial.md
-
-    ti = TutorialImporter('fakeauthor', 'B')
-
-    ti.load(sys.argv[1])
-    ti.run()
 
