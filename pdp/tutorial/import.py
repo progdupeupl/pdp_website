@@ -28,6 +28,14 @@ import re
 
 from dummy_models import Tutorial, Part, Chapter, Extract
 
+class NegativeTitleLevelError(Exception):
+    pass
+
+class InvalidLevelIncreaseError(Exception):
+    pass
+
+class EmptyTitleError(Exception):
+    pass
 
 class TutorialImporter(object):
 
@@ -197,13 +205,17 @@ class TutorialImporter(object):
             assert(num >= 0 and num < len(self.lines))
 
             # All titles must have a superior level than the main title
-            assert(level > self.initial_level)
-            assert(len(title) > 0)
+            if level <= self.initial_level:
+                raise NegativeTitleLevelError
+
+            if len(title) <= 0:
+                raise EmptyTitleError
 
             # If ascending level we must be sure that it is increasing by
             # maximum 1 or staying at 0.
             if level > previous_level:
-                assert(level - previous_level <= 1)
+                if level - previous_level > 1:
+                    raise InvalidLevelIncreaseError
 
             previous_level = level
 
