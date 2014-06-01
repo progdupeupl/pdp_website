@@ -62,6 +62,11 @@ class TutorialImporter(object):
         self.chapter = None
         self.part = None
 
+        # Position fields
+        self.position_in_tutorial = 0
+        self.position_in_part = 0
+        self.position_in_chapter = 0
+
     def load(self, filepath):
         """Load a markdown source from a text file."""
         with open(filepath, "r") as f:
@@ -121,6 +126,7 @@ class TutorialImporter(object):
         # Save previous extract (if any)
         if self.extract:
             self.extract.save()
+            self.position_in_chapter += 1
 
         # Prepare new extract
         if self.size == 'S':
@@ -130,6 +136,7 @@ class TutorialImporter(object):
 
         self.extract = Extract(
             title=self.current_title,
+            position_in_chapter=self.position_in_chapter,
             chapter=chapter
         )
 
@@ -139,6 +146,8 @@ class TutorialImporter(object):
         # Save previous chapter (if any)
         if self.chapter:
             self.chapter.save()
+            self.position_in_chapter = 0
+            self.position_in_part += 1
 
         # Prepare new chapter
         if self.size == 'M':
@@ -148,6 +157,7 @@ class TutorialImporter(object):
 
         self.chapter = Chapter(
             title=self.current_title,
+            position_in_part=self.position_in_part,
             part=part
         )
 
@@ -157,10 +167,14 @@ class TutorialImporter(object):
         # Save previous part (if any)
         if self.part:
             self.part.save()
+            self.position_in_chapter = 0
+            self.position_in_part = 0
+            self.position_in_tutorial += 1
 
         # Prepare new part
         self.part = Part(
             title=self.current_title,
+            position_in_tutorial=self.position_in_tutorial,
             tutorial=self.tutorial
         )
 
