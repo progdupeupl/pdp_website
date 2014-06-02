@@ -77,7 +77,7 @@ class TutorialForm(forms.Form):
 
 
 class ImportTutorialForm(forms.Form):
-    input_file = forms.FileField(
+    markdown = forms.FileField(
         label=u'Fichier markdown',
         required=True
     )
@@ -92,7 +92,7 @@ class ImportTutorialForm(forms.Form):
         self.helper.form_method = 'post'
 
         self.helper.layout = Layout(
-            Field('input_file'),
+            Field('markdown'),
             Field('size'),
             Submit('submit', u'Importer')
         )

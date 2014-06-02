@@ -45,6 +45,8 @@ from .forms import TutorialForm, EditTutorialForm, AddPartForm, EditPartForm, \
     AddChapterForm, EditChapterForm, EmbdedChapterForm, ExtractForm, \
     EditExtractForm, ImportTutorialForm
 
+from pdp.tutorial import loader
+
 
 def index(request):
     """Display tutorials list.
@@ -168,6 +170,49 @@ def download(request):
 
     else:
         return HttpResponseBadRequest()
+
+
+@login_required(redirect_field_name='suivant')
+def import_tutorial(request):
+    error = None
+    if request.method == 'POST':
+        form = ImportTutorialForm(request.POST, request.FILES)
+        if form.is_valid():
+            data = form.data
+            source = request.FILES['markdown']
+
+            try:
+                content = source.read().decode('utf-8')
+
+                ti = loader.TutorialImporter(request.user, data['size'])
+                ti.from_text(content)
+                ti.run()
+            except UnicodeError as e:
+                error = u'Erreur unicode de l’octet {} à {} : {}.'.format(
+                    e.start,
+                    e.end,
+                    e.reason
+                )
+            except loader.NegativeTitleLevelError:
+                error = u'Descente de niveau de titre en dessous du niveau ' \
+                        u'principal.'
+            except loader.InvalidLevelIncreaseError:
+                error = u'Descente de niveau de titre trop rapide.'
+            except loader.EmptyTitleError:
+                error = u'Titre vide.'
+            except loader.NoTitleFoundError:
+                error = u'Aucun titre n’a été trouvé.'
+
+            if not error:
+                return redirect(ti.tutorial.get_absolute_url())
+
+    else:
+        form = ImportTutorialForm()
+
+    return render_template('tutorial/import_tutorial.html', {
+        'form': form,
+        'error': error
+    })
 
 
 @login_required(redirect_field_name='suivant')

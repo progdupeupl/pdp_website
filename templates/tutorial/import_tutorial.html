@@ -1,0 +1,67 @@
+{% extends "tutorial/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Import
+{% endblock %}
+
+{% block headline %}
+    Importer un tutoriel
+{% endblock %}
+
+{% block breadcrumb %}
+    <li><a href="{% url "pdp.tutorial.views.add_tutorial" %}">Nouveau</a></li>
+    <li class="current"><a href="#">Import</a></li>
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+</div>
+
+{% if error %}
+<div class="row">
+    <div class="large-12 columns">
+        <div class="panel">
+            <h3>
+                Erreur :(<br />
+                <small>Vous ne parserez pas !</small>
+            </h3>
+            <p>
+                Une erreur s’est produite lors de l’importation :
+            </p>
+            <p style="text-align: center;">
+                {{ error }}
+            </p>
+            <p>
+                Merci de corriger ce problème et de réessayer à nouveau.
+            </p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="large-6 columns">
+        <h3>Formulaire d’envoi</h3>
+        {% crispy form %}
+    </div>
+    <div class="large-6 columns">
+        <h3>Mode d’emploi</h3>
+        <h4>Format</h4>
+        <p>
+            Votre tutoriel doit être au format Markdown. Le système
+            d’importation se basera sur le premier titre qu’il rencontrera pour
+            déduire le titre de votre publication.
+        </p>
+        <h4>Limitations</h4>
+        <p>
+            Vous ne <strong>devez pas</strong> utiliser la syntaxe simplifiée
+            de création de blocs de code avec les <code>```</code>. En effet,
+            les commentaires se situent au même niveau que les titres des
+            tutoriels et risquent de provoquer des erreurs ou d’être importés.
+        </p>
+    </div>
+</div>
+
+{% endblock %}
