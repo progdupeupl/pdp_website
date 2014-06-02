@@ -182,7 +182,8 @@ def import_tutorial(request):
             source = request.FILES['markdown']
 
             try:
-                content = source.read().decode('utf-8')
+                # Consider input file as UTF-8 text with BOM (or not)
+                content = source.read().decode('utf-8-sig')
 
                 ti = loader.TutorialImporter(request.user, data['size'])
                 ti.from_text(content)
