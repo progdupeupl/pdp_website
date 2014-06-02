@@ -41,6 +41,9 @@ class EmptyTitleError(Exception):
     pass
 
 
+class NoTitleFoundError(Exception):
+    pass
+
 class TutorialImporter(object):
 
     """Tool used to import tutorials into database models.
@@ -79,10 +82,14 @@ class TutorialImporter(object):
         self.position_in_part = 0
         self.position_in_chapter = 0
 
-    def load(self, filepath):
+    def from_file(self, filepath):
         """Load a markdown source from a text file."""
         with io.open(filepath, 'r', encoding='utf-8') as f:
             self.lines = f.read().splitlines()
+
+    def from_text(self, text):
+        """Load a markdown source from an unicode string."""
+        self.lines = text.splitlines()
 
     def deduce_level(self, sharps):
         """Deduce the level of a title based on its sharp amount."""
@@ -193,8 +200,12 @@ class TutorialImporter(object):
         titles. You can catch AssertError in order to know that the user input
         is wrong, until more precise exceptions.
         """
+
+        if len(self.titles) == 0:
+            raise NoTitleFoundError
+
         # We cannot perform tests on titles if there is only one
-        if len(self.titles) <= 1:
+        if len(self.titles) == 1:
             return
 
         previous_level = self.initial_level
