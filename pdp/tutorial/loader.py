@@ -29,6 +29,7 @@ from datetime import datetime
 
 from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
 
+
 class NegativeTitleLevelError(Exception):
     pass
 
@@ -43,6 +44,7 @@ class EmptyTitleError(Exception):
 
 class NoTitleFoundError(Exception):
     pass
+
 
 class TutorialImporter(object):
 
@@ -338,7 +340,7 @@ class TutorialImporter(object):
         # We remember the last level we matched in order to recognize
         # introductions for elements.
         self.last_matched_level = self.initial_level
-        self.last_matched_num = 0
+        self.last_matched_num = self.titles[0][1]
 
         for self.current_num, self.current_level, self.current_title in self.titles[1:]:
 
