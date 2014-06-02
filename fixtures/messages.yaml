@@ -1,0 +1,22 @@
+- fields:
+    author: 6
+    last_message: 1
+    participants: [3]
+    pubdate: 2014-06-02 18:14:17.338365
+    subtitle: ''
+    title: "Je voudrais \xEAtre mod\xE9rateur."
+  model: messages.privatetopic
+  pk: 1
+- fields: {author: 6, position_in_topic: 1, privatetopic: 1, pubdate: !!timestamp '2014-06-02
+      18:14:17.801189', text: "Isdem diebus Apollinaris Domitiani gener, paulo ante\
+      \ agens palatii Caesaris curam, ad Mesopotamiam missus a socero per militares\
+      \ numeros immodice scrutabatur, an quaedam altiora meditantis iam Galli secreta\
+      \ susceperint scripta, qui conpertis Antiochiae gestis per minorem Armeniam\
+      \ lapsus Constantinopolim petit exindeque per protectores retractus artissime\
+      \ tenebatur.\r\n\r\nFiducia audiendi nulla disputabunt benevolentiae atque ipse\
+      \ atque quam diffluentes erunt nulla qua homines usu.\r\n\r\nBlaireau5", update: null}
+  model: messages.privatepost
+  pk: 1
+- fields: {privatepost: 1, privatetopic: 1, user: 6}
+  model: messages.privatetopicread
+  pk: 1
