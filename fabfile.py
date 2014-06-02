@@ -29,6 +29,13 @@ TEST_APPS = (
     'pdp.messages',
     'pdp.gallery')
 
+FIXTURES = (
+    'auth_user.yaml'
+    'forum.yaml',
+    'member.yaml',
+    'messages.yaml',
+    'tutorial.yaml')
+
 ASSETS_DIR = path.join(path.dirname(__file__), 'assets/')
 
 
@@ -51,6 +58,12 @@ def makeassets():
 def collectstatic():
     """Collect and process all the static content."""
     local('python manage.py collectstatic --noinput')
+
+
+def loaddata():
+    """Load fakes datas and put them in the database."""
+    for n in FIXTURES:
+        local('python manage.py loaddata {0}'.format('fixtures'.join(FIXTURES[n])))
 
 
 def test():
