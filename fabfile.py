@@ -30,7 +30,7 @@ TEST_APPS = (
     'pdp.gallery')
 
 FIXTURES = (
-    'auth_user.yaml'
+    'auth.yaml'
     'forum.yaml',
     'member.yaml',
     'messages.yaml',
@@ -62,8 +62,7 @@ def collectstatic():
 
 def loaddata():
     """Load fakes datas and put them in the database."""
-    for n in FIXTURES:
-        local('python manage.py loaddata {0}'.format('fixtures'.join(FIXTURES[n])))
+    local('python manage.py loaddata {0}'.format('  fixtures/'.join(FIXTURES)))
 
 
 def test():
