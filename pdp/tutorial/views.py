@@ -284,8 +284,7 @@ def add_tutorial(request):
         form = TutorialForm()
 
     return render_template('tutorial/new_tutorial.html', {
-        'form': form,
-        'import_form': ImportTutorialForm()
+        'form': form
     })
 
 
