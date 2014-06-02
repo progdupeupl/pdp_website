@@ -43,7 +43,7 @@ from .models import get_last_tutorials
 
 from .forms import TutorialForm, EditTutorialForm, AddPartForm, EditPartForm, \
     AddChapterForm, EditChapterForm, EmbdedChapterForm, ExtractForm, \
-    EditExtractForm
+    EditExtractForm, ImportTutorialForm
 
 
 def index(request):
@@ -238,7 +238,8 @@ def add_tutorial(request):
         form = TutorialForm()
 
     return render_template('tutorial/new_tutorial.html', {
-        'form': form
+        'form': form,
+        'import_form': ImportTutorialForm()
     })
 
 

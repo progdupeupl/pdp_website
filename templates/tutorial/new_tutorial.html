@@ -28,8 +28,22 @@
 </div>
 
 <div class="row">
-    <div class="large-12 columns">
+    <div class="large-6 columns">
+        <h3>
+            Depuis zéro<br />
+            <small>Créer un tutoriel vide.</small>
+        </h3>
         {% crispy form %}
+    </div>
+    <div class="large-1 columns">
+        <h3><small>ou</small></h3>
+    </div>
+    <div class="large-5 columns">
+        <h3>
+            Importer<br />
+            <small>Charger un tutoriel déjà rédigé.</small>
+        </h3>
+        {% crispy import_form %}
     </div>
 </div>
 
