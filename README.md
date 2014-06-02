@@ -150,6 +150,13 @@ The test instance should be available at
 behavior if you edit the code of the project. Enjoy, and send us lots of good
 patches!
 
+## Init database with fakes datas
+
+If you want to init the database with fakes datas, just run this command :
+
+    :::console
+    $ fab loaddata
+
 ## Documentation
 
 If you want to build the documentation, you will need to install Sphinx 1.3 for
