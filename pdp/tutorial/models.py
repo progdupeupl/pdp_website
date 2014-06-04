@@ -321,8 +321,8 @@ class Part(models.Model):
 
     title = models.CharField(u'Titre', max_length=80)
 
-    introduction = models.TextField(u'Introduction')
-    conclusion = models.TextField(u'Conclusion')
+    introduction = models.TextField(u'Introduction', blank=True)
+    conclusion = models.TextField(u'Conclusion', blank=True)
 
     slug = models.SlugField(max_length=80)
 
@@ -383,33 +383,33 @@ class Chapter(models.Model):
     """A chapter, containing some extracts."""
 
     class Meta:
-        verbose_name = 'Chapitre'
-        verbose_name_plural = 'Chapitres'
+        verbose_name = u'Chapitre'
+        verbose_name_plural = u'Chapitres'
 
     # A chapter may belong to a part, that's where the difference between large
     # and small tutorials is.
     part = models.ForeignKey(Part, null=True, blank=True,
-                             verbose_name='Partie parente')
+                             verbose_name=u'Partie parente')
     image = models.ImageField(upload_to=image_path, blank=True, null=True)
     thumbnail = models.ImageField(upload_to=image_path, blank=True, null=True)
 
-    position_in_part = models.IntegerField('Position dans la partie',
+    position_in_part = models.IntegerField(u'Position dans la partie',
                                            null=True, blank=True)
 
     # This field is required in order to use pagination in chapters, see the
     # update_position_in_tutorial() method.
-    position_in_tutorial = models.IntegerField('Position dans le tutoriel',
+    position_in_tutorial = models.IntegerField(u'Position dans le tutoriel',
                                                null=True, blank=True)
 
     # If the chapter doesn't belong to a part, it's a small tutorial; we need
     # to bind informations about said tutorial directly
     tutorial = models.ForeignKey(Tutorial, null=True, blank=True,
-                                 verbose_name='Tutoriel parent')
+                                 verbose_name=u'Tutoriel parent')
 
-    title = models.CharField('Titre', max_length=80, blank=True)
+    title = models.CharField(u'Titre', max_length=80, blank=True)
 
-    introduction = models.TextField('Introduction')
-    conclusion = models.TextField('Conclusion')
+    introduction = models.TextField(u'Introduction', blank=True)
+    conclusion = models.TextField(u'Conclusion', blank=True)
 
     slug = models.SlugField(max_length=80)
 
