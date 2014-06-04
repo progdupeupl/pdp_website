@@ -79,9 +79,9 @@ class TutorialImporter(object):
         self.part = None
 
         # Position fields
-        self.position_in_tutorial = 0
-        self.position_in_part = 0
-        self.position_in_chapter = 0
+        self.position_in_tutorial = 1
+        self.position_in_part = 1
+        self.position_in_chapter = 1
 
     def from_file(self, filepath):
         """Load a markdown source from a text file."""
