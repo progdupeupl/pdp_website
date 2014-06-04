@@ -15,24 +15,10 @@
 
 {% block content %}
 
-<div class="row">
-    <div class="large-12 columns">
-        <p>
-            C’est votre premier écrit ? Certaines options sont floues ?
-            
-            N’hésitez pas à consulter 
-            <a href="{% url "pdp.pages.views.help_writting" %}">l’aide du
-            module de rédaction</a> pour bien commencer !
-        </p>
-    </div>
-</div>
+{% include "tutorial/help_writting.part.html" %}
 
 <div class="row">
     <div class="large-8 columns">
-        <h3>
-            Depuis zéro<br />
-            <small>Créer un tutoriel vide.</small>
-        </h3>
         {% crispy form %}
     </div>
     <div class="large-1 columns" style="text-align: center;">
