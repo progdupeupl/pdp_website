@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-    Nouveau tutoriel
+    Nouveau
 {% endblock %}
 
 {% block headline %}
@@ -10,26 +10,25 @@
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="current"><a href="#">Nouveau tutoriel</a></li>
+    <li class="current"><a href="#">Nouveau</a></li>
 {% endblock %}
 
 {% block content %}
 
-<div class="row">
-    <div class="large-12 columns">
-        <p>
-            C’est votre premier écrit ? Certaines options sont floues ?
-            
-            N’hésitez pas à consulter 
-            <a href="{% url "pdp.pages.views.help_writting" %}">l’aide du
-            module de rédaction</a> pour bien commencer !
-        </p>
-    </div>
-</div>
+{% include "tutorial/help_writting.part.html" %}
 
 <div class="row">
-    <div class="large-12 columns">
+    <div class="large-8 columns">
         {% crispy form %}
+    </div>
+    <div class="large-1 columns" style="text-align: center;">
+        <h3><small>ou</small></h3>
+    </div>
+    <div class="large-3 columns">
+        <a href="{% url "pdp.tutorial.views.import_tutorial" %}" class="button large">
+            Importer<br />
+            <small>depuis un fichier</small>
+        </a>
     </div>
 </div>
 

@@ -98,6 +98,11 @@ class TutorialIntegrationTests(TestCase):
         resp = self.client.get(reverse('pdp.tutorial.views.add_tutorial'))
         self.assertEqual(302, resp.status_code)
 
+    def test_url_import_tutorial_anon(self):
+        """Testing importing a tutorial as anonymous."""
+        resp = self.client.get(reverse('pdp.tutorial.views.import_tutorial'))
+        self.assertEqual(302, resp.status_code)
+
     def test_url_create_part_anon(self):
         """Testing creating a part as anonymous."""
         G(Tutorial, is_visible=True)
@@ -286,6 +291,10 @@ class AuthenticatedTutorialIntegrationTests(TestCase):
 
     def test_url_add_tutorial(self):
         resp = self.client.get(reverse('pdp.tutorial.views.add_tutorial'))
+        self.assertEquals(resp.status_code, 200)
+
+    def test_url_import_tutorial(self):
+        resp = self.client.get(reverse('pdp.tutorial.views.import_tutorial'))
         self.assertEquals(resp.status_code, 200)
 
 

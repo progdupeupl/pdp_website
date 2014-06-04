@@ -18,24 +18,32 @@
 """Import functions for tutorials.
 
 This module allow import of tutorial from Markdown source to database models.
-Since this is still WIP, we are using dummy models and a main here to test that
-import is fine on different sizes of tutorials, and in order to test it over
-some markdown sources
+There is still some code refactoring to do but the module is working.
+
 """
 
-import sys
 import re
+import io
+from datetime import datetime
 
-from dummy_models import Tutorial, Part, Chapter, Extract
+from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
+
 
 class NegativeTitleLevelError(Exception):
     pass
 
+
 class InvalidLevelIncreaseError(Exception):
     pass
 
+
 class EmptyTitleError(Exception):
     pass
+
+
+class NoTitleFoundError(Exception):
+    pass
+
 
 class TutorialImporter(object):
 
@@ -75,10 +83,14 @@ class TutorialImporter(object):
         self.position_in_part = 0
         self.position_in_chapter = 0
 
-    def load(self, filepath):
+    def from_file(self, filepath):
         """Load a markdown source from a text file."""
-        with open(filepath, "r") as f:
+        with io.open(filepath, 'r', encoding='utf-8') as f:
             self.lines = f.read().splitlines()
+
+    def from_text(self, text):
+        """Load a markdown source from an unicode string."""
+        self.lines = text.splitlines()
 
     def deduce_level(self, sharps):
         """Deduce the level of a title based on its sharp amount."""
@@ -100,13 +112,9 @@ class TutorialImporter(object):
         if self.size == 'S':
             # Extract title
             levels_depth = 1
-            self.base_chapter = Chapter(tutorial=self.tutorial)
-            self.base_chapter.save()
         elif self.size == 'M':
             # Chapter title + extract title
             levels_depth = 2
-            self.base_part = Part(tutorial=self.tutorial)
-            self.base_part.save()
         elif self.size == 'B':
             # Part title + chapter title + extract title
             levels_depth = 3
@@ -193,8 +201,12 @@ class TutorialImporter(object):
         titles. You can catch AssertError in order to know that the user input
         is wrong, until more precise exceptions.
         """
+
+        if len(self.titles) == 0:
+            raise NoTitleFoundError
+
         # We cannot perform tests on titles if there is only one
-        if len(self.titles) <= 1:
+        if len(self.titles) == 1:
             return
 
         previous_level = self.initial_level
@@ -229,12 +241,15 @@ class TutorialImporter(object):
         self.tutorial = Tutorial(
             title=self.titles[0][2],
             size=self.size,
-            authors=[self.author]
+            pubdate=datetime.now()
         )
 
         # We save it for the first time in order to make the m2m relations work
         self.tutorial.save()
 
+        self.tutorial.authors.add(self.author)
+
+        # Create required base elements depending on tutorial size
         if self.size == 'S':
             self.base_chapter = Chapter(tutorial=self.tutorial)
             self.base_chapter.save()
@@ -324,9 +339,10 @@ class TutorialImporter(object):
         # We remember the last level we matched in order to recognize
         # introductions for elements.
         self.last_matched_level = self.initial_level
-        self.last_matched_num = 0
+        self.last_matched_num = self.titles[0][1]
 
-        for self.current_num, self.current_level, self.current_title in self.titles[1:]:
+        for self.current_num, self.current_level, self.current_title in \
+                self.titles[1:]:
 
             # If the level is in the list, we have to create a database element
             # out of if. Elsewise this title is considered as Markdown title.
@@ -364,7 +380,8 @@ class TutorialImporter(object):
                         # Update content
                         if self.last_matched_level == self.levels_to_match[0]:
                             self.chapter.introduction = content
-                        elif self.last_matched_level == self.levels_to_match[1]:
+                        elif self.last_matched_level == \
+                                self.levels_to_match[1]:
                             self.extract.text = content
                             self.extract.save()
 
@@ -376,7 +393,8 @@ class TutorialImporter(object):
                         if self.last_matched_level == self.levels_to_match[0]:
                             self.chapter.introduction = content
                             self.chapter.save()
-                        elif self.last_matched_level == self.levels_to_match[1]:
+                        elif self.last_matched_level == \
+                                self.levels_to_match[1]:
                             self.extract.text = content
 
                         self.prepare_next_extract()
@@ -386,12 +404,15 @@ class TutorialImporter(object):
                     if self.current_level == self.levels_to_match[0]:
 
                         # Update content
-                        if self.last_matched_level == self.levels_to_match[0]:
+                        if self.last_matched_level == \
+                                self.levels_to_match[0]:
                             self.part.introduction = content
-                        elif self.last_matched_level == self.levels_to_match[1]:
+                        elif self.last_matched_level == \
+                                self.levels_to_match[1]:
                             self.chapter.introduction = content
                             self.chapter.save()
-                        elif self.last_matched_level == self.levels_to_match[2]:
+                        elif self.last_matched_level == \
+                                self.levels_to_match[2]:
                             self.extract.text = content
                             self.extract.save()
 
@@ -400,12 +421,15 @@ class TutorialImporter(object):
                     elif self.current_level == self.levels_to_match[1]:
 
                         # Update content
-                        if self.last_matched_level == self.levels_to_match[0]:
+                        if self.last_matched_level == \
+                                self.levels_to_match[0]:
                             self.part.introduction = content
                             self.part.save()
-                        elif self.last_matched_level == self.levels_to_match[1]:
+                        elif self.last_matched_level == \
+                                self.levels_to_match[1]:
                             self.chapter.introduction = content
-                        elif self.last_matched_level == self.levels_to_match[2]:
+                        elif self.last_matched_level == \
+                                self.levels_to_match[2]:
                             self.extract.text = content
                             self.extract.save()
 
@@ -414,13 +438,16 @@ class TutorialImporter(object):
                     else:
 
                         # Update content
-                        if self.last_matched_level == self.levels_to_match[0]:
+                        if self.last_matched_level == \
+                                self.levels_to_match[0]:
                             self.part.introduction = content
                             self.part.save()
-                        elif self.last_matched_level == self.levels_to_match[1]:
+                        elif self.last_matched_level == \
+                                self.levels_to_match[1]:
                             self.chapter.introduction = content
                             self.chapter.save()
-                        elif self.last_matched_level == self.levels_to_match[2]:
+                        elif self.last_matched_level == \
+                                self.levels_to_match[2]:
                             self.extract.text = content
 
                         self.prepare_next_extract()
@@ -437,17 +464,6 @@ class TutorialImporter(object):
         self.extract_titles()
         self.deduce_initial_level()
         self.check_titles()
-        self.deduce_levels_to_match()
         self.prepare_base_items()
+        self.deduce_levels_to_match()
         self.to_database()
-
-
-if __name__ == "__main__":
-
-    # usage: python import.py my_tutorial.md
-
-    ti = TutorialImporter('fakeauthor', 'B')
-
-    ti.load(sys.argv[1])
-    ti.run()
-
