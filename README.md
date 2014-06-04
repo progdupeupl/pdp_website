@@ -155,7 +155,7 @@ patches!
 If you want to init the database with fakes datas, just run this command :
 
     :::console
-    $ fab loaddata
+    (venv)$ fab loaddata
 
 It will make :
 
