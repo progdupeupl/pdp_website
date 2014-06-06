@@ -60,8 +60,8 @@ def collectstatic():
     local('python manage.py collectstatic --noinput')
 
 
-def loaddata():
-    """Load fakes datas and put them in the database."""
+def loadfixtures():
+    """Load fake data and put them in the database."""
     local('python manage.py loaddata {0}'.format(' '.join(FIXTURES)))
 
 
