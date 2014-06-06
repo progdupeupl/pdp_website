@@ -150,7 +150,7 @@ The test instance should be available at
 behavior if you edit the code of the project. Enjoy, and send us lots of good
 patches!
 
-## Init database with fakes datas
+## Init database with fake data
 
 If you want to fill the database with fake data, just run this command :
 
