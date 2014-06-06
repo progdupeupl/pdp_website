@@ -486,6 +486,34 @@ class Chapter(models.Model):
         else:
             raise OrphanChapterException
 
+    def get_next(self):
+        """Get the next Chapter following this one (if any)."""
+
+        if not self.part:
+            return None
+
+        next_chapter = Chapter.objects \
+            .filter(part__tutorial__pk=self.part.tutorial.pk) \
+            .filter(position_in_tutorial__gt=self.position_in_tutorial) \
+            .order_by('position_in_part') \
+            .first()
+
+        return next_chapter
+
+    def get_previous(self):
+        """Get the previous Chapter before this one (if any)."""
+
+        if not self.part:
+            return None
+
+        previous_chapter = Chapter.objects \
+            .filter(part__tutorial__pk=self.part.tutorial.pk) \
+            .filter(position_in_tutorial__lt=self.position_in_tutorial) \
+            .order_by('-position_in_part') \
+            .first()
+
+        return previous_chapter
+
     def update_position_in_tutorial(self):
         """Update the position of the chapter.
 

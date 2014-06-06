@@ -1,5 +1,7 @@
 {% load emarkdown %}
 
+{% include "tutorial/view_chapter_pager.part.html" %}
+
 {% with extracts=chapter.get_extracts %}
     <div class="row">
         <div class="large-12 columns">
@@ -136,3 +138,5 @@
     {% endif %}
 
 {% endwith %}
+
+{% include "tutorial/view_chapter_pager.part.html" %}
