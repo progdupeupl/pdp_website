@@ -39,7 +39,7 @@
   pk: 8
 - fields: {author: 2, forum: 5, is_locked: false, is_solved: false, is_sticky: false,
     last_message: 1, pubdate: !!timestamp '2014-06-02 17:29:22.110748', subtitle: "J'ai\
-      \ h\xE2tes de vous conna\xEEtre...", title: "Chers blaireaux, pr\xE9sentez-vous\
+      \ h\xE2te de vous conna\xEEtre...", title: "Chers blaireaux, pr\xE9sentez-vous\
       \ !"}
   model: forum.topic
   pk: 1
