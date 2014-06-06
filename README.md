@@ -152,17 +152,18 @@ patches!
 
 ## Init database with fakes datas
 
-If you want to init the database with fakes datas, just run this command :
+If you want to fill the database with fake data, just run this command :
 
     :::console
-    (venv)$ fab loaddata
+    (venv)$ fab loadfixtures
 
-It will make :
+It will create :
 
-- the forum's and tutorials' categories
-- 6 users (from Blaireau1 to Blaireau5 and the superuser Chtaline which you can login with) and there profiles
-- 2 topics with 3 posts each one
-- 1 private topic
+ - the forums' and tutorials' categories.
+ - 6 users (from Blaireau1 to Blaireau5 and the superuser Chtaline which you can
+  login with) and their profiles.
+ - 2 topics with 3 posts on each one.
+ - 1 private topic.
 
 ## Documentation
 
