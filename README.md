@@ -150,6 +150,20 @@ The test instance should be available at
 behavior if you edit the code of the project. Enjoy, and send us lots of good
 patches!
 
+## Init database with fakes datas
+
+If you want to init the database with fakes datas, just run this command :
+
+    :::console
+    (venv)$ fab loaddata
+
+It will make :
+
+- the forum's and tutorials' categories
+- 6 users (from Blaireau1 to Blaireau5 and the superuser Chtaline which you can login with) and there profiles
+- 2 topics with 3 posts each one
+- 1 private topic
+
 ## Documentation
 
 If you want to build the documentation, you will need to install Sphinx 1.3 for

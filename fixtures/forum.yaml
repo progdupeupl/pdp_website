@@ -1,0 +1,144 @@
+- fields: {position: 1, slug: informatique, title: Informatique}
+  model: forum.category
+  pk: 1
+- fields: {position: 2, slug: communaute, title: "Communaut\xE9"}
+  model: forum.category
+  pk: 2
+- fields: {category: 1, position_in_category: 1, slug: programmation, subtitle: Tous
+      les langages et bien plus encore., title: Programmation}
+  model: forum.forum
+  pk: 1
+- fields: {category: 1, position_in_category: 2, slug: reseaux, subtitle: 'La communication,
+      c''est important !', title: "R\xE9seaux"}
+  model: forum.forum
+  pk: 2
+- fields: {category: 1, position_in_category: 3, slug: systemes, subtitle: Parce qu'on
+      en utilise tous un., title: "Syst\xE8mes"}
+  model: forum.forum
+  pk: 3
+- fields: {category: 1, position_in_category: 4, slug: embarque, subtitle: "Pour nos\
+      \ amis \xE0 pattes.", title: "Embarqu\xE9"}
+  model: forum.forum
+  pk: 4
+- fields: {category: 2, position_in_category: 1, slug: discussions-generales, subtitle: Ici
+      on parle de tout et (surtout) de rien., title: "Discussions g\xE9n\xE9rales"}
+  model: forum.forum
+  pk: 5
+- fields: {category: 2, position_in_category: 2, slug: articles, subtitle: "Vous aussi,\
+      \ r\xE9digez des articles pour le site.", title: Articles}
+  model: forum.forum
+  pk: 6
+- fields: {category: 2, position_in_category: 3, slug: tutoriels, subtitle: "Discussions\
+      \ et conseils \xE0 propos de la r\xE9daction de tutoriels.", title: Tutoriels}
+  model: forum.forum
+  pk: 7
+- fields: {category: 2, position_in_category: 4, slug: bugs-suggestions, subtitle: "Vous\
+      \ avez trouv\xE9 un bug ? Une id\xE9e pour am\xE9liorer le site ?", title: Bugs
+      & suggestions}
+  model: forum.forum
+  pk: 8
+- fields: {author: 2, forum: 5, is_locked: false, is_solved: false, is_sticky: false,
+    last_message: 1, pubdate: !!timestamp '2014-06-02 17:29:22.110748', subtitle: "J'ai\
+      \ h\xE2tes de vous conna\xEEtre...", title: "Chers blaireaux, pr\xE9sentez-vous\
+      \ !"}
+  model: forum.topic
+  pk: 1
+- fields: {author: 6, forum: 2, is_locked: false, is_solved: true, is_sticky: false,
+    last_message: 6, pubdate: !!timestamp '2014-06-02 18:05:48.285390', subtitle: "C'est\
+      \ \xE9nervant !", title: Ma connexion internet se coupe brutalement.}
+  model: forum.topic
+  pk: 2
+- fields: {author: 2, is_useful: false, position_in_topic: 1, pubdate: !!timestamp '2014-06-02
+      17:29:22.291432', text: "Cum saepe multa, tum memini domi in hemicyclio sedentem,\
+      \ ut solebat, cum et ego essem una et pauci admodum familiares, in eum sermonem\
+      \ illum incidere qui tum forte multis erat in ore. Meministi enim profecto,\
+      \ Attice, et eo magis, quod P. Sulpicio utebare multum, cum is tribunus plebis\
+      \ capitali odio a Q. Pompeio, qui tum erat consul, dissideret, quocum coniunctissime\
+      \ et amantissime vixerat, quanta esset hominum vel admiratio vel querella.\r\
+      \n\r\nSaraceni tamen nec amici nobis umquam nec hostes optandi, ultro citroque\
+      \ discursantes quicquid inveniri poterat momento temporis parvi vastabant milvorum\
+      \ rapacium similes, qui si praedam dispexerint celsius, volatu rapiunt celeri,\
+      \ aut nisi impetraverint, non inmorantur.\r\n\r\nCum autem commodis intervallata\
+      \ temporibus convivia longa et noxia coeperint apparari vel distributio sollemnium\
+      \ sportularum, anxia deliberatione tractatur an exceptis his quibus vicissitudo\
+      \ debetur, peregrinum invitari conveniet, et si digesto plene consilio id placuerit\
+      \ fieri, is adhibetur qui pro domibus excubat aurigarum aut artem tesserariam\
+      \ profitetur aut secretiora quaedam se nosse confingit.", topic: 1, update: null}
+  model: forum.post
+  pk: 1
+- fields: {author: 3, is_useful: false, position_in_topic: 2, pubdate: !!timestamp '2014-06-02
+      17:31:48.931023', text: Hae duae provinciae bello quondam piratico catervis
+      mixtae praedonum a Servilio pro consule missae sub iugum factae sunt vectigales.
+      et hae quidem regiones velut in prominenti terrarum lingua positae ob orbe eoo
+      monte Amano disparantur., topic: 1, update: null}
+  model: forum.post
+  pk: 2
+- fields: {author: 5, is_useful: false, position_in_topic: 3, pubdate: !!timestamp '2014-06-02
+      17:32:31.183867', text: "Ego vero sic intellego, Patres conscripti, nos hoc\
+      \ tempore in provinciis decernendis perpetuae pacis habere oportere rationem.\
+      \ Nam quis hoc non sentit omnia alia esse nobis vacua ab omni periculo atque\
+      \ etiam suspicione belli?\r\n\r\nUtque aegrum corpus quassari etiam levibus\
+      \ solet offensis, ita animus eius angustus et tener, quicquid increpuisset,\
+      \ ad salutis suae dispendium existimans factum aut cogitatum, insontium caedibus\
+      \ fecit victoriam luctuosam.", topic: 1, update: null}
+  model: forum.post
+  pk: 3
+- fields: {author: 6, is_useful: false, position_in_topic: 1, pubdate: !!timestamp '2014-06-02
+      18:05:48.480980', text: "Hac ita persuasione reducti intra moenia bellatores\
+      \ obseratis undique portarum aditibus, propugnaculis insistebant et pinnis,\
+      \ congesta undique saxa telaque habentes in promptu, ut si quis se proripuisset\
+      \ interius, multitudine missilium sterneretur et lapidum.\r\n\r\nEt quoniam\
+      \ mirari posse quosdam peregrinos existimo haec lecturos forsitan, si contigerit,\
+      \ quamobrem cum oratio ad ea monstranda deflexerit quae Romae gererentur, nihil\
+      \ praeter seditiones narratur et tabernas et vilitates harum similis alias,\
+      \ summatim causas perstringam nusquam a veritate sponte propria digressurus.\r\
+      \n\r\nSed cautela nimia in peiores haeserat plagas, ut narrabimus postea, aemulis\
+      \ consarcinantibus insidias graves apud Constantium, cetera medium principem\
+      \ sed siquid auribus eius huius modi quivis infudisset ignotus, acerbum et inplacabilem\
+      \ et in hoc causarum titulo dissimilem sui.", topic: 2, update: null}
+  model: forum.post
+  pk: 4
+- fields: {author: 4, is_useful: true, position_in_topic: 2, pubdate: !!timestamp '2014-06-02
+      18:09:23.001454', text: 'Quid? qui se etiam nunc subsidiis patrimonii aut amicorum
+      liberalitate sustentant, hos perire patiemur? An, si qui frui publico non potuit
+      per hostem, hic tegitur ipsa lege censoria; quem is frui non sinit, qui est,
+      etiamsi non appellatur, hostis, huic ferri auxilium non oportet? Retinete igitur
+      in provincia diutius eum, qui de sociis cum hostibus, de civibus cum sociis
+      faciat pactiones, qui hoc etiam se pluris esse quam collegam putet, quod ille
+      vos tristia voltuque deceperit, ipse numquam se minus quam erat, nequam esse
+      simularit. Piso autem alio quodam modo gloriatur se brevi tempore perfecisse,
+      ne Gabinius unus omnium nequissimus existimaretur.', topic: 2, update: null}
+  model: forum.post
+  pk: 5
+- fields: {author: 6, is_useful: false, position_in_topic: 3, pubdate: !!timestamp '2014-06-02
+      18:10:59.952813', text: 'Phaedrum sane controversia utrumque intellegerem neque
+      eos atque cum miraretur ! :)', topic: 2, update: null}
+  model: forum.post
+  pk: 6
+- fields: {post: 6, topic: 2, user: 6}
+  model: forum.topicread
+  pk: 1
+- fields: {post: 2, topic: 1, user: 2}
+  model: forum.topicread
+  pk: 2
+- fields: {post: 2, topic: 1, user: 3}
+  model: forum.topicread
+  pk: 3
+- fields: {post: 3, topic: 1, user: 5}
+  model: forum.topicread
+  pk: 4
+- fields: {post: 1, topic: 1, user: 4}
+  model: forum.topicread
+  pk: 5
+- fields: {post: 5, topic: 2, user: 4}
+  model: forum.topicread
+  pk: 6
+- fields: {topic: 1, user: 2}
+  model: forum.topicfollowed
+  pk: 1
+- fields: {topic: 2, user: 6}
+  model: forum.topicfollowed
+  pk: 2
+- fields: {topic: 2, user: 4}
+  model: forum.topicfollowed
+  pk: 3
