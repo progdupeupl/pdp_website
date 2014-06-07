@@ -1,0 +1,18 @@
+- fields: {slug: language, title: Language}
+  model: tutorial.tutorialcategory
+  pk: 1
+- fields: {slug: securite, title: "S\xE9curit\xE9"}
+  model: tutorial.tutorialcategory
+  pk: 2
+- fields: {slug: algorithmique, title: Algorithmique}
+  model: tutorial.tutorialcategory
+  pk: 3
+- fields: {slug: conception, title: Conception}
+  model: tutorial.tutorialcategory
+  pk: 4
+- fields: {slug: materiel, title: "Mat\xE9riel"}
+  model: tutorial.tutorialcategory
+  pk: 5
+- fields: {slug: actualite, title: "Actualit\xE9"}
+  model: tutorial.tutorialcategory
+  pk: 6

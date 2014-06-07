@@ -1,0 +1,22 @@
+<div class="row">
+    <div class="large-6 columns">
+        {% with prev=chapter.get_previous %}
+            {% if prev %}
+                <a class="button secondary" href="{{ prev.get_absolute_url }}">
+                    « {{ prev.title }}
+                </a>
+            {% endif %}
+        {% endwith %}
+    </div>
+    <div class="large-6 columns">
+        <div class="right">
+            {% with next=chapter.get_next %}
+                {% if next %}
+                    <a class="button secondary" href="{{ next.get_absolute_url }}">
+                        {{ next.title }} »
+                    </a>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+</div>

@@ -700,22 +700,8 @@ def view_chapter(request, tutorial_pk, tutorial_slug, part_slug,
             or not chapter_slug == slugify(chapter.title):
         return redirect(chapter.get_absolute_url())
 
-    prev_chapter = Chapter.objects.all()\
-        .filter(part__tutorial__pk=chapter.part.tutorial.pk)\
-        .filter(position_in_tutorial__lt=chapter.position_in_tutorial)\
-        .order_by('-position_in_tutorial')
-    prev_chapter = prev_chapter[0] if len(prev_chapter) > 0 else None
-
-    next_chapter = Chapter.objects.all()\
-        .filter(part__tutorial__pk=chapter.part.tutorial.pk)\
-        .filter(position_in_tutorial__gt=chapter.position_in_tutorial)\
-        .order_by('position_in_tutorial')
-    next_chapter = next_chapter[0] if len(next_chapter) > 0 else None
-
     return render_template('tutorial/view_chapter.html', {
-        'chapter': chapter,
-        'prev': prev_chapter,
-        'next': next_chapter
+        'chapter': chapter
     })
 
 

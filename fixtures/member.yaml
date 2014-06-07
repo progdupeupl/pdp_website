@@ -1,0 +1,26 @@
+- fields: {avatar_url: 'https://progdupeu.pl/static/img/touch-icon-114x114.png', biography: "Je\
+      \ suis un bot qui permet d'effectuer quelques t\xE2ches banales sur ce site.\
+      \ Pour toute r\xE9clamation, voir avec les administrateurs.", show_email: false,
+    site: 'htpp://progdupeu.pl/', user: 1}
+  model: member.profile
+  pk: 1
+- fields: {avatar_url: '', biography: "Blaireau et fier de l'\xEAtre.", show_email: false,
+    site: '', user: 2}
+  model: member.profile
+  pk: 2
+- fields: {avatar_url: '', biography: "Blaireau et fier de l'\xEAtre.", show_email: false,
+    site: '', user: 3}
+  model: member.profile
+  pk: 3
+- fields: {avatar_url: '', biography: "Blaireau et fier de l'\xEAtre.", show_email: false,
+    site: '', user: 4}
+  model: member.profile
+  pk: 4
+- fields: {avatar_url: '', biography: "Blaireau et fier de l'\xEAtre.", show_email: false,
+    site: '', user: 5}
+  model: member.profile
+  pk: 5
+- fields: {avatar_url: '', biography: "Blaireau et fier de l'\xEAtre.", show_email: false,
+    site: '', user: 6}
+  model: member.profile
+  pk: 6
