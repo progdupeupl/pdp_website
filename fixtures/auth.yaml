@@ -1,4 +1,4 @@
-- fields:    
+- fields:
     is_active: true
     is_staff: true
     is_superuser: true
@@ -10,6 +10,7 @@
     is_active: true
     is_staff: false
     is_superuser: false
+    password: pbkdf2_sha256$12000$I7oU5MuaYSz6$D+3nU/jvaWEv5MdYVWwjZCHTw6j++Vl/uWWvUif0j9Q=
     username: Blaireau1
   model: auth.user
   pk: 2
@@ -17,6 +18,7 @@
     is_active: true
     is_staff: true
     is_superuser: false
+    password: pbkdf2_sha256$12000$Ux8OrXmIcMy4$hD4bFcznjb4MtcJR1oQpTM0n6AOdwP5VXB74F1/HHLc=
     username: Blaireau2
   model: auth.user
   pk: 3
@@ -24,6 +26,7 @@
     is_active: true
     is_staff: false
     is_superuser: false
+    password: pbkdf2_sha256$12000$sL963UV3263W$n6t5MS/sEmLNyCQ00so1/MBF8PoJ9zgnHJzlZKsM8xU=
     username: Blaireau3
   model: auth.user
   pk: 4
@@ -31,6 +34,7 @@
     is_active: true
     is_staff: false
     is_superuser: false
+    password: pbkdf2_sha256$12000$jpjaumfDXrE2$39lP+R7FloeyEvAq7vEWWDl1X5mgSm0SJKGSZz/RPjo=
     username: Blaireau4
   model: auth.user
   pk: 5
@@ -38,6 +42,7 @@
     is_active: true
     is_staff: false
     is_superuser: false
+    password: pbkdf2_sha256$12000$DtKeze3vSPTE$eKpLxt6RUz/iRiEACqNh1tiJyYxfwJsYf1+Leno6Iho=
     username: Blaireau5
   model: auth.user
   pk: 6

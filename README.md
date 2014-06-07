@@ -160,10 +160,11 @@ If you want to fill the database with fake data, just run this command :
 It will create :
 
  - the forums' and tutorials' categories.
- - 6 users (from Blaireau1 to Blaireau5 and the superuser Chtaline which you can
-  login with) and their profiles.
+ - 6 users and their profiles.
  - 2 topics with 3 posts on each one.
  - 1 private topic.
+
+You can login with this users with their own passwords which are their usernames in lower case. (For example, the password of Chtaline is "chtaline".)
 
 ## Documentation
 
