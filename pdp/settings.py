@@ -224,7 +224,7 @@ INSTALLED_APPS = (
     'south',
     'crispy_forms',
     'crispy_forms_foundation',
-    'captcha',
+    'simplemathcaptcha',
     'email_obfuscator',
     'debug_toolbar',
     'taggit',
