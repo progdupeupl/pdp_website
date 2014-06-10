@@ -51,11 +51,12 @@ class RegisterForm(forms.Form):
     )
     captcha = MathCaptchaField(
         error_messages={
-            'invalid': u'Vérifiez votre réponse et réessayez',
-            'invalid_number': u'Entrez un nombre entier',
+            'invalid': u'Vérifiez votre réponse et réessayez.',
+            'invalid_number': u'Entrez un nombre entier.',
         },
         widget=MathCaptchaWidget(
-            question_tmpl=u'Quel est le résultat de %(num1)i %(operator)s %(num2)i ?'
+            question_tmpl=u'Quel est le résultat de '
+                          u'%(num1)i %(operator)s %(num2)i ?'
         )
     )
 
