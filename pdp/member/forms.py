@@ -25,7 +25,8 @@ from crispy_forms_foundation.layout import (
     Layout, Div, Fieldset, Submit, Field, HTML
 )
 
-from captcha.fields import CaptchaField
+from simplemathcaptcha.fields import MathCaptchaField
+from simplemathcaptcha.widgets import MathCaptchaWidget
 
 
 class LoginForm(forms.Form):
@@ -48,7 +49,15 @@ class RegisterForm(forms.Form):
     password_confirm = forms.CharField(
         label=u'Confirmation', max_length=76, widget=forms.PasswordInput
     )
-    captcha = CaptchaField()
+    captcha = MathCaptchaField(
+        error_messages={
+            'invalid': u'Vérifiez votre réponse et réessayez',
+            'invalid_number': u'Entrez un nombre entier',
+        },
+        widget=MathCaptchaWidget(
+            question_tmpl=u'Quel est le résultat de %(num1)i %(operator)s %(num2)i ?'
+        )
+    )
 
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()

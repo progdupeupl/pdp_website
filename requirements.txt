@@ -13,7 +13,7 @@ defusedxml
 celery
 django-dynamic-fixture
 django-crispy-forms==1.3.2
-django-simple-captcha
+django-simple-math-captcha
 django-email-obfuscator
 django-debug-toolbar
 crispy-forms-foundation
