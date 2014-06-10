@@ -164,7 +164,8 @@ It will create :
  - 2 topics with 3 posts on each one.
  - 1 private topic.
 
-You can login with this users with their own passwords which are their usernames in lower case. (For example, the password of Chtaline is "chtaline".)
+You can login with these dummy users using their lowercase usernames as their
+respective passwords.
 
 ## Documentation
 
@@ -185,6 +186,7 @@ the documentation generation work, because of Django's settings handling :
 
 ## Copyright
 
-Progdupeupl is brought to you under GNU AGPLv3 licence. For further informations
-read the COPYING file. This project use some code parts from
-[progmod](http://progmod.org) available under the MIT licence.
+Progdupeupl is brought to you under GNU Affero General Public Licence version
+3+. For further informations please read the COPYING file. This project use
+some code parts from [progmod](http://progmod.eu/) available under the MIT
+licence.
