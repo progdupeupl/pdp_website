@@ -26,6 +26,7 @@ prototyping stage in order to see if the calls are done in the right amount, at
 the good time.
 """
 
+
 class Tutorial:
     def __init__(self, title="", size="", authors=[]):
         self.title = title
@@ -64,12 +65,14 @@ class Part:
 
 
 class Chapter:
-    def __init__(self, tutorial=None, part=None, title="", position_in_part=-1):
+    def __init__(self, tutorial=None, part=None, title="", position_in_part=-1,
+                 position_in_tutorial=-1):
         self.tutorial = tutorial
         self.part = part
         self.title = title
         self.introduction = ""
         self.position_in_part = position_in_part
+        self.position_in_tutorial = position_in_tutorial
 
     def __repr__(self):
         return "<Chapter title={} position={} tutorial={} part={}>".format(

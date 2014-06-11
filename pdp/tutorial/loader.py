@@ -82,6 +82,7 @@ class TutorialImporter(object):
         self.position_in_tutorial = 1
         self.position_in_part = 1
         self.position_in_chapter = 1
+        self.chapter_position_in_tutorial = 1
 
     def from_file(self, filepath):
         """Load a markdown source from a text file."""
@@ -164,6 +165,7 @@ class TutorialImporter(object):
             self.chapter.save()
             self.position_in_chapter = 0
             self.position_in_part += 1
+            self.chapter_position_in_tutorial += 1
 
         # Prepare new chapter
         if self.size == 'M':
@@ -174,6 +176,7 @@ class TutorialImporter(object):
         self.chapter = Chapter(
             title=self.current_title,
             position_in_part=self.position_in_part,
+            position_in_tutorial=self.chapter_position_in_tutorial,
             part=part
         )
 
