@@ -1,6 +1,6 @@
 {% extends "member/base.html" %}
 {% load emarkdown %}
-{% load humane_date %}
+{% load humanize %}
 {% load email_obfuscator %}
 
 {% block title %}
@@ -50,8 +50,8 @@
                 </a><br />
             {% endif %}
 
-            Inscrit {{ usr.date_joined|humane_date }},
-            dernière connexion {{ usr.last_login|humane_date }}.
+            Inscrit {{ usr.date_joined|naturaltime }},
+            dernière connexion {{ usr.last_login|naturaltime }}.
         </p>
     </div>
 </div>

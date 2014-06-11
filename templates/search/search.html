@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load humane_date %}
+{% load humanize %}
 {% load emarkdown %}
 
 {% block title %}
@@ -59,9 +59,9 @@
                               </td>
                               <td>
                                 {% if result.object.chapter %}
-                                  <a href="{{ result.object.chapter.get_absolute_url }}">{{ result.object.chapter.get_tutorial.pubdate|humane_date }}</a>
+                                  <a href="{{ result.object.chapter.get_absolute_url }}">{{ result.object.chapter.get_tutorial.pubdate|naturaltime }}</a>
                                 {% else %}
-                                  <a href="{{ result.object.get_absolute_url }}">{{ result.object.pubdate|humane_date }}</a>
+                                  <a href="{{ result.object.get_absolute_url }}">{{ result.object.pubdate|naturaltime }}</a>
                                 {% endif %}
                               </td>
                               <td>

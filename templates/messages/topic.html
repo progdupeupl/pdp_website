@@ -1,6 +1,6 @@
 {% extends "messages/base.html" %}
 {% load emarkdown %}
-{% load humane_date %}
+{% load humanize %}
 {% load profile %}
 
 {% block title %}
@@ -97,9 +97,9 @@
                 </div>
                 <p>
                     <a href="#p{{ post.pk }}">#</a>
-                    {{ post.pubdate|humane_date }}
+                    {{ post.pubdate|naturaltime }}
                     {% if not post.update = None %}
-                        (dernière édition {{ post.update|humane_date }})
+                        (dernière édition {{ post.update|naturaltime }})
                     {% endif %}
                     {% if forloop.first and nb > 1 %}
                         &ndash; page précédente
