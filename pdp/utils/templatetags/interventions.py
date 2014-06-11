@@ -17,6 +17,8 @@
 
 from django import template
 
+from django.db.models import Q
+
 from pdp.forum.models import TopicFollowed, never_read
 from pdp.messages.models import PrivateTopic, never_privateread
 
@@ -25,8 +27,10 @@ register = template.Library()
 
 @register.filter('interventions_topics')
 def interventions_topics(user):
+
     topicsfollowed = TopicFollowed.objects.filter(user=user)\
         .order_by('-topic__last_message__pubdate')
+
     topics_unread = []
     topics_read = []
 
@@ -44,10 +48,12 @@ def interventions_topics(user):
 
 @register.filter('interventions_privatetopics')
 def interventions_privatetopics(user):
-    topicsfollowed = PrivateTopic.objects.filter(author=user)\
+
+    topicsfollowed = PrivateTopic.objects \
+        .filter(Q(participants__in=[user]) | Q(author=user)) \
+        .distinct() \
         .order_by('-last_message__pubdate')
-    topicspart = PrivateTopic.objects.filter(participants__in=[user])\
-        .order_by('-last_message__pubdate')
+
     privatetopics_unread = []
     privatetopics_read = []
 
@@ -57,14 +63,9 @@ def interventions_privatetopics(user):
         else:
             privatetopics_read.append(topicfollowed)
 
-    for topicpart in topicspart:
-        if never_privateread(topicpart):
-            privatetopics_unread.append(topicpart)
-        else:
-            privatetopics_read.append(topicpart)
-
     privateread_topics_count = 5 - (len(
         privatetopics_unread) if len(privatetopics_unread) < 5 else 5)
+
     return {'unread': privatetopics_unread,
             'read': privatetopics_read[:privateread_topics_count]}
 
