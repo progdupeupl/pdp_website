@@ -43,12 +43,6 @@
                                     {% include "search/result_topic.part.html" %}
                                 {% elif result.content_type == "tutorial.extract" %}
                                     {% include "search/result_extract.part.html" %}
-                                {% else %}
-                                    <tr>
-                                        <td>(Inconnu)</td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
                               {% endif %}
                             {% endfor %}
                           </tbody>
