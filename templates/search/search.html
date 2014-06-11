@@ -32,46 +32,24 @@
                         <table>
                           <thead>
                             <tr>
-                              <th>Sujet</th>
+                              <th>Titre</th>
                               <th width="15%">Quand</th>
                               <th width="55%">Extrait</th>
                             </tr>
                           </thead>
                           <tbody>
                             {% for result in page.object_list %}
-                            <tr>
-                              <td>
-                                <a href="{{ result.object.topic.get_absolute_url }}">
-                                    {{ result.object.topic.title }}
-                                </a>
-                                <p>{{ result.object.topic.subtitle }}</p>
-
-                                <a href="{{ result.object.get_absolute_url }}">
-                                    {{ result.object.title }}
-                                </a>
-                                {% if result.object.chapter %}
-                                    {% with tutorial=result.object.chapter.get_tutorial %}
-                                        <p>Dans <a href="{{ tutorial.get_absolute_url }}">{{ tutorial.title }}</a>.</p>
-                                    {% endwith %}
+                                {% if result.content_type == "forum.topic" %}
+                                    {% include "search/result_topic.part.html" %}
+                                {% elif result.content_type == "tutorial.extract" %}
+                                    {% include "search/result_extract.part.html" %}
                                 {% else %}
-                                    <p>{{ result.object.description|truncatechars:80 }}</p>
-                                {% endif %}
-                              </td>
-                              <td>
-                                {% if result.object.chapter %}
-                                  <a href="{{ result.object.chapter.get_absolute_url }}">{{ result.object.chapter.get_tutorial.pubdate|naturaltime }}</a>
-                                {% else %}
-                                  <a href="{{ result.object.get_absolute_url }}">{{ result.object.pubdate|naturaltime }}</a>
-                                {% endif %}
-                              </td>
-                              <td>
-                                  {% if result.object.last_message %}
-                                      {{ result.object.first_post.text|truncatechars:200|emarkdown }}
-                                  {% else %}
-                                      {{ result.object.text|truncatechars:200|emarkdown }}
-                                  {% endif %}
-                              </td>
-                            </tr>
+                                    <tr>
+                                        <td>(Inconnu)</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                              {% endif %}
                             {% endfor %}
                           </tbody>
                         </table>
