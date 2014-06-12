@@ -21,24 +21,32 @@
 <div class="row">
     <div class="large-12 columns">
         <p>
-            Membres partageant cette galerie :
-            {% for u in gallery.get_users %}
-                {% with member=u.user %}
-                    {% include "member/member_item_common.part.html" %}
-                    (<i class="fi-{{ u.mode|mode }} size-18"></i>)
-                {% endwith %}
-            {% endfor %}
+            Cette galerie appartient à
+            {% with members=gallery.get_real_users %}
+                {% include "member/members_item_common.part.html" %}.
+            {% endwith %}
         </p>
+
         {% if gallery_mode.is_write %}
-        <form action="{% url "pdp.gallery.views.modify_gallery" %}"
-            method="post">
-            <input type="text" name="user" placeholder="Nom de l'utilisateur">
-            <input type="hidden" name="gallery" value={{ gallery.pk }}>
-            <button name="adduser" class="button secondary">
-                Ajouter un membre
-            </button>
-            {% csrf_token %}
-        </form>
+        <div class="row">
+            <div class="large-4 columns">
+                <form action="{% url "pdp.gallery.views.modify_gallery" %}"
+                    method="post">
+                    <input type="hidden" name="gallery" value={{ gallery.pk }}>
+                    <div class="row collapse">
+                        <div class="small-10 columns">
+                            <input type="text" name="user" placeholder="Ajouter un membre">
+                        </div>
+                        <div class="small-2 columns">
+                            <button name="adduser" class="button postfix" title="Ajouter">
+                                <big><strong>+</strong></big>
+                            </button>
+                        </div>
+                    </div>
+                    {% csrf_token %}
+                </form>
+            </div>
+        </div>
         {% endif %}
     </div>
 </div>

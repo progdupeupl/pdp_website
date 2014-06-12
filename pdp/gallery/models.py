@@ -195,6 +195,19 @@ class Gallery(models.Model):
         return UserGallery.objects.all()\
             .filter(gallery=self)
 
+    def get_real_users(self):
+        """Get all the user for this gallery.
+
+        Returns:
+            User list
+
+        """
+        usrs = []
+        for ug in self.get_users():
+            usrs.append(ug.user)
+
+        return usrs
+
     def get_images(self):
         """Get all the images published in the gallery.
 
