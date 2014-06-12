@@ -39,6 +39,56 @@ from pdp.messages.models import never_privateread, mark_read
 from pdp.messages.forms import PrivateTopicForm, PrivatePostForm
 
 
+def delete_selected_inbox_messages(request):
+    """Delete selected messages in inbox.
+
+    This function is not a view and should only be called from the index()
+    view in this file.
+
+    Returns:
+        Nothing
+
+    """
+    liste = request.POST.getlist('items')
+    topics = PrivateTopic.objects.filter(pk__in=liste).all()
+    for topic in topics:
+        if request.user == topic.author:
+
+            # User is the author, we try to use the next participant as
+            # new author
+            new_author = topic.participants.all().first()
+
+            if new_author:
+                topic.author = new_author
+                topic.participants.remove(new_author)
+                topic.save()
+            else:
+                # No more users want to keep this discussion, we delete
+                # everything
+                topic.delete()
+
+        else:
+            # User is a participant
+            topic.participants.remove(request.user)
+            topic.save()
+
+    if topics.count() > 0:
+        # We notify the user that message deletion went correctly
+        messages.add_message(
+            request,
+            messages.INFO,
+            u'{} message(s) correctement supprimé(s).'.format(
+                topics.count()
+            ))
+    else:
+        # We ask the user to select messages in order to delete them
+        messages.add_message(
+            request,
+            messages.WARNING,
+            u'Veuillez sélectionner au moins un message à supprimer.'
+        )
+
+
 @login_required(redirect_field_name='suivant')
 def index(request):
     """Display messages of the user.
@@ -50,28 +100,7 @@ def index(request):
     # Delete using checkboxes
     if request.method == 'POST':
         if 'delete' in request.POST:
-            liste = request.POST.getlist('items')
-            topics = PrivateTopic.objects.filter(pk__in=liste).all()
-            for topic in topics:
-                if request.user == topic.author:
-
-                    # User is the author, we try to use the next participant as
-                    # new author
-                    new_author = topic.participants.all().first()
-
-                    if new_author:
-                        topic.author = new_author
-                        topic.participants.remove(new_author)
-                        topic.save()
-                    else:
-                        # No more users want to keep this discussion, we delete
-                        # everything
-                        topic.delete()
-
-                else:
-                    # User is a participant
-                    topic.participants.remove(request.user)
-                    topic.save()
+            delete_selected_inbox_messages(request)
 
     privatetopics = PrivateTopic.objects.all()\
         .filter(Q(participants__in=[request.user]) | Q(author=request.user)) \
