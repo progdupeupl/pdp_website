@@ -47,18 +47,31 @@ def index(request):
         HttpResponse
 
     """
-    # delete actions
+    # Delete using checkboxes
     if request.method == 'POST':
         if 'delete' in request.POST:
             liste = request.POST.getlist('items')
             topics = PrivateTopic.objects.filter(pk__in=liste).all()
             for topic in topics:
                 if request.user == topic.author:
-                    topic.author = topic.participants.all()[0]
-                    topic.participants.remove(topic.participants.all()[0])
+
+                    # User is the author, we try to use the next participant as
+                    # new author
+                    new_author = topic.participants.all().first()
+
+                    if new_author:
+                        topic.author = new_author
+                        topic.participants.remove(new_author)
+                        topic.save()
+                    else:
+                        # No more users want to keep this discussion, we delete
+                        # everything
+                        topic.delete()
+
                 else:
+                    # User is a participant
                     topic.participants.remove(request.user)
-                topic.save()
+                    topic.save()
 
     privatetopics = PrivateTopic.objects.all()\
         .filter(Q(participants__in=[request.user]) | Q(author=request.user)) \
@@ -97,7 +110,7 @@ def topic(request, topic_pk, topic_slug):
     g_topic = get_object_or_404(PrivateTopic, pk=topic_pk)
 
     if not g_topic.author == request.user \
-       and not request.user in list(g_topic.participants.all()):
+       and request.user not in list(g_topic.participants.all()):
         raise PermissionDenied
 
     # Check link
