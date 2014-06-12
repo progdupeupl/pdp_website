@@ -1,5 +1,4 @@
-{% load humane_date %}
-{% load upfirstletter %}
+{% load humanize %}
 
 <div class="forum-entry">
     <div class="forum-entry-title
@@ -29,7 +28,7 @@
                 {% if answer %}
                     Dernière rép.
                     <a href="{{ answer.get_absolute_url }}">
-                        {% with date=answer.pubdate|humane_date %}
+                        {% with date=answer.pubdate|naturaltime %}
                             {{ date }}
                         {% endwith %}
                     </a>

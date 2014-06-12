@@ -181,16 +181,15 @@ def new(request):
     forum = get_object_or_404(Forum, pk=forum_pk)
 
     if request.method == 'POST':
-        # If the client is using the "preview" button
+        form = TopicForm(request.POST)
+
         if 'preview' in request.POST:
             return render_template('forum/new.html', {
                 'forum': forum,
-                'title': request.POST['title'],
-                'subtitle': request.POST['subtitle'],
-                'text': request.POST['text'],
+                'form': form,
+                'text': form.data['text']
             })
 
-        form = TopicForm(request.POST)
         if form.is_valid():
             data = form.data
             # Creating the thread
@@ -219,17 +218,12 @@ def new(request):
             follow(n_topic)
 
             return redirect(n_topic.get_absolute_url())
-
-        else:
-            # TODO: add errors to the form and return it
-            raise Http404
-
     else:
-
         form = TopicForm()
-        return render_template('forum/new.html', {
-            'form': form, 'forum': forum
-        })
+
+    return render_template('forum/new.html', {
+        'form': form, 'forum': forum
+    })
 
 
 @require_POST

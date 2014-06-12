@@ -1,0 +1,21 @@
+{% load emarkdown %}
+{% load humanize %}
+
+<tr>
+    <td>
+        <a href="{{ result.object.get_absolute_url }}">
+            {{ result.object.title }}
+        </a>
+        <p>
+            {{ result.object.subtitle }}
+        </p>
+    </td>
+    <td>
+        <a href="{{ result.object.first_post.get_absolute_url }}">
+            {{ result.object.pubdate|naturaltime }}
+        </a>
+    </td>
+    <td>
+        {{ result.object.first_post.text|truncatechars:200|emarkdown }}
+    </td>
+</tr>

@@ -61,8 +61,9 @@ def index(request):
                 topic.save()
 
     privatetopics = PrivateTopic.objects.all()\
-        .filter(Q(participants__in=[request.user]) | Q(author=request.user))\
-        .distinct().order_by('-last_message__pubdate')
+        .filter(Q(participants__in=[request.user]) | Q(author=request.user)) \
+        .distinct() \
+        .order_by('-last_message__pubdate')
 
     # Paginator
     paginator = Paginator(privatetopics, settings.TOPICS_PER_PAGE)

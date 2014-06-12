@@ -93,9 +93,7 @@ def celery():
 
 def bootstrap():
     """Initialise the whole project for the first time."""
-    local('mkdir media')
-    local('mkdir media/tutorials')
-    local('mkdir media/articles')
+    local('mkdir -p media/tutorials')
     syncdb()
     migrate()
     initsearch()

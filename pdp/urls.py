@@ -58,8 +58,6 @@ urlpatterns = patterns(
     url(r'^galerie/', include('pdp.gallery.urls')),
     url(r'^api/', include('pdp.api.urls')),
 
-    url(r'^captcha/', include('captcha.urls')),
-
     url(r'^$', pdp.pages.views.home),
 
     url(r'^api-auth/', include('rest_framework.urls',
