@@ -39,6 +39,8 @@ from pdp.messages.models import never_privateread, mark_read
 from pdp.messages.forms import PrivateTopicForm, PrivatePostForm
 
 
+# Misc functions
+
 def delete_selected_inbox_messages(request):
     """Delete selected messages in inbox.
 
@@ -89,6 +91,12 @@ def delete_selected_inbox_messages(request):
         )
 
 
+def is_participant(user, topic):
+    return topic.author == user and user not in list(topic.participants.all())
+
+
+# Views
+
 @login_required(redirect_field_name='suivant')
 def index(request):
     """Display messages of the user.
@@ -138,14 +146,15 @@ def topic(request, topic_pk, topic_slug):
     # TODO: Clean that up
     g_topic = get_object_or_404(PrivateTopic, pk=topic_pk)
 
-    if not g_topic.author == request.user \
-       and request.user not in list(g_topic.participants.all()):
+    # Check permissions
+    if not is_participant(request.user, g_topic):
         raise PermissionDenied
 
     # Check link
     if not topic_slug == slugify(g_topic.title):
         return redirect(g_topic.get_absolute_url())
 
+    # Mark the topic as read
     if request.user.is_authenticated():
         if never_privateread(g_topic):
             mark_read(g_topic)
@@ -180,11 +189,14 @@ def topic(request, topic_pk, topic_slug):
     for post in posts:
         res.append(post)
 
+    members = [g_topic.author] + list(g_topic.participants.all())
+
     return render_template('messages/topic.html', {
         'topic': g_topic, 'posts': res,
         'pages': paginator_range(page_nbr, paginator.num_pages),
         'nb': page_nbr,
-        'last_post_pk': last_post_pk
+        'last_post_pk': last_post_pk,
+        'members': members
     })
 
 
@@ -272,6 +284,10 @@ def edit(request):
 
     g_topic = get_object_or_404(PrivateTopic, pk=topic_pk)
 
+    # Check permissions, author only
+    if not g_topic.author == request.user:
+        raise PermissionDenied
+
     if request.POST['username']:
         u = get_object_or_404(User, username=request.POST['username'])
         g_topic.participants.add(u)
@@ -297,6 +313,10 @@ def answer(request):
     posts = PrivatePost.objects.filter(
         privatetopic=g_topic).order_by('-pubdate')[:3]
     last_post_pk = g_topic.last_message.pk
+
+    # Check permissions
+    if not is_participant(request.user, topic):
+        raise PermissionDenied
 
     # Check that the user isn't spamming
     if g_topic.antispam(request.user):

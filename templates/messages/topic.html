@@ -23,29 +23,9 @@
 
 {% block headline-actions %}
     {% if user.is_authenticated %}
-        <form action="{% url "pdp.messages.views.edit" %}" method="POST"
-        class="topic-actions" >
-            <input type="hidden" name="privatetopic" value="{{ topic.pk }}" />
-            <input type="hidden" name="page" value="{{ nb }}">
-            <div class="button-group">
-                <a href="{% url "pdp.messages.views.new" %}" class="button small">
-                    Nouveau
-                </a>
-                {% if topic.author == user %}
-                <a href="#" data-dropdown="add-member"  data-options="is_hover:true" class="button small secondary">
-                    <i class="fi-torso"></i>
-                    Ajouter un membre
-                </a>
-                <ul id="add-member" class="f-dropdown" data-dropdown-content>
-                    <li>
-                        <input type="text" placeholder="Pseudo" name="username" />
-                    </li>
-                </ul>
-                {% endif %}
-            </div>
-
-            {% csrf_token %}
-        </form>
+        <a href="{% url "pdp.messages.views.new" %}" class="button small">
+            Nouveau
+        </a>
     {% endif %}
 {% endblock %}
 
@@ -53,14 +33,32 @@
 <div class="row">
     <div class="large-12 columns">
         <p>
-            <strong>Participants :</strong> 
-            {% with member=topic.author %}
-                {% include "member/member_item_common.part.html" %}
-            {% endwith %}
-            {% for member in topic.participants.all %}
-                | {% include "member/member_item_common.part.html" %}
-            {% endfor %}
+            Discussion entre
+            {% include "member/members_item_common.part.html" %}.
         </p>
+        {% if topic.author == user %}
+            <div class="row">
+                <div class="large-4 columns">
+                    <form action="{% url "pdp.messages.views.edit" %}" method="POST"
+                    class="topic-actions" >
+                        <input type="hidden" name="privatetopic" value="{{ topic.pk }}" />
+                        <input type="hidden" name="page" value="{{ nb }}">
+                        <div class="row collapse">
+                            <div class="small-10 columns">
+                                <input type="text" placeholder="Ajouter un participant" name="username" />
+                            </div>
+                            <div class="small-2 columns">
+                                <a href="#" class="button postfix" title="Ajouter">
+                                    <big><strong>+</strong></big>
+                                </a>
+                            </div>
+                        </div>
+
+                        {% csrf_token %}
+                    </form>
+                </div>
+            </div>
+        {% endif %}
     </div>
 </div>
 {% include "messages/topic_pagination.part.html" %}
