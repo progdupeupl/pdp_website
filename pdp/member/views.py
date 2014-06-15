@@ -17,6 +17,9 @@
 
 """Member app's views."""
 
+import hashlib, datetime, random
+from django.utils import timezone
+
 from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404
 from django.conf import settings
@@ -36,6 +39,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from pdp.utils import render_template, bot
 from pdp.utils.tokens import generate_token
 from pdp.utils.paginator import paginator_range
+from pdp.utils.mail import send_mail_to_confirm_registration
 from pdp.article.models import Article
 from pdp.tutorial.models import Tutorial
 
@@ -235,17 +239,27 @@ def register_view(request):
                 data['email'],
                 data['password'])
 
-            profile = Profile(user=user, show_email=False)
-            profile.save()
-
             user.backend = 'django.contrib.auth.backends.ModelBackend'
+            user.is_active = False
+            user.save()
+            
+            # these three lines came from http://ipasic.com/article/user-registration-and-email-confirmation-django/
+            salt = hashlib.sha1(str(random.random())).hexdigest()[:5]            
+            activation_key = hashlib.sha1(salt+user.email).hexdigest()            
+            key_expires = datetime.datetime.today() + datetime.timedelta(2)
 
-            if settings.BOT_ENABLED:
-                bot.send_welcome_private_message(user)
+            profile = Profile(
+                user=user,
+                show_email=False,
+                activation_key=activation_key,
+                key_expires=key_expires
+            )
 
-            login(request, user)
+            profile.save()
+            
+            send_mail_to_confirm_registration(user, activation_key)
 
-            return render_template('member/register_success.html')
+            return render_template('member/register_confirmation.html')
         else:
             return render_template('member/register.html', {'form': form})
 
@@ -253,6 +267,34 @@ def register_view(request):
     return render_template('member/register.html', {
         'form': form
     })
+
+
+def confirm_registration_view(request, activation_key):
+    """Confirm user's registration.
+
+    Returns:
+        HttpResponse
+
+    """
+    if not request.user.is_authenticated():
+        profile = get_object_or_404(Profile, activation_key=activation_key)
+        
+        if profile.key_expires > timezone.now():
+            user = profile.user
+            user.is_active = True
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            user.save()
+            
+            login(request, user)
+            
+            if settings.BOT_ENABLED:
+                bot.send_welcome_private_message(user)
+            
+            return render_template('member/register_success.html')
+        else:
+            raise Http404
+    else:
+        raise Http404
 
 
 # Settings for public profile
