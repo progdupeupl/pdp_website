@@ -18,6 +18,7 @@
 """Models for member app."""
 
 from hashlib import md5
+import datetime
 
 from django.db import models
 from django.core.urlresolvers import reverse
@@ -47,6 +48,9 @@ class Profile(models.Model):
     )
 
     biography = models.TextField(u'Biographie', blank=True)
+    
+    activation_key = models.CharField(max_length=40, blank=True)
+    key_expires = models.DateTimeField(default=datetime.date.today())
 
     def __unicode__(self):
         """Textual representation of a profile.
