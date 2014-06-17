@@ -20,30 +20,49 @@
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 
+
 def send_templated_mail(subject, template, context, recipients):
     """Send an email based on a template.
-    
+
     Args:
         subject: (string) Subject of the email
         template: (string) Name of the template used for the message
         context: (dictionary) Dictionary used for the message
-        recipients: (list) List of the recipients"""
-    
+        recipients: (list) List of the recipients
+
+    Returns:
+        Number of successfully delivered messages (0 or 1)
+
+    """
+
     message = render_to_string('mail/' + template, context)
-    
-    send_mail(
+
+    return send_mail(
         subject=subject,
         message=message,
         from_email='Chtaline <chtaline@progdupeu.pl>',
         recipient_list=recipients
     )
 
+
 def send_mail_to_confirm_registration(user, link):
-    """Send an email to confirm registration."""
-    
+    """Send an email to confirm registration.
+
+    Args:
+        user: (User) User object to send the email to
+        link: (string) Absolute link to validation url
+
+    Returns:
+        Number of successfully delivered messages (0 or 1)
+
+    """
+
     send_templated_mail(
-        subject=u"Confirmation de l'inscription",
+        subject=u"Confirmation d’inscription à Progdupeupl",
         template=u'confirm_registration.txt',
-        context={ 'user': user, 'link': link },
+        context={
+            'user': user,
+            'link': link
+        },
         recipients=[user.email]
     )
