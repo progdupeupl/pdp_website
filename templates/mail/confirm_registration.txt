@@ -3,5 +3,9 @@
 {% block content %}
 Bonjour {{ user.username }},
 
-J'ai bien reçu votre demande d'inscription à Progdupeupl. Pour terminer, il vous faut confirmer votre email en cliquant sur le lien suivant : http://progdupeu.pl{% url 'pdp.member.views.confirm_registration_view' link %}
+J'ai bien reçu votre demande d'inscription à Progdupeupl. Pour terminer, il
+vous faut confirmer votre adresse email en cliquant sur le lien suivant :
+http://progdupeu.pl{% url 'pdp.member.views.confirm_registration_view' link %}
+
+À très bientôt sur le site !
 {% endblock %}
