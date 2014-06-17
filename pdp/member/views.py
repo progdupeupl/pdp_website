@@ -17,7 +17,10 @@
 
 """Member app's views."""
 
-import hashlib, datetime, random
+import hashlib
+import datetime
+import random
+
 from django.utils import timezone
 
 from django.shortcuts import redirect, get_object_or_404
@@ -242,10 +245,15 @@ def register_view(request):
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             user.is_active = False
             user.save()
-            
-            # these three lines came from http://ipasic.com/article/user-registration-and-email-confirmation-django/
-            salt = hashlib.sha1(str(random.random())).hexdigest()[:5]            
-            activation_key = hashlib.sha1(salt+user.email).hexdigest()            
+
+            # First we generate a random salt
+            salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
+
+            # Then we generate the activation key from this salt and from
+            # the user's email
+            activation_key = hashlib.sha1(salt + user.email).hexdigest()
+
+            # We set the key active for two days
             key_expires = datetime.datetime.today() + datetime.timedelta(2)
 
             profile = Profile(
@@ -256,7 +264,7 @@ def register_view(request):
             )
 
             profile.save()
-            
+
             send_mail_to_confirm_registration(user, activation_key)
 
             return render_template('member/register_confirmation.html')
@@ -278,19 +286,24 @@ def confirm_registration_view(request, activation_key):
     """
     if not request.user.is_authenticated():
         profile = get_object_or_404(Profile, activation_key=activation_key)
-        
+
         if profile.key_expires > timezone.now():
             user = profile.user
             user.is_active = True
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             user.save()
-            
+
             login(request, user)
-            
+
+            messages.success(
+                request,
+                u'Votre compte est maintenant activé !'
+            )
+
             if settings.BOT_ENABLED:
                 bot.send_welcome_private_message(user)
-            
-            return render_template('member/register_success.html')
+
+            return redirect(reverse('pdp.pages.views.home'))
         else:
             raise Http404
     else:
