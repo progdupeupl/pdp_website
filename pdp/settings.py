@@ -26,6 +26,10 @@ if platform.system() == "Windows":
 else:
     locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
 
+#
+# Django
+#
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 INTERNAL_IPS = ('127.0.0.1',)  # debug toolbar
@@ -107,54 +111,9 @@ STATICFILES_FINDERS = (
     #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
-
-# You need to have yuglify installed, except for DEBUG builds
-if DEBUG:
-    PIPELINE_JS_COMPRESSOR = None
-    PIPELINE_CSS_COMPRESSOR = None
-
-PIPELINE_JS = {
-    'base': {
-        'source_filenames': (
-            'js/vendor/custom.modernizr.js',
-            'js/vendor/jquery.js',
-            'js/foundation.min.js',
-        ),
-        'output_filename': 'js/base.js'
-    },
-    'custom': {
-        'source_filenames': {
-            'js/custom/ajax-csrf.js',
-            'js/custom/editor.js',
-            'js/custom/section.js',
-        },
-        'output_filename': 'js/custom.js'
-    },
-}
-
-PIPELINE_CSS = {
-    'pdp': {
-        'source_filenames': (
-            'css/progdupeupl.css',
-        ),
-        'output_filename': 'css/pdp.css',
-        'extra_content': {
-            'media': 'screen,projection',
-        },
-    },
-    'print': {
-        'source_filenames': (
-            'css/print.css',
-        ),
-        'output_filename': 'css/print.css',
-        'extra_content': {
-            'media': 'print',
-        },
-    },
-}
-
-PIPELINE_DISABLE_WRAPPER = True
+# Should Django serve the static and media files ? This should not be set to
+# True in a production environment
+SERVE = False
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'n!01nl+318#x75_%le8#s0=-*ysw&amp;y49uc#t=*wvi(9hnyii0z'
@@ -275,13 +234,22 @@ LOGGING = {
     }
 }
 
+#
+# Cache
+#
 # Cache(s) used in order to store rendered pages or parts for some time. This
 # is a fake cache that does not cache anything, for developement purposes only.
+#
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
+
+#
+# API
+#
 
 REST_FRAMEWORK = {
 
@@ -320,12 +288,20 @@ SWAGGER_SETTINGS = {
     "is_superuser": False,  # Set to True to enforce admin only access
 }
 
+#
+# Search
+#
+
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
         'PATH': os.path.join(os.path.dirname(__file__), 'whoosh'),
     },
 }
+
+#
+# Members
+#
 
 AUTH_PROFILE_MODULE = 'member.Profile'
 LOGIN_URL = '/membres/connexion'
@@ -335,12 +311,99 @@ ABSOLUTE_URL_OVERRIDES = {
         u.username.encode('utf-8'))
 }
 
+#
+# South
+#
+
 SOUTH_MIGRATION_MODULES = {
     'taggit': 'taggit.south_migrations',
 }
 
+#
+# Pipeline
+#
+
+# Use Pipeline on collectstatic calls
+
+STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
+
+# Do not compress on debug version
+
+if DEBUG:
+    PIPELINE_JS_COMPRESSOR = None
+    PIPELINE_CSS_COMPRESSOR = None
+
+# Javascript compression tree
+
+PIPELINE_JS = {
+    'base': {
+        'source_filenames': (
+            'js/vendor/custom.modernizr.js',
+            'js/vendor/jquery.js',
+            'js/foundation.min.js',
+        ),
+        'output_filename': 'js/base.js'
+    },
+    'custom': {
+        'source_filenames': {
+            'js/custom/ajax-csrf.js',
+            'js/custom/editor.js',
+            'js/custom/section.js',
+        },
+        'output_filename': 'js/custom.js'
+    },
+}
+
+# CSS compression tree
+
+PIPELINE_CSS = {
+    'pdp': {
+        'source_filenames': (
+            'css/progdupeupl.css',
+        ),
+        'output_filename': 'css/pdp.css',
+        'extra_content': {
+            'media': 'screen,projection',
+        },
+    },
+    'print': {
+        'source_filenames': (
+            'css/print.css',
+        ),
+        'output_filename': 'css/print.css',
+        'extra_content': {
+            'media': 'print',
+        },
+    },
+}
+
+PIPELINE_DISABLE_WRAPPER = True
+
+#
+# Crispy forms
+#
+# Actually we are working with Foundation 4 but the Foundation 5 crispy
+# template pack seems to behave well with our version.
+#
+
 CRISPY_FAIL_SILENTLY = not DEBUG
 CRISPY_TEMPLATE_PACK = 'foundation-5'
+
+#
+# Celery
+#
+
+# Do use RabbitMQ or Redis in production
+BROKER_URL = 'django://'
+
+# Do not allow pickle in production
+CELERY_ACCEPT_CONTENT = ['json', 'pickle']
+
+#
+# Custom
+#
+# These settings are used by internal applications.
+#
 
 # Bot settings
 BOT_ENABLED = False
@@ -358,27 +421,24 @@ TUTORIALS_PER_PAGE = 21
 
 # Settings for antispam
 SPAM_LIMIT_SECONDS = 60 * 15
-SPAM_LIMIT_PARTICIPANT = 2
 
 # Paginator settings for members
 MEMBERS_PER_PAGE = 10 * 10
 
-# Should Django serve the static and media files ? This should not be set to
-# True in a production environment
-SERVE = False
-
 # Max size image upload (in bytes)
 IMAGE_MAX_SIZE = 1024 * 512
 
-# Do use RabbitMQ or Redis in production
-BROKER_URL = 'django://'
-
-# Do not allow pickle in production
-CELERY_ACCEPT_CONTENT = ['json', 'pickle']
-
+# This variable can be used in order to not perform heavy-load work like PDF
+# generation when running tests.
 TESTING = 'test' in sys.argv
 
-# Load the production settings, overwrite the existing ones if needed
+#
+# Production settings
+#
+# Load the production settings from the settings_prod.py file. This will
+# override some settings from this file as needed, like the SECRET_KEY and
+# other production stuff.
+
 try:
     from pdp.settings_prod import *
 except ImportError:
