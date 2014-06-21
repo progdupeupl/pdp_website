@@ -433,6 +433,14 @@ IMAGE_MAX_SIZE = 1024 * 512
 TESTING = 'test' in sys.argv
 
 #
+# Guardian
+#
+# TODO: do we really need this app? what does it do?
+#
+
+ANONYMOUS_USER_ID = -1
+
+#
 # Production settings
 #
 # Load the production settings from the settings_prod.py file. This will
