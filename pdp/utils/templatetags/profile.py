@@ -30,6 +30,7 @@ def profile(user):
         profile = None
     return profile
 
+
 @register.filter('mode')
 def mode(mode):
     if mode=='W':
