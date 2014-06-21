@@ -83,7 +83,11 @@ class TutorialCategory(models.Model):
         verbose_name = u'Catégorie de tutoriel'
         verbose_name_plural = u'Catégories de tutoriel'
 
-    title = models.CharField(u'Titre', max_length=80)
+    title = models.CharField(
+        u'Titre',
+        max_length=80
+    )
+
     slug = models.SlugField(max_length=80)
 
     def __unicode__(self):
