@@ -54,9 +54,9 @@ urlpatterns = patterns(
     url(r'^sujet/editer$', views.edit),
 
     # Message-related
-    url(r'^message/editer$', views.edit_post),
     url(r'^message/nouveau$', views.answer),
-    url(r'^message/utile$', views.useful_post),
+    url(r'^message/(?P<post_pk>\d+)/editer$', views.edit_post),
+    url(r'^message/(?P<post_pk>\d+)/utile$', views.useful_post),
 
     # Search items by author
     url(r'^sujets/(?P<name>.+)', views.find_topic),

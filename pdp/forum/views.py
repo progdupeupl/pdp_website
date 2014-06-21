@@ -395,18 +395,13 @@ def answer(request):
 
 
 @login_required(redirect_field_name='suivant')
-def edit_post(request):
+def edit_post(request, post_pk):
     """Edit a specific post.
 
     Returns:
         HttpResponse
 
     """
-    try:
-        post_pk = request.GET['message']
-    except KeyError:
-        raise Http404
-
     post = get_object_or_404(Post, pk=post_pk)
 
     # If we are editing the first post, we also want to edit the topic
@@ -456,18 +451,13 @@ def edit_post(request):
 
 
 @login_required(redirect_field_name='suivant')
-def useful_post(request):
+def useful_post(request, post_pk):
     """Marks a message as useful for the original poster.
 
     Returns:
         HttpResponse
 
     """
-    try:
-        post_pk = request.GET['message']
-    except KeyError:
-        raise Http404
-
     post = get_object_or_404(Post, pk=post_pk)
     topic = post.topic
 
