@@ -122,39 +122,87 @@ class Tutorial(models.Model):
         (BIG, u'Étendu'),
     )
 
-    title = models.CharField(u'Titre', max_length=80)
-    description = models.CharField(u'Description', max_length=200)
-    authors = models.ManyToManyField(User, verbose_name=u'Auteurs')
+    title = models.CharField(
+        u'Titre',
+        max_length=80
+    )
 
-    image = models.ImageField(upload_to=image_path,
-                              blank=True, null=True, default=None)
-    thumbnail = models.ImageField(upload_to=thumbnail_path,
-                                  blank=True, null=True, default=None)
+    description = models.CharField(
+        u'Description',
+        max_length=200
+    )
 
-    introduction = models.TextField(u'Introduction', null=True, blank=True)
-    conclusion = models.TextField(u'Conclusion', null=True, blank=True)
+    authors = models.ManyToManyField(
+        User,
+        verbose_name=u'Auteurs'
+    )
+
+    image = models.ImageField(
+        upload_to=image_path,
+        blank=True, null=True,
+        default=None
+    )
+
+    thumbnail = models.ImageField(
+        upload_to=thumbnail_path,
+        blank=True, null=True,
+        default=None
+    )
+
+    introduction = models.TextField(
+        u'Introduction',
+        null=True, blank=True
+    )
+
+    conclusion = models.TextField(
+        u'Conclusion',
+        null=True, blank=True
+    )
 
     slug = models.SlugField(max_length=80)
 
-    pubdate = models.DateTimeField(u'Date de publication', blank=True)
+    pubdate = models.DateTimeField(
+        u'Date de publication',
+        blank=True
+    )
 
     # We could distinguish large/small tutorials by looking at what chapters
     # are contained directly in a tutorial, but that'd be more complicated
     # than a field.
-    size = models.CharField(u'Taille du tutoriel', max_length=1,
-                            choices=SIZE_CHOICES, default=BIG)
+    size = models.CharField(
+        u'Taille du tutoriel',
+        max_length=1,
+        choices=SIZE_CHOICES,
+        default=BIG
+    )
 
-    is_visible = models.BooleanField(u'Est visible publiquement',
-                                     default=False)
-    is_pending = models.BooleanField(u'Est en attente', default=False)
-    is_beta = models.BooleanField(u'Est en bêta', default=False)
+    is_visible = models.BooleanField(
+        u'Est visible publiquement',
+        default=False
+    )
 
-    category = models.ForeignKey(TutorialCategory, null=True, blank=True,
-                                 verbose_name=u'Catégorie')
+    is_pending = models.BooleanField(
+        u'Est en attente',
+        default=False
+    )
+
+    is_beta = models.BooleanField(
+        u'Est en bêta',
+        default=False
+    )
+
+    category = models.ForeignKey(
+        TutorialCategory,
+        null=True, blank=True,
+        verbose_name=u'Catégorie'
+    )
 
     tags = TaggableManager()
 
-    is_article = models.BooleanField(u'Est un article', default=False)
+    is_article = models.BooleanField(
+        u'Est un article',
+        default=False
+    )
 
     def __unicode__(self):
         """Textual representation of a tutorial.
@@ -315,18 +363,32 @@ class Part(models.Model):
 
     # A part has to belong to a tutorial, since only tutorials with parts
     # are large tutorials
-    tutorial = models.ForeignKey(Tutorial, verbose_name=u'Tutoriel parent')
-    position_in_tutorial = models.IntegerField(u'Position dans le tutoriel',
-                                               null=True, blank=True)
+    tutorial = models.ForeignKey(
+        Tutorial,
+        verbose_name=u'Tutoriel parent'
+    )
 
-    title = models.CharField(u'Titre', max_length=80)
+    position_in_tutorial = models.IntegerField(
+        u'Position dans le tutoriel',
+        null=True, blank=True
+    )
 
-    introduction = models.TextField(u'Introduction', blank=True)
-    conclusion = models.TextField(u'Conclusion', blank=True)
+    title = models.CharField(
+        u'Titre',
+        max_length=80
+    )
+
+    introduction = models.TextField(
+        u'Introduction',
+        blank=True
+    )
+
+    conclusion = models.TextField(
+        u'Conclusion',
+        blank=True
+    )
 
     slug = models.SlugField(max_length=80)
-
-    # The list of chapters is shown between introduction and conclusion
 
     def save(self, *args, **kwargs):
         """Save a part.
@@ -374,8 +436,9 @@ class Part(models.Model):
             Chapter list
 
         """
-        return Chapter.objects.all()\
-            .filter(part=self).order_by('position_in_part')
+        return Chapter.objects.all() \
+            .filter(part=self) \
+            .order_by('position_in_part')
 
 
 class Chapter(models.Model):
@@ -388,28 +451,57 @@ class Chapter(models.Model):
 
     # A chapter may belong to a part, that's where the difference between large
     # and small tutorials is.
-    part = models.ForeignKey(Part, null=True, blank=True,
-                             verbose_name=u'Partie parente')
-    image = models.ImageField(upload_to=image_path, blank=True, null=True)
-    thumbnail = models.ImageField(upload_to=image_path, blank=True, null=True)
+    part = models.ForeignKey(
+        Part,
+        null=True, blank=True,
+        verbose_name=u'Partie parente'
+    )
 
-    position_in_part = models.IntegerField(u'Position dans la partie',
-                                           null=True, blank=True)
+    image = models.ImageField(
+        upload_to=image_path,
+        blank=True, null=True
+    )
+
+    thumbnail = models.ImageField(
+        upload_to=image_path,
+        blank=True, null=True
+    )
+
+    position_in_part = models.IntegerField(
+        u'Position dans la partie',
+        null=True, blank=True
+    )
 
     # This field is required in order to use pagination in chapters, see the
     # update_position_in_tutorial() method.
-    position_in_tutorial = models.IntegerField(u'Position dans le tutoriel',
-                                               null=True, blank=True)
+    position_in_tutorial = models.IntegerField(
+        u'Position dans le tutoriel',
+        null=True, blank=True
+    )
 
     # If the chapter doesn't belong to a part, it's a small tutorial; we need
     # to bind informations about said tutorial directly
-    tutorial = models.ForeignKey(Tutorial, null=True, blank=True,
-                                 verbose_name=u'Tutoriel parent')
+    tutorial = models.ForeignKey(
+        Tutorial,
+        null=True, blank=True,
+        verbose_name=u'Tutoriel parent'
+    )
 
-    title = models.CharField(u'Titre', max_length=80, blank=True)
+    title = models.CharField(
+        u'Titre',
+        max_length=80,
+        blank=True
+    )
 
-    introduction = models.TextField(u'Introduction', blank=True)
-    conclusion = models.TextField(u'Conclusion', blank=True)
+    introduction = models.TextField(
+        u'Introduction',
+        blank=True
+    )
+
+    conclusion = models.TextField(
+        u'Conclusion',
+        blank=True
+    )
 
     slug = models.SlugField(max_length=80)
 
@@ -487,7 +579,12 @@ class Chapter(models.Model):
             raise OrphanChapterException
 
     def get_next(self):
-        """Get the next Chapter following this one (if any)."""
+        """Get the next Chapter following this one (if any).
+
+        Returns:
+            Chapter or None
+
+        """
 
         if not self.part:
             return None
@@ -501,7 +598,12 @@ class Chapter(models.Model):
         return next_chapter
 
     def get_previous(self):
-        """Get the previous Chapter before this one (if any)."""
+        """Get the previous Chapter before this one (if any).
+
+        Returns:
+            Chapter or None
+
+        """
 
         if not self.part:
             return None
@@ -578,10 +680,23 @@ class Extract(models.Model):
         verbose_name = u'Extrait'
         verbose_name_plural = u'Extraits'
 
-    title = models.CharField(u'Titre', max_length=80)
-    chapter = models.ForeignKey(Chapter, verbose_name=u'Chapitre parent')
-    position_in_chapter = models.IntegerField(u'Position dans le chapitre')
-    text = models.TextField(u'Texte')
+    title = models.CharField(
+        u'Titre',
+        max_length=80
+    )
+
+    chapter = models.ForeignKey(
+        Chapter,
+        verbose_name=u'Chapitre parent'
+    )
+
+    position_in_chapter = models.IntegerField(
+        u'Position dans le chapitre'
+    )
+
+    text = models.TextField(
+        u'Texte'
+    )
 
     def __unicode__(self):
         """Textual representation of an extract.
