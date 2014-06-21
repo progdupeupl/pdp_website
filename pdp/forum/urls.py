@@ -50,11 +50,11 @@ urlpatterns = patterns(
     url(r'^sujet/(?P<topic_pk>\d+)/(?P<topic_slug>.+)$', views.topic),
 
     # Create or modify a thread
-    url(r'^sujet/nouveau$', views.new),
+    url(r'^sujet/nouveau/(?P<forum_pk>\d+)$', views.new),
     url(r'^sujet/editer$', views.edit),
 
     # Message-related
-    url(r'^message/nouveau$', views.answer),
+    url(r'^sujet/repondre/(?P<topic_pk>\d+)$', views.answer),
     url(r'^message/(?P<post_pk>\d+)/editer$', views.edit_post),
     url(r'^message/(?P<post_pk>\d+)/utile$', views.useful_post),
 

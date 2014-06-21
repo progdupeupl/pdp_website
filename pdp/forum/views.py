@@ -174,18 +174,13 @@ def topic(request, topic_pk, topic_slug):
 
 
 @login_required(redirect_field_name='suivant')
-def new(request):
+def new(request, forum_pk):
     """Creates a new topic in a forum.
 
     Returns:
         HttpResponse
 
     """
-    try:
-        forum_pk = request.GET['forum']
-    except KeyError:
-        raise Http404
-
     forum = get_object_or_404(Forum, pk=forum_pk)
 
     if request.method == 'POST':
@@ -310,18 +305,13 @@ def edit(request):
 
 
 @login_required(redirect_field_name='suivant')
-def answer(request):
+def answer(request, topic_pk):
     """Adds an answer from an user to a topic.
 
     Returns:
         HttpResponse
 
     """
-    try:
-        topic_pk = request.GET['sujet']
-    except KeyError:
-        raise Http404
-
     g_topic = get_object_or_404(Topic, pk=topic_pk)
 
     posts = Post.objects.filter(topic=g_topic) \

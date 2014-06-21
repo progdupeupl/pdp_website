@@ -30,7 +30,7 @@
             <input type="hidden" name="topic" value="{{ topic.pk }}" />
             <input type="hidden" name="page" value="{{ nb }}">
             <div class="button-group">
-                <a href="/forums/sujet/nouveau?forum={{ topic.forum.pk }}" class="button small">
+                <a href="{% url "pdp.forum.views.new" topic.forum.pk %}" class="button small">
                     Nouveau
                 </a>
                 {% if topic.author.pk == user.pk %}
@@ -145,7 +145,7 @@
                         {% endif %}
 
                         {% if not topic.is_locked and not topic.antispam %}
-                            <a href="/forums/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.pk }}"
+                            <a href="{% url "pdp.forum.views.answer" topic.pk %}?cite={{ post.pk }}"
                                 class="button secondary small">
                                 Citer
                             </a>
@@ -182,7 +182,7 @@
 
 {% if user.is_authenticated %}
 <hr />
-<form action="{% url "pdp.forum.views.answer" %}?sujet={{ topic.pk }}"
+<form action="{% url "pdp.forum.views.answer" topic.pk %}"
 method="POST" id="submit_form">
     <div class="row">
         <div class="large-12 columns">
