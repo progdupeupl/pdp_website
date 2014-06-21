@@ -19,6 +19,7 @@
 
 from math import ceil
 
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
@@ -57,7 +58,9 @@ class Category(models.Model):
             string
 
         """
-        return u'/forums/{0}/'.format(self.slug)
+        return reverse('pdp.forum.views.cat_details', args=[
+            self.slug
+        ])
 
     def get_forums(self):
         """Retreive all forums owned by the category.
@@ -134,12 +137,9 @@ class Forum(models.Model):
             Post object or None
 
         """
-        try:
-            return Post.objects.all()\
-                .filter(topic__forum__pk=self.pk)\
-                .order_by('-pubdate')[0]
-        except IndexError:
-            return None
+        return Post.objects.all()\
+            .filter(topic__forum__pk=self.pk)\
+            .order_by('-pubdate').first()
 
     def is_read(self):
         """Check if this forum was read by current user.
@@ -206,7 +206,10 @@ class Topic(models.Model):
             string
 
         """
-        return u'/forums/sujet/{0}/{1}'.format(self.pk, slugify(self.title))
+        return reverse('pdp.forum.views.topic', args=[
+            self.pk,
+            slugify(self.title)
+        ])
 
     def get_post_count(self):
         """Return the number of posts in the topic.
@@ -224,15 +227,13 @@ class Topic(models.Model):
             Post object or None
 
         """
-        try:
-            last_post = Post.objects.all()\
-                .filter(topic__pk=self.pk)\
-                .order_by('-pubdate')[0]
-        except IndexError:
-            return None
+        last_post = Post.objects.all() \
+            .filter(topic__pk=self.pk) \
+            .order_by('-pubdate') \
+            .first()
 
         # We do not want first post to be considered as an answer.
-        if last_post == self.first_post():
+        if last_post and last_post == self.first_post():
             return None
         else:
             return last_post

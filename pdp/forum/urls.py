@@ -23,10 +23,11 @@ from pdp.forum import feeds
 urlpatterns = patterns(
     '',
 
-    # Feeds
+    # Deprecated feeds
     url(r'^flux/rss/$', views.deprecated_feed_messages_rss),
     url(r'^flux/atom/$', views.deprecated_feed_messages_atom),
 
+    # Feeds
     url(r'^flux/messages/rss/$', feeds.LastPostsFeedRSS(),
         name='post-feed-rss'),
     url(r'^flux/messages/atom/$', feeds.LastPostsFeedATOM(),
@@ -46,15 +47,19 @@ urlpatterns = patterns(
         views.deprecated_cat_details_redirect),
 
     # Viewing a thread
+    url(r'^sujet/(?P<topic_pk>\d+)/(?P<topic_slug>.+)$', views.topic),
+
+    # Create or modify a thread
     url(r'^sujet/nouveau$', views.new),
     url(r'^sujet/editer$', views.edit),
-    url(r'^sujet/(?P<topic_pk>\d+)/(?P<topic_slug>.+)$', views.topic),
-    url(r'^sujets/(?P<name>.+)', views.find_topic),
 
     # Message-related
     url(r'^message/editer$', views.edit_post),
     url(r'^message/nouveau$', views.answer),
     url(r'^message/utile$', views.useful_post),
+
+    # Search items by author
+    url(r'^sujets/(?P<name>.+)', views.find_topic),
     url(r'^messages/(?P<name>.+)$', views.find_post),
 
     # Forum details
