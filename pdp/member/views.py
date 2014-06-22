@@ -181,17 +181,20 @@ def login_view(request):
             user = authenticate(username=username, password=password)
 
             if user is not None:
-                # Yeah auth successful
-                login(request, user)
-                request.session['get_token'] = generate_token()
+                if user.is_active:
+                    # Yeah auth successful
+                    login(request, user)
+                    request.session['get_token'] = generate_token()
 
-                if 'remember' not in request.POST:
-                    request.session.set_expiry(0)
+                    if 'remember' not in request.POST:
+                        request.session.set_expiry(0)
 
-                if 'suivant' in request.GET:
-                    return redirect(request.GET['suivant'])
+                    if 'suivant' in request.GET:
+                        return redirect(request.GET['suivant'])
+                    else:
+                        return redirect(reverse('pdp.pages.views.home'))
                 else:
-                    return redirect(reverse('pdp.pages.views.home'))
+                    error = u'Compte désactivé'
 
             else:
                 error = u'Les identifiants fournis ne sont pas valides'
