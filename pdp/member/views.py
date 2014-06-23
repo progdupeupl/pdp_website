@@ -43,7 +43,6 @@ from pdp.utils import render_template, bot
 from pdp.utils.tokens import generate_token
 from pdp.utils.paginator import paginator_range
 from pdp.utils.mail import send_mail_to_confirm_registration
-from pdp.article.models import Article
 from pdp.tutorial.models import Tutorial
 
 from pdp.member.models import Profile
@@ -389,20 +388,18 @@ def settings_account(request):
 
 @login_required(redirect_field_name='suivant')
 def publications(request):
-    """Show current user's articles and tutorials.
+    """Show current user's tutorials.
 
     Returns:
         HttpResponse
 
     """
 
-    user_articles = Article.objects.filter(
-        author=request.user).order_by('-pubdate')
-    user_tutorials = Tutorial.objects.filter(
-        authors=request.user).order_by('-pubdate')
+    user_tutorials = Tutorial.objects \
+        .filter(authors=request.user) \
+        .order_by('-pubdate')
 
     c = {
-        'user_articles': user_articles,
         'user_tutorials': user_tutorials,
     }
 
