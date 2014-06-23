@@ -17,6 +17,8 @@
 
 """Module containing some custom context processors."""
 
+from django.conf import settings
+
 
 def git_version(request):
     """Return the current deployed git version.
@@ -33,4 +35,20 @@ def git_version(request):
 
     return {
         'git_version': v
+    }
+
+def analytics_key(request):
+    """Return Google Analytics key, if set.
+
+    Returns:
+        string or None
+
+    """
+    try:
+        key = settings.ANALYTICS_KEY
+    except ImportError:
+        key = None
+
+    return {
+        'analytics_key': key
     }

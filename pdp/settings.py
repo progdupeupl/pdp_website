@@ -161,6 +161,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
     # Custom context processors
     'pdp.utils.context_processors.git_version',
+    'pdp.utils.context_processors.analytics_key',
 )
 
 INSTALLED_APPS = (
@@ -439,6 +440,10 @@ TESTING = 'test' in sys.argv
 #
 
 ANONYMOUS_USER_ID = -1
+
+# Analytics
+
+ANALYTICS_KEY = None
 
 #
 # Production settings
