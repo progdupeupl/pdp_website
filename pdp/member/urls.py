@@ -26,9 +26,11 @@ urlpatterns = patterns(
     url(r'^voir/(?P<user_name>.+)$', views.details),
     url(r'^profil/editer$', views.edit_profile),
 
+    # User papers
+    url(r'^publications/$', views.publications),
+
     # User's actions
-    url(r'^publications$', views.publications),
-    url(r'^actions$', views.actions),
+    url(r'^actions/$', views.actions),
 
     # Settings
     url(r'^parametres/profil$', views.settings_profile),
