@@ -21,6 +21,7 @@ from datetime import datetime
 from django.conf import settings
 from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404, HttpResponse
+from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -43,7 +44,8 @@ def index(request):
         HttpResponse
 
     """
-    categories = Category.objects.all().order_by('position')
+    categories = Category.objects.all() \
+        .order_by('position')
 
     return render_template('forum/index.html', {
         'categories': categories
@@ -59,11 +61,12 @@ def details(request, cat_slug, forum_slug):
     """
     forum = get_object_or_404(Forum, slug=forum_slug)
 
-    sticky_topics = Topic.objects.all()\
-        .filter(forum__pk=forum.pk, is_sticky=True)\
+    sticky_topics = Topic.objects.all() \
+        .filter(forum__pk=forum.pk, is_sticky=True) \
         .order_by('-last_message__pubdate')
-    topics = Topic.objects.all()\
-        .filter(forum__pk=forum.pk, is_sticky=False)\
+
+    topics = Topic.objects.all() \
+        .filter(forum__pk=forum.pk, is_sticky=False) \
         .order_by('-last_message__pubdate')
 
     # Paginator
@@ -81,8 +84,11 @@ def details(request, cat_slug, forum_slug):
         page = paginator.num_pages
 
     return render_template('forum/details.html', {
-        'forum': forum, 'sticky_topics': sticky_topics, 'topics': shown_topics,
-        'pages': paginator_range(page, paginator.num_pages), 'nb': page
+        'forum': forum,
+        'sticky_topics': sticky_topics,
+        'topics': shown_topics,
+        'pages': paginator_range(page, paginator.num_pages),
+        'nb': page
     })
 
 
@@ -97,7 +103,8 @@ def cat_details(request, cat_slug):
     forums = Forum.objects.all().filter(category__pk=category.pk)
 
     return render_template('forum/cat_details.html', {
-        'category': category, 'forums': forums
+        'category': category,
+        'forums': forums
     })
 
 
@@ -117,12 +124,11 @@ def topic(request, topic_pk, topic_slug):
         return redirect(g_topic.get_absolute_url())
 
     # We mark the topic as read
-    if request.user.is_authenticated():
-        if never_read(g_topic):
-            mark_read(g_topic)
+    if request.user.is_authenticated() and never_read(g_topic):
+        mark_read(g_topic)
 
-    posts = Post.objects.all()\
-        .filter(topic__pk=g_topic.pk)\
+    posts = Post.objects.all() \
+        .filter(topic__pk=g_topic.pk) \
         .order_by('position_in_topic')
 
     last_post_pk = g_topic.last_message.pk
@@ -158,7 +164,9 @@ def topic(request, topic_pk, topic_slug):
         res.append(post)
 
     return render_template('forum/topic.html', {
-        'topic': g_topic, 'posts': res, 'categories': categories,
+        'topic': g_topic,
+        'posts': res,
+        'categories': categories,
         'pages': paginator_range(page_nbr, paginator.num_pages),
         'nb': page_nbr,
         'last_post_pk': last_post_pk
@@ -166,18 +174,13 @@ def topic(request, topic_pk, topic_slug):
 
 
 @login_required(redirect_field_name='suivant')
-def new(request):
+def new(request, forum_pk):
     """Creates a new topic in a forum.
 
     Returns:
         HttpResponse
 
     """
-    try:
-        forum_pk = request.GET['forum']
-    except KeyError:
-        raise Http404
-
     forum = get_object_or_404(Forum, pk=forum_pk)
 
     if request.method == 'POST':
@@ -302,36 +305,34 @@ def edit(request):
 
 
 @login_required(redirect_field_name='suivant')
-def answer(request):
+def answer(request, topic_pk):
     """Adds an answer from an user to a topic.
 
     Returns:
         HttpResponse
 
     """
-    try:
-        topic_pk = request.GET['sujet']
-    except KeyError:
-        raise Http404
-
     g_topic = get_object_or_404(Topic, pk=topic_pk)
-    posts = Post.objects.filter(topic=g_topic).order_by('-pubdate')[:3]
+
+    posts = Post.objects.filter(topic=g_topic) \
+        .order_by('-pubdate')[:3]
+
     last_post_pk = g_topic.last_message.pk
 
     # Making sure posting is allowed
     if g_topic.is_locked:
-        raise Http404
+        raise PermissionDenied
 
     # Check that the user isn't spamming
     if g_topic.antispam(request.user):
-        raise Http404
+        raise PermissionDenied
 
     # If we just sent data
     if request.method == 'POST':
         data = request.POST
         newpost = last_post_pk != int(data['last_post'])
 
-        # Using the « preview button », the « more » button or new post
+        # Using the preview button, the more button or new post
         if 'preview' in data or 'more' in data or newpost:
             return render_template('forum/answer.html', {
                 'text': data['text'], 'topic': g_topic, 'posts': posts,
@@ -384,18 +385,13 @@ def answer(request):
 
 
 @login_required(redirect_field_name='suivant')
-def edit_post(request):
+def edit_post(request, post_pk):
     """Edit a specific post.
 
     Returns:
         HttpResponse
 
     """
-    try:
-        post_pk = request.GET['message']
-    except KeyError:
-        raise Http404
-
     post = get_object_or_404(Post, pk=post_pk)
 
     # If we are editing the first post, we also want to edit the topic
@@ -445,23 +441,19 @@ def edit_post(request):
 
 
 @login_required(redirect_field_name='suivant')
-def useful_post(request):
+def useful_post(request, post_pk):
     """Marks a message as useful for the original poster.
 
     Returns:
         HttpResponse
 
     """
-    try:
-        post_pk = request.GET['message']
-    except KeyError:
-        raise Http404
-
     post = get_object_or_404(Post, pk=post_pk)
+    topic = post.topic
 
     # Making sure the user is allowed to do that
-    if post.author == request.user or request.user != post.topic.author:
-        raise Http404
+    if request.user != topic.author or post.author == topic.author:
+        raise PermissionDenied
 
     post.is_useful = not post.is_useful
     post.save()

@@ -19,7 +19,7 @@
 
 {% block headline-actions %}
     {% if user.is_authenticated %}
-        <a href="/forums/sujet/nouveau?forum={{ forum.pk }}" class="button">
+        <a href="{% url "pdp.forum.views.new" forum.pk %}" class="button">
             Nouveau sujet
         </a>
     {% endif %}

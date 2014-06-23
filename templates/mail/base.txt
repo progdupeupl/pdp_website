@@ -1,0 +1,6 @@
+{% load staticfiles %}
+{% block content %}{% endblock %}
+
+--
+Chtaline, bot dévoué.
+http://progdupeu.pl

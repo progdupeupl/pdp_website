@@ -30,15 +30,22 @@ from pdp.tutorial.models import Tutorial, Part, Chapter, Extract
 
 
 class NegativeTitleLevelError(Exception):
-    pass
+    def __init__(self, line, level, previous_level):
+        self.line = line
+        self.level = level
+        self.previous_level = previous_level
 
 
 class InvalidLevelIncreaseError(Exception):
-    pass
+    def __init__(self, line, level, previous_level):
+        self.line = line
+        self.level = level
+        self.previous_level = previous_level
 
 
 class EmptyTitleError(Exception):
-    pass
+    def __init__(self, line):
+        self.line = line
 
 
 class NoTitleFoundError(Exception):
@@ -221,16 +228,16 @@ class TutorialImporter(object):
 
             # All titles must have a superior level than the main title
             if level <= self.initial_level:
-                raise NegativeTitleLevelError
+                raise NegativeTitleLevelError(num, level, self.initial_level)
 
             if len(title) <= 0:
-                raise EmptyTitleError
+                raise EmptyTitleError(num)
 
             # If ascending level we must be sure that it is increasing by
             # maximum 1 or staying at 0.
             if level > previous_level:
                 if level - previous_level > 1:
-                    raise InvalidLevelIncreaseError
+                    raise InvalidLevelIncreaseError(num, level, previous_level)
 
             previous_level = level
 

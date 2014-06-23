@@ -56,7 +56,8 @@ class RegisterForm(forms.Form):
         },
         widget=MathCaptchaWidget(
             question_tmpl=u'Quel est le résultat de '
-                          u'%(num1)i %(operator)s %(num2)i ?'
+                          u'%(num1)i %(operator)s %(num2)i ?',
+            question_class='captcha'
         )
     )
 

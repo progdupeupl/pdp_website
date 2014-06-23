@@ -24,19 +24,32 @@
     </div>
 </div>
 
-{# Tutorials #}
-
 <div class="row">
     <div class="large-12 columns">
-        <h2>Mes tutoriels</h2>
-    </div>
-</div>
 
-<div class="row">
-    <div class="large-12 columns">
         <a href="{% url "pdp.tutorial.views.add_tutorial" %}" class="button">
-            Nouveau tutoriel
+            Nouveau
         </a>
+
+        <dl class="sub-nav">
+            <dt>Filtre :</dt>
+            <dd {% ifequal active_filter "all" %}class="active"{% endifequal %}>
+                <a href="{% url "pdp.member.views.publications" %}">
+                    Tous
+                </a>
+            </dd>
+            <dd {% ifequal active_filter "published" %}class="active"{% endifequal %}>
+                <a href="{% url "pdp.member.views.publications" %}?filtre=publie">
+                    Publiés
+                </a>
+            </dd>
+            <dd {% ifequal active_filter "beta" %}class="active"{% endifequal %}>
+                <a href="{% url "pdp.member.views.publications" %}?filtre=beta">
+                    Bêta
+                </a>
+            </dd>
+        </dl>
+
     </div>
 </div>
 

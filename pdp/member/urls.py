@@ -26,9 +26,11 @@ urlpatterns = patterns(
     url(r'^voir/(?P<user_name>.+)$', views.details),
     url(r'^profil/editer$', views.edit_profile),
 
+    # User papers
+    url(r'^publications/$', views.publications),
+
     # User's actions
-    url(r'^publications$', views.publications),
-    url(r'^actions$', views.actions),
+    url(r'^actions/$', views.actions),
 
     # Settings
     url(r'^parametres/profil$', views.settings_profile),
@@ -36,6 +38,7 @@ urlpatterns = patterns(
 
     url(r'^connexion$', views.login_view),
     url(r'^inscription$', views.register_view),
+    url(r'^inscription/(?P<activation_key>\w+)$', views.confirm_registration_view),
     url(r'^deconnexion/$', views.logout_view),
     url(r'^$', views.index),
 )

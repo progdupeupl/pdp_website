@@ -17,6 +17,12 @@
 
 """Member app's views."""
 
+import hashlib
+import datetime
+import random
+
+from django.utils import timezone
+
 from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404
 from django.conf import settings
@@ -36,7 +42,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from pdp.utils import render_template, bot
 from pdp.utils.tokens import generate_token
 from pdp.utils.paginator import paginator_range
-from pdp.article.models import Article
+from pdp.utils.mail import send_mail_to_confirm_registration
 from pdp.tutorial.models import Tutorial
 
 from pdp.member.models import Profile
@@ -174,17 +180,20 @@ def login_view(request):
             user = authenticate(username=username, password=password)
 
             if user is not None:
-                # Yeah auth successful
-                login(request, user)
-                request.session['get_token'] = generate_token()
+                if user.is_active:
+                    # Yeah auth successful
+                    login(request, user)
+                    request.session['get_token'] = generate_token()
 
-                if 'remember' not in request.POST:
-                    request.session.set_expiry(0)
+                    if 'remember' not in request.POST:
+                        request.session.set_expiry(0)
 
-                if 'suivant' in request.GET:
-                    return redirect(request.GET['suivant'])
+                    if 'suivant' in request.GET:
+                        return redirect(request.GET['suivant'])
+                    else:
+                        return redirect(reverse('pdp.pages.views.home'))
                 else:
-                    return redirect(reverse('pdp.pages.views.home'))
+                    error = u'Compte désactivé'
 
             else:
                 error = u'Les identifiants fournis ne sont pas valides'
@@ -235,17 +244,32 @@ def register_view(request):
                 data['email'],
                 data['password'])
 
-            profile = Profile(user=user, show_email=False)
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            user.is_active = False
+            user.save()
+
+            # First we generate a random salt
+            salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
+
+            # Then we generate the activation key from this salt and from
+            # the user's email
+            activation_key = hashlib.sha1(salt + user.email).hexdigest()
+
+            # We set the key active for two days
+            key_expires = datetime.datetime.today() + datetime.timedelta(2)
+
+            profile = Profile(
+                user=user,
+                show_email=False,
+                activation_key=activation_key,
+                key_expires=key_expires
+            )
+
             profile.save()
 
-            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            send_mail_to_confirm_registration(user, activation_key)
 
-            if settings.BOT_ENABLED:
-                bot.send_welcome_private_message(user)
-
-            login(request, user)
-
-            return render_template('member/register_success.html')
+            return render_template('member/register_confirmation.html')
         else:
             return render_template('member/register.html', {'form': form})
 
@@ -253,6 +277,39 @@ def register_view(request):
     return render_template('member/register.html', {
         'form': form
     })
+
+
+def confirm_registration_view(request, activation_key):
+    """Confirm user's registration.
+
+    Returns:
+        HttpResponse
+
+    """
+    if not request.user.is_authenticated():
+        profile = get_object_or_404(Profile, activation_key=activation_key)
+
+        if profile.key_expires > timezone.now():
+            user = profile.user
+            user.is_active = True
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            user.save()
+
+            login(request, user)
+
+            messages.success(
+                request,
+                u'Votre compte est maintenant activé !'
+            )
+
+            if settings.BOT_ENABLED:
+                bot.send_welcome_private_message(user)
+
+            return redirect(reverse('pdp.pages.views.home'))
+        else:
+            raise Http404
+    else:
+        raise Http404
 
 
 # Settings for public profile
@@ -331,21 +388,30 @@ def settings_account(request):
 
 @login_required(redirect_field_name='suivant')
 def publications(request):
-    """Show current user's articles and tutorials.
+    """Show current user's tutorials.
 
     Returns:
         HttpResponse
 
     """
 
-    user_articles = Article.objects.filter(
-        author=request.user).order_by('-pubdate')
-    user_tutorials = Tutorial.objects.filter(
-        authors=request.user).order_by('-pubdate')
+    tutorials = Tutorial.objects \
+        .filter(authors=request.user)
 
-    c = {
-        'user_articles': user_articles,
-        'user_tutorials': user_tutorials,
-    }
+    # Handle filter, if any
+    active_filter = 'all'
+    if 'filtre' in request.GET:
+        if request.GET['filtre'] == 'beta':
+            active_filter = 'beta'
+            tutorials = tutorials.filter(is_beta=True)
+        elif request.GET['filtre'] == 'publie':
+            tutorials = tutorials.filter(is_visible=True)
+            active_filter = 'published'
 
-    return render_template('member/publications.html', c)
+    # Finally order by pubdate
+    tutorials = tutorials.order_by('-pubdate')
+
+    return render_template('member/publications.html', {
+        'user_tutorials': tutorials,
+        'active_filter': active_filter
+    })

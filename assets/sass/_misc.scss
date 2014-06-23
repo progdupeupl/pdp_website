@@ -74,7 +74,7 @@ nav.top-bar {
     text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
 }
 
-.asteriskField {
+.asterisk {
     color: $alert-color;
 }
 
@@ -176,4 +176,12 @@ div.switch label {
 // Correct bad font size for lists
 li p {
     font-size: emCalc(16px);
+}
+
+// Math text captcha
+.captcha {
+    display: block;
+    font-size: emCalc(14px);
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
 }

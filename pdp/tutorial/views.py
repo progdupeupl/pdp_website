@@ -194,13 +194,24 @@ def import_tutorial(request):
                     e.end,
                     e.reason
                 )
-            except loader.NegativeTitleLevelError:
-                error = u'Descente de niveau de titre en dessous du niveau ' \
-                        u'principal.'
-            except loader.InvalidLevelIncreaseError:
-                error = u'Descente de niveau de titre trop rapide.'
-            except loader.EmptyTitleError:
-                error = u'Titre vide.'
+            except loader.NegativeTitleLevelError as e:
+                error = u'Descente de niveau de titre ({}) en dessous du ' \
+                        u'niveau principal ({}), ligne {}.'.format(
+                            e.level,
+                            e.previous_level,
+                            e.line
+                        )
+            except loader.InvalidLevelIncreaseError as e:
+                error = u'Descente de niveau de titre trop rapide ' \
+                        u'(de {} à {}), ligne {}.'.format(
+                            e.previous_level,
+                            e.level,
+                            e.line
+                        )
+            except loader.EmptyTitleError as e:
+                error = u'Titre vide, ligne {}.'.format(
+                    e.line
+                )
             except loader.NoTitleFoundError:
                 error = u'Aucun titre n’a été trouvé.'
 

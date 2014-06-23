@@ -19,6 +19,7 @@
 
 from math import ceil
 
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
@@ -37,8 +38,16 @@ class Category(models.Model):
         verbose_name = u'Catégorie'
         verbose_name_plural = u'Catégories'
 
-    title = models.CharField(u'Titre', max_length=80)
-    position = models.IntegerField(u'Position', null=True, blank=True)
+    title = models.CharField(
+        u'Titre',
+        max_length=80
+    )
+
+    position = models.IntegerField(
+        u'Position',
+        null=True, blank=True
+    )
+
     slug = models.SlugField(max_length=80)
 
     def __unicode__(self):
@@ -57,7 +66,9 @@ class Category(models.Model):
             string
 
         """
-        return u'/forums/{0}/'.format(self.slug)
+        return reverse('pdp.forum.views.cat_details', args=[
+            self.slug
+        ])
 
     def get_forums(self):
         """Retreive all forums owned by the category.
@@ -79,12 +90,26 @@ class Forum(models.Model):
         verbose_name = u'Forum'
         verbose_name_plural = u'Forums'
 
-    title = models.CharField(u'Titre', max_length=80)
-    subtitle = models.CharField(u'Sous-titre', max_length=200, blank=True)
+    title = models.CharField(
+        u'Titre',
+        max_length=80
+    )
 
-    category = models.ForeignKey(Category, verbose_name=u'Catégorie')
-    position_in_category = models.IntegerField(u'Position dans la catégorie',
-                                               null=True, blank=True)
+    subtitle = models.CharField(
+        u'Sous-titre',
+        max_length=200,
+        blank=True
+    )
+
+    category = models.ForeignKey(
+        Category,
+        verbose_name=u'Catégorie'
+    )
+
+    position_in_category = models.IntegerField(
+        u'Position dans la catégorie',
+        null=True, blank=True
+    )
 
     slug = models.SlugField(max_length=80)
 
@@ -134,12 +159,9 @@ class Forum(models.Model):
             Post object or None
 
         """
-        try:
-            return Post.objects.all()\
-                .filter(topic__forum__pk=self.pk)\
-                .order_by('-pubdate')[0]
-        except IndexError:
-            return None
+        return Post.objects.all()\
+            .filter(topic__forum__pk=self.pk)\
+            .order_by('-pubdate').first()
 
     def is_read(self):
         """Check if this forum was read by current user.
@@ -175,20 +197,54 @@ class Topic(models.Model):
         verbose_name = u'Sujet'
         verbose_name_plural = u'Sujets'
 
-    title = models.CharField(u'Titre', max_length=80)
-    subtitle = models.CharField(u'Sous-titre', max_length=200, blank=True)
+    title = models.CharField(
+        u'Titre',
+        max_length=80
+    )
 
-    forum = models.ForeignKey(Forum, verbose_name=u'Forum')
-    author = models.ForeignKey(User, verbose_name=u'Auteur',
-                               related_name='topics')
-    last_message = models.ForeignKey('Post', null=True,
-                                     related_name='last_message',
-                                     verbose_name=u'Dernier message')
-    pubdate = models.DateTimeField(u'Date de création', auto_now_add=True)
+    subtitle = models.CharField(
+        u'Sous-titre',
+        max_length=200,
+        blank=True
+    )
 
-    is_solved = models.BooleanField(u'Est résolu', default=False)
-    is_locked = models.BooleanField(u'Est verrouillé', default=False)
-    is_sticky = models.BooleanField(u'Est en post-it', default=False)
+    forum = models.ForeignKey(
+        Forum,
+        verbose_name=u'Forum'
+    )
+
+    author = models.ForeignKey(
+        User,
+        verbose_name=u'Auteur',
+        related_name='topics'
+    )
+
+    last_message = models.ForeignKey(
+        'Post',
+        null=True,
+        related_name='last_message',
+        verbose_name=u'Dernier message'
+    )
+
+    pubdate = models.DateTimeField(
+        u'Date de création',
+        auto_now_add=True
+    )
+
+    is_solved = models.BooleanField(
+        u'Est résolu',
+        default=False
+    )
+
+    is_locked = models.BooleanField(
+        u'Est verrouillé',
+        default=False
+    )
+
+    is_sticky = models.BooleanField(
+        u'Est en post-it',
+        default=False
+    )
 
     def __unicode__(self):
         """Textual representation of a topic.
@@ -206,7 +262,10 @@ class Topic(models.Model):
             string
 
         """
-        return u'/forums/sujet/{0}/{1}'.format(self.pk, slugify(self.title))
+        return reverse('pdp.forum.views.topic', args=[
+            self.pk,
+            slugify(self.title)
+        ])
 
     def get_post_count(self):
         """Return the number of posts in the topic.
@@ -224,15 +283,13 @@ class Topic(models.Model):
             Post object or None
 
         """
-        try:
-            last_post = Post.objects.all()\
-                .filter(topic__pk=self.pk)\
-                .order_by('-pubdate')[0]
-        except IndexError:
-            return None
+        last_post = Post.objects.all() \
+            .filter(topic__pk=self.pk) \
+            .order_by('-pubdate') \
+            .first()
 
         # We do not want first post to be considered as an answer.
-        if last_post == self.first_post():
+        if last_post and last_post == self.first_post():
             return None
         else:
             return last_post
@@ -329,17 +386,37 @@ class Post(models.Model):
 
     """A forum post written by an user."""
 
-    topic = models.ForeignKey(Topic, verbose_name=u'Sujet')
-    author = models.ForeignKey(User, verbose_name=u'Auteur',
-                               related_name='posts')
+    topic = models.ForeignKey(
+        Topic,
+        verbose_name=u'Sujet'
+    )
+
+    author = models.ForeignKey(
+        User,
+        verbose_name=u'Auteur',
+        related_name='posts'
+    )
+
     text = models.TextField(u'Texte')
 
-    pubdate = models.DateTimeField(u'Date de publication', auto_now_add=True)
-    update = models.DateTimeField(u'Date d\'édition', null=True, blank=True)
+    pubdate = models.DateTimeField(
+        u'Date de publication',
+        auto_now_add=True
+    )
 
-    position_in_topic = models.IntegerField(u'Position dans le sujet')
+    update = models.DateTimeField(
+        u'Date d\'édition',
+        null=True, blank=True
+    )
 
-    is_useful = models.BooleanField(u'Est utile', default=False)
+    position_in_topic = models.IntegerField(
+        u'Position dans le sujet'
+    )
+
+    is_useful = models.BooleanField(
+        u'Est utile',
+        default=False
+    )
 
     def __unicode__(self):
         """Textual representation of a post.
@@ -426,7 +503,8 @@ def get_last_topics():
         List (or QuerySet?) of Topic objects
 
     """
-    return Topic.objects.all().order_by('-last_message__pubdate')[:10]
+    return Topic.objects.all() \
+        .order_by('-last_message__pubdate')[:10]
 
 
 def never_read(topic, user=None):

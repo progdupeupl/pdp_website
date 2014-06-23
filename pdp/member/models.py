@@ -18,6 +18,7 @@
 """Models for member app."""
 
 from hashlib import md5
+import datetime
 
 from django.db import models
 from django.core.urlresolvers import reverse
@@ -25,7 +26,6 @@ from django.contrib.auth.models import User
 
 from pdp.forum.models import Post, Topic
 from pdp.tutorial.models import Tutorial
-from pdp.article.models import Article
 
 
 class Profile(models.Model):
@@ -36,17 +36,44 @@ class Profile(models.Model):
         verbose_name = 'Profil'
         verbose_name_plural = 'Profils'
 
-    user = models.ForeignKey(User, unique=True, verbose_name=u'Utilisateur')
-
-    site = models.CharField(u'Site internet', max_length=128, blank=True)
-    show_email = models.BooleanField(u'Afficher adresse mail publiquement',
-                                     default=True)
-
-    avatar_url = models.CharField(
-        u'URL de l\'avatar', max_length=128, null=True, blank=True
+    user = models.ForeignKey(
+        User,
+        unique=True,
+        verbose_name=u'Utilisateur'
     )
 
-    biography = models.TextField(u'Biographie', blank=True)
+    site = models.CharField(
+        u'Site internet',
+        max_length=128,
+        blank=True
+    )
+
+    show_email = models.BooleanField(
+        u'Afficher adresse mail publiquement',
+        default=True
+    )
+
+    avatar_url = models.CharField(
+        u'URL de l’avatar',
+        max_length=128,
+        null=True,
+        blank=True
+    )
+
+    biography = models.TextField(
+        u'Biographie',
+        blank=True
+    )
+
+    activation_key = models.CharField(
+        u'Clé d’activation',
+        max_length=40, blank=True
+    )
+
+    key_expires = models.DateTimeField(
+        u'Expiration de la clé d’activation',
+        default=datetime.date.today()
+    )
 
     def __unicode__(self):
         """Textual representation of a profile.

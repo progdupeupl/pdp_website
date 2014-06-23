@@ -30,7 +30,7 @@
             <input type="hidden" name="topic" value="{{ topic.pk }}" />
             <input type="hidden" name="page" value="{{ nb }}">
             <div class="button-group">
-                <a href="/forums/sujet/nouveau?forum={{ topic.forum.pk }}" class="button small">
+                <a href="{% url "pdp.forum.views.new" topic.forum.pk %}" class="button small">
                     Nouveau
                 </a>
                 {% if topic.author.pk == user.pk %}
@@ -116,72 +116,73 @@
 
 {% include "forum/topic_pagination.part.html" with position="top" %}
 
-
 {% for post in posts %}
 <div class="post {% if forloop.first and nb > 1 %}before{% endif %} {% if post.is_useful %}useful{% endif %}">
-        <div class="row post-head" id="p{{ post.id }}">
-            <div class="large-2 columns post-nickname">
-                <p>
-                    <a href="{{ post.author.get_absolute_url }}">
-                        {{ post.author.username }}
-                    </a>
-                </p>
-            </div>
-            <div class="large-10 columns">
-                <div class="right">
-                    {% if user.is_authenticated %}
-                        <div class="button-group">
-                            {% if topic.author == user and post.author != user %}
-                                <a href="/forums/message/utile?message={{ post.pk }}" class="button small {% if not post.is_useful %}secondary{% else %}success{% endif %}">
-                                    Cette réponse m'a aidé
-                                </a>
-                            {% endif %}
-
-                            {% if post.author == user or perms.forum.change_post %}
-                                <a href="/forums/message/editer?message={{ post.pk }}" class="button secondary small">
-                                    Éditer
-                                </a>
-                            {% endif %}
-
-                            {% if not topic.is_locked and not topic.antispam %}
-                                <a href="/forums/message/nouveau?sujet={{ topic.pk }}&amp;cite={{ post.pk }}"
-                                    class="button secondary small">
-                                    Citer
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                </div>
-                <p>
-                    <a href="#p{{ post.pk }}">#</a>
-                    {{ post.pubdate|naturaltime }}
-                    {% if not post.update = None %}
-                        (dernière édition {{ post.update|naturaltime }})
-                    {% endif %}
-                    {% if forloop.first and nb > 1 %}
-                        &ndash; page précédente
-                    {% endif %}
-                </p>
-            </div>
+    <div class="row post-head" id="p{{ post.id }}">
+        <div class="large-2 columns post-nickname">
+            <p>
+                <a href="{{ post.author.get_absolute_url }}">
+                    {{ post.author.username }}
+                </a>
+            </p>
         </div>
-        <div class="row post-content">
-            <div class="large-2 columns hide-for-small post-avatar">
-                {% with profile=post.author|profile %}
-                    <img src="{{ profile.get_avatar_url }}" width="80" height="80" alt="" />
-                {% endwith %}
+        <div class="large-10 columns">
+            <div class="right">
+                {% if user.is_authenticated %}
+                    <div class="button-group">
+                        {% if topic.author == user and post.author != user %}
+                            <a href="{% url "pdp.forum.views.useful_post" post.pk %}"
+                                class="button small {% if not post.is_useful %}secondary{% else %}success{% endif %}">
+                                Cette réponse m'a aidé
+                            </a>
+                        {% endif %}
+
+                        {% if post.author == user or perms.forum.change_post %}
+                            <a href="{% url "pdp.forum.views.edit_post" post.pk %}"
+                                class="button secondary small">
+                                Éditer
+                            </a>
+                        {% endif %}
+
+                        {% if not topic.is_locked and not topic.antispam %}
+                            <a href="{% url "pdp.forum.views.answer" topic.pk %}?cite={{ post.pk }}"
+                                class="button secondary small">
+                                Citer
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
             </div>
-            <div class="large-10 columns">
-                {{ post.text|emarkdown:post.pk }}
-            </div>
+            <p>
+                <a href="#p{{ post.pk }}">#</a>
+                {{ post.pubdate|naturaltime }}
+                {% if not post.update = None %}
+                    (dernière édition {{ post.update|naturaltime }})
+                {% endif %}
+                {% if forloop.first and nb > 1 %}
+                    &ndash; page précédente
+                {% endif %}
+            </p>
         </div>
     </div>
+    <div class="row post-content">
+        <div class="large-2 columns hide-for-small post-avatar">
+            {% with profile=post.author|profile %}
+                <img src="{{ profile.get_avatar_url }}" width="80" height="80" alt="" />
+            {% endwith %}
+        </div>
+        <div class="large-10 columns">
+            {{ post.text|emarkdown:post.pk }}
+        </div>
+    </div>
+</div>
 {% endfor %}
 
 {% include "forum/topic_pagination.part.html" with position="bottom" %}
 
 {% if user.is_authenticated %}
 <hr />
-<form action="{% url "pdp.forum.views.answer" %}?sujet={{ topic.pk }}"
+<form action="{% url "pdp.forum.views.answer" topic.pk %}"
 method="POST" id="submit_form">
     <div class="row">
         <div class="large-12 columns">
