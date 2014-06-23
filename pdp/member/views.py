@@ -395,12 +395,23 @@ def publications(request):
 
     """
 
-    user_tutorials = Tutorial.objects \
-        .filter(authors=request.user) \
-        .order_by('-pubdate')
+    tutorials = Tutorial.objects \
+        .filter(authors=request.user)
 
-    c = {
-        'user_tutorials': user_tutorials,
-    }
+    # Handle filter, if any
+    active_filter = 'all'
+    if 'filtre' in request.GET:
+        if request.GET['filtre'] == 'beta':
+            active_filter = 'beta'
+            tutorials = tutorials.filter(is_beta=True)
+        elif request.GET['filtre'] == 'publie':
+            tutorials = tutorials.filter(is_visible=True)
+            active_filter = 'published'
 
-    return render_template('member/publications.html', c)
+    # Finally order by pubdate
+    tutorials = tutorials.order_by('-pubdate')
+
+    return render_template('member/publications.html', {
+        'user_tutorials': tutorials,
+        'active_filter': active_filter
+    })
