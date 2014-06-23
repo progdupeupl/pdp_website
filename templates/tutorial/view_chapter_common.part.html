@@ -8,8 +8,6 @@
             {% if not chapter.tutorial %}
                 {% if chapter.introduction %}
                     {{ chapter.introduction|emarkdown }}
-                {% else %}
-                    <p>Aucune introduction.</p>
                 {% endif %}
             {% endif %}
 
@@ -130,8 +128,6 @@
         <div class="large-12 columns">
             {% if chapter.conclusion %}
                 {{ chapter.conclusion|emarkdown }}
-            {% else %}
-                <p>Aucune conclusion.</p>
             {% endif %}
         </div>
     </div>

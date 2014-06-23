@@ -159,8 +159,6 @@
 
         {% if tutorial.introduction %}
             {{ tutorial.introduction|emarkdown }}
-        {% else %}
-            <p>Aucune introduction.</p>
         {% endif %}
 
         {% if tutorial.size == "S" %}
@@ -199,8 +197,6 @@
 
         {% if tutorial.conclusion %}
             {{ tutorial.conclusion|emarkdown }}
-        {% else %}
-            <p>Aucune conclusion.</p>
         {% endif %}
     </div>
 </div>
