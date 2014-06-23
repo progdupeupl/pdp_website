@@ -1,6 +1,7 @@
 {% extends "tutorial/base.html" %}
 {% load static %}
 {% load emarkdown %}
+{% load humanize %}
 
 {% block title %}
 {{ tutorial.title }}
@@ -106,7 +107,10 @@
             rédigé par
             {% with members=tutorial.authors.all %}
                 {% include "member/members_item_common.part.html" %}
-            {% endwith %}.
+            {% endwith %}
+            {% if tutorial.update %}
+                (dernière édition {{ tutorial.update|naturaltime }})
+            {% endif %}.
             <br />
             Tags :
             {% for tag in tutorial.tags.all %}

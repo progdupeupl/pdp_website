@@ -354,6 +354,7 @@ def edit_tutorial(request):
 
             tutorial.category = category
 
+            tutorial.update = datetime.now()
             tutorial.save()
 
             # If the tutorial was on the home page, clean cache
@@ -585,6 +586,7 @@ def add_part(request):
         form = AddPartForm(request.POST)
         if form.is_valid():
             data = form.data
+
             part = Part()
             part.tutorial = tutorial
             part.title = data['title']
@@ -592,6 +594,10 @@ def add_part(request):
             part.conclusion = data['conclusion']
             part.position_in_tutorial = tutorial.get_parts().count() + 1
             part.save()
+
+            tutorial.update = datetime.now()
+            tutorial.save()
+
             return redirect(part.get_absolute_url())
     else:
         form = AddPartForm({'tutorial': tutorial.pk})
@@ -626,6 +632,10 @@ def modify_part(request):
         move(part, new_pos, 'position_in_tutorial', 'tutorial', 'get_parts')
         part.save()
 
+        tutorial = part.tutorial
+        tutorial.update = datetime.now()
+        tutorial.save()
+
     elif 'delete' in request.POST:
         # Delete all chapters belonging to the part
         Chapter.objects.all().filter(part=part).delete()
@@ -638,7 +648,11 @@ def modify_part(request):
                 tut_p.save()
 
         # Actually delete the part
+        tutorial = part.tutorial
         part.delete()
+
+        tutorial.update = datetime.now()
+        tutorial.save()
 
     return redirect(part.tutorial.get_absolute_url())
 
@@ -668,6 +682,10 @@ def edit_part(request):
             part.introduction = data['introduction']
             part.conclusion = data['conclusion']
             part.save()
+
+            tutorial = part.tutorial
+            tutorial.update = datetime.now()
+
             return redirect(part.get_absolute_url())
     else:
         form = EditPartForm({
@@ -748,9 +766,15 @@ def add_chapter(request):
             chapter.part = part
             chapter.position_in_part = part.get_chapters().count() + 1
             chapter.update_position_in_tutorial()
+
             if 'image' in request.FILES:
                 chapter.image = request.FILES['image']
+
             chapter.save()
+
+            tutorial = chapter.get_tutorial()
+            tutorial.update = datetime.now()
+            tutorial.save()
 
             if 'submit_continue' in request.POST:
                 form = AddChapterForm({'part': part.pk})
@@ -802,6 +826,10 @@ def modify_chapter(request):
 
         messages.info(request, u'Le chapitre a bien été déplacé.')
 
+        tutorial = chapter.get_tutorial()
+        tutorial.update = datetime.now()
+        tutorial.save()
+
     elif 'delete' in data:
         old_pos = chapter.position_in_part
         old_tut_pos = chapter.position_in_tutorial
@@ -819,6 +847,10 @@ def modify_chapter(request):
             tut_c.save()
 
         messages.info(request, u'Le chapitre a bien été supprimé.')
+
+        tutorial = chapter.get_tutorial()
+        tutorial.update = datetime.now()
+        tutorial.save()
 
         return redirect(chapter.part.get_absolute_url())
 
@@ -857,13 +889,21 @@ def edit_chapter(request):
 
         if form.is_valid():
             data = form.data
+
             if chapter.part:
                 chapter.title = data['title']
+
             chapter.introduction = data['introduction']
             chapter.conclusion = data['conclusion']
+
             if 'image' in request.FILES:
                     chapter.image = request.FILES['image']
             chapter.save()
+
+            tutorial = chapter.get_tutorial()
+            tutorial.update = datetime.now()
+            tutorial.save()
+
             return redirect(chapter.get_absolute_url())
     else:
         if chapter.part:
@@ -922,6 +962,10 @@ def add_extract(request):
             extract.text = data['text']
             extract.save()
 
+            tutorial = extract.chapter.get_tutorial()
+            tutorial.update = datetime.now()
+            tutorial.save()
+
             if 'submit_continue' in request.POST:
                 form = ExtractForm()
                 messages.success(
@@ -971,9 +1015,15 @@ def edit_extract(request):
 
         if form.is_valid():
             data = form.data
+
             extract.title = data['title']
             extract.text = data['text']
             extract.save()
+
+            tutorial = extract.chapter.get_tutorial()
+            tutorial.update = datetime.now()
+            tutorial.save()
+
             return redirect(extract.get_absolute_url())
     else:
         form = EditExtractForm({
@@ -1007,12 +1057,20 @@ def modify_extract(request):
 
     if 'delete' in data:
         old_pos = extract.position_in_chapter
+
+        # Move other extracts in same chapter
         for extract_c in extract.chapter.get_extracts():
             if old_pos <= extract_c.position_in_chapter:
                 extract_c.position_in_chapter = extract_c.position_in_chapter \
                     - 1
                 extract_c.save()
+
+        tutorial = extract.chapter.get_tutorial()
         extract.delete()
+
+        tutorial.update = datetime.now()
+        tutorial.save()
+
         return redirect(chapter.get_absolute_url())
 
     elif 'move' in data:
@@ -1024,7 +1082,12 @@ def modify_extract(request):
 
         move(extract, new_pos, 'position_in_chapter', 'chapter',
              'get_extracts')
+
         extract.save()
+
+        tutorial = extract.chapter.get_tutorial()
+        tutorial.update = datetime.now()
+        tutorial.save()
 
         return redirect(extract.get_absolute_url())
 

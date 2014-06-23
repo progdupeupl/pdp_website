@@ -23,8 +23,10 @@ The class hierarchy is as follows :
  - "small" tutorials : Tutorial < Chapter < Extracts
 
 """
+
 import os
 import string
+import datetime
 
 from django.db import models
 from django.db.models.signals import post_save
@@ -168,6 +170,11 @@ class Tutorial(models.Model):
     pubdate = models.DateTimeField(
         u'Date de publication',
         blank=True
+    )
+
+    update = models.DateTimeField(
+        u'Date d’édition',
+        null=True, blank=True
     )
 
     # We could distinguish large/small tutorials by looking at what chapters
@@ -728,32 +735,46 @@ class Extract(models.Model):
 @receiver(post_save, sender=Tutorial)
 def saved_tutorial_handler(sender, **kwargs):
     """Function called on each tutorial save."""
+    tutorial = kwargs.get('instance', None)
+
     if not settings.TESTING:
         from pdp.utils.tutorials import export_tutorial_pdf
-        export_tutorial_pdf(kwargs.get('instance', None))
+        export_tutorial_pdf(
+            tutorial
+        )
 
 
 @receiver(post_save, sender=Part)
 def saved_part_handler(sender, **kwargs):
     """Function called on each tutorial save."""
+    tutorial = kwargs.get('instance', None).tutorial
+
     if not settings.TESTING:
         from pdp.utils.tutorials import export_tutorial_pdf
-        export_tutorial_pdf(kwargs.get('instance', None).tutorial)
+        export_tutorial_pdf(
+            tutorial
+        )
 
 
 @receiver(post_save, sender=Chapter)
 def saved_chapter_handler(sender, **kwargs):
     """Function called on each tutorial save."""
+    tutorial = kwargs.get('instance', None).get_tutorial()
+
     if not settings.TESTING:
         from pdp.utils.tutorials import export_tutorial_pdf
-        export_tutorial_pdf(kwargs.get('instance', None).get_tutorial())
+        export_tutorial_pdf(
+            tutorial
+        )
 
 
 @receiver(post_save, sender=Extract)
 def saved_extract_handler(sender, **kwargs):
     """Function called on each tutorial save."""
+    tutorial = kwargs.get('instance', None).chapter.get_tutorial()
+
     if not settings.TESTING:
         from pdp.utils.tutorials import export_tutorial_pdf
         export_tutorial_pdf(
-            kwargs.get('instance', None).chapter.get_tutorial()
+            tutorial
         )
