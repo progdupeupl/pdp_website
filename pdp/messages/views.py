@@ -92,7 +92,7 @@ def delete_selected_inbox_messages(request):
 
 
 def is_participant(user, topic):
-    return topic.author == user and user not in list(topic.participants.all())
+    return topic.author == user or user in list(topic.participants.all())
 
 
 # Views
