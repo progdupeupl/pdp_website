@@ -185,3 +185,14 @@ li p {
     padding-top: 0.5em;
     padding-bottom: 0.5em;
 }
+
+#cookie-banner {
+    background: #2fa4e7;
+    p {
+        font-size: emCalc(10px);
+    }
+    .button {
+        padding: 2px;
+        margin: 0;
+    }
+}
