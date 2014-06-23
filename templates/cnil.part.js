@@ -20,8 +20,7 @@ function askConsent(){
     div.setAttribute('id','cookie-banner');
 
     div.innerHTML =  '<p> \
-    En continuant à naviguer, vous nous autorisez à déposer des cookies à des fins de \
-    mesure d’audience. \
+    En continuant à naviguer, vous acceptez l’utilisation des cookies. \
     <a href="javascript:gaOk()" class="button mini success">Ok</a> \
     <a href="{% url "pdp.pages.views.tos" %}#cookies" class="button mini">En savoir plus</a> \
     </p>';
