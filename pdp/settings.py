@@ -40,6 +40,10 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+# We use console output for emails on this dev configuration
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Use SQLite for easy dev database system
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
