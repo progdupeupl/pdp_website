@@ -8,12 +8,11 @@
 </p>
 <p>
     En tant que membre, tu peux désormais participer activement à la vie du site
-    en te lançant dans <a href="/articles/nouveau">la rédaction d’articles</a>,
-    <a href="/tutoriels/nouveau">de tutoriels</a> ou en <a href="/forums/">
-    contribuant au forum</a>.
+    en te lançant dans <a href="{% url "pdp.tutorial.views.add_tutorial" %}">la rédaction de
+    tutoriels</a> ou en <a href="{% url "pdp.forum.views.index" %}">contribuant aux forums</a>.
 </p>
 <p>
-    N’hésites pas à <a href="/forums/sujet/1/bienvenue/">venir te présenter
+    N’hésites pas à <a href="{% url "pdp.forum.views.topic" 1 "bienvenue" %}">venir te présenter
     aux autres</a> si le cœur t’en dit ! :) </p>
 <p>
     Amicalement,<br />
