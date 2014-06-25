@@ -315,7 +315,7 @@ def answer(request):
     last_post_pk = g_topic.last_message.pk
 
     # Check permissions
-    if not is_participant(request.user, topic):
+    if not is_participant(request.user, g_topic):
         raise PermissionDenied
 
     # Check that the user isn't spamming
