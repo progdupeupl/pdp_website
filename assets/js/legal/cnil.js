@@ -1,5 +1,3 @@
-gaProperty = '{{ key }}'
-
 var disableStr = 'ga-disable-' + gaProperty;
 
 if (document.cookie.indexOf('hasConsent=false') > -1) {
