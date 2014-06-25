@@ -125,7 +125,7 @@ you will need to start it. A shortcut is provided in the fabfile, simply type :
 And the celery server will start. You will also need Pandoc as PDF generator
 from Markdown sources.
 
-## Deployment
+## First run
 
 From the project's root, you will need to run the following command, which uses
 the build and deployment tool [Fabric](http://docs.fabfile.org/en/1.8/).
@@ -133,26 +133,24 @@ the build and deployment tool [Fabric](http://docs.fabfile.org/en/1.8/).
     :::console
     (venv)$ fab bootstrap
 
-Once everything is synced, you will have to create a Profile instance for your
-superuser account using the your credentials and the Django admin system
-aivaible on `/admin/`.
-
-You can then create run a test server on your local machine:
+Once everything is synced, you can then run a test server on your local
+machine:
 
     :::console
     $ # activate the virtual environment (no need to repeat this in a given session)
     $ source venv/bin/activate
     $ # run the server
-    $ python manage.py runserver
+    (venv)$ python manage.py runserver
 
 The test instance should be available at
 [http://localhost:8000](http://localhost:8000). It will automatically update its
 behavior if you edit the code of the project. Enjoy, and send us lots of good
 patches!
 
-## Init database with fake data
+## Filling your local database with data
 
-If you want to fill the database with fake data, just run this command :
+If you want to fill the database with fake data, you can import them from
+fixtures. You only have to run this command:
 
     :::console
     (venv)$ fab loadfixtures
@@ -162,7 +160,7 @@ It will create :
  - the forums' and tutorials' categories.
  - 6 users and their profiles.
  - 2 topics with 3 posts on each one.
- - 1 private topic.
+ - 1 private message.
 
 You can login with these dummy users using their lowercase usernames as their
 respective passwords.
@@ -171,13 +169,15 @@ respective passwords.
 
 If you want to build the documentation, you will need to install Sphinx 1.3 for
 its support of Google docstrings format. Since this version is 'till not
-released, you can install latest version of Sphinx using pip :
+released, you will have to manually download a Sphinx snapshot on their
+website, uncompress it and and tell PIP to install it from local folder:
 
     :::console
-    $ pip install sphinx==dev
+    $ pip install ~/tmp/birkenfeld-sphinx-xxxxxxxxxxxx/
 
 Then, you need to set an environment variable in your shell in order to make
-the documentation generation work, because of Django's settings handling :
+the documentation generation work (because of Django's settings handling) and
+run the makefile :
 
     :::console
     $ cd doc
