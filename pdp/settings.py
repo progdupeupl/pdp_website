@@ -361,7 +361,7 @@ PIPELINE_JS = {
         'source_filenames': {
             'js/legal/cnil.js',
         },
-        'output_finelane': 'js/legal.js'
+        'output_filename': 'js/legal.js'
     }
 }
 
