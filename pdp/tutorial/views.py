@@ -1097,7 +1097,12 @@ def modify_extract(request):
 # Tutorial filters
 
 def by_category(request, name):
-    """Display all tutorials belonging to a specific category."""
+    """Display all tutorials belonging to a specific category.
+
+    Returns:
+        HttpResponse
+
+    """
 
     # Deduce category to display based on its name
     if name == 'tous':
@@ -1191,7 +1196,12 @@ def tags(request):
 
 
 def by_tag(request, name):
-    """Find all tutorials which was marked by a specific tag."""
+    """Find all tutorials which was marked by a specific tag.
+
+    Returns:
+        HttpResponse
+
+    """
 
     if request.user.is_authenticated():
         tutorials = Tutorial.objects\
