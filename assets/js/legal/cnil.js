@@ -22,7 +22,7 @@ function askConsent(){
     div.innerHTML =  '<p> \
     En continuant à naviguer, vous acceptez l’utilisation des cookies. \
     <a href="javascript:gaOk()" class="button mini success">Ok</a> \
-    <a href="{% url "pdp.pages.views.tos" %}#cookies" class="button mini">En savoir plus</a> \
+    <a href="/pages/cgu#cookies" class="button mini">En savoir plus</a> \
     </p>';
 
     bodytag.insertBefore(div,bodytag.firstChild);
