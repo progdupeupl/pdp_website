@@ -24,6 +24,8 @@ from crispy_forms_foundation.layout import Layout, Submit, HTML, Field
 
 
 class TopicForm(forms.Form):
+    """Form used to create a new topic."""
+
     title = forms.CharField(
         label=u'Titre',
         max_length=80,
@@ -65,4 +67,9 @@ class TopicForm(forms.Form):
 
 
 class PostForm(forms.Form):
+    """Form used to answer a topic."""
+
     text = forms.CharField(widget=forms.Textarea)
+
+    def __init__(self, *args, **kwargs):
+        super(PostForm, self).__init__(*args, **kwargs)

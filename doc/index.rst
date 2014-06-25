@@ -11,7 +11,6 @@ Contents:
 .. toctree::
     :maxdepth: 2
 
-    article
     tutorial
     forum
 
@@ -21,6 +20,8 @@ Contents:
 
     pages
     utils
+
+    article
 
 .. automodule:: pdp
 

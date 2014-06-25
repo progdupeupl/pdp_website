@@ -1,5 +1,5 @@
-Messages
-========
+Private messages app
+====================
 
 .. automodule:: pdp.messages
     :members:

@@ -28,6 +28,8 @@ from pdp.utils import slugify
 
 
 class TutorialForm(forms.Form):
+    """Form used to create a new tutorial."""
+
     title = forms.CharField(
         label=u'Titre',
         max_length=80
@@ -77,6 +79,8 @@ class TutorialForm(forms.Form):
 
 
 class ImportTutorialForm(forms.Form):
+    """Form used to import a tutorial from a MD file."""
+
     markdown = forms.FileField(
         label=u'Fichier markdown',
         required=True
@@ -100,6 +104,8 @@ class ImportTutorialForm(forms.Form):
 
 
 class EditTutorialForm(forms.Form):
+    """Form used to edit an existing tutorial."""
+
     title = forms.CharField(
         label=u'Titre',
         max_length=80
@@ -154,6 +160,8 @@ class EditTutorialForm(forms.Form):
 
 
 class AddPartForm(forms.Form):
+    """Form used to add a part to a tutorial."""
+
     title = forms.CharField(
         label=u'Titre',
         max_length=80
@@ -211,6 +219,8 @@ class AddPartForm(forms.Form):
 
 
 class EditPartForm(forms.Form):
+    """Form used to edit an existing part."""
+
     title = forms.CharField(
         label=u'Titre',
         max_length=80
@@ -277,6 +287,8 @@ class EditPartForm(forms.Form):
 
 
 class AddChapterForm(forms.Form):
+    """Form used to add a chapter to a part."""
+
     title = forms.CharField(
         label=u'Titre',
         max_length=80
@@ -346,6 +358,8 @@ class AddChapterForm(forms.Form):
 
 
 class EditChapterForm(forms.Form):
+    """Form used to edit an existing chapter."""
+
     title = forms.CharField(
         label=u'Titre',
         max_length=80
@@ -416,6 +430,12 @@ class EditChapterForm(forms.Form):
 
 
 class EmbdedChapterForm(forms.Form):
+    """Form used to edit a chapter for standalone chapters.
+
+    This form may be used for small tutorials only.
+
+    """
+
     introduction = forms.CharField(
         required=False,
         widget=forms.Textarea
@@ -449,6 +469,8 @@ class EmbdedChapterForm(forms.Form):
 
 
 class ExtractForm(forms.Form):
+    """Form used to add an extract to a chapter."""
+
     title = forms.CharField(
         label=u'Titre',
         max_length=80
@@ -481,6 +503,8 @@ class ExtractForm(forms.Form):
 
 
 class EditExtractForm(forms.Form):
+    """Form used to edit an existing extract."""
+
     title = forms.CharField(
         label=u'Titre',
         max_length=80

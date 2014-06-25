@@ -1,5 +1,5 @@
-Tutorial
-=======
+Tutorial app
+============
 
 .. automodule:: pdp.tutorial
     :members:
@@ -20,4 +20,10 @@ Views
 -----
 
 .. automodule:: pdp.tutorial.views
+    :members:
+
+The tutorial loader
+-------------------
+
+.. automodule:: pdp.tutorial.loader
     :members:

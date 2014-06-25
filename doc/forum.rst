@@ -1,5 +1,5 @@
-Forum
-=======
+Forum app
+=========
 
 .. automodule:: pdp.forum
     :members:

@@ -22,7 +22,7 @@ from pdp.article.models import Article
 
 
 def redirect_index(request):
-    """Display articles list.
+    """Redirects to the tutorial index.
 
     Returns:
         HttpResponse
@@ -32,7 +32,7 @@ def redirect_index(request):
 
 
 def redirect_view(request, article_pk, article_slug):
-    """Show the given article if exists and is visible.
+    """Redirects article to its equivalent tutorial.
 
     Returns:
         HttpResponse
@@ -48,8 +48,20 @@ def redirect_view(request, article_pk, article_slug):
 
 
 def redirect_feed_rss(request):
+    """Redirect the article RSS feed to the tutorial feed.
+
+    Returns:
+        HttpResponse
+
+    """
     return redirect('/tutoriels/flux/rss/', permanent=True)
 
 
 def redirect_feed_atom(request):
+    """Redirect the article ATOM feed to the tutorial feed.
+
+    Returns:
+        HttpResponse
+
+    """
     return redirect('/tutoriels/flux/atom/', permanent=True)

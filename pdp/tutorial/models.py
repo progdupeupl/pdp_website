@@ -18,9 +18,13 @@
 """Models for tutorial app.
 
 The class hierarchy is as follows :
- - "large" tutorials: Tutorial < Parts < Chapters < Extracts
- - "medium" tutorials: Tutorial < Part < Chapters < Extracts
- - "small" tutorials : Tutorial < Chapter < Extracts
+
+ - Large tutorials: Tutorial < Parts < Chapters < Extracts
+ - Medium tutorials: Tutorial < Part < Chapters < Extracts
+ - Small tutorials : Tutorial < Chapter < Extracts
+
+Each class may provide some hierarchy fields or methods in order to access its
+parent (or children) object(s).
 
 """
 
@@ -97,13 +101,23 @@ class TutorialCategory(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        """Get URL to view the category."""
+        """Get URL to view the category.
+
+        Returns:
+            string
+
+        """
         return reverse('pdp.tutorial.views.by_category', args=(
             self.slug,
         ))
 
     def get_tutorial_count(self):
-        """Return number of visible tutorials in this category."""
+        """Return number of visible tutorials in this category.
+
+        Returns:
+            int
+
+        """
         return Tutorial.objects \
             .filter(is_visible=True) \
             .filter(category__pk=self.pk) \
@@ -112,7 +126,11 @@ class TutorialCategory(models.Model):
 
 class Tutorial(models.Model):
 
-    """A tutorial, large or small."""
+    """A tutorial.
+
+    Can even ben small, medium or big (check the `size` field).
+
+    """
 
     class Meta:
         verbose_name = u'Tutoriel'
@@ -236,7 +254,12 @@ class Tutorial(models.Model):
         ])
 
     def get_pdf_url(self):
-        """Get URL to get a PDF file of this tutorial."""
+        """Get URL of the generated PDF file from this tutorial.
+
+        Returns:
+            string
+
+        """
         return u'{}/tutorials/{}/{}.pdf'.format(
             settings.MEDIA_URL,
             self.pk,
@@ -244,7 +267,12 @@ class Tutorial(models.Model):
         )
 
     def get_md_url(self):
-        """Get URL to get a MD file of this tutorial."""
+        """Get URL of the generated Markdown file from this tutorial.
+
+        Returns:
+            string
+
+        """
         return u'{}/tutorials/{}/{}.md'.format(
             settings.MEDIA_URL,
             self.pk,
@@ -252,7 +280,12 @@ class Tutorial(models.Model):
         )
 
     def has_pdf(self):
-        """Check if the tutorial has a PDF file."""
+        """Check if the tutorial has a PDF file.
+
+        Returns:
+            boolean
+
+        """
         return os.path.isfile(os.path.join(
             settings.MEDIA_ROOT,
             'tutorials',
@@ -261,7 +294,12 @@ class Tutorial(models.Model):
         ))
 
     def has_md(self):
-        """Check if the tutorial has a markdown file"""
+        """Check if the tutorial has a Markdown file.
+
+        Returns:
+            boolean
+
+        """
         return os.path.isfile(os.path.join(
             settings.MEDIA_ROOT,
             'tutorials',
@@ -282,7 +320,7 @@ class Tutorial(models.Model):
         """Get the parts associated with the tutorial if it's big.
 
         Returns:
-            list of Part
+            QuerySet on Part objects
 
         """
         return Part.objects.all()\
@@ -290,14 +328,19 @@ class Tutorial(models.Model):
             .order_by('position_in_tutorial')
 
     def get_part(self):
-        """Get the part associated with the tutorial if medium."""
+        """Get the part associated with the tutorial if medium.
+
+        Returns:
+            Part object or None
+
+        """
         return self.get_parts().first()
 
     def get_chapter(self):
         """Get the chapter associated with the tutorial if it's small.
 
         Returns:
-            Chapter
+            Chapter or None
 
         Raises:
             CorruptedTutorialError

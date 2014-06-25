@@ -1,5 +1,5 @@
-Gallery
-=======
+User gallery app
+================
 
 .. automodule:: pdp.gallery
     :members:

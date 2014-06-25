@@ -173,16 +173,16 @@ released, you will have to manually download a Sphinx snapshot on their
 website, uncompress it and and tell PIP to install it from local folder:
 
     :::console
-    $ pip install ~/tmp/birkenfeld-sphinx-xxxxxxxxxxxx/
+    (venv)$ pip install ~/tmp/birkenfeld-sphinx-xxxxxxxxxxxx/
 
 Then, you need to set an environment variable in your shell in order to make
 the documentation generation work (because of Django's settings handling) and
 run the makefile :
 
     :::console
-    $ cd doc
-    $ export DJANGO_SETTINGS_MODULE=pdp.settings
-    $ make html
+    (venv)$ cd doc
+    (venv)$ export DJANGO_SETTINGS_MODULE=pdp.settings
+    (venv)$ make html
 
 ## Copyright
 
