@@ -20,7 +20,7 @@ from datetime import datetime
 
 from django.conf import settings
 from django.shortcuts import redirect, get_object_or_404
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -144,6 +144,8 @@ def topic(request, topic_pk, topic_slug):
         page_nbr = int(request.GET['page'])
     except KeyError:
         page_nbr = 1
+    except ValueError:
+        return HttpResponseBadRequest()
 
     # We try to page content
     try:

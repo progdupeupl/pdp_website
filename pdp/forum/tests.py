@@ -103,6 +103,14 @@ def ForumTopicIntegrationTests(TestCase):
         resp = self.client.get('/forums/sujet/112-test-topic')
         self.assertRedirects(resp, self.topic.get_absolute_url(), 301)
 
+    def test_topic_bad_page(self):
+        url = u'{}?page={}'.format(
+            self.topic.get_absolute_url(),
+            '1/garbage'
+        )
+        resp = self.client.get(url)
+        self.assertEquals(resp.status_code, 400)
+
 
 class FeedsIntegrationTests(TestCase):
 
