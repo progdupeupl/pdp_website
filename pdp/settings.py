@@ -353,7 +353,7 @@ PIPELINE_JS = {
         'source_filenames': {
             'js/custom/ajax-csrf.js',
             'js/custom/editor.js',
-            'js/custom/section.js',
+            'js/custom/select-autosubmit.js',
         },
         'output_filename': 'js/custom.js'
     },
