@@ -42,84 +42,94 @@
     <hr />
 
     {% for extract in extracts %}
-    <div class="row">
-        <div class="large-12 columns">
-            <h2 id="{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
-                <a href="#{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
-                    {{ extract.title }}
-                </a>
-            </h2>
-
-            {% if user in authors %}
-                <form action="{% url "pdp.tutorial.views.modify_extract" %}" method="post" class="custom right">
-                    <input type="hidden" name="extract" value="{{ extract.pk }}" />
-                    <input type="hidden" name="move" value="" />
-                    <select name="move_target" class="select-autosubmit">
-                        <option>Déplacer</option>
-                        {% if extract.position_in_chapter > 1 %}
-                            <option value="{{ extract.position_in_chapter|add:"-1" }}">Monter</option>
-                        {% endif %}
-                        {% if extract.position_in_chapter < chapter.get_extracts.count %}
-                            <option value="{{ extract.position_in_chapter|add:"1" }}">Descendre</option>
-                        {% endif %}
-                            <option disabled>&mdash; Déplacer avant</option>
-                        {% for extract_mv in chapter.get_extracts %}
-                            {% if extract != extract_mv and extract_mv.position_in_chapter|add:"-1" != extract.position_in_chapter %}
-                            <option value="{% if extract_mv.position_chapter < extract.position_in_chapter %}{{ extract_mv.position_in_chapter }}{% else %}{{ extract_mv.position_in_chapter|add:"-1" }}{% endif %}">
-                                Extrait {{ extract_mv.position_in_chapter }} : {{ extract_mv.title }}
-                            </option>
-                            {% endif %}
-                        {% endfor %}
-                        <option disabled>&mdash; Déplacer après</option>
-                        {% for extract_mv in chapter.get_extracts %}
-                            {% if extract != extract_mv and extract_mv.position_in_chapter|add:"1" != extract.position_in_chapter %}
-                            <option value="{% if extract_mv.position_chapter < extract.position_in_chapter %}{{ extract_mv.position_in_chapter|add:"1" }}{% else %}{{ extract_mv.position_in_chapter }}{% endif %}">
-                                Extrait {{ extract_mv.position_in_chapter }} : {{ extract_mv.title }}
-                            </option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                    <noscript>
-                        <button type="submit" name="move" class="button">
-                            Déplacer
-                        </button>
-                    </noscript>
-
-                    {% csrf_token %}
-                </form>
-
-                <form action="{% url "pdp.tutorial.views.modify_extract" %}" method="post">
-                    <input type="hidden" name="extract" value="{{ extract.pk }}" />
-                    <div class="button-group">
-                        <a href="{% url "pdp.tutorial.views.edit_extract" %}?extrait={{ extract.pk }}" class="button">
-                            Éditer
-                        </a>
-                        <a href="#" class="button secondary" data-dropdown="delete-drop-extract-{{ extract.pk }}">
-                            Supprimer
-                        </a>
-                        <div id="delete-drop-extract-{{ extract.pk }}" class="f-dropdown content small" data-dropdown-content>
-                            <p>
-                                Si vous supprimez cet extrait, il sera alors impossible de le modifier/consulter de nouveau.
-                            </p>
-                            <button type="submit" name="delete" class="button expand alert">
-                                Supprimer
-                            </button>
-                        </div>
-                    </div>
-                    {% csrf_token %}
-                </form>
-            {% endif %}
-
-            {% if extract.text %}
-                {{ extract.text|emarkdown }}
-            {% else %}
-                <p>
-                    Cet extrait est vide.
-                </p>
-            {% endif %}
+        <div class="row">
+            <div class="large-12 columns">
+                <h2 id="{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
+                    <a href="#{{ extract.position_in_chapter }}-{{ extract.title|slugify }}">
+                        {{ extract.title }}
+                    </a>
+                </h2>
+            </div>
         </div>
-    </div>
+        {% if user in authors %}
+            <div class="row">
+                <div class="large-6 columns">
+                    <form action="{% url "pdp.tutorial.views.modify_extract" %}" method="post">
+                        <input type="hidden" name="extract" value="{{ extract.pk }}" />
+                        <div class="button-group">
+                            <a href="{% url "pdp.tutorial.views.edit_extract" %}?extrait={{ extract.pk }}" class="button">
+                                Éditer
+                            </a>
+                            <a href="#" class="button secondary" data-dropdown="delete-drop-extract-{{ extract.pk }}">
+                                Supprimer
+                            </a>
+                            <div id="delete-drop-extract-{{ extract.pk }}" class="f-dropdown content small" data-dropdown-content>
+                                <p>
+                                    Si vous supprimez cet extrait, il sera alors impossible de le modifier/consulter de nouveau.
+                                </p>
+                                <button type="submit" name="delete" class="button expand alert">
+                                    Supprimer
+                                </button>
+                            </div>
+                        </div>
+                        {% csrf_token %}
+                    </form>
+                </div>
+                <div class="large-4 columns">
+                    {# Move form #}
+                    <form action="{% url "pdp.tutorial.views.modify_extract" %}" method="post" class="custom">
+                        <input type="hidden" name="extract" value="{{ extract.pk }}" />
+                        <input type="hidden" name="move" value="" />
+                        <select name="move_target" class="select-autosubmit">
+                            <option>Déplacer</option>
+                            {% if extract.position_in_chapter > 1 %}
+                                <option value="{{ extract.position_in_chapter|add:"-1" }}">Monter</option>
+                            {% endif %}
+                            {% if extract.position_in_chapter < chapter.get_extracts.count %}
+                                <option value="{{ extract.position_in_chapter|add:"1" }}">Descendre</option>
+                            {% endif %}
+                                <option disabled>&mdash; Déplacer avant</option>
+                            {% for extract_mv in chapter.get_extracts %}
+                                {% if extract != extract_mv and extract_mv.position_in_chapter|add:"-1" != extract.position_in_chapter %}
+                                <option value="{% if extract_mv.position_chapter < extract.position_in_chapter %}{{ extract_mv.position_in_chapter }}{% else %}{{ extract_mv.position_in_chapter|add:"-1" }}{% endif %}">
+                                    Extrait {{ extract_mv.position_in_chapter }} : {{ extract_mv.title }}
+                                </option>
+                                {% endif %}
+                            {% endfor %}
+                            <option disabled>&mdash; Déplacer après</option>
+                            {% for extract_mv in chapter.get_extracts %}
+                                {% if extract != extract_mv and extract_mv.position_in_chapter|add:"1" != extract.position_in_chapter %}
+                                <option value="{% if extract_mv.position_chapter < extract.position_in_chapter %}{{ extract_mv.position_in_chapter|add:"1" }}{% else %}{{ extract_mv.position_in_chapter }}{% endif %}">
+                                    Extrait {{ extract_mv.position_in_chapter }} : {{ extract_mv.title }}
+                                </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <noscript>
+                            <button type="submit" name="move" class="button">
+                                Déplacer
+                            </button>
+                        </noscript>
+
+                        {% csrf_token %}
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+        {# Extract content #}
+        <div class="row">
+            <div class="large-12 columns">
+                {% if extract.text %}
+                    {{ extract.text|emarkdown }}
+                {% else %}
+                    <p>
+                        Cet extrait est vide.
+                    </p>
+                {% endif %}
+            </div>
+        </div>
     {% endfor %}
+    {# End of extracts forloop #}
 
     <hr />
 
