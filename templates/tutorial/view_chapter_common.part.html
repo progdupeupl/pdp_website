@@ -94,10 +94,10 @@
                         <a href="{% url "pdp.tutorial.views.edit_extract" %}?extrait={{ extract.pk }}" class="button">
                             Éditer
                         </a>
-                        <a href="#" class="button secondary" data-dropdown="delete-drop-extract">
+                        <a href="#" class="button secondary" data-dropdown="delete-drop-extract-{{ extract.pk }}">
                             Supprimer
                         </a>
-                        <div id="delete-drop-extract" class="f-dropdown content small" data-dropdown-content>
+                        <div id="delete-drop-extract-{{ extract.pk }}" class="f-dropdown content small" data-dropdown-content>
                             <p>
                                 Si vous supprimez cet extrait, il sera alors impossible de le modifier/consulter de nouveau.
                             </p>
