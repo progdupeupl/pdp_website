@@ -40,18 +40,18 @@
                     <form action="{% url "pdp.tutorial.views.modify_part" %}" method="POST">
                         <input type="hidden" name="part" value="{{ part.pk }}" />
                         <div class="button-group">
-                            <a href="/tutoriels/nouveau/chapitre?partie={{ part.pk }}" class="button">
+                            <a href="{% url "pdp.tutorial.views.add_chapter" %}?partie={{ part.pk }}" class="button">
                                 Ajouter
                             </a>
 
-                            <a href="/tutoriels/editer/partie?partie={{ part.pk }}" class="button">
+                            <a href="{% url "pdp.tutorial.views.edit_part" %}?partie={{ part.pk }}" class="button">
                                 Éditer
                             </a>
 
-                            <a href="#" class="button secondary" data-dropdown="delete-drop-part">
+                            <a href="#" class="button secondary" data-dropdown="delete-drop-part-{{ part.pk }}">
                                 Supprimer
                             </a>
-                            <div id="delete-drop-part" class="f-dropdown content small" data-dropdown-content>
+                            <div id="delete-drop-part-{{ part.pk }}" class="f-dropdown content small" data-dropdown-content>
                                 <p>
                                     Si vous supprimez cette partie, il sera alors impossible de la modifier/consulter de nouveau.
                                 </p>
