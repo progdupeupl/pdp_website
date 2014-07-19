@@ -169,8 +169,9 @@ respective passwords.
 
 If you want to build the documentation, you will need to install Sphinx 1.3 for
 its support of Google docstrings format. Since this version is 'till not
-released, you will have to manually download a Sphinx snapshot on their
-website, uncompress it and and tell PIP to install it from local folder:
+released, you will have to [manually download a Sphinx snapshot on their
+website](http://sphinx-doc.org/install.html), uncompress it and and tell PIP to
+install it from local folder:
 
     :::console
     (venv)$ pip install ~/tmp/birkenfeld-sphinx-xxxxxxxxxxxx/
@@ -180,11 +181,12 @@ the documentation generation work (because of Django's settings handling) and
 run the makefile :
 
     :::console
-    (venv)$ cd doc
+    (venv)$ cd doc/
     (venv)$ export DJANGO_SETTINGS_MODULE=pdp.settings
     (venv)$ make html
 
 ## Copyright
 
-Progdupeupl is brought to you under GNU Affero General Public Licence version
-3+. For further informations please read the COPYING file.
+Progdupeupl is brought to you under [GNU Affero General Public Licence version
+3+](http://www.gnu.org/licenses/agpl-3.0.html). For further informations please
+read the COPYING file.
