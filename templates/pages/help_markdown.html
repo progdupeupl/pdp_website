@@ -123,7 +123,7 @@ Ligne 2.</pre>
                     <td><b>texte</b></td>
                 </tr><tr>
                     <td>Barré</td>
-                    <td><code>du texte &ltdel>barré&lt/del> encore du texte</code></td>
+                    <td><code>du texte &lt;del&gt;barré&lt;/del&gt; encore du texte</code></td>
                     <td>du texte <del>barré</del> encore du texte</td>
                 </tr><tr>
                     <td>Lien brut</td>
@@ -188,7 +188,7 @@ Ligne 2.</pre>
 [^1]: Verbe
 [^2]: Nom commun</pre>
                     </td><td>
-                    <p>Ceci est<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> du texte<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup> avec des notes de bas de page<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>.</p>
+                    <p>Ceci est<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> du texte<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup> avec des notes de bas de page.</p>
         <div class="footnote">
         <hr>
         <ol>
@@ -243,8 +243,8 @@ Ligne 2.</pre>
 <code>
 | Colonne 1 | Colonne 2 |
 |-----------|-----------|
-| Donnée a | Donnée b |
-| Donnée c | Donnée d |
+| Donnée a  | Donnée b  |
+| Donnée c  | Donnée d  |
 </code>
 </pre>
 
@@ -371,6 +371,26 @@ suite
                 </tr>
             </tbody>
         </table>
+        <h3>
+            Utilisation de formules dans un tableau
+        </h3>
+        <p>
+            Attention cependant, si vous voulez utiliser des formules
+            mathématiques dans un tableau en utilisant la syntaxe Markdown, dû
+            à un bug de Python-Markdown vous allez devoir échapper les
+            accolades dans vos formules, de la manière suivante :
+        </p>
+<pre>
+<code>
+colonne      | colonne
+-------------|---------
+$a_\{1\}$    | $a_\{2\}
+</code>
+</pre>
+        <p>
+            Voir <a href="https://bitbucket.org/MicroJoe/progdupeupl/issue/153/mathjax-fails-in-markdown-tables">
+            cette discussion sur Bitbucket</a> pour plus d’informations.
+        </p>
 
         <!-- Temporary disabled
         <h2>
