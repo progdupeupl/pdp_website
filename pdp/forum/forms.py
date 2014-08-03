@@ -22,6 +22,8 @@ from crispy_forms.layout import Div
 
 from crispy_forms_foundation.layout import Layout, Submit, HTML, Field
 
+from pdp.utils import slugify
+
 
 class TopicForm(forms.Form):
     """Form used to create a new topic."""
@@ -64,6 +66,16 @@ class TopicForm(forms.Form):
             )
         )
         super(TopicForm, self).__init__(*args, **kwargs)
+
+    def clean_title(self):
+        data = self.cleaned_data['title']
+
+        if slugify(data) == u'':
+            raise forms.ValidationError(
+                u'Votre titre doit au moins contenir une lettre de l’alphabet.'
+            )
+
+        return data
 
 
 class PostForm(forms.Form):
