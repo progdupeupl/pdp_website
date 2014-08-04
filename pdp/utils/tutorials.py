@@ -240,7 +240,7 @@ def export_text_md(f, text):
                 (\s*)                 # any whitespace after url
                 \)
             """,
-            r'(\1../../../media/galleries/\2\3)',
+            r'(\1{}/galleries/\2\3)'.format(settings.EXPORT_RELATIVE_MEDIA),
             text,
             flags=re.X
         )

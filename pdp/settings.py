@@ -415,6 +415,7 @@ CELERY_ACCEPT_CONTENT = ['json', 'pickle']
 #
 
 PANDOC_PATH = ''
+EXPORT_RELATIVE_MEDIA = '../../../media/'
 
 #
 # Custom
