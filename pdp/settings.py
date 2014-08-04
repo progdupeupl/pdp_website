@@ -411,6 +411,12 @@ BROKER_URL = 'django://'
 CELERY_ACCEPT_CONTENT = ['json', 'pickle']
 
 #
+# Pandoc
+#
+
+PANDOC_PATH = ''
+
+#
 # Custom
 #
 # These settings are used by internal applications.

@@ -17,18 +17,40 @@
 
 """File containing celery tasks for long tasks."""
 
+import os
 import subprocess
 
+from django.conf import settings
 from celery import task
 
 
 @task()
-def pandoc_pdf(source, dest):
+def pandoc_pdf(source, dest, tutorial_pk):
     """Generate PDF file from markdown source using Pandoc.
 
     Params:
         source: filepath to the markdown source file
         dest: name of the generated PDF file
+        tutorial_pk: id of the tutorial
 
     """
-    subprocess.call(['pandoc', '--latex-engine=xelatex', '-o', dest, source])
+
+    # Go to site’s root directory so the images can be found under '/media/'
+    os.chdir(
+        os.path.join(
+            settings.MEDIA_ROOT,
+            'tutorials/{}/'.format(tutorial_pk)
+        )
+    )
+
+    # Generate intermediate .tex file using Pandoc
+    tex_dest = ''.join(dest.split('.')[:-1]) + '.tex'
+    command = '{}pandoc -s -t latex --latex-engine=xelatex -o {} {}'.format(
+        settings.PANDOC_PATH,
+        tex_dest,
+        source
+    )
+    os.system(command)
+
+    # Generate PDF file from .tex source using XeLaTeX
+    os.system('xelatex {}'.format(tex_dest))

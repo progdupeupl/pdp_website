@@ -22,6 +22,8 @@ from itertools import repeat
 
 import os
 import io
+import re
+
 from datetime import datetime
 
 from pdp import settings
@@ -227,6 +229,15 @@ def export_text_md(f, text):
 
     """
     if text:
+
+        # Little hack to make XeLaTeX reach the images on PDF export, make the
+        # regex more precise if there are noticeable undesired substitutions.
+        text = re.sub(
+            r'\(\/media\/(.*)\)',
+            r'(../../../media/\1)',
+            text
+        )
+
         f.write(text)
         f.write(u'\n\n')
 
@@ -354,6 +365,6 @@ def export_tutorial_pdf(tutorial):
         export_text_md(f, tutorial.conclusion)
 
     # We generate the PDF from markdown using Pandoc
-    pandoc_pdf.delay(md_filepath, pdf_filepath)
+    pandoc_pdf.delay(md_filepath, pdf_filepath, tutorial.pk)
 
     return pdf_filepath
