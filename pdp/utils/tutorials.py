@@ -233,9 +233,16 @@ def export_text_md(f, text):
         # Little hack to make XeLaTeX reach the images on PDF export, make the
         # regex more precise if there are noticeable undesired substitutions.
         text = re.sub(
-            r'\(\/media\/(.*)\)',
-            r'(../../../media/\1)',
-            text
+            r"""\(
+                (\s*)                 # any whitespace before url
+                /media/galleries/     # match url to galeries
+                (.+?)                 # match rest of the image path
+                (\s*)                 # any whitespace after url
+                \)
+            """,
+            r'(\1../../../media/galleries/\2\3)',
+            text,
+            flags=re.X
         )
 
         f.write(text)
