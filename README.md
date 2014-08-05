@@ -117,21 +117,21 @@ compress CSS and JS sheets.
     $ npm install yuglify
 
 In order to generate PDF files using a background task scheduler named celery,
-you will need to start it. A shortcut is provided in the fabfile, simply type :
+you will need to start it. A shortcut is provided in the Makefile, simply
+type:
 
     :::console
-    $ fab celery
+    $ make celery
 
 And the celery server will start. You will also need Pandoc as PDF generator
 from Markdown sources.
 
 ## First run
 
-From the project's root, you will need to run the following command, which uses
-the build and deployment tool [Fabric](http://docs.fabfile.org/en/1.8/).
+From the project's root, you will need to run the following Make target:
 
     :::console
-    (venv)$ fab bootstrap
+    (venv)$ make bootstrap
 
 Once everything is synced, you can then run a test server on your local
 machine:
@@ -153,9 +153,9 @@ If you want to fill the database with fake data, you can import them from
 fixtures. You only have to run this command:
 
     :::console
-    (venv)$ fab loadfixtures
+    (venv)$ make loadfixtures
 
-It will create :
+It will create:
 
  - the forums' and tutorials' categories.
  - 6 users and their profiles.
