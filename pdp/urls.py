@@ -22,28 +22,11 @@ from django.contrib.auth.models import User, Group
 from haystack.views import SearchView
 from haystack.forms import ModelSearchForm
 
-from rest_framework import viewsets, routers
-
 from django.contrib import admin
 admin.autodiscover()
 
 import pdp.pages.views
 import pdp.settings
-
-# ViewSets define the view behavior.
-
-class UserViewSet(viewsets.ModelViewSet):
-    model = User
-
-
-class GroupViewSet(viewsets.ModelViewSet):
-    model = Group
-
-
-# Routers provide an easy way of automatically determining the URL conf
-router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
-router.register(r'groups', GroupViewSet)
 
 urlpatterns = patterns(
     '',
@@ -58,11 +41,6 @@ urlpatterns = patterns(
     url(r'^galerie/', include('pdp.gallery.urls')),
 
     url(r'^$', pdp.pages.views.home),
-
-    url(r'^api-auth/', include('rest_framework.urls',
-                               namespace='rest_framework')),
-    url(r'^api-docs/', include('rest_framework_swagger.urls')),
-    url(r'^oauth2/', include('provider.oauth2.urls', namespace='oauth2')),
 
     url(r'^recherche/', SearchView(
         template='search/search.html',
