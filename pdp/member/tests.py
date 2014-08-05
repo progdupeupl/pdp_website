@@ -30,6 +30,21 @@ class MemberIntegrationTests(TestCase):
         resp = self.client.get(reverse('pdp.member.views.index'))
         self.assertEqual(resp.status_code, 200)
 
+    def test_index_good_page(self):
+        url = '{}?page=1'.format(reverse('pdp.member.views.index'))
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_index_overflow_page(self):
+        url = '{}?page=42'.format(reverse('pdp.member.views.index'))
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_index_bad_page(self):
+        url = '{}?page=fake'.format(reverse('pdp.member.views.index'))
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
     def test_details(self):
         user = G(User, username='toto')
         G(Profile, user=user)
@@ -84,6 +99,21 @@ class AuthenticatedMemberIntegrationTests(TestCase):
 
     def test_publications(self):
         resp = self.client.get(reverse('pdp.member.views.publications'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_publications_filter_beta(self):
+        url = '{}?filtre=beta'.format(reverse('pdp.member.views.publications'))
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_publications_filter_published(self):
+        url = '{}?filtre=publie'.format(reverse('pdp.member.views.publications'))
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_publications_bad_filter(self):
+        url = '{}?filtre=fake'.format(reverse('pdp.member.views.publications'))
+        resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
     def test_actions(self):
