@@ -194,10 +194,6 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'taggit',
     'pipeline',
-    'rest_framework',
-    'provider',
-    'provider.oauth2',
-    'rest_framework_swagger',
     'haystack',
     'celery',
 
@@ -250,47 +246,6 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
-}
-
-#
-# API
-#
-
-REST_FRAMEWORK = {
-
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.YAMLRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
-        'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.XMLRenderer',
-    ),
-
-    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
-
-    'DEFAULT_MODEL_SERIALIZER_CLASS':
-    'rest_framework.serializers.HyperlinkedModelSerializer',
-
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
-}
-
-SWAGGER_SETTINGS = {
-    "exclude_namespaces": [],  # List URL namespaces to ignore
-    "api_version": '0.1',  # Specify your API's version
-    "api_path": "/",  # Specify the path to your API not a root level
-    "enabled_methods": [  # Specify which methods to enable in Swagger UI
-        'get',
-        'post',
-        'put',
-        'patch',
-        'delete'
-    ],
-    "api_key": '',  # An API key
-    "is_authenticated": False,  # Set to True to enforce user authentication,
-    "is_superuser": False,  # Set to True to enforce admin only access
 }
 
 #

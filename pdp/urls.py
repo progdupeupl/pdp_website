@@ -56,7 +56,6 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     url(r'^pages/', include('pdp.pages.urls')),
     url(r'^galerie/', include('pdp.gallery.urls')),
-    url(r'^api/', include('pdp.api.urls')),
 
     url(r'^$', pdp.pages.views.home),
 
