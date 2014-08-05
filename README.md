@@ -99,6 +99,14 @@ in the source repository. From the PDP directory, simply run
 (This will install the full Django framework and a few separate modules, so it
 may take some time.)
 
+Since South is not supporting Python 3 for its last release you will have to
+install the current dev version:
+
+    :::console
+    (venv)$ hg clone https://bitbucket.org/andrewgodwin/south
+    ...
+    (venv)$ pip install ./south/
+
 Moreover, we use the Ruby programs [Compass](http://compass-style.org) and
 [Zurb Foundation](http://foundation.zurb.com/) to generate CSS files. You can
 install them with the `gem` package manager distributed with Ruby:
