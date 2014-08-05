@@ -6,14 +6,36 @@
 MANAGE = manage.py
 PMANAGE = python $(MANAGE)
 
-TEST_APPS = pdp.article pdp.tutorial pdp.forum pdp.member pdp.utils pdp.pages pdp.messages pdp.gallery
-FIXTURES = fixtures/auth.yaml fixtures/forum.yaml fixtures/member.yaml fixtures/messages.yaml fixtures/tutorial.yaml
+TEST_APPS = pdp.article \
+	pdp.tutorial \
+	pdp.forum \
+	pdp.member \
+	pdp.utils \
+	pdp.pages \
+	pdp.messages \
+	pdp.gallery
+
+FIXTURES = fixtures/auth.yaml \
+	fixtures/forum.yaml \
+	fixtures/member.yaml \
+	fixtures/messages.yaml \
+	fixtures/tutorial.yaml
 
 ASSETS_DIR = ./assets/
 
 # If you add a new target, do not forget to put it here so that make will not
 # think your target is a real file.
-.PHONY: tests syncdb migrate initsearch updatesearch assets collectstatic loadfixtures coverage celery bootstrap
+.PHONY: tests \
+	syncdb \
+	migrate \
+	initsearch \
+	updatesearch \
+	assets \
+	collectstatic \
+	loadfixtures \
+	coverage \
+	celery \
+	bootstrap
 
 # Test all the project's own applications.
 tests:
