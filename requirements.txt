@@ -1,4 +1,3 @@
-fabric
 django>=1.6,<1.7
 markdown>=2.1
 bleach
@@ -16,12 +15,7 @@ django-crispy-forms==1.3.2
 django-simple-math-captcha
 django-email-obfuscator
 django-debug-toolbar
-crispy-forms-foundation
 django-taggit
 django-pipeline
-djangorestframework
-django-filter
-django-rest-swagger
-django-oauth2-provider
 django-guardian
 django-haystack

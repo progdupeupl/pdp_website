@@ -18,6 +18,7 @@ fabfile_local.py
 media/
 static/
 venv/
+venv3/
 pdp/whoosh/
 
 doc/_build
