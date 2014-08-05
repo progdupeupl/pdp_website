@@ -19,6 +19,7 @@
 
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 from django_dynamic_fixture import G
 
@@ -67,19 +68,31 @@ class ForumForumIntegrationTests(TestCase):
         resp = self.client.get(self.forum.get_absolute_url())
         self.assertEqual(resp.status_code, 200)
 
+    def test_forum_url_real_page(self):
+        resp = self.client.get(
+            '{}?page=1'.format(self.forum.get_absolute_url())
+        )
+        self.assertEqual(resp.status_code, 200)
+
+    def test_forum_url_fake_page(self):
+        resp = self.client.get(
+            '{}?page=42'.format(self.forum.get_absolute_url())
+        )
+        self.assertEqual(resp.status_code, 200)
+
     def test_deprecated_forum_url_redirect(self):
         resp = self.client.get('/forums/42-test-category/21-test-forum/')
         self.assertRedirects(resp, self.forum.get_absolute_url(), 301)
 
 
-def ForumTopicIntegrationTests(TestCase):
+class ForumTopicIntegrationTests(TestCase):
 
     """Integration tests with valid Topic instance."""
 
     def setUp(self):
         # Author
         self.author = G(User, username='test')
-        self.author_profile = G(Profile, user=self.user)
+        self.author_profile = G(Profile, user=self.author)
 
         # Forum and category
         self.category = G(Category, id=42, title='Test category',
@@ -90,26 +103,59 @@ def ForumTopicIntegrationTests(TestCase):
         # Topic
         self.topic = G(Topic, id=112, title='Test subject',
                        slug='test-subject', forum=self.forum,
+                       last_message=None,
                        author=self.author)
 
         # Post
-        self.post = G(Post, author=self.author, text='Test')
+        self.post = G(Post, author=self.author, topic=self.topic, text='Test')
+
+        self.topic.last_message = self.post
+        self.topic.save()
 
     def test_topic_url(self):
         resp = self.client.get(self.topic.get_absolute_url())
         self.assertEqual(resp.status_code, 200)
 
+    def test_topic_url_good_page(self):
+        url = '{}?page=1'.format(self.topic.get_absolute_url())
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_topic_url_overflow_page(self):
+        url = '{}?page=42'.format(self.topic.get_absolute_url())
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 404)
+
+    def test_topic_url_bad_page(self):
+        url = '{}?page=fake'.format(self.topic.get_absolute_url())
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_topic_url_bad_slug(self):
+        base_url = '/'.join(self.topic.get_absolute_url().split('/')[:-1])
+        bad_url = '{}/fake-slug'.format(base_url)
+        resp = self.client.get(bad_url)
+        self.assertEqual(resp.status_code, 302)
+
     def test_deprecated_topic_url_redirect(self):
         resp = self.client.get('/forums/sujet/112-test-topic')
         self.assertRedirects(resp, self.topic.get_absolute_url(), 301)
 
-    def test_topic_bad_page(self):
-        url = u'{}?page={}'.format(
-            self.topic.get_absolute_url(),
-            '1/garbage'
+    def test_find_topic_url(self):
+        url = reverse(
+            'pdp.forum.views.find_topic',
+            args=[self.author.username]
         )
         resp = self.client.get(url)
-        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_find_post_url(self):
+        url = reverse(
+            'pdp.forum.views.find_post',
+            args=[self.author.username]
+        )
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
 
 
 class FeedsIntegrationTests(TestCase):

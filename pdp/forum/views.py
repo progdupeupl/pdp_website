@@ -141,17 +141,17 @@ def topic(request, topic_pk, topic_slug):
 
     # We try to get page number
     try:
-        page_nbr = int(request.GET['page'])
+        page_nbr = request.GET['page']
     except KeyError:
         page_nbr = 1
-    except ValueError:
-        return HttpResponseBadRequest()
 
     # We try to page content
     try:
         posts = paginator.page(page_nbr)
+        page_nbr = int(page_nbr)
     except PageNotAnInteger:
         posts = paginator.page(1)
+        page_nbr = 1
     except EmptyPage:
         raise Http404
 
