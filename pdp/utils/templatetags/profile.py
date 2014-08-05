@@ -29,11 +29,3 @@ def profile(user):
     except Profile.DoesNotExist:
         profile = None
     return profile
-
-
-@register.filter('mode')
-def mode(mode):
-    if mode=='W':
-        return 'pencil'
-    else:
-        return 'eye'
