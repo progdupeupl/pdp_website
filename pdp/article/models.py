@@ -37,7 +37,7 @@ from pdp.utils.models import has_changed
 from pdp.tutorial.models import Tutorial
 
 from PIL import Image
-from cStringIO import StringIO
+from io import StringIO
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 IMAGE_MAX_WIDTH = 64

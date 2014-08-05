@@ -45,7 +45,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from taggit.managers import TaggableManager
 
 from PIL import Image
-from cStringIO import StringIO
+from io import StringIO
 
 from pdp.tutorial.exceptions import \
     OrphanPartException, OrphanChapterException
