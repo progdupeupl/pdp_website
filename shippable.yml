@@ -11,11 +11,13 @@ python:
 before_install:
  - sudo apt-get update
  - sudo apt-get -y install language-pack-fr
+ - rm -Rf south/
  - hg clone https://bitbucket.org/andrewgodwin/south
 
 # Install dependencies
 install:
- - pip install --use-mirrors -r requirements.txt
+ - pip install -r requirements.txt
+ - pip uninstall south -y || return 0
  - pip install ./south/
  - python manage.py syncdb
  - python manage.py migrate
