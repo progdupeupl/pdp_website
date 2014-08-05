@@ -57,7 +57,7 @@ def send_mail_to_confirm_registration(user, link):
 
     """
 
-    send_templated_mail(
+    return send_templated_mail(
         subject=u"Confirmation d’inscription à Progdupeupl",
         template=u'confirm_registration.txt',
         context={

@@ -18,6 +18,7 @@
 """Tests for utils app."""
 
 import unittest
+import hashlib
 
 from django.contrib.auth.models import User
 from django_dynamic_fixture import G
@@ -28,6 +29,7 @@ from pdp.utils.templatetags.profile import profile
 from pdp.utils.templatetags.interventions import interventions_topics
 
 from pdp.utils.paginator import paginator_range
+from pdp.utils import mail
 
 
 class TemplateTagsTests(unittest.TestCase):
@@ -55,6 +57,9 @@ class TemplateTagsTests(unittest.TestCase):
 class PaginatorRangeTests(unittest.TestCase):
 
     """Tests for the paginator_range function."""
+
+    def test_out_of_range(self):
+        self.assertRaises(ValueError, lambda: paginator_range(3, 2))
 
     def test_one(self):
         result = paginator_range(1, 1)
@@ -87,3 +92,29 @@ class PaginatorRangeTests(unittest.TestCase):
     def test_big_end_limit(self):
         result = paginator_range(7, 10)
         self.assertEqual(result, [1, None, 6, 7, 8, 9, 10])
+
+class MailTests(unittest.TestCase):
+
+    """Tests for the mail utilities."""
+
+    def test_send_templated_mail(self):
+        recipients = ['test1@localhost']
+
+        result = mail.send_templated_mail(
+            subject='Fake subject',
+            template='base.txt',
+            context={},
+            recipients=recipients
+        )
+
+        self.assertEqual(result, 1)
+
+    def test_send_mail_to_confirm_registration(self):
+        recipients = ['test1@localhost']
+
+        result = mail.send_mail_to_confirm_registration(
+            user=G(User, username='Blaireau1', email='test1@localhost'),
+            link=hashlib.sha1('blbl'.encode('ascii')).hexdigest()
+        )
+
+        self.assertEqual(result, 1)
