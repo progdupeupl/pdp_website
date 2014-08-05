@@ -207,7 +207,7 @@ class TutorialSearchIntegrationTests(TestCase):
             reverse('pdp.tutorial.views.by_author',
                     args=[self.user.username]))
 
-        self.assertEquals(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200)
 
     def test_url_by_author_invisible(self):
         G(
@@ -220,7 +220,7 @@ class TutorialSearchIntegrationTests(TestCase):
             reverse('pdp.tutorial.views.by_author',
                     args=[self.user.username]))
 
-        self.assertEquals(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200)
 
     def test_url_by_author_visible(self):
         G(
@@ -233,26 +233,26 @@ class TutorialSearchIntegrationTests(TestCase):
             reverse('pdp.tutorial.views.by_author',
                     args=[self.user.username]))
 
-        self.assertEquals(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200)
 
     def test_url_by_category_all(self):
         resp = self.client.get(
             reverse('pdp.tutorial.views.by_category', args=['tous'])
         )
-        self.assertEquals(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200)
 
     def test_url_by_category_beta(self):
         """Test viewing beta tutorials as an unlogged used."""
         resp = self.client.get(
             reverse('pdp.tutorial.views.by_category', args=['beta'])
         )
-        self.assertEquals(resp.status_code, 403)
+        self.assertEqual(resp.status_code, 403)
 
     def test_url_by_category_other(self):
         resp = self.client.get(
             reverse('pdp.tutorial.views.by_category', args=['autres'])
         )
-        self.assertEquals(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200)
 
 
 class AuthenticatedSearchIntegrationTests(TestCase):
@@ -273,7 +273,7 @@ class AuthenticatedSearchIntegrationTests(TestCase):
         resp = self.client.get(
             reverse('pdp.tutorial.views.by_category', args=['beta'])
         )
-        self.assertEquals(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200)
 
 
 class AuthenticatedTutorialIntegrationTests(TestCase):
@@ -291,11 +291,11 @@ class AuthenticatedTutorialIntegrationTests(TestCase):
 
     def test_url_add_tutorial(self):
         resp = self.client.get(reverse('pdp.tutorial.views.add_tutorial'))
-        self.assertEquals(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200)
 
     def test_url_import_tutorial(self):
         resp = self.client.get(reverse('pdp.tutorial.views.import_tutorial'))
-        self.assertEquals(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200)
 
 
 class FeedsIntegrationTests(TestCase):

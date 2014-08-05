@@ -33,12 +33,12 @@ class IntegrationTests(TestCase):
     def test_url_index(self):
         """Test to view gallery index as anonymous user."""
         resp = self.client.get(reverse('pdp.gallery.views.gallery_list'))
-        self.assertEquals(302, resp.status_code)
+        self.assertEqual(302, resp.status_code)
 
     def test_url_new(self):
         """Test to create new gallery index as anonymous user."""
         resp = self.client.get(reverse('pdp.gallery.views.new_gallery'))
-        self.assertEquals(302, resp.status_code)
+        self.assertEqual(302, resp.status_code)
 
 
 class AuthenticatedntegrationTests(AuthenticatedTestCase):
@@ -48,12 +48,12 @@ class AuthenticatedntegrationTests(AuthenticatedTestCase):
     def test_url_index(self):
         """Test to view gallery index as logged-in user."""
         resp = self.client.get(reverse('pdp.gallery.views.gallery_list'))
-        self.assertEquals(200, resp.status_code)
+        self.assertEqual(200, resp.status_code)
 
     def test_url_new(self):
         """Test to create new gallery index as logged-in user."""
         resp = self.client.get(reverse('pdp.gallery.views.new_gallery'))
-        self.assertEquals(200, resp.status_code)
+        self.assertEqual(200, resp.status_code)
 
 
 class AuthenticatedGalleryTestCase(AuthenticatedTestCase):
@@ -71,7 +71,7 @@ class AuthenticatedGalleryIntegrationTests(AuthenticatedGalleryTestCase):
     def test_url_new_image(self):
         resp = self.client.get(reverse('pdp.gallery.views.new_image',
                                        args=(str(self.gallery.pk))))
-        self.assertEquals(200, resp.status_code)
+        self.assertEqual(200, resp.status_code)
 
 
 class AuthenticatedImageIntegrationTests(AuthenticatedGalleryTestCase):
@@ -84,4 +84,4 @@ class AuthenticatedImageIntegrationTests(AuthenticatedGalleryTestCase):
         resp = self.client.get(reverse('pdp.gallery.views.edit_image',
                                        args=(str(self.gallery.pk),
                                              str(self.image.pk))))
-        self.assertEquals(200, resp.status_code)
+        self.assertEqual(200, resp.status_code)

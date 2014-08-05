@@ -28,11 +28,11 @@ from pdp.member.models import Profile
 class MessagesIntegrationTests(TestCase):
     def test_url_index(self):
         resp = self.client.get(reverse('pdp.messages.views.index'))
-        self.assertEquals(resp.status_code, 302)
+        self.assertEqual(resp.status_code, 302)
 
     def test_url_new(self):
         resp = self.client.get(reverse('pdp.messages.views.new'))
-        self.assertEquals(resp.status_code, 302)
+        self.assertEqual(resp.status_code, 302)
 
 
 class AuthenticatedMessagesIntegrationTests(TestCase):
@@ -50,9 +50,9 @@ class AuthenticatedMessagesIntegrationTests(TestCase):
 
     def test_url_index(self):
         resp = self.client.get(reverse('pdp.messages.views.index'))
-        self.assertEquals(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200)
 
     def test_url_new(self):
         resp = self.client.get(reverse('pdp.messages.views.new'))
-        self.assertEquals(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200)
 

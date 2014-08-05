@@ -92,4 +92,4 @@ class AuthenticatedMemberIntegrationTests(TestCase):
 
     def test_disconnect(self):
         resp = self.client.get(reverse('pdp.member.views.logout_view'))
-        self.assertEquals(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200)

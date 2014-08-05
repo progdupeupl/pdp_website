@@ -109,7 +109,7 @@ def ForumTopicIntegrationTests(TestCase):
             '1/garbage'
         )
         resp = self.client.get(url)
-        self.assertEquals(resp.status_code, 400)
+        self.assertEqual(resp.status_code, 400)
 
 
 class FeedsIntegrationTests(TestCase):
@@ -118,19 +118,19 @@ class FeedsIntegrationTests(TestCase):
 
     def test_messages_feed_rss(self):
         resp = self.client.get('/forums/flux/messages/rss/')
-        self.assertEquals(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200)
 
     def test_messages_feed_atom(self):
         resp = self.client.get('/forums/flux/messages/atom/')
-        self.assertEquals(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200)
 
     def test_topics_feed_rss(self):
         resp = self.client.get('/forums/flux/sujets/rss/')
-        self.assertEquals(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200)
 
     def test_topics_feed_atom(self):
         resp = self.client.get('/forums/flux/sujets/atom/')
-        self.assertEquals(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200)
 
     def test_deprecated_feeds_redirect_rss(self):
         resp = self.client.get('/forums/flux/rss/')
