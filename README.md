@@ -19,12 +19,12 @@ Guide](http://www.python.org/dev/peps/pep-0008/) is a good base.
 ## Dependencies
 
 Progdupeupl (PDP) uses [Django](https://www.djangoproject.com/), a web
-framework for the [Python](http://python.org/) programming language (we
-currently only support Python 2, not Python 3), but it also uses tools
-implemented in [Ruby](https://www.ruby-lang.org/en/), and (optionally) with the
+framework for the [Python](http://python.org/) programming language (we only
+support Python 3 now), but it also uses tools implemented in
+[Ruby](https://www.ruby-lang.org/en/), and (optionally) with the
 [Node.js](http://nodejs.org/) Javascript framework.
 
-You must have at least recent-enough versions of Python 2 (at least 2.6) and
+You must have at least recent-enough versions of Python 3 (at least 3.3) and
 Ruby installed on your system, and installation instructions will depend on
 your operating system. Once you've set up those base dependencies, additional
 packages are installed through language-specific package managers which should
@@ -33,12 +33,12 @@ systems.
 
 ### Basic dependencies (system-dependent)
 
-You should install Python 2.6 or 2.7, and the
+You should install Python 3.3 or 3.4, and the
 [pip](http://www.pip-installer.org/en/latest/) package manager. Under
 Debian/Ubuntu systems for example, you can use the following commands:
 
     :::console
-    # aptitude install python2.7 python2.7-dev
+    # aptitude install python3.3 python3.3-dev
     # aptitude install python-pip
 
 You will also need Ruby, that on most systems come with its own package manager
@@ -66,17 +66,17 @@ run
     $ pip install --user virtualenv
 
 If you are in the `progdupeupl` directory, you can then create a local
-environment in a new subdirectory `venv`, asking it to use the `python2`
-executable; if the Python 2 interpreter is named differently on your system,
-eg. `python2.7` or `python`, you should change the name.
+environment in a new subdirectory `venv`, asking it to use the `python3`
+executable; if the Python 3 interpreter is named differently on your system,
+eg. `python3.3` or `python`, you should change the name.
 
     :::console
-    $ virtualenv --python=python2 --distribute venv
+    $ virtualenv --python=python3 --distribute venv
 
 Each time you want to work on PDP, you should go to the `progdupeupl` directory
 and "activate" this virtual environment. Once the environment is activated, all
 Python tools will use it; for example they will use the `python2` interpreter
-even if your operating system uses Python 3 by default. This will avoid you
+even if your operating system uses Python 2 by default. This will avoid you
 a lot of annoying version mismatches.
 
     :::console
