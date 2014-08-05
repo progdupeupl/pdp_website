@@ -21,7 +21,7 @@ from django.contrib.auth.models import User
 
 from django_dynamic_fixture import G
 
-from models import Profile
+from pdp.member.models import Profile
 
 
 class MemberIntegrationTests(TestCase):

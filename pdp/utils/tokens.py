@@ -20,7 +20,8 @@ from time import time
 
 
 def generate_token():
-    return md5('lcdldses?nas. {0} salt'.format(time())).hexdigest()[:12]
+    return md5('lcdldses?nas. {0} salt'.format(time()).encode('ascii')) \
+        .hexdigest()[:12]
 
 
 def get_token(request):

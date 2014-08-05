@@ -41,7 +41,7 @@ def paginator_range(current, stop, start=1):
 
     # Basic case when no folding
     if stop - start <= 4:
-        return range(start, stop + 1)
+        return list(range(start, stop + 1))
 
     # Complex case when folding
     lst = []
