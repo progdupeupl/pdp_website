@@ -65,7 +65,7 @@ class TopicForm(forms.Form):
                 css_class='button-center'
             )
         )
-        super(TopicForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def clean_title(self):
         data = self.cleaned_data['title']
@@ -84,4 +84,4 @@ class PostForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea)
 
     def __init__(self, *args, **kwargs):
-        super(PostForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)

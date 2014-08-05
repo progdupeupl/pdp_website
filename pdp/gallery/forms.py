@@ -51,7 +51,7 @@ class GalleryForm(forms.Form):
             HTML(u'<a href="{% url "pdp.gallery.views.gallery_list" %}" '
                  u'class="button secondary">Retour</a>')
         )
-        super(GalleryForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class ImageForm(forms.Form):
@@ -81,7 +81,7 @@ class ImageForm(forms.Form):
             HTML(u'<a href="{{ gallery.get_absolute_url }}" '
                  u'class="button secondary">Annuler</a>')
         )
-        super(ImageForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class EditImageForm(forms.Form):
@@ -107,4 +107,4 @@ class EditImageForm(forms.Form):
             HTML(u'<a href="{{ gallery.get_absolute_url }}" '
                  u'class="button secondary">Retour</a>')
         )
-        super(EditImageForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)

@@ -219,9 +219,9 @@ class Article(models.Model):
             self.thumbnail.save('{}.png'.format(suf.name), suf, save=False)
 
             # save the image object
-            super(Article, self).save(force_update, force_insert)
+            super().save(force_update, force_insert)
         else:
-            super(Article, self).save()
+            super().save()
 
 
 def get_last_articles():

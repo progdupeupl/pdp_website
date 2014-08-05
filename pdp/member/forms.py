@@ -83,10 +83,10 @@ class RegisterForm(forms.Form):
                 css_class='button-group'
             )
         )
-        super(RegisterForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def clean(self):
-        cleaned_data = super(RegisterForm, self).clean()
+        cleaned_data = super().clean()
 
         # Check that the password and it's confirmation match
         password = cleaned_data.get('password')
@@ -181,7 +181,7 @@ class ProfileForm(forms.Form):
                 css_class='button-group'
             )
         )
-        super(ProfileForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class ChangePasswordForm(forms.Form):
@@ -223,10 +223,10 @@ class ChangePasswordForm(forms.Form):
                 )
             )
         )
-        super(ChangePasswordForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def clean(self):
-        cleaned_data = super(ChangePasswordForm, self).clean()
+        cleaned_data = super().clean()
 
         password_old = cleaned_data.get('password_old')
         password_new = cleaned_data.get('password_new')

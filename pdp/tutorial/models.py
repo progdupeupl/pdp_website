@@ -388,9 +388,9 @@ class Tutorial(models.Model):
             self.thumbnail.save(u'{}.png'.format(suf.name), suf, save=False)
 
             # save the image object
-            super(Tutorial, self).save(force_update, force_insert)
+            super().save(force_update, force_insert)
         else:
-            super(Tutorial, self).save()
+            super().save()
 
 
 def get_last_tutorials():
@@ -452,7 +452,7 @@ class Part(models.Model):
 
         """
         self.slug = slugify(self.title)
-        super(Part, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def __unicode__(self):
         """Textual representation of a part.
@@ -721,9 +721,9 @@ class Chapter(models.Model):
             self.thumbnail.save('{}.png'.format(suf.name), suf, save=False)
 
             # save the image object
-            super(Chapter, self).save(force_update, force_insert)
+            super().save(force_update, force_insert)
         else:
-            super(Chapter, self).save()
+            super().save()
 
 
 class Extract(models.Model):

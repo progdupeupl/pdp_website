@@ -75,7 +75,7 @@ class TutorialForm(forms.Form):
             Field('size'),
             Submit('submit', u'Créer')
         )
-        super(TutorialForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class ImportTutorialForm(forms.Form):
@@ -100,7 +100,7 @@ class ImportTutorialForm(forms.Form):
             Field('size'),
             Submit('submit', u'Importer')
         )
-        super(ImportTutorialForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class EditTutorialForm(forms.Form):
@@ -156,7 +156,7 @@ class EditTutorialForm(forms.Form):
             Field('conclusion'),
             Submit('submit', 'Valider')
         )
-        super(EditTutorialForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class AddPartForm(forms.Form):
@@ -201,10 +201,10 @@ class AddPartForm(forms.Form):
                 Submit('submit', 'Valider'),
             )
         )
-        super(AddPartForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def clean(self):
-        cleaned_data = super(AddPartForm, self).clean()
+        cleaned_data = super().clean()
 
         title = slugify(cleaned_data.get('title'))
 
@@ -266,10 +266,10 @@ class EditPartForm(forms.Form):
                 Submit('submit', u'Sauvegarder les modifications'),
             )
         )
-        super(EditPartForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def clean(self):
-        cleaned_data = super(EditPartForm, self).clean()
+        cleaned_data = super().clean()
 
         title = slugify(cleaned_data.get('title'))
         part = cleaned_data.get('part')
@@ -339,10 +339,10 @@ class AddChapterForm(forms.Form):
                 ),
             )
         )
-        super(AddChapterForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def clean(self):
-        cleaned_data = super(AddChapterForm, self).clean()
+        cleaned_data = super().clean()
 
         title = slugify(cleaned_data.get('title'))
 
@@ -410,10 +410,10 @@ class EditChapterForm(forms.Form):
                 Submit('submit', u'Sauvegarder les modifications'),
             )
         )
-        super(EditChapterForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def clean(self):
-        cleaned_data = super(EditChapterForm, self).clean()
+        cleaned_data = super().clean()
 
         title = slugify(cleaned_data.get('title'))
         chapter = cleaned_data.get('chapter')
@@ -465,7 +465,7 @@ class EmbdedChapterForm(forms.Form):
                 Submit('submit', 'Valider')
             )
         )
-        super(EmbdedChapterForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class ExtractForm(forms.Form):
@@ -499,7 +499,7 @@ class ExtractForm(forms.Form):
                 css_class='button-group'
             )
         )
-        super(ExtractForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class EditExtractForm(forms.Form):
@@ -527,4 +527,4 @@ class EditExtractForm(forms.Form):
             Submit('submit', u'Modifier'),
             Submit('preview', u'Prévisualiser')
         )
-        super(EditExtractForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)

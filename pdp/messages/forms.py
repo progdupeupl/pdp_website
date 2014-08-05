@@ -52,7 +52,7 @@ class PrivateTopicForm(forms.Form):
             Submit('submit', u'Envoyer'),
             Submit('preview', u'Prévisualisation'),
         )
-        super(PrivateTopicForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def clean_recipients(self):
         data = self.cleaned_data['recipients']
