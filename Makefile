@@ -26,6 +26,7 @@ ASSETS_DIR = ./assets/
 # If you add a new target, do not forget to put it here so that make will not
 # think your target is a real file.
 .PHONY: tests \
+	test \
 	syncdb \
 	migrate \
 	initsearch \
@@ -40,6 +41,8 @@ ASSETS_DIR = ./assets/
 # Test all the project's own applications.
 tests:
 	$(PMANAGE) test $(TEST_APPS)
+
+test: tests
 
 # Synchronize the Django database with the models.
 syncdb:
