@@ -22,9 +22,15 @@ install:
  - python manage.py syncdb
  - python manage.py migrate
 
+before_script:
+ - mkdir -p shippable/codecoverage
+
 # Run tests
 script:
  - python manage.py test pdp.article pdp.tutorial pdp.forum pdp.member pdp.utils pdp.pages pdp.messages pdp.gallery
+ - coverage run --source="." manage.py test pdp.article pdp.tutorial pdp.forum pdp.member pdp.utils pdp.pages pdp.messages pdp.gallery
+ - coverage xml -o shippable/codecoverage/coverage.xml pdp/tutorial/views.py
+
 
 # Only select master branch to be tested
 branches:
