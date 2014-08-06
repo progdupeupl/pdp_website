@@ -20,11 +20,7 @@ import sys
 import platform
 import locale
 
-# Python is platform-independent...or is it?
-if platform.system() == "Windows":
-    locale.setlocale(locale.LC_TIME, 'fra')
-else:
-    locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
+locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
 
 #
 # Django

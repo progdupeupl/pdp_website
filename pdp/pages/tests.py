@@ -40,3 +40,7 @@ class PagesIntegrationTests(TestCase):
     def test_url_page_help_writting(self):
         resp = self.client.get(reverse('pdp.pages.views.help_writting'))
         self.assertEqual(200, resp.status_code)
+
+    def test_url_page_tos(self):
+        resp = self.client.get(reverse('pdp.pages.views.tos'))
+        self.assertEqual(200, resp.status_code)
