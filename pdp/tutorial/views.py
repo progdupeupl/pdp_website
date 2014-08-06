@@ -875,9 +875,14 @@ def edit_chapter(request):
     big = chapter.part
     small = chapter.tutorial
 
+    tutorial = None
+    if big:
+        tutorial = chapter.part.tutorial
+    elif small:
+        tutorial = chapter.tutorial
+
     # Make sure the user is allowed to do that
-    if big and (request.user not in chapter.part.tutorial.authors.all())\
-            or small and (request.user not in chapter.tutorial.authors.all()):
+    if tutorial is None or request.user not in tutorial.authors.all():
         raise PermissionDenied
 
     if request.method == 'POST':

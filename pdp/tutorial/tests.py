@@ -297,6 +297,56 @@ class AuthenticatedTutorialIntegrationTests(TestCase):
         resp = self.client.get(reverse('pdp.tutorial.views.import_tutorial'))
         self.assertEqual(resp.status_code, 200)
 
+    def test_url_edit_tutorial(self):
+        tutorial = G(Tutorial, authors=(self.user,))
+        url = '{}?tutoriel={}'.format(
+            reverse('pdp.tutorial.views.edit_tutorial'),
+            tutorial.pk
+        )
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_url_add_part(self):
+        tutorial = G(Tutorial, authors=(self.user,), size=Tutorial.BIG)
+        url = '{}?tutoriel={}'.format(
+            reverse('pdp.tutorial.views.add_part'),
+            tutorial.pk
+        )
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_url_edit_part(self):
+        tutorial = G(Tutorial, authors=(self.user,), size=Tutorial.BIG)
+        part = G(Part, tutorial=tutorial)
+        url = '{}?partie={}'.format(
+            reverse('pdp.tutorial.views.edit_part'),
+            part.pk
+        )
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_url_add_chapter(self):
+        tutorial = G(Tutorial, authors=(self.user,), size=Tutorial.BIG)
+        part = G(Part, tutorial=tutorial)
+        url = '{}?partie={}'.format(
+            reverse('pdp.tutorial.views.add_chapter'),
+            part.pk
+        )
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_url_edit_chapter(self):
+        tutorial = G(Tutorial, authors=(self.user,), size=Tutorial.BIG)
+        part = G(Part, tutorial=tutorial)
+        chapter = G(Chapter, part=part, image=None, thumbnail=None)
+        url = '{}?chapitre={}'.format(
+            reverse('pdp.tutorial.views.edit_chapter'),
+            chapter.pk
+        )
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+
 
 class FeedsIntegrationTests(TestCase):
 
