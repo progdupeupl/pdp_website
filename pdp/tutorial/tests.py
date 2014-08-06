@@ -22,7 +22,8 @@ from django.contrib.auth.models import User
 
 from django_dynamic_fixture import G
 
-from pdp.tutorial.models import Tutorial, Part, Chapter, get_last_tutorials
+from pdp.tutorial.models import Tutorial, Part, Chapter, Extract, \
+    get_last_tutorials
 from pdp.member.models import Profile
 
 
@@ -346,6 +347,38 @@ class AuthenticatedTutorialIntegrationTests(TestCase):
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
+    def test_url_edit_chapter_embded(self):
+        tutorial = G(Tutorial, authors=(self.user,), size=Tutorial.SMALL)
+        chapter = G(Chapter, tutorial=tutorial, part=None, image=None, thumbnail=None)
+        url = '{}?chapitre={}'.format(
+            reverse('pdp.tutorial.views.edit_chapter'),
+            chapter.pk
+        )
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_url_add_extract(self):
+        tutorial = G(Tutorial, authors=(self.user,), size=Tutorial.BIG)
+        part = G(Part, tutorial=tutorial)
+        chapter = G(Chapter, part=part, image=None, thumbnail=None)
+        url = '{}?chapitre={}'.format(
+            reverse('pdp.tutorial.views.add_extract'),
+            chapter.pk
+        )
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_url_edit_extract(self):
+        tutorial = G(Tutorial, authors=(self.user,), size=Tutorial.BIG)
+        part = G(Part, tutorial=tutorial)
+        chapter = G(Chapter, part=part, image=None, thumbnail=None)
+        extract = G(Extract, chapter=chapter)
+        url = '{}?extrait={}'.format(
+            reverse('pdp.tutorial.views.edit_extract'),
+            extract.pk
+        )
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
 
 
 class FeedsIntegrationTests(TestCase):
