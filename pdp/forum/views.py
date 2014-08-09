@@ -401,16 +401,19 @@ def edit_post(request, post_pk):
     if post.position_in_topic == 1:
         g_topic = get_object_or_404(Topic, pk=post.topic.pk)
 
-    # Making sure the user is allowed to do that
-    if post.author != request.user:
+    # - non-moderated posts may be edited by their author or moderators;
+    # - moderated posts only by moderators
+    if (post.author != request.user) or post.is_moderated:
         if not request.user.has_perm('forum.change_post'):
             raise Http404
-        elif request.method == 'GET':
-            messages.add_message(
-                request, messages.WARNING,
-                u'Vous éditez ce message en tant que modérateur (auteur : {}).'
-                u' Soyez encore plus prudent lors de l\'édition de celui-ci !'
-                .format(post.author.username))
+
+    if (post.author != request.user) and request.method == 'GET' and not post.is_moderated:
+        messages.add_message(
+            request, messages.WARNING,
+            u'Vous vous apprêtez à modérer un message (auteur : {}).'
+            u'L\'explication fournie ci-dessous sera visible à tous, '
+            u'et le message original caché (mais dé-cachable seulement demain)'
+            .format(post.author.username))
 
     if request.method == 'POST':
 
@@ -424,8 +427,13 @@ def edit_post(request, post_pk):
             })
 
         # The user just sent data, handle them
-        post.text = request.POST['text']
-        post.update = datetime.now()
+        if post.author == request.user:
+            post.text = request.POST['text']
+            post.update = datetime.now()
+        else:
+            post.is_moderated = True
+            post.moderation_time = datetime.now()
+            post.moderation_text = request.POST['text']
         post.save()
 
         # Modifying the thread info
@@ -437,10 +445,13 @@ def edit_post(request, post_pk):
         return redirect(post.get_absolute_url())
 
     else:
+        if post.is_moderated:
+            text = post.moderation_text
+        else:
+            text = post.text
         return render_template('forum/edit_post.html', {
-            'post': post, 'topic': g_topic, 'text': post.text
+            'post': post, 'topic': g_topic, 'text': text
         })
-
 
 @login_required(redirect_field_name='suivant')
 def useful_post(request, post_pk):

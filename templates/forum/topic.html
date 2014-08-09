@@ -137,7 +137,7 @@
                             </a>
                         {% endif %}
 
-                        {% if post.author == user or perms.forum.change_post %}
+                        {% if post.author == user and not post.is_moderated or perms.forum.change_post %}
                             <a href="{% url "pdp.forum.views.edit_post" post.pk %}"
                                 class="button secondary small">
                                 Éditer
@@ -172,7 +172,23 @@
             {% endwith %}
         </div>
         <div class="large-10 columns">
-            {{ post.text|emarkdown:post.pk }}
+            {% if not post.is_moderated %}
+                {{ post.text|emarkdown:post.pk }}
+            {% else %}
+              <p>Message modéré ({{post.moderation_time|naturaltime}}).</p>
+
+              {{post.moderation_info}}
+
+              {% if post.moderation_text != '' %}
+                <p>Explication:</p>
+                <blockquote>{{ post.moderation_text }}</blockquote>
+              {% endif %}
+
+              {% if perms.forum.change_post or post.is_moderated_visible %}
+                <p>Contenu original:</p>
+                <blockquote>{{ post.text|emarkdown:post.pk }}</blockquote>
+              {% endif %}
+            {% endif %}
         </div>
     </div>
 </div>
