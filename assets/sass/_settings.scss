@@ -261,10 +261,10 @@ $header-font-weight: normal;
 // $form-label-pointer: pointer;
 // $form-label-font-size: emCalc(14px);
 // $form-label-font-weight: 500;
-// $form-label-font-color: lighten(#000, 30%);
+$form-label-font-color: $body-font-color;
 // $form-label-bottom-margin: emCalc(3px);
 // $input-font-family: inherit;
-// $input-font-color: rgba(0,0,0,0.75);
+$input-font-color: $body-font-color;
 // $input-font-size: emCalc(14px);
 // $input-bg-color: #fff;
 // $input-focus-bg-color: darken(#fff, 2%);
@@ -297,7 +297,7 @@ $header-font-weight: normal;
 // $input-prefix-border-size: 1px;
 // $input-prefix-border-type: solid;
 // $input-prefix-overflow: hidden;
-// $input-prefix-font-color: #333;
+$input-prefix-font-color: $body-font-color;
 // $input-prefix-font-color-alt: #fff;
 
 // Error states for inputs and labels
@@ -820,14 +820,14 @@ $f-dropdown-content-padding: emCalc(10px);
 
 // $pagination-li-float: $default-float;
 // $pagination-li-height: emCalc(24px);
-// $pagination-li-font-color: #222;
+$pagination-li-font-color: $body-font-color;
 // $pagination-li-font-size: emCalc(14px);
 // $pagination-li-margin: emCalc(5px);
 
 // Pagination anchor links
 
 // $pagination-link-pad: emCalc(1px) emCalc(7px) emCalc(1px);
-// $pagination-link-font-color: #999;
+$pagination-link-font-color: $body-font-color;
 // $pagination-link-active-bg: darken(#fff, 10%);
 
 // Disabled anchor links
@@ -866,7 +866,7 @@ $f-dropdown-content-padding: emCalc(10px);
 
 // Font colors
 
-// $panel-font-color: #333;
+$panel-font-color: $body-font-color;
 // $panel-font-color-alt: #fff;
 
 //
