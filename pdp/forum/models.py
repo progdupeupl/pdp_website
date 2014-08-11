@@ -461,7 +461,7 @@ class Post(models.Model):
         #
         # we decide that moderated messages remain un-visible for 24 hours,
         # to allow the discussion to cool down
-        visible_at = self.moderation_time + timedelta(days=1)
+        visible_at = self.moderation_time + settings.MODERATED_REVEAL_DELAY
         return (datetime.now() > visible_at)
 
 

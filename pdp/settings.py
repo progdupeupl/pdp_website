@@ -19,6 +19,7 @@ import os
 import sys
 import platform
 import locale
+import datetime
 
 locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
 
@@ -400,6 +401,9 @@ IMAGE_MAX_SIZE = 1024 * 512
 # This variable can be used in order to not perform heavy-load work like PDF
 # generation when running tests.
 TESTING = 'test' in sys.argv
+
+# Time to wait before a moderated message becomes unfoldable: one day
+MODERATED_REVEAL_DELAY=datetime.timedelta(days=1)
 
 #
 # Guardian
