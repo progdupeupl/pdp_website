@@ -180,26 +180,36 @@ def login_view(request):
             user = authenticate(username=username, password=password)
 
             if user is not None:
+                profile = Profile.objects.get(user=user)
                 if user.is_active:
                     # Yeah auth successful
                     login(request, user)
                     request.session['get_token'] = generate_token()
 
+                    # Avoid persistant session if asked to do so
                     if 'remember' not in request.POST:
                         request.session.set_expiry(0)
 
+                    # Redirect if connected was required from another page
                     if 'suivant' in request.GET:
                         return redirect(request.GET['suivant'])
-                    else:
-                        return redirect(reverse('pdp.pages.views.home'))
-                else:
-                    error = u'Compte désactivé'
 
+                    # Elsewise redirect to home
+                    return redirect(reverse('pdp.pages.views.home'))
+
+                else:
+                    # User is not active, check if user was banned or if he
+                    # did not validate his account yet.
+
+                    # TODO: show different message with a resend key link
+                    # depending if the user was banned or not.
+
+                    error = u'Ce compte est désactivé.'
             else:
-                error = u'Les identifiants fournis ne sont pas valides'
+                error = u'Les identifiants fournis ne sont pas valides.'
         else:
             error = (u'Veuillez spécifier votre identifiant '
-                     u'et votre mot de passe')
+                     u'et votre mot de passe.')
     else:
         form = LoginForm()
 
@@ -322,14 +332,14 @@ def settings_profile(request):
         HttpResponse
 
     """
-    # extra information about the current user
+
+    # Extra information about the current user
     profile = Profile.objects.get(user=request.user)
 
     if request.method == 'POST':
+
         form = ProfileForm(request.user, request.POST)
-        c = {
-            'form': form,
-        }
+
         if form.is_valid():
             profile.biography = form.data['biography']
             profile.site = form.data['site']
@@ -337,12 +347,15 @@ def settings_profile(request):
             profile.avatar_url = form.data['avatar_url']
             profile.save()
 
-            messages.success(request,
-                             u'Le profil a correctement été mis à jour.')
+            messages.success(
+                request, u'Le profil a correctement été mis à jour.')
 
             return redirect('/membres/parametres/profil')
+
         else:
-            return render_template('member/settings_profile.html', c)
+            return render_template('member/settings_profile.html', {
+                'form': form
+            })
     else:
         form = ProfileForm(request.user, initial={
             'biography': profile.biography,
@@ -350,10 +363,10 @@ def settings_profile(request):
             'avatar_url': profile.avatar_url,
             'show_email': profile.show_email}
         )
-        c = {
+
+        return render_template('member/settings_profile.html', {
             'form': form
-        }
-        return render_template('member/settings_profile.html', c)
+        })
 
 
 @login_required(redirect_field_name='suivant')
@@ -364,11 +377,10 @@ def settings_account(request):
         HttpResponse
 
     """
+
     if request.method == 'POST':
         form = ChangePasswordForm(request.user, request.POST)
-        c = {
-            'form': form,
-        }
+
         if form.is_valid():
             request.user.set_password(form.data['password_new'])
             request.user.save()
@@ -377,13 +389,15 @@ def settings_account(request):
             return redirect('/membres/parametres/profil')
 
         else:
-            return render_template('member/settings_account.html', c)
+            return render_template('member/settings_account.html', {
+                'form': form
+            })
     else:
         form = ChangePasswordForm(request.user)
-        c = {
-            'form': form,
-        }
-        return render_template('member/settings_account.html', c)
+
+        return render_template('member/settings_account.html', {
+            'form': form
+        })
 
 
 @login_required(redirect_field_name='suivant')
