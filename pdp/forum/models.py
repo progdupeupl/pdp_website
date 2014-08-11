@@ -432,6 +432,11 @@ class Post(models.Model):
         default='',
         blank=True
     )
+    moderated_by = models.ForeignKey(
+        User,
+        verbose_name=u'Modérateur',
+        null=True
+    )
 
     def __unicode__(self):
         """Textual representation of a post.

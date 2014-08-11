@@ -434,6 +434,7 @@ def edit_post(request, post_pk):
             post.is_moderated = True
             post.moderation_time = datetime.now()
             post.moderation_text = request.POST['text']
+            post.moderated_by = request.user
         post.save()
 
         # Modifying the thread info

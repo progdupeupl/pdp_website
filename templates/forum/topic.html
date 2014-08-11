@@ -175,9 +175,10 @@
             {% if not post.is_moderated %}
                 {{ post.text|emarkdown:post.pk }}
             {% else %}
-              <p>Message modéré ({{post.moderation_time|naturaltime}}).</p>
-
-              {{post.moderation_info}}
+              <p>Message modéré par
+                <a href="{{ post.moderated_by.get_absolute_url }}">
+                  {{ post.moderated_by.username }}
+                </a>, {{post.moderation_time|naturaltime}}.</p>
 
               {% if post.moderation_text != '' %}
                 <p>Explication:</p>
