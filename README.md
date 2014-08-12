@@ -175,6 +175,20 @@ It will create:
 You can login with these dummy users using their lowercase usernames as their
 respective passwords.
 
+## Updating the local data after schema change
+
+If you add new fields to a models.py, Python will complain that the
+database schema is out-of-date. To fix this, perform a schema
+migration using the two following commands, replacing `forum` in the
+line `APP=forum` with the subdirectory of `pdp` in which you made the
+modifications (article, forum, gallery, member, messages, pages,
+tutorial, utils...):
+
+    :::console
+    (venv)$ APP=forum
+    (venv)$ python manage.py schemamigration pdp.$APP --auto
+    (venv)$ python manage.py migrate $APP
+
 ## Documentation
 
 If you want to build the documentation, you will need to install Sphinx 1.3 for
