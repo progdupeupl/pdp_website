@@ -39,6 +39,8 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from django.views.decorators.debug import sensitive_post_parameters
 
+from django.db import transaction
+
 from pdp.utils import render_template, bot
 from pdp.utils.tokens import generate_token
 from pdp.utils.paginator import paginator_range
@@ -114,6 +116,7 @@ def details(request, user_name):
 
 
 @login_required(redirect_field_name='suivant')
+@transaction.atomic
 def edit_profile(request):
     """Edit an user's profile.
 
@@ -238,6 +241,7 @@ def logout_view(request):
 
 
 @sensitive_post_parameters('password', 'password_confirm')
+@transaction.atomic
 def register_view(request):
     """Allow new users to register, creating them an account.
 
@@ -259,11 +263,11 @@ def register_view(request):
             user.save()
 
             # First we generate a random salt
-            salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
+            salt = hashlib.sha1(str(random.random()).encode('ascii')).hexdigest()[:5]
 
             # Then we generate the activation key from this salt and from
             # the user's email
-            activation_key = hashlib.sha1(salt + user.email).hexdigest()
+            activation_key = hashlib.sha1((salt + user.email).encode('utf8')).hexdigest()
 
             # We set the key active for two days
             key_expires = datetime.datetime.today() + datetime.timedelta(2)

@@ -79,7 +79,7 @@ class ArticleCategory(models.Model):
     title = models.CharField(u'Titre', max_length=80)
     slug = models.SlugField(max_length=80)
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual representation of a category.
 
         Returns:
@@ -146,7 +146,7 @@ class Article(models.Model):
                                     verbose_name=u'Tutoriel correspondant',
                                     null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual representation of an article.
 
         Returns:
