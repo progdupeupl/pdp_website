@@ -1,0 +1,38 @@
+<p>
+    Que voulez-vous faire ?
+</p>
+<form action="{% url "pdp.forum.views.topic_toolbox" topic.pk %}" method="POST">
+    <select>
+        <option>Épingler le sujet</option>
+        <option>Verrouiller le sujet</option>
+        <option>Effacer définitivement le sujet</option>
+    </select>
+
+    <label>
+        <input type="checkbox" name="notify" onchange="handleNotifyChange(this);">
+        Envoyer un message à l’auteur du sujet
+    </label>
+
+    <textarea id="notify_text" name="notify_text"
+        placeholder="Justifiez en quelques mots votre action."></textarea>
+
+    <div style="text-align: center;">
+        <input type="submit" value="Valider l’action" class="button"></input>
+    </div>
+
+    <input type="hidden" name="last_post" value="{{ last_post_pk }}" />
+    {% csrf_token %}
+</form>
+
+<script>
+    /* First hide the element using regular Javascript on document load */
+    document.getElementById('notify_text').style.display = 'none';
+
+    function handleNotifyChange(cb) {
+        if (cb.checked) {
+            $('#notify_text').fadeIn();
+        } else {
+            $('#notify_text').hide();
+        }
+    }
+</script>

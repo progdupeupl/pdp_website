@@ -557,6 +557,25 @@ def followed_topics(request):
     })
 
 
+@login_required(redirect_field_name='suivant')
+def topic_toolbox(request, topic_pk):
+    """Displays an useful toolbox for staff on a specific topic.
+
+    Args:
+        topic_pk: the topic to act on
+
+    """
+
+    if not request.user.has_perm('forum.change_post'):
+        raise PermissionDenied
+
+    topic = get_object_or_404(Topic, pk=topic_pk)
+
+    return render_template('forum/topic_toolbox.html', {
+        'topic': topic
+    })
+
+
 # Deprecated URLs
 
 def deprecated_topic_redirect(request, topic_pk, topic_slug):
