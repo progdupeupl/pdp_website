@@ -28,7 +28,7 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.views.decorators.http import require_POST
 
-from pdp.utils import render_template, slugify
+from pdp.utils import render_template, slugify, bot
 from pdp.utils.paginator import paginator_range
 
 from pdp.forum.models import Category, Forum, Topic, Post
@@ -570,6 +570,52 @@ def moderation_topic(request, topic_pk):
         raise PermissionDenied
 
     topic = get_object_or_404(Topic, pk=topic_pk)
+
+    if request.method == 'POST' and 'action' in request.POST:
+
+        action = request.POST['action']
+
+        # Notify the topic author
+        notify_text = None
+        if 'notify_text' in request.POST and request.POST['notify_text']:
+            notify_text = request.POST['notify_text']
+
+        # Destructive options
+        if action == 'delete':
+
+            # Backup some needed informations before deletion
+            topic_forum = topic.forum
+            topic_author = topic.author
+            topic_title = topic.title
+
+            # Delete the topic
+            topic.delete()
+
+            # Notify the user
+            bot.create_private_topic(
+                recipients=[topic_author],
+                title='Votre sujet a été supprimé',
+                subtitle=topic_title,
+                text='Votre sujet <strong>{}</strong> posté dans le forum '
+                    '<strong>{}</strong> a été supprimé par '
+                    '<strong>{}</strong>.'.format(
+                    topic_title,
+                    topic_forum.title,
+                    request.user
+                )
+            )
+
+            return redirect(topic_forum.get_absolute_url())
+
+        # Non-destructive options
+        elif action == 'sticky':
+            topic.is_sticky = not topic.is_sticky
+        elif action == 'lock':
+            topic.is_locked = not topic.is_locked
+
+        topic.save()
+
+        return redirect(topic.get_absolute_url())
 
     return render_template('forum/moderation/topic.html', {
         'topic': topic
