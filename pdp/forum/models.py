@@ -50,7 +50,7 @@ class Category(models.Model):
 
     slug = models.SlugField(max_length=80)
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual representation of a category.
 
         Returns:
@@ -113,7 +113,7 @@ class Forum(models.Model):
 
     slug = models.SlugField(max_length=80)
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual representation of a forum.
 
         Returns:
@@ -246,7 +246,7 @@ class Topic(models.Model):
         default=False
     )
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual representation of a topic.
 
         Returns:
@@ -418,7 +418,7 @@ class Post(models.Model):
         default=False
     )
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual representation of a post.
 
         Returns:
@@ -458,7 +458,7 @@ class TopicRead(models.Model):
     post = models.ForeignKey(Post)
     user = models.ForeignKey(User, related_name='topics_read')
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual representation of a TopicRead object.
 
         Returns:
@@ -485,7 +485,7 @@ class TopicFollowed(models.Model):
     topic = models.ForeignKey(Topic)
     user = models.ForeignKey(User, related_name='topics_followed')
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual reprensentation of a TopicFollowed object.
 
         Returns:

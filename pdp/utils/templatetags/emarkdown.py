@@ -69,4 +69,4 @@ def emarkdown(value, post_id=None):
             text,
             tags=allowed_tags,
             attributes=allowed_attrs
-        ).encode('utf-8')))
+        )))

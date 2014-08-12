@@ -75,7 +75,7 @@ class Profile(models.Model):
         default=datetime.date.today()
     )
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual representation of a profile.
 
         Returns:

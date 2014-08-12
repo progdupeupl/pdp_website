@@ -96,7 +96,7 @@ class TutorialCategory(models.Model):
 
     slug = models.SlugField(max_length=80)
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual representation of a category."""
         return self.title
 
@@ -233,7 +233,7 @@ class Tutorial(models.Model):
         default=False
     )
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual representation of a tutorial.
 
         Returns:
@@ -454,7 +454,7 @@ class Part(models.Model):
         self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual representation of a part.
 
         Returns:
@@ -559,7 +559,7 @@ class Chapter(models.Model):
 
     slug = models.SlugField(max_length=80)
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual representation on a chapter.
 
         Returns:
@@ -752,7 +752,7 @@ class Extract(models.Model):
         u'Texte'
     )
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual representation of an extract.
 
         Returns:
