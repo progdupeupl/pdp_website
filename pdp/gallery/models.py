@@ -54,7 +54,7 @@ class UserGallery(models.Model):
     )
     mode = models.CharField(max_length=1, choices=MODE_CHOICES, default='R')
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual form of an user gallery.
 
         Returns:
@@ -122,7 +122,7 @@ class Image(models.Model):
     update = models.DateTimeField(
         'Date de modification', null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual representation of an Image.
 
         Returns:
@@ -166,7 +166,7 @@ class Gallery(models.Model):
     update = models.DateTimeField(
         'Date de modification', null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual form of an Gallery.
 
         Returns:
