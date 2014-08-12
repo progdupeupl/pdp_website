@@ -580,6 +580,10 @@ def moderation_topic(request, topic_pk):
         if 'notify_text' in request.POST and request.POST['notify_text']:
             notify_text = request.POST['notify_text']
 
+        title = None
+        subtitle = None
+        message_template_name = None
+
         # Destructive options
         if action == 'delete':
 
@@ -614,10 +618,39 @@ def moderation_topic(request, topic_pk):
         # Non-destructive options
         elif action == 'sticky':
             topic.is_sticky = not topic.is_sticky
+
+            title = 'Votre sujet a été {}'.format(
+                'épinglé' if topic.is_sticky else 'retiré des sujets épinglés'
+            )
+            subtitle = topic.title
+            message_template_name = 'topic_sticky'
+
         elif action == 'lock':
             topic.is_locked = not topic.is_locked
 
+            title = 'Votre sujet a été {}'.format(
+                'verrouillé' if topic.is_locked else 'déverrouillé'
+            )
+            subtitle = topic.title
+            message_template_name = 'topic_lock'
+
         topic.save()
+
+        # Finally notify the topic author for non-destructive operations
+        if message_template_name and title:
+            context = {
+                'topic': topic,
+                'moderator': request.user,
+                'justify': notify_text
+            }
+
+            bot.create_templated_private_topic(
+                [topic.author],
+                title,
+                subtitle,
+                message_template_name,
+                context
+            )
 
         return redirect(topic.get_absolute_url())
 
