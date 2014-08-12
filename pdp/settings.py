@@ -264,7 +264,7 @@ LOGIN_URL = '/membres/connexion'
 
 ABSOLUTE_URL_OVERRIDES = {
     'auth.user': lambda u: '/membres/voir/{0}'.format(
-        u.username.encode('utf-8'))
+        u.username)
 }
 
 #
