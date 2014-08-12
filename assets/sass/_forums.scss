@@ -122,3 +122,15 @@
 .useful .post-content {
     background-color: rgb(213, 236, 191);
 }
+
+/* Support for (un)hiding moderated messages */
+
+a.moderation-reveal {
+    font-size: emCalc(14px);
+    color: inherit;
+}
+
+.post:not(:target) .moderated-block *
+{
+    display: none;
+}
