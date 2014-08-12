@@ -151,6 +151,29 @@ def create_private_topic(recipients, title, subtitle, text):
     private_topic.save()
 
 
+def create_templated_private_topic(recipients, title, subtitle, template_name,
+    context):
+    """Send a private message using a Django template for text.
+
+    Args:
+       recipients: list of User instances
+       title: title of the private topic
+       subtitle: subtitle of the private topic, can be None
+       template_name: name of the template to use
+       context: dict with contextual values
+
+    """
+
+    # Render text from template file
+    with open('templates/bot/messages/{}.html'.format(template_name), 'r') as f:
+        t = Template(f.read())
+
+    text = t.render(Context(context))
+
+    create_private_topic(recipients, title, subtitle, text)
+
+
+
 def send_welcome_private_message(user):
     """Send a welcome message to a user.
 
@@ -159,13 +182,13 @@ def send_welcome_private_message(user):
 
     """
 
-    # Text to be displayed to user
-    with open('templates/bot/welcome_private_message.html', 'r') as f:
-        t = Template(f.read())
-
-    text = t.render(Context({'user': user}))
-
     title = u'Bienvenue sur Progdupeupl !'
     subtitle = u'Quelques petits conseils pour commencer.'
 
-    create_private_topic([user], title, subtitle, text)
+    create_templated_private_topic(
+        [user],
+        title,
+        subtitle,
+        'welcome',
+        {'user': user}
+    )

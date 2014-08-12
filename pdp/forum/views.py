@@ -592,17 +592,21 @@ def moderation_topic(request, topic_pk):
             topic.delete()
 
             # Notify the user
-            bot.create_private_topic(
-                recipients=[topic_author],
-                title='Votre sujet a été supprimé',
-                subtitle=topic_title,
-                text='Votre sujet <strong>{}</strong> posté dans le forum '
-                    '<strong>{}</strong> a été supprimé par '
-                    '<strong>{}</strong>.'.format(
-                    topic_title,
-                    topic_forum.title,
-                    request.user
-                )
+            title = 'Votre sujet a été supprimé'
+            subtitle = topic_title
+            context = {
+                'topic_forum': topic_forum,
+                'topic_title': topic_title,
+                'moderator': request.user,
+                'justify': notify_text
+            }
+
+            bot.create_templated_private_topic(
+                [topic_author],
+                title,
+                subtitle,
+                'topic_deleted',
+                context
             )
 
             return redirect(topic_forum.get_absolute_url())
