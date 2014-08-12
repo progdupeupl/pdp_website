@@ -49,7 +49,7 @@ class PrivateTopic(models.Model):
                                      verbose_name='Dernier message')
     pubdate = models.DateTimeField(u'Date de création', auto_now_add=True)
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual representation of a PrivateTopic object.
 
         Returns:
@@ -180,7 +180,7 @@ class PrivatePost(models.Model):
 
     position_in_topic = models.IntegerField(u'Position dans le sujet')
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual representation of a PrivatePost object.
 
         Returns:
@@ -221,7 +221,7 @@ class PrivateTopicRead(models.Model):
     privatepost = models.ForeignKey(PrivatePost)
     user = models.ForeignKey(User, related_name='privatetopics_read')
 
-    def __unicode__(self):
+    def __str__(self):
         """Textual representation of a PrivatePostRead object.
 
         Returns:
