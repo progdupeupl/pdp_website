@@ -55,20 +55,22 @@
         </form>
 
         {% if perms.forum.change_topic %}
-            <a href="{% url "pdp.forum.views.topic_toolbox" topic.pk %}" data-reveal-id="myModal"
+            <a href="{% url "pdp.forum.views.moderation_topic" topic.pk %}" data-reveal-id="moderation-topic"
                 class="button">Modération</a>
-
         {% endif %}
+
     {% endif %}
 {% endblock %}
 
 {% block content %}
 
-<div id="myModal" class="reveal-modal">
-    <p class="lead">Modérer le sujet</p>
-    {% include "forum/topic_toolbox.part.html" %}
-    <a class="close-reveal-modal">&#215;</a>
-</div>
+{% if perms.forum.change_topic %}
+    <div id="moderation-topic" class="reveal-modal">
+        <p class="lead">Modérer le sujet</p>
+        {% include "forum/moderation/topic.part.html" %}
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
+{% endif %}
 
 <div class="row" id="resolu" {% if not topic.is_solved %}style="display: none;"{% endif %}>
     <div class="large-12 columns">

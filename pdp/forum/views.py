@@ -558,7 +558,7 @@ def followed_topics(request):
 
 
 @login_required(redirect_field_name='suivant')
-def topic_toolbox(request, topic_pk):
+def moderation_topic(request, topic_pk):
     """Displays an useful toolbox for staff on a specific topic.
 
     Args:
@@ -571,7 +571,7 @@ def topic_toolbox(request, topic_pk):
 
     topic = get_object_or_404(Topic, pk=topic_pk)
 
-    return render_template('forum/topic_toolbox.html', {
+    return render_template('forum/moderation/topic.html', {
         'topic': topic
     })
 

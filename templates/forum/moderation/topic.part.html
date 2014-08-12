@@ -1,7 +1,7 @@
 <p>
     Que voulez-vous faire ?
 </p>
-<form action="{% url "pdp.forum.views.topic_toolbox" topic.pk %}" method="POST">
+<form action="{% url "pdp.forum.views.moderation_topic" topic.pk %}" method="POST">
     <select>
         <option>Épingler le sujet</option>
         <option>Verrouiller le sujet</option>
