@@ -402,8 +402,8 @@ IMAGE_MAX_SIZE = 1024 * 512
 # generation when running tests.
 TESTING = 'test' in sys.argv
 
-# Time to wait before a moderated message becomes unfoldable: one day
-MODERATED_REVEAL_DELAY=datetime.timedelta(days=1)
+# Time to wait before a moderated message becomes unfoldable
+MODERATED_REVEAL_DELAY=datetime.timedelta(days=7)
 
 #
 # Guardian
