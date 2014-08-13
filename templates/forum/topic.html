@@ -144,20 +144,20 @@
             {% if not post.is_moderated %}
                 {{ post.text|emarkdown:post.pk }}
             {% else %}
-              {% if perms.forum.change_post or post.is_moderated_visible %}
-              <a class="moderation-reveal"
-                 href="#reveal-{{ post.id }}">
-              {% else %} <p> {% endif %}
+              <p>
                 Message modéré
-                par {{ post.moderated_by.username }},
-                {{post.moderation_time|naturaltime}}.
+                par
+                {% with member=post.moderated_by %}
+                    {% include "member/member_item_common.part.html" %}
+                {% endwith %}
+                {{post.moderation_time|naturaltime}}{% if post.moderation_text %} : {{ post.moderation_text }}{% else %}.{% endif %}
+              </p>
               {% if perms.forum.change_post or post.is_moderated_visible %}
-              </a>
-              {% else %} </p> {% endif %}
-
-              {% if post.moderation_text != '' %}
-                <p>Explication:</p>
-                <blockquote>{{ post.moderation_text }}</blockquote>
+                <p>
+                    <a href="#reveal-{{ post.id }}">
+                       Voir le message
+                    </a>
+                </p>
               {% endif %}
 
               {% if perms.forum.change_post or post.is_moderated_visible %}

@@ -462,12 +462,18 @@ class Post(models.Model):
             .format(self.topic.get_absolute_url(), page, self.pk)
 
     def is_moderated_visible(self):
-        # should the text of a moderated message be visible?
-        #
-        # we decide that moderated messages remain un-visible for 24 hours,
-        # to allow the discussion to cool down
+        """Should the text of a moderated message be visible?
+
+        We decide that moderated messages remain un-visible for a certain
+        amount of time, in order to allow the discussion to cool down.
+
+        Returns:
+            boolean
+
+        """
         visible_at = self.moderation_time + settings.MODERATED_REVEAL_DELAY
-        return (datetime.now() > visible_at)
+
+        return datetime.now() > visible_at
 
 
 class TopicRead(models.Model):
