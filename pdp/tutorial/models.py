@@ -646,7 +646,7 @@ class Chapter(models.Model):
         next_chapter = Chapter.objects \
             .filter(part__tutorial__pk=self.part.tutorial.pk) \
             .filter(position_in_tutorial__gt=self.position_in_tutorial) \
-            .order_by('position_in_part') \
+            .order_by('position_in_tutorial') \
             .first()
 
         return next_chapter
@@ -665,7 +665,7 @@ class Chapter(models.Model):
         previous_chapter = Chapter.objects \
             .filter(part__tutorial__pk=self.part.tutorial.pk) \
             .filter(position_in_tutorial__lt=self.position_in_tutorial) \
-            .order_by('-position_in_part') \
+            .order_by('-position_in_tutorial') \
             .first()
 
         return previous_chapter
