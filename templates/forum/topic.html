@@ -120,7 +120,7 @@
                             </a>
                         {% endif %}
 
-                        {% if not topic.is_locked and not topic.antispam %}
+                        {% if not topic.is_locked and not topic.antispam and not post.is_moderated %}
                             <a href="{% url "pdp.forum.views.answer" topic.pk %}?cite={{ post.pk }}"
                                 class="button secondary small">
                                 Citer

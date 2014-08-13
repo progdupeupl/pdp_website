@@ -374,6 +374,9 @@ def answer(request, topic_pk):
             post_cite_pk = request.GET['cite']
             post_cite = Post.objects.get(pk=post_cite_pk)
 
+            if post_cite.is_moderated:
+                raise PermissionDenied
+
             for line in post_cite.text.splitlines():
                 text = text + '> ' + line + '\n'
 
