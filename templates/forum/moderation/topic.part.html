@@ -1,6 +1,7 @@
 <p>
     Que voulez-vous faire ?
 </p>
+
 <form action="{% url "pdp.forum.views.moderation_topic" topic.pk %}" method="POST">
     <select name="action">
         <option value="sticky">
@@ -22,13 +23,12 @@
         </option>
     </select>
 
-    <textarea id="notify_text" name="notify_text"
-        placeholder="Justifiez en quelques mots votre action (optionnel)."></textarea>
+    <input type="text" name="notify_text"
+        placeholder="Justifiez en quelques mots votre action (optionnel)."></input>
 
     <div style="text-align: center;">
         <input type="submit" value="Valider l’action" class="button"></input>
     </div>
 
-    <input type="hidden" name="last_post" value="{{ last_post_pk }}" />
     {% csrf_token %}
 </form>
