@@ -74,4 +74,7 @@ urlpatterns = patterns(
 
     # Followed topics
     url(r'^suivis$', views.followed_topics),
+
+    # Moderation
+    url(r'^moderation/sujet/(?P<topic_pk>\d+)$', views.moderation_topic),
 )

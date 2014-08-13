@@ -303,7 +303,7 @@
     {% if user.is_authenticated %}
     <form id="disconnect_form" action="{% url "pdp.member.views.logout_view" %}" method="post">
         {% csrf_token %}
-    </form> 
+    </form>
     {% endif %}
 
     {# Javascript stuff start #}
@@ -315,7 +315,7 @@
 
     {# Foundation #}
     <script>
-        $(document).foundation('topbar forms dropdown tooltips alerts section', {
+        $(document).foundation('topbar forms dropdown reveal tooltips alerts section', {
             custom_back_text: true,
             back_text: 'Précédent'
         });

@@ -28,7 +28,7 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.views.decorators.http import require_POST
 
-from pdp.utils import render_template, slugify
+from pdp.utils import render_template, slugify, bot
 from pdp.utils.paginator import paginator_range
 
 from pdp.forum.models import Category, Forum, Topic, Post
@@ -554,6 +554,108 @@ def followed_topics(request):
         'followed_topics': shown_topics,
         'pages': paginator_range(page, paginator.num_pages),
         'nb': page
+    })
+
+
+@login_required(redirect_field_name='suivant')
+def moderation_topic(request, topic_pk):
+    """Displays an useful toolbox for staff on a specific topic.
+
+    Args:
+        topic_pk: the topic to act on
+
+    """
+
+    if not request.user.has_perm('forum.change_post'):
+        raise PermissionDenied
+
+    topic = get_object_or_404(Topic, pk=topic_pk)
+
+    if request.method == 'POST' and 'action' in request.POST:
+
+        action = request.POST['action']
+
+        # Notify the topic author
+        notify_text = None
+        if 'notify_text' in request.POST and request.POST['notify_text']:
+            notify_text = request.POST['notify_text']
+
+        title = None
+        subtitle = None
+        message_template_name = None
+
+        # Destructive options
+        if action == 'delete':
+
+            # Backup some needed informations before deletion
+            topic_forum = topic.forum
+            topic_author = topic.author
+            topic_title = topic.title
+
+            # Delete the topic
+            topic.delete()
+
+            # Notify the user
+            title = 'Votre sujet a été supprimé'
+            subtitle = topic_title
+            context = {
+                'topic_forum': topic_forum,
+                'topic_title': topic_title,
+                'moderator': request.user,
+                'justify': notify_text
+            }
+
+            bot.create_templated_private_topic(
+                [topic_author],
+                title,
+                subtitle,
+                'topic_deleted',
+                context
+            )
+
+            return redirect(topic_forum.get_absolute_url())
+
+        # Non-destructive options
+        elif action == 'sticky':
+            topic.is_sticky = not topic.is_sticky
+
+            title = 'Votre sujet a été {}'.format(
+                'épinglé' if topic.is_sticky else 'retiré des sujets épinglés'
+            )
+            subtitle = topic.title
+            message_template_name = 'topic_sticky'
+
+        elif action == 'lock':
+            topic.is_locked = not topic.is_locked
+
+            title = 'Votre sujet a été {}'.format(
+                'verrouillé' if topic.is_locked else 'déverrouillé'
+            )
+            subtitle = topic.title
+            message_template_name = 'topic_lock'
+
+        topic.save()
+
+        # Finally notify the topic author for non-destructive operations
+        if message_template_name and title:
+            context = {
+                'topic': topic,
+                'moderator': request.user,
+                'justify': notify_text
+            }
+
+            bot.create_templated_private_topic(
+                [topic.author],
+                title,
+                subtitle,
+                message_template_name,
+                context
+            )
+
+        return redirect(topic.get_absolute_url())
+
+    return render_template('forum/moderation/topic.html', {
+        'topic': topic
     })
 
 

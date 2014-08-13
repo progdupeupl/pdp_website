@@ -1,0 +1,28 @@
+<p>
+    Bonjour <strong>{{ user.username }}</strong>.
+</p>
+<p>
+    Votre sujet <strong>{{ topic.title }}</strong> posté dans le forum
+    <a href="{{ topic.forum.get_absolute_url }}"><strong>{{ topic.forum.title }}</strong></a>
+    a été
+    {% if topic.is_locked %}
+        verrouillé
+    {% else %}
+        déverrouillé
+    {% endif %} par
+    <a href="{{ moderator.get_absolute_url }}"><strong>{{ moderator }}</strong></a>.
+</p>
+
+{% if justify %}
+<p>
+    Message laissé par le modérateur :
+</p>
+<blockquote>
+    {{ justify }}
+</blockquote>
+{% endif %}
+
+<p>
+    Amicalement,<br />
+    Chtaline.
+</p>

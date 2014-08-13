@@ -1,0 +1,22 @@
+<p>
+    Bonjour <strong>{{ user.username }}</strong>.
+</p>
+<p>
+    Votre sujet <strong>{{ topic_title }}</strong> posté dans le forum
+    <a href="{{ topic_forum.get_absolute_url }}"><strong>{{ topic_forum.title }}</strong></a>
+    a été supprimé par <a href="{{ moderator.get_absolute_url }}"><strong>{{ moderator }}</strong></a>.
+</p>
+
+{% if justify %}
+<p>
+    Message laissé par le modérateur :
+</p>
+<blockquote>
+    {{ justify }}
+</blockquote>
+{% endif %}
+
+<p>
+    Amicalement,<br />
+    Chtaline.
+</p>

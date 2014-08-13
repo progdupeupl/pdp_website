@@ -1,0 +1,34 @@
+<p>
+    Que voulez-vous faire ?
+</p>
+<form action="{% url "pdp.forum.views.moderation_topic" topic.pk %}" method="POST">
+    <select name="action">
+        <option value="sticky">
+            {% if not topic.is_sticky %}
+                Épingler le sujet
+            {% else %}
+                Enlever le sujet des sujets épinglés
+            {% endif %}
+        </option>
+        <option value="lock">
+            {% if not topic.is_locked %}
+                Verrouiller le sujet
+            {% else %}
+                Déverrouiller le sujet
+            {% endif %}
+        </option>
+        <option value="delete">
+            Effacer définitivement le sujet
+        </option>
+    </select>
+
+    <textarea id="notify_text" name="notify_text"
+        placeholder="Justifiez en quelques mots votre action (optionnel)."></textarea>
+
+    <div style="text-align: center;">
+        <input type="submit" value="Valider l’action" class="button"></input>
+    </div>
+
+    <input type="hidden" name="last_post" value="{{ last_post_pk }}" />
+    {% csrf_token %}
+</form>
