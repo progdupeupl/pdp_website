@@ -1,0 +1,36 @@
+{% extends "forum/base.html" %}
+{% block title %}
+    Modération
+{% endblock %}
+
+{% block headline %}
+    Outils de modération
+{% endblock %}
+
+{% block headline-sub %}
+    {{ topic.title }}
+{% endblock %}
+
+{% block breadcrumb %}
+    {% with topic=post.topic %}
+        <li><a href="{{ topic.forum.category.get_absolute_url }}">{{ topic.forum.category.title }}</a></li>
+        <li><a href="{{ topic.forum.get_absolute_url }}">{{ topic.forum.title }}</a></li>
+        <li><a href="{{ topic.get_absolute_url }}">{{ topic.title }}</a></li>
+        <li class="current"><a href="javascript:;">Outils de modération</a></li>
+    {% endwith %}
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="large-12 columns">
+
+        {% include "forum/moderation/post.part.html" %}
+
+        <a href="{{ post.get_absolute_url }}" class="button secondary">
+            Retour au message
+        </a>
+    </div>
+</div>
+
+{% endblock %}

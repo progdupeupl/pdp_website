@@ -1,0 +1,18 @@
+<p>
+    Que voulez-vous faire ?
+</p>
+<form action="{% url "pdp.forum.views.moderation_post" post.pk %}" method="POST">
+
+    <select name="action">
+        <option value="hide">Cacher le contenu du message</option>
+    </select>
+
+    <input type="text" name="justify_text"
+        placeholder="Expliquer brièvement votre action (optionnel)."></input>
+
+    <div style="text-align: center;">
+        <input type="submit" value="Valider l’action" class="button"></input>
+    </div>
+
+    {% csrf_token %}
+</form>

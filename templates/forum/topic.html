@@ -106,6 +106,13 @@
                             </a>
                         {% endif %}
 
+                        {% if perms.forum.change_post %}
+                            <a href="{% url "pdp.forum.views.moderation_post" post.pk %}"
+                                class="button secondary small">
+                                Modérer
+                            </a>
+                        {% endif %}
+
                         {% if post.author == user and not post.is_moderated or perms.forum.change_post %}
                             <a href="{% url "pdp.forum.views.edit_post" post.pk %}"
                                 class="button secondary small">

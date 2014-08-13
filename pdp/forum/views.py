@@ -401,18 +401,20 @@ def edit_post(request, post_pk):
     if post.position_in_topic == 1:
         g_topic = get_object_or_404(Topic, pk=post.topic.pk)
 
+    by_staff = (post.author != request.user) \
+        and request.user.has_perm('forum.change_post')
+
     # - non-moderated posts may be edited by their author or moderators;
     # - moderated posts only by moderators
-    if (post.author != request.user) or post.is_moderated:
-        if not request.user.has_perm('forum.change_post'):
-            raise Http404
+    if (post.author != request.user) \
+        and not by_staff:
+        raise PermissionDenied
 
-    if (post.author != request.user) and request.method == 'GET' and not post.is_moderated:
+    if by_staff and request.method == 'GET':
         messages.add_message(
             request, messages.WARNING,
-            u'Vous vous apprêtez à modérer un message (auteur : {}).'
-            u'L\'explication fournie ci-dessous sera visible à tous, '
-            u'et le message original caché (mais dé-cachable seulement demain)'
+            u'Vous vous apprêtez à éditer un message en tant que modérateur '
+            u'(auteur : {}).'
             .format(post.author.username))
 
     if request.method == 'POST':
@@ -426,18 +428,13 @@ def edit_post(request, post_pk):
                 'post': post, 'topic': g_topic, 'text': request.POST['text'],
             })
 
-        # The user just sent data, handle them
-        if post.author == request.user:
-            post.text = request.POST['text']
-            post.update = datetime.now()
-        else:
-            post.is_moderated = True
-            post.moderation_time = datetime.now()
-            post.moderation_text = request.POST['text']
-            post.moderated_by = request.user
+        # Else save changes to database
+        post.text = request.POST['text']
+        post.update = datetime.now()
+
         post.save()
 
-        # Modifying the thread info
+        # Modifying the thread info if first post
         if g_topic:
             g_topic.title = request.POST['title']
             g_topic.subtitle = request.POST['subtitle']
@@ -446,12 +443,8 @@ def edit_post(request, post_pk):
         return redirect(post.get_absolute_url())
 
     else:
-        if post.is_moderated:
-            text = post.moderation_text
-        else:
-            text = post.text
         return render_template('forum/edit_post.html', {
-            'post': post, 'topic': g_topic, 'text': text
+            'post': post, 'topic': g_topic, 'text': post.text
         })
 
 @login_required(redirect_field_name='suivant')
@@ -668,6 +661,45 @@ def moderation_topic(request, topic_pk):
 
     return render_template('forum/moderation/topic.html', {
         'topic': topic
+    })
+
+
+@login_required(redirect_field_name='suivant')
+def moderation_post(request, post_pk):
+    """Displays an useful toolbox for staff on a specific post.
+
+    Args:
+        post_pk: the post to act on
+
+    """
+
+    if not request.user.has_perm('forum.change_post'):
+        raise PermissionDenied
+
+    post = get_object_or_404(Post, pk=post_pk)
+
+    if request.method == 'POST' and 'action' in request.POST:
+
+        action = request.POST['action']
+
+        # Empty string because moderation_text field is NOT NULL
+        justify_text = ''
+        if 'justify_text' in request.POST and request.POST['justify_text']:
+            justify_text = request.POST['justify_text']
+
+        if action == 'hide':
+            post.is_moderated = True
+            post.moderation_time = datetime.now()
+            post.moderation_text = justify_text
+            post.moderated_by = request.user
+
+            post.save()
+
+        return redirect(post.get_absolute_url())
+
+
+    return render_template('forum/moderation/post.html', {
+        'post': post
     })
 
 

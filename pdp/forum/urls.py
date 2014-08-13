@@ -77,4 +77,5 @@ urlpatterns = patterns(
 
     # Moderation
     url(r'^moderation/sujet/(?P<topic_pk>\d+)$', views.moderation_topic),
+    url(r'^moderation/message/(?P<post_pk>\d+)$', views.moderation_post),
 )
