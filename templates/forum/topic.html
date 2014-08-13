@@ -84,7 +84,9 @@
 {% include "forum/topic_pagination.part.html" with position="top" %}
 
 {% for post in posts %}
-<div class="post {% if forloop.first and nb > 1 %}before{% endif %} {% if post.is_useful %}useful{% endif %}">
+<div class="post {% if forloop.first and nb > 1 %}before{% endif %} {% if post.is_useful %}useful{% endif %}"
+     {%if post.is_moderated %} id="reveal-{{ post.id }}" {% endif %}
+>
     <div class="row post-head" id="p{{ post.id }}">
         <div class="large-2 columns post-nickname">
             <p>
@@ -104,7 +106,7 @@
                             </a>
                         {% endif %}
 
-                        {% if post.author == user or perms.forum.change_post %}
+                        {% if post.author == user and not post.is_moderated or perms.forum.change_post %}
                             <a href="{% url "pdp.forum.views.edit_post" post.pk %}"
                                 class="button secondary small">
                                 Éditer
@@ -121,7 +123,7 @@
                 {% endif %}
             </div>
             <p>
-                <a href="#p{{ post.pk }}">#</a>
+                <a href="#p{{ post.id }}">#</a>
                 {{ post.pubdate|naturaltime }}
                 {% if not post.update = None %}
                     (dernière édition {{ post.update|naturaltime }})
@@ -139,7 +141,34 @@
             {% endwith %}
         </div>
         <div class="large-10 columns">
-            {{ post.text|emarkdown:post.pk }}
+            {% if not post.is_moderated %}
+                {{ post.text|emarkdown:post.pk }}
+            {% else %}
+              {% if perms.forum.change_post or post.is_moderated_visible %}
+              <a class="moderation-reveal"
+                 href="#reveal-{{ post.id }}">
+              {% else %} <p> {% endif %}
+                Message modéré
+                par {{ post.moderated_by.username }},
+                {{post.moderation_time|naturaltime}}.
+              {% if perms.forum.change_post or post.is_moderated_visible %}
+              </a>
+              {% else %} </p> {% endif %}
+
+              {% if post.moderation_text != '' %}
+                <p>Explication:</p>
+                <blockquote>{{ post.moderation_text }}</blockquote>
+              {% endif %}
+
+              {% if perms.forum.change_post or post.is_moderated_visible %}
+                <div class="moderated-block">
+                  <p>Contenu initial:</p>
+                  <blockquote>
+                    {{ post.text|emarkdown:post.pk }}
+                  </blockquote>
+                </div>
+              {% endif %}
+            {% endif %}
         </div>
     </div>
 </div>

@@ -39,7 +39,7 @@ Debian/Ubuntu systems for example, you can use the following commands:
 
     :::console
     # aptitude install python3.3 python3.3-dev
-    # aptitude install python-pip
+    # aptitude install python3-pip
 
 You will also need Ruby, that on most systems come with its own package manager
 `gem`. Again on Debian/Ubuntu:
@@ -63,7 +63,7 @@ Python, and installing dependencies locally. To install `virtualenv`, simply
 run
 
     :::console
-    $ pip install --user virtualenv
+    $ pip3 install --user virtualenv
 
 If you are in the `progdupeupl` directory, you can then create a local
 environment in a new subdirectory `venv`, asking it to use the `python3`
@@ -124,16 +124,6 @@ compress CSS and JS sheets.
     :::console
     $ npm install yuglify
 
-In order to generate PDF files using a background task scheduler named celery,
-you will need to start it. A shortcut is provided in the Makefile, simply
-type:
-
-    :::console
-    $ make celery
-
-And the celery server will start. You will also need Pandoc as PDF generator
-from Markdown sources.
-
 ## First run
 
 From the project's root, you will need to run the following Make target:
@@ -155,6 +145,18 @@ The test instance should be available at
 behavior if you edit the code of the project. Enjoy, and send us lots of good
 patches!
 
+## Running background tasks
+
+In order to generate PDF files using a background task scheduler named celery,
+you will need to start it. A shortcut is provided in the Makefile, simply
+type:
+
+    :::console
+    $ make celery
+
+And the celery server will start. You will also need Pandoc as PDF generator
+from Markdown sources.
+
 ## Filling your local database with data
 
 If you want to fill the database with fake data, you can import them from
@@ -172,6 +174,20 @@ It will create:
 
 You can login with these dummy users using their lowercase usernames as their
 respective passwords.
+
+## Updating the local data after schema change
+
+If you add new fields to a models.py, Python will complain that the
+database schema is out-of-date. To fix this, perform a schema
+migration using the two following commands, replacing `forum` in the
+line `APP=forum` with the subdirectory of `pdp` in which you made the
+modifications (article, forum, gallery, member, messages, pages,
+tutorial, utils...):
+
+    :::console
+    (venv)$ APP=forum
+    (venv)$ python manage.py schemamigration pdp.$APP --auto
+    (venv)$ python manage.py migrate $APP
 
 ## Documentation
 

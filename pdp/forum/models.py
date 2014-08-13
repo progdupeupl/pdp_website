@@ -17,6 +17,7 @@
 
 """Models for forum app."""
 
+from datetime import datetime, timedelta
 from math import ceil
 
 from django.core.urlresolvers import reverse
@@ -418,6 +419,25 @@ class Post(models.Model):
         default=False
     )
 
+    is_moderated = models.BooleanField(
+        u'Est modéré',
+        default=False
+    )
+    moderation_time = models.DateTimeField(
+        u'Date d\'édition',
+        default=datetime.today()
+    )
+    moderation_text = models.TextField(
+        u'Explication de modération',
+        default='',
+        blank=True
+    )
+    moderated_by = models.ForeignKey(
+        User,
+        verbose_name=u'Modérateur',
+        null=True
+    )
+
     def __str__(self):
         """Textual representation of a post.
 
@@ -440,6 +460,14 @@ class Post(models.Model):
 
         return '{0}?page={1}#p{2}'\
             .format(self.topic.get_absolute_url(), page, self.pk)
+
+    def is_moderated_visible(self):
+        # should the text of a moderated message be visible?
+        #
+        # we decide that moderated messages remain un-visible for 24 hours,
+        # to allow the discussion to cool down
+        visible_at = self.moderation_time + settings.MODERATED_REVEAL_DELAY
+        return (datetime.now() > visible_at)
 
 
 class TopicRead(models.Model):
