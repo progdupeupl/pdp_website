@@ -34,7 +34,7 @@ def image_path(instance, filename):
 
     """
     ext = filename.split('.')[-1]
-    filename = u'{}.{}'.format(str(uuid.uuid4()), string.lower(ext))
+    filename = u'{}.{}'.format(str(uuid.uuid4()), ext.lower())
     return os.path.join('galleries', str(instance.gallery.pk), filename)
 
 

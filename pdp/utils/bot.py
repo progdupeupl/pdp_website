@@ -165,7 +165,7 @@ def create_templated_private_topic(recipients, title, subtitle, template_name,
     """
 
     # Render text from template file
-    with open('templates/bot/messages/{}.html'.format(template_name), 'r') as f:
+    with io.open('templates/bot/messages/{}.html'.format(template_name), 'r', encoding='utf-8') as f:
         t = Template(f.read())
 
     text = t.render(Context(context))

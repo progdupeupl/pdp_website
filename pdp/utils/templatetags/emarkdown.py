@@ -15,14 +15,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Progdupeupl. If not, see <http://www.gnu.org/licenses/>.
 
-from pdp.utils.templatetags import cssstyles
 import markdown
 import bleach
 
 from django import template
 from django.utils.safestring import mark_safe
-
-md_cssstyle = cssstyles.StyleExtension()
 
 register = template.Library()
 
@@ -47,7 +44,6 @@ def emarkdown(value, post_id=None):
     }
 
     text = markdown.markdown(value, extensions=[
-                             md_cssstyle,
                              'codehilite(linenums=True)',
                              'extra'])
 
