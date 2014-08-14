@@ -17,6 +17,7 @@
 
 """Module used for interacting with the bot user, if enabled."""
 
+import io
 from datetime import datetime
 
 from django.template import Template, Context
