@@ -29,8 +29,8 @@ parent (or children) object(s).
 """
 
 import os
-import string
 import datetime
+import io
 
 from django.db import models
 from django.db.models.signals import post_save
@@ -45,7 +45,6 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from taggit.managers import TaggableManager
 
 from PIL import Image
-from io import StringIO
 
 from pdp.tutorial.exceptions import \
     OrphanPartException, OrphanChapterException
@@ -65,7 +64,7 @@ def image_path(instance, filename):
 
     """
     ext = filename.split('.')[-1]
-    filename = u'original.{}'.format(string.lower(ext))
+    filename = u'original.{}'.format(ext.lower())
     return os.path.join('tutorials', str(instance.pk), filename)
 
 
@@ -77,7 +76,7 @@ def thumbnail_path(instance, filename):
 
     """
     ext = filename.split('.')[-1]
-    filename = u'thumb.{}'.format(string.lower(ext))
+    filename = u'thumb.{}'.format(ext.lower())
     return os.path.join('tutorials', str(instance.pk), filename)
 
 
@@ -356,17 +355,27 @@ class Tutorial(models.Model):
             # Whoops, this tutorial is broken!
             return None
 
-    def save(self, force_update=False, force_insert=False,
-             thumb_size=(IMAGE_MAX_HEIGHT, IMAGE_MAX_WIDTH)):
+    def save(self, *args, **kwargs):
         """Save tutorial instance.
 
         If tutorial's image was changed, it will update its thumbnail field
         resizing it. Then it will call normal saving of the model.
 
         """
+
+        is_new = self.pk is None
+        thumb_size = (IMAGE_MAX_HEIGHT, IMAGE_MAX_WIDTH)
+
+        # Save the tutorial first if it was created in order to have a pk from
+        # the database.
+        if is_new:
+            super().save(*args, **kwargs)
+
+        # Compute tutorial's slug from its title
         self.slug = slugify(self.title)
 
-        if has_changed(self, 'image') and self.image:
+        # Update the thumbnail if necessary
+        if self.image and (is_new or has_changed(self, 'image')):
             # TODO : delete old image
 
             image = Image.open(self.image)
@@ -376,21 +385,19 @@ class Tutorial(models.Model):
 
             image.thumbnail(thumb_size, Image.ANTIALIAS)
 
-            # save the thumbnail to memory
-            temp_handle = StringIO()
+            # Save the thumbnail to memory
+            temp_handle = io.BytesIO()
             image.save(temp_handle, 'png')
             temp_handle.seek(0)  # rewind the file
 
-            # save to the thumbnail field
+            # Save to the thumbnail field
             suf = SimpleUploadedFile(os.path.split(self.image.name)[-1],
                                      temp_handle.read(),
                                      content_type='image/png')
             self.thumbnail.save(u'{}.png'.format(suf.name), suf, save=False)
 
-            # save the image object
-            super().save(force_update, force_insert)
-        else:
-            super().save()
+        # Save the tutorial
+        super().save(*args, **kwargs)
 
 
 def get_last_tutorials():
