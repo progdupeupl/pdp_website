@@ -29,7 +29,7 @@
             {% if tag.name %}
                 <a href="{% url "pdp.tutorial.views.by_tag" name=tag.name %}"
                     class="label secondary">
-                {{ tag.name }} ({{ tag.value }})
+                    {{ tag.name }} ({{ tag.value }})
 
                 </a>
             {% endif %}
