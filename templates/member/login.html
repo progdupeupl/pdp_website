@@ -82,4 +82,33 @@
 </div>
 {% endif %}
 
+{% if not user.is_authenticated %}
+<div class="row">
+    <div class="large-12 columns">
+        <p>
+            <a href="#mdp_perdu" onclick="$('#mdp_perdu').toggle();">
+                Mot de passe oublié ?
+            </a>
+        </p>
+        <div id="mdp_perdu">
+            <p>
+                En attendant de mettre en place un système de récupération de
+                mot de passe, vous pouvez envoyer un mail à MicroJoe pour qu’il
+                réinitialise votre mot de passe (peut prendre quelques jours
+                mais souvent effectué dans la journée).
+            </p>
+            <p>
+                Vous devriez trouver son adresse mail facilement en cherchant
+                un peu (ou à défaut un mail à <code>admin</code> sur ce NDD
+                devrait faire l’affaire).
+            </p>
+        </div>
+    </div>
+</div>
+<script>
+    var elm = document.getElementById('mdp_perdu');
+    elm.style.display = "none";
+</script>
+{% endif %}
+
 {% endblock %}
