@@ -1188,15 +1188,26 @@ def tags(request):
     tagged_items = TaggedItem.objects \
         .filter(content_type=ct)
 
-    visible_tags = []
+    visible_tags = {}
     for item in tagged_items:
         tutorial = Tutorial.objects.get(id=item.object_id)
         if tutorial.is_visible or (request.user.is_authenticated() and
                                    tutorial.is_beta):
-            visible_tags.append(item.tag)
+            cur = str(item.tag)
+            if cur in visible_tags:
+                visible_tags[cur] += 1
+            else:
+                visible_tags[cur] = 1
+
+    # create dict of tags for sorting and easier acces in the template
+    ret = []
+    for key in visible_tags:
+        ret.append({'name': key, 'value': visible_tags[key]})
+
+    ret.sort(key=lambda k: k['value'], reverse=True)  # sort by nb of occurence
 
     return render_template('tutorial/tags.html', {
-        'tags': visible_tags
+        'tags': ret
     })
 
 

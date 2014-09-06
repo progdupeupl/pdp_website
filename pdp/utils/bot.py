@@ -76,7 +76,7 @@ def create_tutorial_topic(tutorial):
     """
 
     # Text to be displayed to users, with a link to the tutorial
-    with open('templates/bot/new_tutorial.html', 'r') as f:
+    with io.open('templates/bot/new_tutorial.html', 'r', encoding='utf-8') as f:
         t = Template(f.read())
 
     text = t.render(Context({'tutorial': tutorial}))
@@ -96,7 +96,7 @@ def create_article_topic(article):
     """
 
     # Text to be displayed to users, with a link to the article
-    with open('templates/bot/new_article.html', 'r') as f:
+    with io.open('templates/bot/new_article.html', 'r', encoding='utf-8') as f:
         t = Template(f.read())
 
     text = t.render(Context({'article': article}))
@@ -153,7 +153,7 @@ def create_private_topic(recipients, title, subtitle, text):
 
 
 def create_templated_private_topic(recipients, title, subtitle, template_name,
-    context):
+                                   context):
     """Send a private message using a Django template for text.
 
     Args:
@@ -166,13 +166,13 @@ def create_templated_private_topic(recipients, title, subtitle, template_name,
     """
 
     # Render text from template file
-    with io.open('templates/bot/messages/{}.html'.format(template_name), 'r', encoding='utf-8') as f:
+    filename = 'templates/bot/messages/{}.html'.format(template_name)
+    with io.open(filename, 'r', encoding='utf-8') as f:
         t = Template(f.read())
 
     text = t.render(Context(context))
 
     create_private_topic(recipients, title, subtitle, text)
-
 
 
 def send_welcome_private_message(user):
