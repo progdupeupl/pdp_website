@@ -85,3 +85,6 @@ celery:
 bootstrap: syncdb migrate initsearch assets collectstatic
 	mkdir -p media/tutorials
 
+# Count lines of code
+cloc:
+	cloc . --exclude-dir='assets,__pycache__,venv,media,static,migrations,fixtures'
