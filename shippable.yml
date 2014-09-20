@@ -19,7 +19,7 @@ install:
  - pip install -r requirements.txt
  - pip uninstall south -y || return 0
  - pip install ./south/
- - python manage.py syncdb
+ - python manage.py syncdb --noinput
  - python manage.py migrate
 
 # Run tests
