@@ -18,7 +18,6 @@
 """File containing celery tasks for long tasks."""
 
 import os
-import subprocess
 
 from django.conf import settings
 from celery import task
@@ -43,14 +42,11 @@ def pandoc_pdf(source, dest, tutorial_pk):
         )
     )
 
-    # Generate intermediate .tex file using Pandoc
-    tex_dest = ''.join(dest.split('.')[:-1]) + '.tex'
+    # Generate PDF file using Pandoc
+    pdf_dest = ''.join(dest.split('.')[:-1]) + '.pdf'
     command = '{}pandoc -s -t latex --latex-engine=xelatex -o {} {}'.format(
         settings.PANDOC_PATH,
-        tex_dest,
+        pdf_dest,
         source
     )
     os.system(command)
-
-    # Generate PDF file from .tex source using XeLaTeX
-    os.system('xelatex {}'.format(tex_dest))
