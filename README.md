@@ -3,7 +3,7 @@
 Progdupeupl (PDP) is a community of French programmers ; you can see the
 running version [here](http://progdupeu.pl/).
 
-[![Build Status](https://api.shippable.com/projects/5389cf94731cb63803367002/badge/master)](https://www.shippable.com/projects/5389cf94731cb63803367002)
+[![Build Status](https://api.shippable.com/projects/540f4bef5adf368bc3901fc7/badge?branchName=master)](https://app.shippable.com/projects/540f4bef5adf368bc3901fc7/builds/latest)
 
 ## Language convention
 
