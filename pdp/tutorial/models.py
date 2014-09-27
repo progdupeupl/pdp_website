@@ -232,12 +232,6 @@ class Tutorial(models.Model):
         default=False
     )
 
-    redirect_to = models.CharField(
-        max_length=255,
-        null=True, blank=True,
-        verbose_name=u'Redirige vers'
-    )
-
     def __str__(self):
         """Textual representation of a tutorial.
 

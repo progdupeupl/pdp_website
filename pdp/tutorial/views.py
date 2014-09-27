@@ -97,9 +97,6 @@ def view_tutorial(request, tutorial_pk, tutorial_slug):
         if not (tutorial.is_beta and request.user.is_authenticated()):
             raise Http404
 
-    if tutorial.redirect_to:
-        return redirect(tutorial.redirect_to)
-
     # Make sure the URL is well-formed
     if not tutorial_slug == slugify(tutorial.title):
         return redirect(tutorial.get_absolute_url())
