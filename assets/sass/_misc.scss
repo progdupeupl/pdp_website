@@ -1,6 +1,11 @@
-/* Fix bug on textareas with Foundation, see https://groups.google.com/forum/?fromgroups#!topic/foundation-framework-/b2uVmpvW7wI */
 textarea {
+    /* Fix bug on textareas with Foundation, see
+     * https://groups.google.com/forum/?fromgroups#!topic/foundation-framework-/b2uVmpvW7wI
+     */
     height: auto;
+
+    /* Code font for editing markdown */
+    font-family: $code-font-family;
 }
 
 p, ul, ol, td, th, dt, dd {
