@@ -17,14 +17,8 @@
 
 """Member app's views."""
 
-import hashlib
-import datetime
-import random
-
-from django.utils import timezone
-
 from django.shortcuts import redirect, get_object_or_404
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.conf import settings
 
 from django.contrib.auth.models import User
@@ -44,12 +38,17 @@ from django.db import transaction
 from pdp.utils import render_template, bot
 from pdp.utils.tokens import generate_token
 from pdp.utils.paginator import paginator_range
-from pdp.utils.mail import send_mail_to_confirm_registration
+from pdp.utils.mail import send_mail_to_confirm_registration, \
+    send_mail_to_confirm_password_reset, send_mail_temporary_password
+
 from pdp.tutorial.models import Tutorial
 
-from pdp.member.models import Profile
+from pdp.member.models import Profile, ActivationToken, ForgotPasswordToken, \
+    create_activation_token, create_forgot_password_token, \
+    generate_user_password
+
 from pdp.member.forms import LoginForm, ProfileForm, RegisterForm, \
-    ChangePasswordForm
+    ChangePasswordForm, LostPasswordForm
 
 
 def index(request):
@@ -184,6 +183,7 @@ def login_view(request):
 
             if user is not None:
                 profile = Profile.objects.get(user=user)
+
                 if user.is_active:
                     # Yeah auth successful
                     login(request, user)
@@ -204,10 +204,16 @@ def login_view(request):
                     # User is not active, check if user was banned or if he
                     # did not validate his account yet.
 
-                    # TODO: show different message with a resend key link
-                    # depending if the user was banned or not.
+                    try:
+                        activation = ActivationToken.objects.get(user=user)
+                    except ActivationToken.DoesNotExist:
+                        activation = None
 
-                    error = u'Ce compte est désactivé.'
+                    if activation is None:
+                        error = 'Ce compte est désactivé.'
+                    else:
+                        # TODO: resend key link
+                        error = 'Ce compte n’a pas encore été activé.'
             else:
                 error = u'Les identifiants fournis ne sont pas valides.'
         else:
@@ -240,6 +246,76 @@ def logout_view(request):
     return render_template('member/logout.html')
 
 
+def password_reset_view(request):
+    """Allow users to recover their account when they lost their passwords.
+
+    Returns:
+        HttpResponse
+
+    """
+    if request.method == 'POST':
+        form = LostPasswordForm(request.POST)
+
+        if form.is_valid():
+            data = form.data
+
+            try:
+                user = User.objects.get(email=data['email'])
+            except User.DoesNotExist:
+                user = None
+
+            if user is not None:
+                token = create_forgot_password_token(user)
+                send_mail_to_confirm_password_reset(token)
+
+                return render_template('member/password_reset_confirm.html')
+
+            else:
+                error = 'Utilisateur introuvable avec cette adresse.'
+    else:
+        form = LostPasswordForm()
+        error = None
+
+    return render_template('member/password_reset.html', {
+        'form': form, 'error': error
+    })
+
+def confirm_password_reset_view(request, token):
+    if not request.user.is_authenticated():
+        token = get_object_or_404(ForgotPasswordToken, token=token)
+
+        if token.is_valid():
+
+            # Login the user
+            user = token.user
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            login(request, user)
+
+            # Set a new temporary password and send it to the user
+            password = generate_user_password()
+
+            user.set_password(password)
+            user.save()
+
+            send_mail_temporary_password(user, password)
+
+            # Delete the ForgotPasswordToken object
+            token.delete()
+
+            messages.success(
+                request,
+                'Votre mot de passe temporaire vous a été envoyé par mail. '
+                'Utilisez-le dès maintenant pour le changer par un nouveau mot '
+                'de passe.'
+            )
+
+            return redirect(reverse('pdp.member.views.settings_account'))
+        else:
+            return HttpResponse('Token expiré')
+    else:
+        raise PermissionDenied
+
+
 @sensitive_post_parameters('password', 'password_confirm')
 @transaction.atomic
 def register_view(request):
@@ -253,35 +329,28 @@ def register_view(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             data = form.data
+
             user = User.objects.create_user(
                 data['username'],
                 data['email'],
-                data['password'])
+                data['password']
+            )
 
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             user.is_active = False
             user.save()
 
-            # First we generate a random salt
-            salt = hashlib.sha1(str(random.random()).encode('ascii')).hexdigest()[:5]
-
-            # Then we generate the activation key from this salt and from
-            # the user's email
-            activation_key = hashlib.sha1((salt + user.email).encode('utf8')).hexdigest()
-
-            # We set the key active for two days
-            key_expires = datetime.datetime.today() + datetime.timedelta(2)
-
             profile = Profile(
                 user=user,
                 show_email=False,
-                activation_key=activation_key,
-                key_expires=key_expires
             )
 
             profile.save()
 
-            send_mail_to_confirm_registration(user, activation_key)
+            # We generate a new activation key for the user and save it
+            token = create_activation_token(user)
+
+            send_mail_to_confirm_registration(token)
 
             return render_template('member/register_confirmation.html')
         else:
@@ -293,7 +362,7 @@ def register_view(request):
     })
 
 
-def confirm_registration_view(request, activation_key):
+def confirm_registration_view(request, token):
     """Confirm user's registration.
 
     Returns:
@@ -301,13 +370,21 @@ def confirm_registration_view(request, activation_key):
 
     """
     if not request.user.is_authenticated():
-        profile = get_object_or_404(Profile, activation_key=activation_key)
+        token = get_object_or_404(ActivationToken, token=token)
 
-        if profile.key_expires > timezone.now():
-            user = profile.user
+        # Check if the activation key is still valid
+        if token.is_valid():
+
+            # Activate the user account
+            user = token.user
             user.is_active = True
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             user.save()
+
+            # Delete the ActivationToken object
+            token.delete()
+
+            # Login the user and congrats him
 
             login(request, user)
 
@@ -321,7 +398,7 @@ def confirm_registration_view(request, activation_key):
 
             return redirect(reverse('pdp.pages.views.home'))
         else:
-            raise Http404
+            return HttpResponse('token expiré')
     else:
         raise Http404
 

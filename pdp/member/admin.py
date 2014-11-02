@@ -16,9 +16,21 @@
 # along with Progdupeupl. If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib import admin
-from .models import Profile
+from pdp.member.models import Profile, ActivationToken, ForgotPasswordToken
+
 
 class ProfileAdmin(admin.ModelAdmin):
     search_fields = ['user__username']
 
+
+class ActivationTokenAdmin(admin.ModelAdmin):
+    search_fields = ['user__username']
+
+
+class ForgotPasswordTokenAdmin(admin.ModelAdmin):
+    search_fields = ['user__username']
+
+
 admin.site.register(Profile, ProfileAdmin)
+admin.site.register(ActivationToken, ActivationTokenAdmin)
+admin.site.register(ForgotPasswordToken, ForgotPasswordTokenAdmin)

@@ -45,12 +45,11 @@ def send_templated_mail(subject, template, context, recipients):
     )
 
 
-def send_mail_to_confirm_registration(user, link):
+def send_mail_to_confirm_registration(token):
     """Send an email to confirm registration.
 
     Args:
-        user: (User) User object to send the email to
-        link: (string) Absolute link to validation url
+        token: (ActivationToken) token to be send
 
     Returns:
         Number of successfully delivered messages (0 or 1)
@@ -61,8 +60,53 @@ def send_mail_to_confirm_registration(user, link):
         subject=u"Confirmation d’inscription à Progdupeupl",
         template=u'confirm_registration.txt',
         context={
+            'user': token.user,
+            'link': token.token
+        },
+        recipients=[token.user.email]
+    )
+
+
+def send_mail_to_confirm_password_reset(token):
+    """Send an email to confirm password reset.
+
+    Args:
+        token: (ForgotPasswordToken) token to be send
+
+    Returns:
+        Number of successfully delivered messages (0 or 1)
+
+    """
+
+    return send_templated_mail(
+        subject=u"Confirmation de réinitialisation de mot de passe",
+        template=u'confirm_password_reset.txt',
+        context={
+            'user': token.user,
+            'link': token.token
+        },
+        recipients=[token.user.email]
+    )
+
+
+def send_mail_temporary_password(user, password):
+    """Send an email with a new temporary password.
+
+    Args:
+        user: the user we just changed the password
+        password: the new user password
+
+    Returns:
+        Number of successfully delivered messages (0 or 1)
+
+    """
+
+    return send_templated_mail(
+        subject=u"Réinitialisation de mot de passe",
+        template=u'password_reset.txt',
+        context={
             'user': user,
-            'link': link
+            'password': password
         },
         recipients=[user.email]
     )

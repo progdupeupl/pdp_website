@@ -112,6 +112,26 @@ class RegisterForm(forms.Form):
         return cleaned_data
 
 
+class LostPasswordForm(forms.Form):
+
+    """Form used for lost password recovery."""
+
+    email = forms.EmailField(label='Adresse mail associée à votre compte')
+
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+
+        self.helper.layout = Layout(
+            Field('email'),
+            Div(
+                Submit('submit', u'Confirmer'),
+                HTML('<a href="{% url "pdp.member.views.login_view" %}" class="button secondary">Annuler</a>'),
+                css_class='button-group'
+            )
+        )
+        super().__init__(*args, **kwargs)
+
 # update extra information about user
 
 class ProfileForm(forms.Form):

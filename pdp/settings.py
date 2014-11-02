@@ -17,7 +17,6 @@
 
 import os
 import sys
-import platform
 import locale
 import datetime
 
@@ -376,7 +375,7 @@ EXPORT_RELATIVE_MEDIA = '../../../media/'
 #
 
 # Bot settings
-BOT_ENABLED = False
+BOT_ENABLED = True
 BOT_USER_PK = 1
 BOT_TUTORIAL_FORUM_PK = 1
 BOT_ARTICLE_FORUM_PK = 2
@@ -403,7 +402,11 @@ IMAGE_MAX_SIZE = 1024 * 512
 TESTING = 'test' in sys.argv
 
 # Time to wait before a moderated message becomes unfoldable
-MODERATED_REVEAL_DELAY=datetime.timedelta(days=7)
+MODERATED_REVEAL_DELAY = datetime.timedelta(days=7)
+
+# Tokens duration
+ACTIVATION_TOKEN_EXPIRES = datetime.timedelta(days=2)
+FORGOT_PASSWORD_TOKEN_EXPIRES = datetime.timedelta(days=2)
 
 #
 # Guardian

@@ -21,7 +21,7 @@ from django.contrib.auth.models import User
 
 from django_dynamic_fixture import G
 
-from pdp.member.models import Profile
+from pdp.member.models import Profile, generate_user_token
 
 
 class MemberIntegrationTests(TestCase):
@@ -74,6 +74,10 @@ class MemberIntegrationTests(TestCase):
 
         self.assertEqual(self.client.session['_auth_user_id'], user.pk)
 
+    def test_reset_password(self):
+        resp = self.client.get(reverse('pdp.member.views.password_reset_view'))
+        self.assertEqual(resp.status_code, 200)
+
 
 class AuthenticatedMemberIntegrationTests(TestCase):
 
@@ -107,7 +111,8 @@ class AuthenticatedMemberIntegrationTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_publications_filter_published(self):
-        url = '{}?filtre=publie'.format(reverse('pdp.member.views.publications'))
+        baseurl = reverse('pdp.member.views.publications')
+        url = '{}?filtre=publie'.format(baseurl)
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
@@ -123,3 +128,29 @@ class AuthenticatedMemberIntegrationTests(TestCase):
     def test_disconnect(self):
         resp = self.client.get(reverse('pdp.member.views.logout_view'))
         self.assertEqual(resp.status_code, 200)
+
+
+class TokenGenerationUnitTests(TestCase):
+
+    def setUp(self):
+        # Create user
+        self.user = G(User, username='test', email='test@example.com')
+        self.user.set_password('test')
+        self.user.save()
+
+    def test_generate_user_token_single(self):
+        """Single test for generating an user token."""
+        token = generate_user_token(self.user)
+        self.assertEqual(len(token), 40)
+
+    def test_generate_user_token_multi(self):
+        """Collision test for user tokens."""
+
+        # Note: you do not want to make n too big since this is a O(n^2)
+        # complexity test.
+        n = 10
+        tokens = [generate_user_token(self.user) for _ in range(n)]
+
+        for i in range(n):
+            for j in range(i + 1, n):
+                self.assertNotEqual(tokens[i], tokens[j])
