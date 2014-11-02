@@ -23,7 +23,7 @@ import hashlib
 from django.contrib.auth.models import User
 from django_dynamic_fixture import G
 
-from pdp.member.models import Profile
+from pdp.member.models import Profile, ActivationToken
 
 from pdp.utils.templatetags.profile import profile
 from pdp.utils.templatetags.interventions import interventions_topics
@@ -93,6 +93,7 @@ class PaginatorRangeTests(unittest.TestCase):
         result = paginator_range(7, 10)
         self.assertEqual(result, [1, None, 6, 7, 8, 9, 10])
 
+
 class MailTests(unittest.TestCase):
 
     """Tests for the mail utilities."""
@@ -110,11 +111,11 @@ class MailTests(unittest.TestCase):
         self.assertEqual(result, 1)
 
     def test_send_mail_to_confirm_registration(self):
-        recipients = ['test1@localhost']
+        user = G(User, username='Blaireau1', email='test1@localhost')
+        link = hashlib.sha1('blbl'.encode('ascii')).hexdigest()
 
-        result = mail.send_mail_to_confirm_registration(
-            user=G(User, username='Blaireau1', email='test1@localhost'),
-            link=hashlib.sha1('blbl'.encode('ascii')).hexdigest()
-        )
+        token = G(ActivationToken, user=user, token=link)
+
+        result = mail.send_mail_to_confirm_registration(token)
 
         self.assertEqual(result, 1)
