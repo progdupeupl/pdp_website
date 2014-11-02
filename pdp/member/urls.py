@@ -38,7 +38,7 @@ urlpatterns = patterns(
 
     url(r'^connexion$', views.login_view),
     url(r'^inscription$', views.register_view),
-    url(r'^inscription/(?P<activation_key>\w+)$', views.confirm_registration_view),
+    url(r'^inscription/(?P<token>\w+)$', views.confirm_registration_view),
     url(r'^deconnexion/$', views.logout_view),
     url(r'^$', views.index),
 )

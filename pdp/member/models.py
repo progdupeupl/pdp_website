@@ -25,6 +25,7 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.conf import settings
 
 from pdp.forum.models import Post, Topic
 from pdp.tutorial.models import Tutorial
@@ -65,16 +66,6 @@ class Profile(models.Model):
     biography = models.TextField(
         u'Biographie',
         blank=True
-    )
-
-    activation_key = models.CharField(
-        u'Clé d’activation',
-        max_length=40, blank=True
-    )
-
-    key_expires = models.DateTimeField(
-        u'Expiration de la clé d’activation',
-        default=datetime.date.today()
     )
 
     def __str__(self):
@@ -168,36 +159,151 @@ class Profile(models.Model):
         """
         return self.get_tutorials().filter(is_visible=False)
 
-    def generate_activation_key(self):
-        """Generate a new account activation key.
 
-        Returns:
-            The new activation key set (but not saved) in the profile. You will
-            have to save the profile manually.
+# Account activation
 
-        """
 
-        # First we generate a random salt of 5 characters
-        salt = hashlib.sha1(str(random.random()).encode('ascii')) \
-            .hexdigest()[:5]
+class ActivationToken(models.Model):
 
-        # Then we generate the activation key from this salt and from
-        # the user's email
-        to_hash = salt + self.user.mail
-        self.activation_key = hashlib.sha1(to_hash.encode('utf8')).hexdigest()
+    """A model containing all required data for a new account activation."""
 
-        # We set the key active for two days
-        offset = datetime.timedelta(days=2)
-        self.key_expires = datetime.datetime.today() + offset
+    class Meta:
+        verbose_name = 'Demande d’inscription'
+        verbose_name_plural = 'Demandes d’inscription'
 
-        return self.activation_key
+    user = models.ForeignKey(
+        User,
+        verbose_name='Utilisateur'
+    )
 
-    def is_activation_key_valid(self):
-        """Check if the current activation key is still valid.
+    token = models.CharField(
+        u'Clé',
+        max_length=40, blank=True
+    )
+
+    expires = models.DateTimeField(
+        u'Expiration de la clé',
+        default=datetime.date.today()
+    )
+
+    def __str__(self):
+        """Textual representation of a forgot password token item."""
+        return '<ActivationToken User={}>'.format(self.user)
+
+    def is_valid(self):
+        """Check if this activation key is still valid.
 
         Returns:
             True if the activation key is fresh enough to be used, False
             otherwise.
 
         """
-        return self.key_expires > timezone.now()
+        return self.expires > timezone.now()
+
+# Password reset
+
+
+def create_activation_token(user):
+    """Create a new account activation token item for an user.
+
+    Returns:
+        The just saved ActivationToken corresponding object.
+
+    """
+
+    # We try to use existing activation key object or we create a new one if
+    # necessary.
+    item, _ = ActivationToken.objects.get_or_create(user=user)
+
+    # Compute expiration date
+    expires = datetime.datetime.today() + settings.ACTIVATION_TOKEN_EXPIRES
+
+    # Update token fields
+    item.expires = expires
+    item.token = generate_user_token(user)
+
+    # Finally save the updated token
+    item.save()
+
+    return item
+
+
+class ForgotPasswordToken(models.Model):
+
+    """A model containing all required data for a password reset request."""
+
+    class Meta:
+        verbose_name = 'Demande réinitialisation mot de passe'
+        verbose_name_plural = 'Demandes réinitialisation mot de passe'
+
+    user = models.ForeignKey(
+        User,
+        verbose_name='Utilisateur'
+    )
+
+    token = models.CharField(
+        u'Clé',
+        max_length=40, blank=True
+    )
+
+    expires = models.DateTimeField(
+        u'Expiration de la clé',
+        default=datetime.date.today()
+    )
+
+    def __str__(self):
+        """Textual representation of a forgot password token item."""
+        return '<ForgotPasswordToken User={}>'.format(self.user)
+
+    def is_valid(self):
+        """Check if this password reset key is still valid.
+
+        Returns:
+            True if the activation key is fresh enough to be used, False
+            otherwise.
+
+        """
+        return self.expires > timezone.now()
+
+
+def create_forgot_password_token(user):
+    """Create a new password forgot token item for an user.
+
+    Returns:
+        The just saved ForgotPasswordToken corresponding object.
+
+    """
+
+    expires = datetime.datetime.today() + settings.FORGOT_PASSWORD_TOKEN_EXPIRES
+
+    item = ForgotPasswordToken(
+        user=user,
+        expires=expires,
+        token=generate_user_token(user)
+    )
+
+    item.save()
+
+    return item
+
+# Generic token handling
+
+
+def generate_user_token(user):
+    """Generate a new token for an user.
+
+    Returns:
+        A new random token designed for the user.
+
+    """
+
+    # First we generate a random salt of 5 characters
+    salt = hashlib.sha1(str(random.random()).encode('ascii')) \
+        .hexdigest()[:5]
+
+    # Then we generate the activation key from this salt and from
+    # the user's email
+    to_hash = salt + user.email
+    token = hashlib.sha1(to_hash.encode('utf8')).hexdigest()
+
+    return token
