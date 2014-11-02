@@ -17,12 +17,14 @@
 
 """Models for member app."""
 
-from hashlib import md5
+import hashlib
 import datetime
+import random
 
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 from pdp.forum.models import Post, Topic
 from pdp.tutorial.models import Tutorial
@@ -96,7 +98,7 @@ class Profile(models.Model):
     def get_avatar_url(self):
         """Get the member's avatar URL.
 
-        This will use custom URL or Gravatar.
+        This will use custom URL if available or Gravatar as fallback.
 
         Returns:
             string
@@ -105,8 +107,9 @@ class Profile(models.Model):
         if self.avatar_url:
             return self.avatar_url
         else:
-            return 'https://secure.gravatar.com/avatar/{0}?d=identicon'\
-                .format(md5(self.user.email.encode('utf-8')).hexdigest())
+            mailhash = hashlib.md5(self.user.email.encode('utf-8')).hexdigest()
+            return 'https://secure.gravatar.com/avatar/{0}?d=identicon' \
+                .format(mailhash)
 
     def get_post_count(self):
         """Get total number of answers of the member on the forums.
@@ -164,3 +167,37 @@ class Profile(models.Model):
 
         """
         return self.get_tutorials().filter(is_visible=False)
+
+    def generate_activation_key(self):
+        """Generate a new account activation key.
+
+        Returns:
+            The new activation key set (but not saved) in the profile. You will
+            have to save the profile manually.
+
+        """
+
+        # First we generate a random salt of 5 characters
+        salt = hashlib.sha1(str(random.random()).encode('ascii')) \
+            .hexdigest()[:5]
+
+        # Then we generate the activation key from this salt and from
+        # the user's email
+        to_hash = salt + self.user.mail
+        self.activation_key = hashlib.sha1(to_hash.encode('utf8')).hexdigest()
+
+        # We set the key active for two days
+        offset = datetime.timedelta(days=2)
+        self.key_expires = datetime.datetime.today() + offset
+
+        return self.activation_key
+
+    def is_activation_key_valid(self):
+        """Check if the current activation key is still valid.
+
+        Returns:
+            True if the activation key is fresh enough to be used, False
+            otherwise.
+
+        """
+        return self.key_expires > timezone.now()

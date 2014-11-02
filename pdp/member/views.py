@@ -17,12 +17,6 @@
 
 """Member app's views."""
 
-import hashlib
-import datetime
-import random
-
-from django.utils import timezone
-
 from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404
 from django.conf import settings
@@ -184,6 +178,7 @@ def login_view(request):
 
             if user is not None:
                 profile = Profile.objects.get(user=user)
+
                 if user.is_active:
                     # Yeah auth successful
                     login(request, user)
@@ -262,22 +257,13 @@ def register_view(request):
             user.is_active = False
             user.save()
 
-            # First we generate a random salt
-            salt = hashlib.sha1(str(random.random()).encode('ascii')).hexdigest()[:5]
-
-            # Then we generate the activation key from this salt and from
-            # the user's email
-            activation_key = hashlib.sha1((salt + user.email).encode('utf8')).hexdigest()
-
-            # We set the key active for two days
-            key_expires = datetime.datetime.today() + datetime.timedelta(2)
-
             profile = Profile(
                 user=user,
                 show_email=False,
-                activation_key=activation_key,
-                key_expires=key_expires
             )
+
+            # We generate an activation key for the user
+            activation_key = profile.generate_activation_key()
 
             profile.save()
 
@@ -303,7 +289,8 @@ def confirm_registration_view(request, activation_key):
     if not request.user.is_authenticated():
         profile = get_object_or_404(Profile, activation_key=activation_key)
 
-        if profile.key_expires > timezone.now():
+        # Check if the activation key is still valid
+        if profile.is_activation_key_valid():
             user = profile.user
             user.is_active = True
             user.backend = 'django.contrib.auth.backends.ModelBackend'
