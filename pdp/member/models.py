@@ -200,8 +200,6 @@ class ActivationToken(models.Model):
         """
         return self.expires > timezone.now()
 
-# Password reset
-
 
 def create_activation_token(user):
     """Create a new account activation token item for an user.
@@ -226,6 +224,8 @@ def create_activation_token(user):
     item.save()
 
     return item
+
+# Password reset
 
 
 class ForgotPasswordToken(models.Model):
@@ -274,14 +274,18 @@ def create_forgot_password_token(user):
 
     """
 
+    # We try to use existing activation key object or we create a new one if
+    # necessary.
+    item, _ = ForgotPasswordToken.objects.get_or_create(user=user)
+
+    # Compute expiration date
     expires = datetime.datetime.today() + settings.FORGOT_PASSWORD_TOKEN_EXPIRES
 
-    item = ForgotPasswordToken(
-        user=user,
-        expires=expires,
-        token=generate_user_token(user)
-    )
+    # Update token fields
+    item.expires = expires
+    item.token = generate_user_token(user)
 
+    # Finally save the updated token
     item.save()
 
     return item
