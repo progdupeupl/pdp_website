@@ -17,7 +17,6 @@
 
 import os
 import sys
-import platform
 import locale
 import datetime
 
@@ -403,7 +402,7 @@ IMAGE_MAX_SIZE = 1024 * 512
 TESTING = 'test' in sys.argv
 
 # Time to wait before a moderated message becomes unfoldable
-MODERATED_REVEAL_DELAY=datetime.timedelta(days=7)
+MODERATED_REVEAL_DELAY = datetime.timedelta(days=7)
 
 #
 # Guardian
