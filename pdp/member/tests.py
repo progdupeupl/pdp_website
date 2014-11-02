@@ -74,6 +74,10 @@ class MemberIntegrationTests(TestCase):
 
         self.assertEqual(self.client.session['_auth_user_id'], user.pk)
 
+    def test_reset_password(self):
+        resp = self.client.get(reverse('pdp.member.views.password_reset_view'))
+        self.assertEqual(resp.status_code, 200)
+
 
 class AuthenticatedMemberIntegrationTests(TestCase):
 

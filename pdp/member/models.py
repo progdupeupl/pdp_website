@@ -20,6 +20,7 @@
 import hashlib
 import datetime
 import random
+import string
 
 from django.db import models
 from django.core.urlresolvers import reverse
@@ -311,3 +312,8 @@ def generate_user_token(user):
     token = hashlib.sha1(to_hash.encode('utf8')).hexdigest()
 
     return token
+
+def generate_user_password():
+    length = 10
+    chars = string.ascii_letters + string.digits
+    return ''.join(random.choice(chars) for _ in range(length))

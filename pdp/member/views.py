@@ -38,13 +38,17 @@ from django.db import transaction
 from pdp.utils import render_template, bot
 from pdp.utils.tokens import generate_token
 from pdp.utils.paginator import paginator_range
-from pdp.utils.mail import send_mail_to_confirm_registration
+from pdp.utils.mail import send_mail_to_confirm_registration, \
+    send_mail_to_confirm_password_reset, send_mail_temporary_password
+
 from pdp.tutorial.models import Tutorial
 
-from pdp.member.models import Profile, ActivationToken, create_activation_token
+from pdp.member.models import Profile, ActivationToken, ForgotPasswordToken, \
+    create_activation_token, create_forgot_password_token, \
+    generate_user_password
 
 from pdp.member.forms import LoginForm, ProfileForm, RegisterForm, \
-    ChangePasswordForm
+    ChangePasswordForm, LostPasswordForm
 
 
 def index(request):
@@ -240,6 +244,76 @@ def logout_view(request):
 
     # Elsewise we ask the user to submit a form with correct csrf token
     return render_template('member/logout.html')
+
+
+def password_reset_view(request):
+    """Allow users to recover their account when they lost their passwords.
+
+    Returns:
+        HttpResponse
+
+    """
+    if request.method == 'POST':
+        form = LostPasswordForm(request.POST)
+
+        if form.is_valid():
+            data = form.data
+
+            try:
+                user = User.objects.get(email=data['email'])
+            except User.DoesNotExist:
+                user = None
+
+            if user is not None:
+                token = create_forgot_password_token(user)
+                send_mail_to_confirm_password_reset(token)
+
+                return render_template('member/password_reset_confirm.html')
+
+            else:
+                error = 'Utilisateur introuvable avec cette adresse.'
+    else:
+        form = LostPasswordForm()
+        error = None
+
+    return render_template('member/password_reset.html', {
+        'form': form, 'error': error
+    })
+
+def confirm_password_reset_view(request, token):
+    if not request.user.is_authenticated():
+        token = get_object_or_404(ForgotPasswordToken, token=token)
+
+        if token.is_valid():
+
+            # Login the user
+            user = token.user
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            login(request, user)
+
+            # Set a new temporary password and send it to the user
+            password = generate_user_password()
+
+            user.set_password(password)
+            user.save()
+
+            send_mail_temporary_password(user, password)
+
+            # Delete the ForgotPasswordToken object
+            token.delete()
+
+            messages.success(
+                request,
+                'Votre mot de passe temporaire vous a été envoyé par mail. '
+                'Utilisez-le dès maintenant pour le changer par un nouveau mot '
+                'de passe.'
+            )
+
+            return redirect(reverse('pdp.member.views.settings_account'))
+        else:
+            return HttpResponse('Token expiré')
+    else:
+        raise PermissionDenied
 
 
 @sensitive_post_parameters('password', 'password_confirm')
