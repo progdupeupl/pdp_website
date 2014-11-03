@@ -227,6 +227,7 @@
     </nav>
     {# End of top bar #}
 
+
     <header>
         <div class="row">
             <div class="twelve columns">
@@ -247,6 +248,20 @@
         </div>
     </div>
 
+    {# Notification area #}
+    {% if messages %}
+        <div class="row notify">
+            <div class="twelve columns">
+                {% for message in messages %}
+                    <div data-alert class="alert-box {{ message.tags }}">
+                        <span>{{ message }}</span>
+                        <a href="#" class="close">&times;</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
     <div class="row">
         <div class="large-8 columns">
             <h1>
@@ -262,19 +277,6 @@
             </div>
         </div>
     </div>
-
-    {% if messages %}
-        <div class="row">
-            <div class="large-12 columns">
-                    {% for message in messages %}
-                        <div data-alert class="alert-box {{ message.tags }}">
-                            <span>{{ message }}</span>
-                            <a href="#" class="close">&times;</a>
-                        </div>
-                    {% endfor %}
-            </div>
-        </div>
-    {% endif %}
 
     {% block content %}{% endblock %}
 

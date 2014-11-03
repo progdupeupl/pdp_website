@@ -253,6 +253,7 @@ def password_reset_view(request):
         HttpResponse
 
     """
+    error = None
     if request.method == 'POST':
         form = LostPasswordForm(request.POST)
 
@@ -274,11 +275,11 @@ def password_reset_view(request):
                 error = 'Utilisateur introuvable avec cette adresse.'
     else:
         form = LostPasswordForm()
-        error = None
 
     return render_template('member/password_reset.html', {
         'form': form, 'error': error
     })
+
 
 def confirm_password_reset_view(request, token):
     if not request.user.is_authenticated():

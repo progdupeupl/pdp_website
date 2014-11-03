@@ -191,6 +191,12 @@ li p {
     padding-bottom: 0.5em;
 }
 
+.notify {
+    .alert-box {
+        margin-bottom: 0;
+    }
+}
+
 #cookie-banner {
     background: #2fa4e7;
     p {
