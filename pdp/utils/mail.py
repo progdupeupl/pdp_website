@@ -21,13 +21,27 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 
 
+def render_email_template(template, context):
+    """Render an email body based on a template.
+
+    Args:
+        template: (string) Name of the template user for the message
+        context: (dictionary) Rendering context of the template
+
+    Returns:
+        String containing the rendered email body.
+
+    """
+    return render_to_string('mail/{}'.format(template), context)
+
+
 def send_templated_mail(subject, template, context, recipients):
     """Send an email based on a template.
 
     Args:
         subject: (string) Subject of the email
         template: (string) Name of the template used for the message
-        context: (dictionary) Dictionary used for the message
+        context: (dictionary) Rendering context of the template
         recipients: (list) List of the recipients
 
     Returns:
@@ -35,10 +49,10 @@ def send_templated_mail(subject, template, context, recipients):
 
     """
 
-    message = render_to_string('mail/' + template, context)
+    message = render_email_template(template, context)
 
     return send_mail(
-        subject=subject,
+        subject="[Progdupeupl] {}".format(subject),
         message=message,
         from_email='Chtaline <chtaline@progdupeu.pl>',
         recipient_list=recipients
@@ -114,8 +128,8 @@ def send_mail_temporary_password(user, password):
 
 def send_mail_new_private_message(topic, user):
     return send_templated_mail(
-        subject='Nouveau message privé : {}'.format(topic.title),
-        template='private_message.txt',
+        subject='Nouveau message privé de {}'.format(topic.author.username),
+        template='new_private_message.txt',
         context={
             'topic': topic
         },

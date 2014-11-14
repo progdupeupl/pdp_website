@@ -1,8 +1,10 @@
 {% extends "mail/base.txt" %}
 
 {% block content %}
-Vous avez reçu un nouveau message privé de {{ topic.author.username }} ayant
-pour titre « {{ topic.title }} ».
+Vous avez reçu un nouveau message privé de {{ topic.author.username }} :
+
+    {{ topic.title }}
+    {{ topic.subtitle }}
 
 Cliquez sur le lien suivant pour le visionner :
 
