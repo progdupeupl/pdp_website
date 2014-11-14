@@ -126,13 +126,15 @@ class LostPasswordForm(forms.Form):
             Field('email'),
             Div(
                 Submit('submit', u'Confirmer'),
-                HTML('<a href="{% url "pdp.member.views.login_view" %}" class="button secondary">Annuler</a>'),
+                HTML('<a href="{% url "pdp.member.views.login_view" %}" '
+                     'class="button secondary">Annuler</a>'),
                 css_class='button-group'
             )
         )
         super().__init__(*args, **kwargs)
 
 # update extra information about user
+
 
 class ProfileForm(forms.Form):
     """Form used to change an user's personnal informations and options."""
@@ -169,17 +171,16 @@ class ProfileForm(forms.Form):
         )
     )
 
+    mail_on_private_message = forms.BooleanField(
+        label=u'M’envoyer un mail lors de nouveaux messages privés',
+        required=False
+    )
+
     def __init__(self, user, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
 
         self.user = user
-
-        # Get initial value form checkbox show email
-        initial = kwargs.get('initial', {})
-        value_checked = ''
-        if 'show_email' in initial and initial['show_email']:
-            value_checked = 'checked'
 
         self.helper.layout = Layout(
             Div(
@@ -187,14 +188,8 @@ class ProfileForm(forms.Form):
                 Field('biography', id='id_text'),
                 Field('site'),
                 Field('avatar_url'),
-                # Inline checkbox is not supported by crispy form
-                HTML(
-                    u'<div id="div_id_show_email" class="ctrlHolder checkbox"'
-                    u'style="padding-top:10px"><label for="id_show_email"> '
-                    u'<input id="id_show_email" type="checkbox"'
-                    u'class="checkboxinput" name="show_email" {}/> Afficher '
-                    u'mon adresse mail publiquement</label></div>'
-                    .format(value_checked)),
+                Field('mail_on_private_message'),
+                Field('show_email'),
             ),
             Div(
                 Submit('submit', 'Editer mon profil'),

@@ -427,6 +427,8 @@ def settings_profile(request):
             profile.site = form.data['site']
             profile.show_email = 'show_email' in form.data
             profile.avatar_url = form.data['avatar_url']
+            profile.mail_on_private_message = \
+                'mail_on_private_message' in form.data
             profile.save()
 
             messages.success(
@@ -443,7 +445,8 @@ def settings_profile(request):
             'biography': profile.biography,
             'site': profile.site,
             'avatar_url': profile.avatar_url,
-            'show_email': profile.show_email}
+            'show_email': profile.show_email,
+            'mail_on_private_message': profile.mail_on_private_message}
         )
 
         return render_template('member/settings_profile.html', {

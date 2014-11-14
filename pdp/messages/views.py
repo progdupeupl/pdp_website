@@ -41,6 +41,8 @@ from pdp.messages.models import PrivateTopic, PrivatePost
 from pdp.messages.models import never_privateread, mark_read
 from pdp.messages.forms import PrivateTopicForm, PrivatePostForm
 
+from pdp.member.models import Profile
+
 
 # Misc functions
 
@@ -255,7 +257,9 @@ def new(request):
 
             # Notify participants by mail
             for user in n_topic.participants.all():
-                mail.send_mail_new_private_message(n_topic, user)
+                profile = Profile.objects.all().get(user=user)
+                if profile.mail_on_private_message:
+                    mail.send_mail_new_private_message(n_topic, user)
 
             return redirect(n_topic.get_absolute_url())
     else:

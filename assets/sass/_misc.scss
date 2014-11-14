@@ -208,3 +208,9 @@ li p {
         margin: 0;
     }
 }
+
+// FIX for checkboxes
+
+.checkbox label {
+    display: inline;
+}

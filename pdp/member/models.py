@@ -69,6 +69,11 @@ class Profile(models.Model):
         blank=True
     )
 
+    # Email options
+    mail_on_private_message = models.BooleanField(
+        'Mail messages privé', default=True
+    )
+
     def __str__(self):
         """Textual representation of a profile.
 
@@ -312,6 +317,7 @@ def generate_user_token(user):
     token = hashlib.sha1(to_hash.encode('utf8')).hexdigest()
 
     return token
+
 
 def generate_user_password():
     length = 10
