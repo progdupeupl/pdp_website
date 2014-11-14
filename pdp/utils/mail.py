@@ -110,3 +110,14 @@ def send_mail_temporary_password(user, password):
         },
         recipients=[user.email]
     )
+
+
+def send_mail_new_private_message(topic, user):
+    return send_templated_mail(
+        subject='Nouveau message privé : {}'.format(topic.title),
+        template='private_message.txt',
+        context={
+            'topic': topic
+        },
+        recipients=[user.email]
+    )

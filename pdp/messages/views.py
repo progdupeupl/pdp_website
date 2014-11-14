@@ -34,6 +34,7 @@ from django.views.decorators.http import require_POST
 from django.db import transaction
 
 from pdp.utils import render_template, slugify
+from pdp.utils import mail
 from pdp.utils.paginator import paginator_range
 
 from pdp.messages.models import PrivateTopic, PrivatePost
@@ -251,6 +252,10 @@ def new(request):
 
             n_topic.last_message = post
             n_topic.save()
+
+            # Notify participants by mail
+            for user in n_topic.participants.all():
+                mail.send_mail_new_private_message(n_topic, user)
 
             return redirect(n_topic.get_absolute_url())
     else:
