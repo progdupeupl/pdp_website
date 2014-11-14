@@ -31,6 +31,8 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.http import require_POST
 
+from django.db import transaction
+
 from pdp.utils import render_template, slugify
 from pdp.utils.paginator import paginator_range
 
@@ -200,6 +202,7 @@ def topic(request, topic_pk, topic_slug):
     })
 
 
+@transaction.atomic
 @login_required(redirect_field_name='suivant')
 def new(request):
     """Creates a new message.
@@ -296,6 +299,7 @@ def edit(request):
     return redirect(u'{}?page={}'.format(g_topic.get_absolute_url(), page))
 
 
+@transaction.atomic
 @login_required(redirect_field_name='suivant')
 def answer(request):
     """Add an answer from an user to a message
