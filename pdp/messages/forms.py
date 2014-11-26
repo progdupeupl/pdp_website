@@ -70,7 +70,7 @@ class PrivateTopicForm(forms.Form):
             msg = u'Les utilisateurs suivants n’existent pas : {}.'.format(
                 ', '.join(bad_recipients).strip()
             )
-            self._errors['recipients'] = self.error_class([msg])
+            self.add_error('recipients', msg)
 
         return data
 

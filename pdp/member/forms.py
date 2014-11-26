@@ -88,26 +88,26 @@ class RegisterForm(forms.Form):
     def clean(self):
         cleaned_data = super().clean()
 
-        # Check that the password and it's confirmation match
         password = cleaned_data.get('password')
         password_confirm = cleaned_data.get('password_confirm')
 
+        # Check that the password and its confirmation match
         if not password_confirm == password:
-            msg = u'Les mots de passe sont différents'
-            self._errors['password'] = self.error_class([''])
-            self._errors['password_confirm'] = self.error_class([msg])
+            msg = u'Les mots de passe sont différents.'
+            self.add_error('password', msg)
+            self.add_error('password_confirm', msg)
 
+            # Remove the wrong passwords from the form
             if 'password' in cleaned_data:
                 del cleaned_data['password']
-
             if 'password_confirm' in cleaned_data:
                 del cleaned_data['password_confirm']
 
         # Check that the user doesn't exist yet
         username = cleaned_data.get('username')
         if User.objects.filter(username=username).count() > 0:
-            msg = u'Ce nom d\'utilisateur est déjà utilisé'
-            self._errors['username'] = self.error_class([msg])
+            msg = u'Ce nom d’utilisateur est déjà utilisé.'
+            self.add_error('username', msg)
 
         return cleaned_data
 
@@ -253,20 +253,21 @@ class ChangePasswordForm(forms.Form):
                 username=self.user.username, password=password_old
             )
             if not user_exist and password_old != "":
-                self._errors['password_old'] = self.error_class(
-                    [u'Mot de passe incorrect.'])
+                self.add_error('password_old', u'Mot de passe incorrect.')
+
+                # Remove the wrong password from the form
                 if 'password_old' in cleaned_data:
                     del cleaned_data['password_old']
 
-        # Check that the password and it's confirmation match
+        # Check that the password and its confirmation match
         if not password_confirm == password_new:
             msg = u'Les mots de passe sont différents.'
-            self._errors['password_new'] = self.error_class([msg])
-            self._errors['password_confirm'] = self.error_class([msg])
+            self.add_error('password_new', msg)
+            self.add_error('password_confirm', msg)
 
+            # Remove the wrong passwords from the form
             if 'password_new' in cleaned_data:
                 del cleaned_data['password_new']
-
             if 'password_confirm' in cleaned_data:
                 del cleaned_data['password_confirm']
 

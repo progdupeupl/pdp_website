@@ -213,7 +213,7 @@ class AddPartForm(forms.Form):
 
         if title in existing:
             msg = u'Une partie portant ce nom existe déjà dans ce tutoriel.'
-            self._errors['title'] = self.error_class([msg])
+            self.add_error('title', msg)
 
         return cleaned_data
 
@@ -281,7 +281,7 @@ class EditPartForm(forms.Form):
 
         if title in existing:
             msg = u'Une partie portant ce nom existe déjà dans ce tutoriel.'
-            self._errors['title'] = self.error_class([msg])
+            self.add_error('title', msg)
 
         return cleaned_data
 
@@ -352,7 +352,7 @@ class AddChapterForm(forms.Form):
 
         if title in existing_chapters_titles:
             msg = u'Un chapitre portant ce nom existe déjà dans cette partie.'
-            self._errors['title'] = self.error_class([msg])
+            self.add_error('title', msg)
 
         return cleaned_data
 
@@ -424,7 +424,7 @@ class EditChapterForm(forms.Form):
 
         if title in existing:
             msg = u'Un chapitre portant ce nom existe déjà dans cette partie.'
-            self._errors['title'] = self.error_class([msg])
+            self.add_error('title', msg)
 
         return cleaned_data
 
