@@ -25,4 +25,4 @@ from django.apps import AppConfig
 
 class MessagesConfig(AppConfig):
     name = 'pdp.messages'
-    label = 'pdp.messages'
+    label = 'privatemessages'
