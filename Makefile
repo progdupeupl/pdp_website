@@ -36,7 +36,8 @@ ASSETS_DIR = ./assets/
 	loadfixtures \
 	coverage \
 	celery \
-	bootstrap
+	bootstrap \
+	checkdeps
 
 # Test all the project's own applications.
 tests:
@@ -82,9 +83,13 @@ celery:
 	celery worker --app=pdp.celeryapp:app
 
 # Initialize the whole project for the first time
-bootstrap: syncdb migrate initsearch assets collectstatic
+bootstrap: checkdeps syncdb migrate initsearch assets collectstatic
 	mkdir -p media/tutorials
 
-# Count lines of code
+# Count lines of code, avoiding irrelevant files
 cloc:
 	cloc . --exclude-dir='assets,__pycache__,venv,media,static,migrations,fixtures'
+
+# Check dependencies
+checkdeps:
+	./check_dependencies.sh
