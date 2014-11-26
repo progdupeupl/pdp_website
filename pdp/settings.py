@@ -145,7 +145,7 @@ WSGI_APPLICATION = 'pdp.wsgi.application'
 
 # Absolute path to template directory
 TEMPLATE_DIRS = (
-    os.path.join(SITE_ROOT, 'templates')
+    os.path.join(SITE_ROOT, 'templates'),
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -182,7 +182,6 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.staticfiles',
 
-    'south',
     'crispy_forms',
     'crispy_forms_foundation',
     'simplemathcaptcha',
@@ -267,13 +266,6 @@ ABSOLUTE_URL_OVERRIDES = {
         u.username)
 }
 
-#
-# South
-#
-
-SOUTH_MIGRATION_MODULES = {
-    'taggit': 'taggit.south_migrations',
-}
 
 #
 # Pipeline

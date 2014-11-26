@@ -15,7 +15,14 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Progdupeupl. If not, see <http://www.gnu.org/licenses/>.
 
-"""Module for handling private conversations between users."""
+"""Messages application configuration file."""
+
+from django.apps import AppConfig
+
+# We need to use a special configuration for this application in order to avoid
+# an application label conflict with 'django.contrib.messages'.
 
 
-default_app_config = 'pdp.messages.apps.MessagesConfig'
+class MessagesConfig(AppConfig):
+    name = 'pdp.messages'
+    label = 'pdp.messages'
