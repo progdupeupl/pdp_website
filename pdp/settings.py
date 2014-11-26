@@ -393,6 +393,10 @@ IMAGE_MAX_SIZE = 1024 * 512
 # generation when running tests.
 TESTING = 'test' in sys.argv
 
+# We need to specify explicit test runner since Django 1.6 in order to avoid a
+# system check warning.
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
 # Time to wait before a moderated message becomes unfoldable
 MODERATED_REVEAL_DELAY = datetime.timedelta(days=7)
 
