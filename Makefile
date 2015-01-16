@@ -83,13 +83,15 @@ celery:
 	celery worker --app=pdp.celeryapp:app
 
 # Initialize the whole project for the first time
-bootstrap: checkdeps syncdb migrate initsearch assets collectstatic
+bootstrap: installdeps syncdb migrate initsearch assets collectstatic
 	mkdir -p media/tutorials
+	@echo "PDP Bootstrap finished!"
+	@echo "You should now be inside the PDP virutalenv, enjoy."
 
 # Count lines of code, avoiding irrelevant files
 cloc:
 	cloc . --exclude-dir='assets,__pycache__,venv,media,static,migrations,fixtures'
 
-# Check dependencies
-checkdeps:
-	./check_dependencies.sh
+# Install dependencies
+installdeps:
+	./install_dependencies.sh
