@@ -95,3 +95,6 @@ cloc:
 # Install dependencies
 installdeps:
 	./install_dependencies.sh
+
+gitversion:
+	git describe | tee git_version.txt

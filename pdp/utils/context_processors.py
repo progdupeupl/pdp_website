@@ -37,6 +37,7 @@ def git_version(request):
         'git_version': v
     }
 
+
 def analytics_key(request):
     """Return Google Analytics key, if set.
 
