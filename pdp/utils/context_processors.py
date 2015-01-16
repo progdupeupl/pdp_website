@@ -34,7 +34,8 @@ def git_version(request):
         v = 'local_version'
 
     return {
-        'git_version': v
+        'git_version': v,
+        'git_hash': v[-8:],
     }
 
 
