@@ -83,7 +83,7 @@ celery:
 	celery worker --app=pdp.celeryapp:app
 
 # Initialize the whole project for the first time
-bootstrap: installdeps syncdb migrate initsearch assets collectstatic
+bootstrap: installdeps syncdb migrate initsearch assets collectstatic loadfixtures updatesearch
 	mkdir -p media/tutorials
 	@echo "PDP Bootstrap finished!"
 	@echo "You should now be inside the PDP virutalenv, enjoy."
