@@ -47,7 +47,7 @@ test: tests
 
 # Synchronize the Django database with the models.
 syncdb:
-	$(PMANAGE) syncdb
+	$(PMANAGE) syncdb --no-initial-data --noinput
 
 # Run the South database migrations.
 migrate:

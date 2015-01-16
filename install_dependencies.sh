@@ -7,7 +7,7 @@ if [ ! -f "$gempath" ]; then
 fi
 
 # Check for Python virtualenv
-venvpath=$(which virtualenv3)
+venvpath=$(which virtualenv)
 if [ ! -f "$venvpath" ]; then
 	echo "You need to install Python 3 virtualenv tool"
 fi
@@ -19,7 +19,7 @@ echo "Installing Ruby dependencies..."
 # Create virtualenv
 echo "Creating Python 3 virtualenv..."
 if [ ! -d venv ]; then
-	virtualenv3 venv
+	virtualenv --python=python3 venv
 fi
 source venv/bin/activate
 
