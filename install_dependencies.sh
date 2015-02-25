@@ -14,7 +14,7 @@ fi
 
 # Install gems
 echo "Installing Ruby dependencies..."
-#gem install --user-install compass sass zurb-foundation
+gem install --user-install compass sass zurb-foundation
 
 # Create virtualenv
 echo "Creating Python 3 virtualenv..."
