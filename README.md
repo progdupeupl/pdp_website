@@ -33,9 +33,9 @@ You should install Python 3.3 or 3.4, and the
 [pip](http://www.pip-installer.org/en/latest/) package manager. Under
 Debian/Ubuntu systems for example, you can use the following commands:
 
-    # aptitude install python3.3 python3.3-dev
-    # aptitude install python3-pip
-    # aptitude install python-virtualenv
+    # apt-get install python3.3 python3.3-dev
+    # apt-get install python3-pip
+    # apt-get install python-virtualenv
 
 You will also need Ruby, that on most systems come with its own package manager
 `gem`. Again on Debian/Ubuntu:
@@ -56,6 +56,10 @@ bootstrap script which will create a virtualenv for you and install all Python
 and Ruby dependencies.
 
     $ make bootstrap
+
+If the bootstrap script fails, the error should appear in the build messages
+(like missing "Python.h" if you forgot to install `python3-dev`). Try to fix
+the error and run the bootstrap make target again.
 
 ## First run
 

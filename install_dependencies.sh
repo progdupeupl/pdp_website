@@ -26,7 +26,4 @@ source venv/bin/activate
 # Installing Python dependencies in virtualenv
 echo "Installing Python dependencies inside the virtualenv..."
 
-pip install -r requirements.txt
-
-echo "Successfully installed PDP dependencies!"
-echo "You are kept inside the virtualenv from this point"
+pip install -r requirements.txt && echo "Successfully installed PDP dependencies!"

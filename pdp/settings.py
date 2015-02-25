@@ -112,8 +112,9 @@ STATICFILES_FINDERS = (
 )
 
 # Should Django serve the static and media files ? This should not be set to
-# True in a production environment
-SERVE = False
+# True in a production environment but is set to True here for the Django HTTP
+# server.
+SERVE = True
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'n!01nl+318#x75_%le8#s0=-*ysw&amp;y49uc#t=*wvi(9hnyii0z'

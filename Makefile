@@ -4,7 +4,7 @@
 # run all the tests and other commands that require specific options.
 
 MANAGE = manage.py
-PMANAGE = python $(MANAGE)
+PMANAGE = venv/bin/python $(MANAGE)
 
 TEST_APPS = pdp.article \
 	pdp.tutorial \
