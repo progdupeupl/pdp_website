@@ -86,7 +86,6 @@ celery:
 bootstrap: installdeps syncdb migrate initsearch assets collectstatic loadfixtures updatesearch
 	mkdir -p media/tutorials
 	@echo "PDP Bootstrap finished!"
-	@echo "You should now be inside the PDP virutalenv, enjoy."
 
 # Count lines of code, avoiding irrelevant files
 cloc:
