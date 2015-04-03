@@ -26,4 +26,10 @@ source venv/bin/activate
 # Installing Python dependencies in virtualenv
 echo "Installing Python dependencies inside the virtualenv..."
 
+if [ "$CC" != "gcc" ]; then
+	echo "You must use GCC to install the Python dependencies, please fix" \
+		"your \$CC environment variable."
+	exit 1
+fi
+
 pip install -r requirements.txt && echo "Successfully installed PDP dependencies!"
