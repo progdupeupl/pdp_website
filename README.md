@@ -18,8 +18,7 @@ Guide](http://www.python.org/dev/peps/pep-0008/) is a good base.
 Progdupeupl (PDP) uses [Django](https://www.djangoproject.com/), a web
 framework for the [Python](http://python.org/) programming language (we only
 support Python 3 now), but it also uses tools implemented in
-[Ruby](https://www.ruby-lang.org/en/), and (optionally) with the
-[Node.js](http://nodejs.org/) Javascript framework.
+[Ruby](https://www.ruby-lang.org/en/).
 
 You must have at least recent-enough versions of Python 3 (at least 3.3) and
 Ruby installed on your system, and installation instructions will depend on
