@@ -1,7 +1,7 @@
 # Progdupeupl
 
 Progdupeupl (PDP) is a community of French programmers ; you can see the
-running version [here](http://progdupeu.pl/).
+running version [here](http://pdp.microjoe.org/).
 
 ## Language convention
 
@@ -97,12 +97,11 @@ from Markdown sources.
 
 ## Updating the local data after schema change
 
-If you add new fields to a models.py, Python will complain that the
-database schema is out-of-date. To fix this, perform a schema
-migration using the two following commands, replacing `forum` in the
-line `APP=forum` with the subdirectory of `pdp` in which you made the
-modifications (article, forum, gallery, member, messages, pages,
-tutorial, utils…):
+If you add new fields to a `models.py` source file, Python will complain that
+the database schema is out-of-date. To fix this, perform a schema migration
+using the two following commands, replacing `forum` in the line `APP=forum`
+with the subdirectory of `pdp` in which you made the modifications (article,
+forum, gallery, member, messages, pages, tutorial, utils…):
 
     (venv)$ APP=forum
     (venv)$ python manage.py schemamigration pdp.$APP --auto
@@ -111,20 +110,12 @@ tutorial, utils…):
 ## Documentation
 
 If you want to build the documentation, you will need to install Sphinx 1.3 for
-its support of Google docstrings format. Since this version is 'till not
-released, you will have to [manually download a Sphinx snapshot on their
-website](http://sphinx-doc.org/install.html), uncompress it and and tell PIP to
-install it from local folder:
+its support of Google docstrings format. This version is now available in PyPI
+so you can install it using `pip install sphinx`.
 
-    (venv)$ pip install ~/tmp/birkenfeld-sphinx-xxxxxxxxxxxx/
-
-Then, you need to set an environment variable in your shell in order to make
-the documentation generation work (because of Django's settings handling) and
-run the makefile :
-
-    (venv)$ cd doc/
-    (venv)$ export DJANGO_SETTINGS_MODULE=pdp.settings
-    (venv)$ make html
+Then, go in the `doc/` directory can call `make html` to generate the HTML
+documentation of the project (mainly classes/functions documentation at the
+moment but this may improve in the future).
 
 ## Copyright
 
