@@ -376,6 +376,9 @@ def answer(request):
             post_cite_pk = request.GET['cite']
             post_cite = PrivatePost.objects.get(pk=post_cite_pk)
 
+            if not is_participant(post_cite.author, g_topic):
+                raise PermissionDenied
+
             for line in post_cite.text.splitlines():
                 text = text + '> ' + line + '\n'
 
