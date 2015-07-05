@@ -54,7 +54,7 @@ def send_templated_mail(subject, template, context, recipients):
     return send_mail(
         subject="[PDP] {}".format(subject),
         message=message,
-        from_email='Chtaline <chtaline@progdupeu.pl>',
+        from_email='Chtaline <chtaline@progdupeupl.org>',
         recipient_list=recipients
     )
 
