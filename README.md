@@ -1,7 +1,7 @@
-# Progdupeupl
+# Progdupeupl’s website
 
-Progdupeupl (PDP) is a community of French programmers ; you can see the
-running version [here](http://pdp.microjoe.org/).
+Progdupeupl (PDP) is a community of French programmers and this website is its
+main medium. You can see the running version [here](http://pdp.microjoe.org/).
 
 ## Language convention
 
