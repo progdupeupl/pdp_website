@@ -29,13 +29,13 @@
                     <p>
                         Si vous supprimez ce chapitre, il sera alors impossible de le modifier/consulter de nouveau.
                     </p>
-                    <button type="submit" name="delete" class="button expand alert">
+                    <button type="submit" name="delete" class="button alert">
                         Confirmer la suppression
                     </button>
                 </div>
                 {% endif %}
            </div>
- 
+
             <input type="hidden" name="chapter" value="{{ chapter.pk }}" />
             {% csrf_token %}
         </form>
