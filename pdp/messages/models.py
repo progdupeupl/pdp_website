@@ -81,6 +81,15 @@ class PrivateTopic(models.Model):
             .filter(privatetopic__pk=self.pk)\
             .count()
 
+    def get_answer_count(self):
+        """Get the number of answers in the private topic.
+
+        Returns:
+            Integer
+
+        """
+        return get_post_count() - 1
+
     def get_last_answer(self):
         """Gets the last answer in the thread, if any.
 

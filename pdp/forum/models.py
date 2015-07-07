@@ -17,7 +17,7 @@
 
 """Models for forum app."""
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from math import ceil
 
 from django.core.urlresolvers import reverse
@@ -276,6 +276,15 @@ class Topic(models.Model):
 
         """
         return Post.objects.all().filter(topic__pk=self.pk).count()
+
+    def get_answer_count(self):
+        """Return the number of answers in the topic.
+
+        Returns:
+            Integer
+
+        """
+        return self.get_post_count() - 1
 
     def get_last_answer(self):
         """Gets the last answer in the thread, if any.
