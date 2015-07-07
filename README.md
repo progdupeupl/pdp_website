@@ -114,7 +114,7 @@ If you want to build the documentation, you will need to install Sphinx 1.3 for
 its support of Google docstrings format. This version is now available in PyPI
 so you can install it using `pip install sphinx`.
 
-Then, go in the `doc/` directory can call `make html` to generate the HTML
+Then, go in the `doc/` directory and type `make html` to generate the HTML
 documentation of the project (mainly classes/functions documentation at the
 moment but this may improve in the future).
 
