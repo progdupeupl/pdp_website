@@ -41,7 +41,7 @@ Debian/Ubuntu systems for example, you can use the following commands:
 You will also need Ruby, that on most systems come with its own package manager
 `gem`. Again on Debian/Ubuntu:
 
-    # aptitude install ruby
+    # apt-get install ruby ruby-dev
 
 To run Ruby gem executables, you will need to add the Ruby gem
 executable directory to your `$PATH`:
