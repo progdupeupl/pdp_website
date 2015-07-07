@@ -7,11 +7,13 @@ main medium. You can see the running version [here](http://pdp.microjoe.org/).
 
 The site being in French, user-interface strings are in french − there is no
 localization yet. However, to let others reuse our code, everything in the code
-should be in english (vars, funcs, methods, docstrings, comments), and we'd
-rather interact in english for development (bug reports, pull requests, etc.).
+should be in english (vars, funcs, methods, docstrings, comments, commits,
+everything!), and we'd rather interact in english for development (bug reports,
+pull requests, etc.).
 
 As for other style matters in the code, the [PEP-8 Style
-Guide](http://www.python.org/dev/peps/pep-0008/) is a good base.
+Guide](http://www.python.org/dev/peps/pep-0008/) is a good base for the Python
+source code of this project.
 
 ## Dependencies
 
