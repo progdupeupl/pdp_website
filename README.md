@@ -120,4 +120,4 @@ moment but this may improve in the future).
 
 Progdupeupl is brought to you under [GNU Affero General Public Licence version
 3+](http://www.gnu.org/licenses/agpl-3.0.html). For further informations please
-read the COPYING file.
+read the provided LICENSE file.
