@@ -88,7 +88,7 @@ class PrivateTopic(models.Model):
             Integer
 
         """
-        return get_post_count() - 1
+        return self.get_post_count() - 1
 
     def get_last_answer(self):
         """Gets the last answer in the thread, if any.
