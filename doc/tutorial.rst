@@ -1,29 +1,32 @@
-Tutorial app
-============
+Tutorial module
+===============
+
+Module source code documentation
+--------------------------------
 
 .. automodule:: pdp.tutorial
     :members:
 
-Models
-------
+models.py
+"""""""""
 
 .. automodule:: pdp.tutorial.models
     :members:
 
-Forms
------
+forms.py
+""""""""
 
 .. automodule:: pdp.tutorial.forms
     :members:
 
-Views
------
+views.py
+""""""""
 
 .. automodule:: pdp.tutorial.views
     :members:
 
-The tutorial loader
--------------------
+loader.py
+"""""""""
 
 .. automodule:: pdp.tutorial.loader
     :members:

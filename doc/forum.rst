@@ -1,23 +1,26 @@
-Forum app
-=========
+Forum module
+============
+
+Module source code documentation
+--------------------------------
 
 .. automodule:: pdp.forum
     :members:
 
-Models
-------
+models.py
+"""""""""
 
 .. automodule:: pdp.forum.models
     :members:
 
-Forms
------
+forms.py
+""""""""
 
 .. automodule:: pdp.forum.forms
     :members:
 
-Views
------
+views.py
+""""""""
 
 .. automodule:: pdp.forum.views
     :members:
