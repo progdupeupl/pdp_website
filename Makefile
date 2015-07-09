@@ -37,7 +37,10 @@ ASSETS_DIR = ./assets/
 	coverage \
 	celery \
 	bootstrap \
-	checkdeps
+	cloc \
+	installdeps \
+	gitversion \
+	pep8
 
 # Test all the project's own applications.
 tests:
@@ -97,3 +100,6 @@ installdeps:
 
 gitversion:
 	git describe | tee git_version.txt
+
+pep8:
+	pep8 --exclude=venv,'*/migrations/*',doc .
