@@ -6,15 +6,6 @@
 MANAGE = manage.py
 PMANAGE = venv/bin/python $(MANAGE)
 
-TEST_APPS = pdp.article \
-	pdp.tutorial \
-	pdp.forum \
-	pdp.member \
-	pdp.utils \
-	pdp.pages \
-	pdp.messages \
-	pdp.gallery
-
 FIXTURES = fixtures/auth.yaml \
 	fixtures/forum.yaml \
 	fixtures/member.yaml \
@@ -42,9 +33,9 @@ ASSETS_DIR = ./assets/
 	gitversion \
 	pep8
 
-# Test all the project's own applications.
+# Test all the project
 tests:
-	$(PMANAGE) test $(TEST_APPS)
+	$(PMANAGE) test
 
 test: tests
 
