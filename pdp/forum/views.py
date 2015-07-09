@@ -36,6 +36,8 @@ from pdp.forum.models import never_read, mark_read
 from pdp.forum.models import follow
 from pdp.forum.forms import TopicForm, PostForm
 
+from pdp.member.models import Profile
+
 
 def index(request):
     """Display the category list with all their forums.
@@ -542,7 +544,8 @@ def followed_topics(request):
         HttpResponse
 
     """
-    followed_topics = request.user.get_profile().get_followed_topics()
+    followed_topics = Profile.objects.get(user=request.user)\
+        .get_followed_topics()
 
     # Paginator
     paginator = Paginator(followed_topics, settings.FOLLOWED_TOPICS_PER_PAGE)
