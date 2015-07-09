@@ -411,8 +411,7 @@ def edit_post(request, post_pk):
 
     # - non-moderated posts may be edited by their author or moderators;
     # - moderated posts only by moderators
-    if (post.author != request.user) \
-        and not by_staff:
+    if (post.author != request.user) and not by_staff:
         raise PermissionDenied
 
     if by_staff and request.method == 'GET':
@@ -451,6 +450,7 @@ def edit_post(request, post_pk):
         return render_template('forum/edit_post.html', {
             'post': post, 'topic': g_topic, 'text': post.text
         })
+
 
 @login_required(redirect_field_name='suivant')
 def useful_post(request, post_pk):
@@ -702,7 +702,6 @@ def moderation_post(request, post_pk):
             post.save()
 
         return redirect(post.get_absolute_url())
-
 
     return render_template('forum/moderation/post.html', {
         'post': post

@@ -55,4 +55,3 @@ class AuthenticatedMessagesIntegrationTests(TestCase):
     def test_url_new(self):
         resp = self.client.get(reverse('pdp.messages.views.new'))
         self.assertEqual(resp.status_code, 200)
-

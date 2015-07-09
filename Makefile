@@ -102,4 +102,4 @@ gitversion:
 	git describe | tee git_version.txt
 
 pep8:
-	pep8 --exclude=venv,'*/migrations/*',doc .
+	pep8 --exclude=venv,'*/migrations/*',doc,pdp/wsgi.py .

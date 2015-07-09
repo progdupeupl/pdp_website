@@ -182,7 +182,6 @@ def login_view(request):
             user = authenticate(username=username, password=password)
 
             if user is not None:
-                profile = Profile.objects.get(user=user)
 
                 if user.is_active:
                     # Yeah auth successful
@@ -306,8 +305,8 @@ def confirm_password_reset_view(request, token):
             messages.success(
                 request,
                 'Votre mot de passe temporaire vous a été envoyé par mail. '
-                'Utilisez-le dès maintenant pour le changer par un nouveau mot '
-                'de passe.'
+                'Utilisez-le dès maintenant pour le changer par un nouveau '
+                'mot de passe.'
             )
 
             return redirect(reverse('pdp.member.views.settings_account'))

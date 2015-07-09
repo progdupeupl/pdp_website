@@ -76,7 +76,8 @@ def create_tutorial_topic(tutorial):
     """
 
     # Text to be displayed to users, with a link to the tutorial
-    with io.open('templates/bot/new_tutorial.html', 'r', encoding='utf-8') as f:
+    path = 'templates/bot/new_tutorial.html'
+    with io.open(path, 'r', encoding='utf-8') as f:
         t = Template(f.read())
 
     text = t.render(Context({'tutorial': tutorial}))

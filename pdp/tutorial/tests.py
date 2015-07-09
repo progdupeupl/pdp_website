@@ -349,7 +349,8 @@ class AuthenticatedTutorialIntegrationTests(TestCase):
 
     def test_url_edit_chapter_embded(self):
         tutorial = G(Tutorial, authors=(self.user,), size=Tutorial.SMALL)
-        chapter = G(Chapter, tutorial=tutorial, part=None, image=None, thumbnail=None)
+        chapter = G(Chapter, tutorial=tutorial, part=None, image=None,
+                    thumbnail=None)
         url = '{}?chapitre={}'.format(
             reverse('pdp.tutorial.views.edit_chapter'),
             chapter.pk

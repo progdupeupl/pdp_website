@@ -17,6 +17,7 @@
 
 """Exceptions for tutorial app."""
 
+
 class CorruptedTutorialError(Exception):
     """Exception thrown when a tutorial is corrupted."""
     def __init__(self, reason):

@@ -17,16 +17,16 @@
 
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
-from django.contrib.auth.models import User, Group
 
 from haystack.views import SearchView
 from haystack.forms import ModelSearchForm
 
 from django.contrib import admin
-admin.autodiscover()
 
 import pdp.pages.views
 import pdp.settings
+
+admin.autodiscover()
 
 urlpatterns = patterns(
     '',
@@ -54,7 +54,8 @@ urlpatterns = patterns(
 # Serve debug toolbar files on debug
 if pdp.settings.DEBUG:
     import debug_toolbar
-    urlpatterns += patterns('',
+    urlpatterns += patterns(
+        '',
         url(r'^__debug__/', include(debug_toolbar.urls)))
 
 # Make Django serve the files if needed (local versions)

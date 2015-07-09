@@ -272,5 +272,3 @@ def get_next_article(g_article):
             .order_by('pubdate')[0]
     except IndexError:
         return None
-
-

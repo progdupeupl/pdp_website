@@ -285,7 +285,8 @@ def create_forgot_password_token(user):
     item, _ = ForgotPasswordToken.objects.get_or_create(user=user)
 
     # Compute expiration date
-    expires = datetime.datetime.today() + settings.FORGOT_PASSWORD_TOKEN_EXPIRES
+    expires = datetime.datetime.today() + \
+        settings.FORGOT_PASSWORD_TOKEN_EXPIRES
 
     # Update token fields
     item.expires = expires
