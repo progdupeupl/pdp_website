@@ -1,23 +1,26 @@
-User gallery app
-================
+User gallery module
+===================
+
+Module source code documentation
+--------------------------------
 
 .. automodule:: pdp.gallery
     :members:
 
-Models
-------
+models.py
+"""""""""
 
 .. automodule:: pdp.gallery.models
     :members:
 
-Forms
------
+forms.py
+""""""""
 
 .. automodule:: pdp.gallery.forms
     :members:
 
-Views
------
+views.py
+""""""""
 
 .. automodule:: pdp.gallery.views
     :members:

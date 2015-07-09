@@ -4,7 +4,7 @@
 # run all the tests and other commands that require specific options.
 
 MANAGE = manage.py
-PMANAGE = python $(MANAGE)
+PMANAGE = venv/bin/python $(MANAGE)
 
 TEST_APPS = pdp.article \
 	pdp.tutorial \
@@ -36,7 +36,8 @@ ASSETS_DIR = ./assets/
 	loadfixtures \
 	coverage \
 	celery \
-	bootstrap
+	bootstrap \
+	checkdeps
 
 # Test all the project's own applications.
 tests:
@@ -46,7 +47,7 @@ test: tests
 
 # Synchronize the Django database with the models.
 syncdb:
-	$(PMANAGE) syncdb
+	$(PMANAGE) syncdb --no-initial-data --noinput
 
 # Run the South database migrations.
 migrate:
@@ -82,9 +83,17 @@ celery:
 	celery worker --app=pdp.celeryapp:app
 
 # Initialize the whole project for the first time
-bootstrap: syncdb migrate initsearch assets collectstatic
+bootstrap: installdeps syncdb migrate initsearch assets collectstatic loadfixtures updatesearch
 	mkdir -p media/tutorials
+	@echo "PDP Bootstrap finished!"
 
-# Count lines of code
+# Count lines of code, avoiding irrelevant files
 cloc:
 	cloc . --exclude-dir='assets,__pycache__,venv,media,static,migrations,fixtures'
+
+# Install dependencies
+installdeps:
+	./install_dependencies.sh
+
+gitversion:
+	git describe | tee git_version.txt

@@ -8,6 +8,6 @@ Vous avez reçu un nouveau message privé de {{ topic.author.username }} :
 
 Cliquez sur le lien suivant pour le visionner :
 
-http://progdupeu.pl{{ topic.get_absolute_url }}
+http://pdp.microjoe.org{{ topic.get_absolute_url }}
 
 {% endblock %}

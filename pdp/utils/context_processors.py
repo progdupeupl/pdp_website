@@ -27,15 +27,26 @@ def git_version(request):
     not found), this will just display that the running version is local.
 
     """
+
+    local = False
+    v = ''
     try:
         with open('git_version.txt') as f:
             v = f.read()
     except IOError:
-        v = 'local_version'
+        local = True
+
+    if local:
+        return {
+            'git_version': 'local_version',
+            'git_hash': None,
+        }
 
     return {
-        'git_version': v
+        'git_version': v,
+        'git_hash': v[-8:],
     }
+
 
 def analytics_key(request):
     """Return Google Analytics key, if set.

@@ -1,17 +1,20 @@
-Static pages app
-================
+Static pages module
+===================
+
+Module source code documentation
+--------------------------------
 
 .. automodule:: pdp.pages
     :members:
 
-Models
-------
+models.py
+"""""""""
 
 .. automodule:: pdp.pages.models
     :members:
 
-Views
------
+views.py
+""""""""
 
 .. automodule:: pdp.pages.views
     :members:

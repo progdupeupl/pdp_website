@@ -15,4 +15,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Progdupeupl. If not, see <http://www.gnu.org/licenses/>.
 
-"""This app is used to store all additional informations about users."""
+"""This app is used to handle all additional informations about users.
+
+All of these informations are linked to their Django User model instead of
+modifying the User class, so that we can clearly separate both of them.
+
+"""

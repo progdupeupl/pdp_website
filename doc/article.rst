@@ -1,17 +1,20 @@
-Article app (deprecated)
-========================
+Article module (deprecated)
+===========================
+
+Module source code documentation
+--------------------------------
 
 .. automodule:: pdp.article
     :members:
 
-Models
-------
+models.py
+"""""""""
 
 .. automodule:: pdp.article.models
     :members:
 
-Views
------
+views.py
+""""""""
 
 .. automodule:: pdp.article.views
     :members:

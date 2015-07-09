@@ -52,9 +52,9 @@ def send_templated_mail(subject, template, context, recipients):
     message = render_email_template(template, context)
 
     return send_mail(
-        subject="[Progdupeupl] {}".format(subject),
+        subject="[PDP] {}".format(subject),
         message=message,
-        from_email='Chtaline <chtaline@progdupeu.pl>',
+        from_email='Chtaline <chtaline@progdupeupl.org>',
         recipient_list=recipients
     )
 

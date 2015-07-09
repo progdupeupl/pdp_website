@@ -16,6 +16,7 @@ django-simple-math-captcha
 django-email-obfuscator
 django-debug-toolbar
 django-taggit
-django-pipeline
+django-pipeline<1.4
 django-guardian
 django-haystack
+south

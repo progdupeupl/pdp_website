@@ -1,11 +1,14 @@
-Utils
-=====
+Utils module
+============
+
+Module source code documentation
+--------------------------------
 
 .. automodule:: pdp.utils
     :members:
 
-Models
-------
+models.py
+"""""""""
 
 .. automodule:: pdp.utils.models
     :members:

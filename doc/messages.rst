@@ -1,23 +1,26 @@
-Private messages app
-====================
+Private messages modules
+========================
+
+Module source code documentation
+--------------------------------
 
 .. automodule:: pdp.messages
     :members:
 
-Models
-------
+models.py
+"""""""""
 
 .. automodule:: pdp.messages.models
     :members:
 
-Forms
------
+forms.py
+""""""""
 
 .. automodule:: pdp.messages.forms
     :members:
 
-Views
------
+views.py
+""""""""
 
 .. automodule:: pdp.messages.views
     :members:

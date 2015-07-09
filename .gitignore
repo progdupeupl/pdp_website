@@ -31,3 +31,5 @@ doc/_build
 
 .coverage
 htmlcov/
+.ropeproject
+git_version.txt

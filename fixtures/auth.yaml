@@ -4,6 +4,7 @@
     is_superuser: true
     password: pbkdf2_sha256$12000$GStmqyc2YwGP$OVoGqWFhJS3Z0N++Coy6499YSOOFCQGsnnQNsUYMIeg=
     username: Chtaline
+    email: chtaline@progdupeu.pl
   model: auth.user
   pk: 1
 - fields:
@@ -12,6 +13,7 @@
     is_superuser: false
     password: pbkdf2_sha256$12000$I7oU5MuaYSz6$D+3nU/jvaWEv5MdYVWwjZCHTw6j++Vl/uWWvUif0j9Q=
     username: Blaireau1
+    email: blaireau1@progdupeu.pl
   model: auth.user
   pk: 2
 - fields:
@@ -20,6 +22,7 @@
     is_superuser: false
     password: pbkdf2_sha256$12000$Ux8OrXmIcMy4$hD4bFcznjb4MtcJR1oQpTM0n6AOdwP5VXB74F1/HHLc=
     username: Blaireau2
+    email: blaireau2@progdupeu.pl
   model: auth.user
   pk: 3
 - fields:
@@ -28,6 +31,7 @@
     is_superuser: false
     password: pbkdf2_sha256$12000$sL963UV3263W$n6t5MS/sEmLNyCQ00so1/MBF8PoJ9zgnHJzlZKsM8xU=
     username: Blaireau3
+    email: blaireau3@progdupeu.pl
   model: auth.user
   pk: 4
 - fields:
@@ -36,6 +40,7 @@
     is_superuser: false
     password: pbkdf2_sha256$12000$jpjaumfDXrE2$39lP+R7FloeyEvAq7vEWWDl1X5mgSm0SJKGSZz/RPjo=
     username: Blaireau4
+    email: blaireau4@progdupeu.pl
   model: auth.user
   pk: 5
 - fields:
@@ -44,5 +49,6 @@
     is_superuser: false
     password: pbkdf2_sha256$12000$DtKeze3vSPTE$eKpLxt6RUz/iRiEACqNh1tiJyYxfwJsYf1+Leno6Iho=
     username: Blaireau5
+    email: blaireau5@progdupeu.pl
   model: auth.user
   pk: 6
