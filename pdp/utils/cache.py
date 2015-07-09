@@ -17,8 +17,6 @@
 
 """Useful fonctions for dealing with Django's cache system."""
 
-from hashlib import md5
-
 from django.core.cache import cache
 from django.core.cache.utils import make_template_fragment_key
 

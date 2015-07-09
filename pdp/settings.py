@@ -425,6 +425,6 @@ ANALYTICS_KEY = None
 # other production stuff.
 
 try:
-    from pdp.settings_prod import *
+    from pdp.settings_prod import *  # flake8: noqa
 except ImportError:
     pass

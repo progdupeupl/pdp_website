@@ -29,7 +29,6 @@ parent (or children) object(s).
 """
 
 import os
-import datetime
 import io
 
 from django.db import models
@@ -717,7 +716,7 @@ class Chapter(models.Model):
             image.thumbnail(thumb_size, Image.ANTIALIAS)
 
             # save the thumbnail to memory
-            temp_handle = StringIO()
+            temp_handle = io.StringIO()
             image.save(temp_handle, 'png')
             temp_handle.seek(0)  # rewind the file
 

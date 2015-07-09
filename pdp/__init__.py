@@ -15,4 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Progdupeupl. If not, see <http://www.gnu.org/licenses/>.
 
-from pdp.celeryapp import app as celery_app
+from pdp.celeryapp import app
+
+
+celery_app = app

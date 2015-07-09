@@ -20,7 +20,7 @@ from datetime import datetime
 
 from django.conf import settings
 from django.shortcuts import redirect, get_object_or_404
-from django.http import Http404, HttpResponse, HttpResponseBadRequest
+from django.http import Http404, HttpResponse
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
