@@ -19,4 +19,3 @@ django-taggit
 django-pipeline<1.4
 django-guardian
 django-haystack
-south
